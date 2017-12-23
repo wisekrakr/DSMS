@@ -3,7 +3,10 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -61,5 +64,13 @@ public abstract class GameObject {
 
     public float getCollisionRadius() {
         return collisionRadius;
+    }
+
+    public SpaceSnapshot.GameObjectSnapshot snapshot() {
+        return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position, getExtraSnapshotProperties());
+    }
+
+    public Map<String, Object> getExtraSnapshotProperties() {
+        return new HashMap<String, Object>();
     }
 }

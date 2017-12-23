@@ -3,6 +3,8 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -54,5 +56,14 @@ public class Asteroid extends GameObject {
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         toDelete.add(this);
+    }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 }

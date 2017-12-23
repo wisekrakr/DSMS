@@ -49,7 +49,19 @@ public class SpaceEngine {
     private boolean collision(GameObject object1, GameObject object2) {
         return
                 (object1.getPosition().x - object2.getPosition().x) * (object1.getPosition().x - object2.getPosition().x) +
-                (object1.getPosition().y - object2.getPosition().y) * (object1.getPosition().y - object2.getPosition().y) < object1.getCollisionRadius() + object2.getCollisionRadius();
+                        (object1.getPosition().y - object2.getPosition().y) * (object1.getPosition().y - object2.getPosition().y) < object1.getCollisionRadius() + object2.getCollisionRadius();
+    }
+
+    public SpaceSnapshot makeSnapshot() {
+        synchronized (monitor) {
+            List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
+
+            for (GameObject object : gameObjects) {
+                gameObjectSnapshots.add(object.snapshot());
+            }
+
+            return new SpaceSnapshot("Bla", 1235, gameObjectSnapshots);
+        }
     }
 
     public void elapseTime(final float delta) {
@@ -82,11 +94,11 @@ public class SpaceEngine {
                 }
             }
 
-            for (GameObject gameObject: toDelete) {
+            for (GameObject gameObject : toDelete) {
                 gameObjects.remove(gameObject);
             }
 
-            for (GameObject gameObject: toAdd) {
+            for (GameObject gameObject : toAdd) {
                 gameObjects.add(gameObject);
             }
         }

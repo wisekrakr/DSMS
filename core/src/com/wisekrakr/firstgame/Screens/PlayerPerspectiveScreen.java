@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.Constants;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.Asteroid;
+import com.wisekrakr.firstgame.client.ClientConnector;
+import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+
+import java.util.List;
 
 /**
  * Created by David on 11/23/2017.
@@ -27,17 +27,26 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer playerRenderer;
 
-    private SpaceEngine engine;
-    private GameObject mySelf;
-    private final Spaceship controllee1;
-    private final Spaceship controllee2;
+    private ClientConnector connector;
+    private final String mySelf;
+    private String first = null;
+    private String second = null;
 
-
-    public PlayerPerspectiveScreen(SpaceEngine engine, GameObject mySelf, Spaceship controllee1, Spaceship controllee2) {
-        this.engine = engine;
+    public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
+        this.connector = connector;
         this.mySelf = mySelf;
-        this.controllee1 = controllee1;
-        this.controllee2 = controllee2;
+
+        int i = 0;
+        for (String name: players) {
+            if (first == null) {
+                first = name;
+            }
+            else if (second == null) {
+                second = name;
+            }
+            connector.createSpaceship(name, 100 + i * 50, 0);
+             i = i +1;
+        }
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
@@ -54,20 +63,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
     private void handleInput() {
-        if (controllee1 != null) {
-            applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.X, controllee1);
-        }
-
-        if (controllee2 != null) {
-            applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.COMMA, controllee2);
-        }
+        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.X, first);
+        applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.COMMA, second);
     }
 
-    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int resetKey, final Spaceship target) {
+    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int resetKey, final String target) {
+        /*
         if (Gdx.input.isKeyPressed(resetKey)) {
             target.setPosition(new Vector2(0, 0));
             target.resetControl();
         }
+        */
 
         final Spaceship.ThrottleState throttle;
         if (Gdx.input.isKeyPressed(forwardsKey)) {
@@ -87,44 +93,35 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             steering = Spaceship.SteeringState.CENTER;
         }
 
-        engine.forObject(target, new SpaceEngine.GameObjectHandler() {
-            @Override
-            public void doIt(GameObject a) {
-                target.control(throttle, steering);
-            }
-        });
+        connector.controlSpaceship(target, throttle, steering);
     }
+
 
     @Override
     public void render(float delta) {
         handleInput();
 
-        camera.position.set(mySelf.getPosition().x, mySelf.getPosition().y, 100);
-        camera.up.set(1, 0, 0);
-        camera.rotate(mySelf.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
-        camera.update();
+        SpaceSnapshot snapshot = connector.latestSnapshot();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-        renderObjects();
-
-        batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.update(delta);
-        hud.stage.draw();
-    }
-
-    private void renderObjects() {
-        System.out.println("Myself is at " + mySelf.getPosition() + ", with an orientation of: " + mySelf.getOrientation() * 180 / Math.PI);
+        //        System.out.println("Myself is at " + mySelf.getPosition() + ", with an orientation of: " + mySelf.getOrientation() * 180 / Math.PI);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        engine.forAllObjects(new SpaceEngine.GameObjectHandler() {
-            @Override
-            public void doIt(GameObject object) {
-                if (object instanceof Player) {
+        if (snapshot != null) {
+            for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
+                if (mySelf.equals(object.getName())) {
+                    camera.position.set(object.getPosition().x, object.getPosition().y, 100);
+                    camera.up.set(1, 0, 0);
+                    camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
+                    camera.update();
+                }
+
+                if ("Player".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 10);
@@ -132,18 +129,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.BLUE);
 
                     shapeRenderer.cone(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()), object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()), 0, 5, 0);
-                }
-                else if (object instanceof Asteroid) {
-                    Asteroid asteroid = (Asteroid) object;
+                } else if ("Asteroid".equals(object.getType())) {
                     shapeRenderer.setColor(Color.BROWN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, asteroid.getRadius());
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
                     shapeRenderer.setColor(Color.GREEN);
 
-                    shapeRenderer.cone(object.getPosition().x + (asteroid.getRadius() / 2) * (float) Math.cos(object.getOrientation()), object.getPosition().y + (asteroid.getRadius() / 2)* (float) Math.sin(object.getOrientation()), 0, (asteroid.getRadius() / 2), 0);
-                }
-                else {
+                    shapeRenderer.cone(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()), object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), 0, (radius / 2), 0);
+                } else {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 6);
@@ -152,9 +149,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.cone(object.getPosition().x + 2 * (float) Math.cos(object.getOrientation()), object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), 0, 3, 0);
                 }
             }
-        });
+        }
 
         shapeRenderer.end();
+
+        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.update(delta);
+        hud.stage.draw();
     }
 
     @Override
