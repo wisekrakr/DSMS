@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -12,14 +11,14 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
-import com.wisekrakr.firstgame.GameDSMS;
+import com.wisekrakr.firstgame.SpaceGameContainer;
 
 /**
  * Created by David on 12/1/2017.
  */
 public class Hud implements Disposable{
 
-    private GameDSMS gameDSMS;
+    private SpaceGameContainer container;
 
     public Stage stage;
     private Viewport viewport;
@@ -35,7 +34,7 @@ public class Hud implements Disposable{
     private Label scoreLabel;
 
     public Hud(SpriteBatch batch) {
-        gameDSMS = new GameDSMS();
+        container = new SpaceGameContainer();
 
         worldTimer = 0;
         timeCounter = 0;
