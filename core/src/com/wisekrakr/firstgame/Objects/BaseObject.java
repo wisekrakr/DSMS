@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.Objects;
 
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 
@@ -17,8 +16,9 @@ public abstract class BaseObject {
     private String name;
 
     private float x;
-    private float y;
     private float elapsedTime;
+    private float orientation;
+    private float speed;
 
     public abstract void init(); //initialize the object
     public abstract void movement(float delta); // method for objects that don't have a handleInput method. They move by themselves
@@ -29,7 +29,6 @@ public abstract class BaseObject {
 
 
     public BaseObject(String name, Vector2 position, Vector2 velocity) {
-
         this.position = position;
         this.name = name;
         this.velocity = velocity;
@@ -45,7 +44,15 @@ public abstract class BaseObject {
     public abstract void attack(float delta);
 
 
-    public Vector2 getPosition() {
+    public final float getOrientation() {
+        return orientation;
+    }
+
+    public final float getSpeed() {
+        return speed;
+    }
+
+    public final Vector2 getPosition() {
         return position;
     }
 
@@ -53,43 +60,21 @@ public abstract class BaseObject {
         this.position = position;
     }
 
-
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
+    public void setOrientation(float newOrientation) {
+        this.orientation = newOrientation;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
 
     public Vector2 getVelocity() {
-
-
-
-
         return velocity;
     }
 
     public void setVelocity(Vector2 velocity) {
         this.velocity = velocity;
     }
-
 
 }

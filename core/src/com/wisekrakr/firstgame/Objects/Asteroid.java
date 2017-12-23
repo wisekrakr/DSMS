@@ -34,11 +34,6 @@ public class Asteroid extends BaseObject {
     }
 
     @Override
-    public Vector2 getPosition() {
-        return super.getPosition();
-    }
-
-    @Override
     public void init() {
         System.out.println("Asteroid Draw = " + getName());
         int number = 500;

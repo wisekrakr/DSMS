@@ -67,15 +67,19 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         gameDSMS.getPlayer1().update(delta);
         gameDSMS.getGameObjects();
         for(BaseObject object: gameDSMS.getGameObjects()) {
             object.update(delta);
-
         }
-        camera.position.set(gameDSMS.getPlayer1().getPosition().x, gameDSMS.getPlayer1().getPosition().y, 0);
 
+//        camera.position.set(0, 0, 0);
+//        camera.lookAt(1, 0, 0);
+
+        camera.position.set(gameDSMS.getPlayer1().getPosition().x, gameDSMS.getPlayer1().getPosition().y, 100);
+        camera.up.set(1, 0, 0);
+        camera.rotate(gameDSMS.getPlayer1().getOrientation() * 180 / (float) Math.PI  , 0, 0, 1);
+/*
         Vector3 playerVector = new Vector3(gameDSMS.getPlayer1().getPosition().x, gameDSMS.getPlayer1().getPosition().y,0);
 
         camera.up.x = MathUtils.cos(gameDSMS.getPlayer1().getVelocity().angle());
@@ -83,7 +87,7 @@ public class PlayScreen implements Screen {
 
         camera.position.x = playerVector.x;
         camera.position.y = playerVector.y;
-
+*/
         camera.update();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -116,12 +120,14 @@ public class PlayScreen implements Screen {
     }
 
     public void renderObjects(ShapeRenderer renderer){
+        System.out.println("Player 1 is at " + gameDSMS.getPlayer1().getPosition() + ", with an orientation of: " + gameDSMS.getPlayer1().getOrientation() * 180 / Math.PI);
+
 
         this.shapeRenderer = renderer;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
         for(BaseObject object: gameDSMS.getGameObjects()) {
-            System.out.println(object.getName() + " is at " + object.getPosition() + " ,with an velocity of: " +  object.getVelocity());
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 6);
@@ -138,10 +144,9 @@ public class PlayScreen implements Screen {
                 shapeRenderer.setColor(Color.BLUE);
                 shapeRenderer.cone(object.getPosition().x , object.getPosition().y + 4, 0, 5, 0);
                 object.render(shapeRenderer);
-
             }
-
         }
+
         shapeRenderer.end();
     }
 
