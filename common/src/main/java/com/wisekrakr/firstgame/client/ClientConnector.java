@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -93,10 +92,14 @@ public class ClientConnector {
         queue.add(new GameObjectCreationRequest(name, "SpaceShip", new Vector2(startX, startY)));
     }
 
-    public void controlSpaceship(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState) {
-        queue.add(new SpaceshipControlRequest(name, throttleState, steeringState));
+    public void controlSpaceship(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
+                                 Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState) {
+        queue.add(new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState));
     }
 
+    public SpaceSnapshot getLatestSnapshot() {
+        return latestSnapshot;
+    }
 
     public void stop() {
         try {

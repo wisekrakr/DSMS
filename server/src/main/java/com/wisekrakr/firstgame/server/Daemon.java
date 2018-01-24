@@ -12,14 +12,18 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Daemon {
 
     private static SpaceEngine initializeEngine() {
-        SpaceEngine engine = new SpaceEngine(-1000, -1000, 2000, 2000);
+        float minX = -2000;
+        float minY = -2000;
+        float width = 4000;
+        float height = 4000;
+        float plusOfXY = 2000;
+
+        SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
 
         Thread timeThread = new Thread(new Runnable() {
             @Override
@@ -45,33 +49,82 @@ public class Daemon {
 
         timeThread.setDaemon(true);
 
-
         Random randomGenerator = new Random();
 
-        Vector2 playerSpawnPoint = new Vector2(0, 0);
-
+//        Vector2 playerSpawnPoint = new Vector2(0, 0);
 //        Player player1 = new Player("Max", playerSpawnPoint, engine);
 //        Player player2 = new Player("David", playerSpawnPoint, engine);
-
-        ChaserEnemy enemy1 = new ChaserEnemy("Chaser1", new Vector2(playerSpawnPoint.x + 30, playerSpawnPoint.y + 30), engine);
-        ChaserEnemy enemy2 = new ChaserEnemy("Chaser2", new Vector2(randomGenerator.nextInt(1000), randomGenerator.nextInt(1000)), engine);
-
-        engine.addGameObject(enemy1);
-        engine.addGameObject(enemy2);
 //        engine.addGameObject(player1);
 //        engine.addGameObject(player2);
 
-        for (int i = 0; i < 100; i++) {
-            Asteroid asteroid = new Asteroid("Boeja", new Vector2(
+
+        for (int i = 0; i < 8; i++) {
+            ChaserEnemy chaser = new ChaserEnemy("Chaser", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 2000 - 1000,
-                    randomGenerator.nextFloat() * 2000 - 1000),
-                    randomGenerator.nextFloat() * 20, 40 * randomGenerator.nextFloat(), randomGenerator.nextFloat() * 2 * (float) Math.PI, engine, 2f);
+                    10f, engine);
+            engine.addGameObject(chaser);
+        }
+
+        MotherShipEnemy motherShipEnemy = new MotherShipEnemy("MotherShip", new Vector2(
+                randomGenerator.nextFloat() * width - plusOfXY,
+                randomGenerator.nextFloat() * height - plusOfXY),
+                randomGenerator.nextFloat(),
+                30f, engine);
+        engine.addGameObject(motherShipEnemy);
+
+        for (int i = 0; i < 20; i++) {
+            DodgingEnemy dodgingEnemy1 = new DodgingEnemy("Dodger", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    randomGenerator.nextFloat() * 2000 - 1000 ,
+                    6f, engine);
+            engine.addGameObject(dodgingEnemy1);
+        }
+
+        for(int i = 0; i < 30; i++){
+            StalkerEnemy stalkerEnemy = new StalkerEnemy("Stalker", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    randomGenerator.nextFloat() * 2000 - 1000,
+                    5f, engine);
+            engine.addGameObject(stalkerEnemy);
+        }
+
+/*
+//Todo: Put all Enemy gameObjects in one set and randomly pick a number of different kind of enemies
+        Set<Enemy>enemies = new HashSet<>();
+        float enemyCount = 60;
+        for(Enemy enemy: enemies){
+            for(int i = 0; i < enemyCount; i++){
+                enemies.add(new Enemy("Enemy" + i + enemy.getName(), new Vector2(
+                        randomGenerator.nextFloat() * width - plusOfXY,
+                        randomGenerator.nextFloat() * height - plusOfXY),
+                        randomGenerator.nextFloat() * 2000 - 1000,
+                        10f, engine));
+                engine.addGameObject(enemy);
+            }
+
+        }
+*/
+        for (int i = 0; i < 30; i++) {
+            Asteroid asteroid = new Asteroid("Boeja", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    randomGenerator.nextFloat() * 20,
+                    40 * randomGenerator.nextFloat(),
+                    randomGenerator.nextFloat() * 2 * (float) Math.PI, engine,
+                    2f);
             engine.addGameObject(asteroid);
         }
+
         timeThread.start();
 
         return engine;
     }
+
+
 
     public static void main(String[] args) throws Exception {
         SpaceEngine engine = initializeEngine();
@@ -108,6 +161,8 @@ public class Daemon {
                                 engine.addGameObject(result);
 
                                 myFleet.put(request.getName(), result);
+
+
                             }
                             else if (incoming instanceof SpaceshipControlRequest) {
                                 SpaceshipControlRequest request = (SpaceshipControlRequest) incoming;
@@ -121,7 +176,7 @@ public class Daemon {
                                     engine.forObject(ship, new SpaceEngine.GameObjectHandler() {
                                         @Override
                                         public void doIt(GameObject target) {
-                                            ship.control(request.getThrottleState(), request.getSteeringState());
+                                            ship.control(request.getThrottleState(), request.getSteeringState(), request.getSpecialPowerState(), request.getShootingState());
                                         }
                                     });
                                 }

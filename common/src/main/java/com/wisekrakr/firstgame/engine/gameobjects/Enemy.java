@@ -1,24 +1,22 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-public class ChaserEnemy extends Enemy{
-
-    private float DEFAULT_ENEMY_SPEED = 80;
-    private static final float AGRO_DISTANCE = 250;
+public class Enemy extends GameObject {
+    private float DEFAULT_ENEMY_SPEED = 40;
+    private static final float AGRO_DISTANCE = 150;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
-    private float distance;
 
-    public ChaserEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
-        super(name, position, direction, radius, space);
+    public Enemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
+        super(name, position, space);
         this.direction = direction;
         this.radius = radius;
 
@@ -27,7 +25,13 @@ public class ChaserEnemy extends Enemy{
 
     @Override
     public void signalOutOfBounds() {
-        this.setDirection(-direction);
+
+        if(direction == direction){
+            this.setDirection(-direction);
+        }else{
+            this.setDirection(direction);
+        }
+
 
     }
 
@@ -51,22 +55,6 @@ public class ChaserEnemy extends Enemy{
     public void attack(GameObject target) {
 
 
-        if (target instanceof Player) {
-
-            if (distanceBetween(this, target) <= AGRO_DISTANCE ) {
-
-                float angle = angleBetween(this, target);
-
-// to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) , getPosition().y +=  Math.sin(angle) ));
-
-                setOrientation(angle);
-
-                setDirection(angle);
-            }
-        }
-
-
     }
 
 
@@ -74,7 +62,6 @@ public class ChaserEnemy extends Enemy{
 
     @Override
     public void elapseTime(float delta) {
- //Todo: see if the timer works....to change direction of the chaser
 
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
@@ -104,5 +91,4 @@ public class ChaserEnemy extends Enemy{
 
         return result;
     }
-
 }

@@ -9,10 +9,12 @@ public class GameObjectCreationRequest  implements Serializable {
     private String type;
     private Vector2 initialPosition;
 
+
     public GameObjectCreationRequest(String name, String type, Vector2 initialPosition) {
         this.name = name;
         this.type = type;
         this.initialPosition = initialPosition;
+
     }
 
     public GameObjectCreationRequest() {
@@ -29,4 +31,6 @@ public class GameObjectCreationRequest  implements Serializable {
     public Vector2 getInitialPosition() {
         return initialPosition;
     }
+
+
 }

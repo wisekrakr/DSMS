@@ -6,35 +6,59 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
+import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
+import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import javafx.scene.layout.Background;
 
+import java.awt.*;
 import java.util.List;
 
 /**
  * Created by David on 11/23/2017.
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter {
+
+
+
+    private float minX = -500;
+    private float minY = -500;
+    private float width = 1000;
+    private float height = 1000;
+
     private Hud hud;
     private SpriteBatch batch;
+    private Stage stage;
     private OrthographicCamera camera;
+    private OrthographicCamera miniMapCamera;
+
+    private SpaceGameContainer container;
 
     private ShapeRenderer shapeRenderer;
-    private ShapeRenderer playerRenderer;
 
     private ClientConnector connector;
-    private final String mySelf;
+    private String mySelf;
     private String first = null;
     private String second = null;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
         this.mySelf = mySelf;
+
+        container = new SpaceGameContainer();
 
         int i = 0;
         for (String name: players) {
@@ -48,26 +72,57 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
              i = i +1;
         }
 
+        stage = new Stage();
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
         camera.update();
 
+// TODO: how to create a minimap?
+        miniMapCamera = new OrthographicCamera();
+        miniMapCamera.setToOrtho(false, Constants.WORLD_WIDTH * 10, Constants.WORLD_HEIGHT * 10);
+        miniMapCamera.update();
+
+//TODO: see how we can create a background....either by using stage like now, or to use another camera
+        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
+        texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+
+        BackgroundStars backgroundStars = new BackgroundStars(texture);
+        backgroundStars.setSize(Constants.WORLD_WIDTH*2, Constants.WORLD_HEIGHT*2);
+        backgroundStars.setSpeed(1);
+        stage.addActor(backgroundStars);
+        Gdx.input.setInputProcessor(stage);
+
+
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
-        playerRenderer = new ShapeRenderer();
-        playerRenderer.setAutoShapeType(true);
 
         batch = new SpriteBatch();
 
         hud = new Hud(batch);
+
     }
+
+
 
     private void handleInput() {
-        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.X, first);
-        applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.COMMA, second);
+        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.X, first);
+        applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COMMA, second);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+            camera.zoom += 0.08;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+            camera.zoom -= 0.08;
+        }
+/*
+        if(Gdx.input.isKeyPressed(Input.Keys.INSERT)){
+            container.setScreen(new PauseScreen());
+        }
+        */
     }
 
-    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int resetKey, final String target) {
+    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey, int shootKey, int resetKey, final String target) {
         /*
         if (Gdx.input.isKeyPressed(resetKey)) {
             target.setPosition(new Vector2(0, 0));
@@ -93,13 +148,33 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             steering = Spaceship.SteeringState.CENTER;
         }
 
-        connector.controlSpaceship(target, throttle, steering);
+        Spaceship.SpecialPowerState powerState;
+        if(Gdx.input.isKeyPressed(boostKey)) {
+            powerState = Spaceship.SpecialPowerState.BOOSTING;
+        } else if(Gdx.input.isKeyPressed(dodgeKey)){
+            powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
+        }else {
+            powerState = Spaceship.SpecialPowerState.NO_POWER;
+        }
+
+        final Spaceship.ShootingState shootingState;
+        if(Gdx.input.isKeyPressed(shootKey)){
+            shootingState = Spaceship.ShootingState.FIRING;
+        }else{
+            shootingState = Spaceship.ShootingState.PACIFIST;
+        }
+
+        connector.controlSpaceship(target, throttle, steering, powerState, shootingState);
     }
+
 
 
     @Override
     public void render(float delta) {
         handleInput();
+
+        stage.act();
+        stage.draw();
 
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
@@ -119,49 +194,109 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.up.set(1, 0, 0);
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
+
                 }
 
                 if ("Player".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 10);
-
                     shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
+                             (10/2));
+                }
 
-                    shapeRenderer.cone(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()), object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()), 0, 5, 0);
-                } else if ("Asteroid".equals(object.getType())) {
+                else if ("Bullet".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y + 12,  2);
+
+                }
+
+                else if ("Asteroid".equals(object.getType())) {
                     shapeRenderer.setColor(Color.BROWN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
                     Float radius = (Float) object.extraProperties().get("radius");
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
-
                     shapeRenderer.setColor(Color.GREEN);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()),  (radius / 2));
 
-                    shapeRenderer.cone(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()), object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), 0, (radius / 2), 0);
-                } else {
+                } else if ("ChaserEnemy".equals(object.getType())) {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 6);
 
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.circle(object.getPosition().x + 2 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
+
+                }else if ("MotherShipEnemy".equals(object.getType())){
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.ORANGE);
+                    shapeRenderer.circle(object.getPosition().x + 6 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()),  (radius/2));
+
+                }else if ("DodgingEnemy".equals(object.getType())){
+                    shapeRenderer.setColor(Color.LIME);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
                     shapeRenderer.setColor(Color.PINK);
-                    shapeRenderer.cone(object.getPosition().x + 2 * (float) Math.cos(object.getOrientation()), object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), 0, 3, 0);
+                    shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
+                }else {
+                    shapeRenderer.setColor(Color.MAROON);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.TEAL);
+                    shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
                 }
+
             }
         }
 
         shapeRenderer.end();
 
-        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(miniMapCamera.combined);
+        miniMapCamera.position.set(0,0,0);
+        miniMapCamera.update();
+        batch.setProjectionMatrix(stage.getCamera().combined);
         hud.update(delta);
         hud.stage.draw();
+
+
+
+
     }
+
+
 
     @Override
     public void dispose() {
+
+        stage.dispose();
         shapeRenderer.dispose();
-        hud.dispose();
+
+
 
     }
+
+
 }

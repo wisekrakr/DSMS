@@ -9,8 +9,7 @@ public class Constants {
 
     public static final float DELTA = Gdx.graphics.getDeltaTime();
 
-
-
+    public static final float AGGRO_DISTANCE = 150;
 
     public static final int WORLD_WIDTH = 400;
     public static final int WORLD_HEIGHT = 400;
