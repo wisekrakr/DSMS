@@ -26,9 +26,8 @@ public class ChaserEnemy extends Enemy{
     }
 
     @Override
-    public void signalOutOfBounds() {
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         this.setDirection(-direction);
-
     }
 
     @Override
@@ -73,7 +72,7 @@ public class ChaserEnemy extends Enemy{
 
 
     @Override
-    public void elapseTime(float delta) {
+    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
  //Todo: see if the timer works....to change direction of the chaser
 
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,

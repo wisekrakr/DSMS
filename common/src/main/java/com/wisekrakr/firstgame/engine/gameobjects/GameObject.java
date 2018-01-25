@@ -21,8 +21,6 @@ public abstract class GameObject {
     private SpaceSnapshot snapshot;
     private SpaceEngine space;
     private float collisionRadius;
-    private float distanceBetween;
-    private Integer distanceTravelled;
 
     GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
         this.position = initialPosition;
@@ -33,7 +31,7 @@ public abstract class GameObject {
     /**
      * update the state taking into account an elapsed time of delta seconds
      */
-    public abstract void elapseTime(float delta);
+    public abstract void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd);
 
     public final float getOrientation() {
         return orientation;
@@ -59,32 +57,28 @@ public abstract class GameObject {
     public SpaceEngine getSpace() {
         return space;
     }
+
     public String getName() {
         return name;
     }
 
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
+
     public void signalOutOfBounds() {
     }
 
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
-    public float distanceBetween(GameObject subject, GameObject target){
+    public static float distanceBetween(GameObject subject, GameObject target) {
+        float attackDistanceX = target.getPosition().x - subject.getPosition().x;
+        float attackDistanceY = target.getPosition().y - subject.getPosition().y;
 
-
-        if(target instanceof Player){
-
-            float attackDistanceX = target.getPosition().x - subject.getPosition().x;
-            float attackDistanceY = target.getPosition().y - subject.getPosition().y ;
-
-            distanceBetween = (float) Math.hypot(attackDistanceX, attackDistanceY);
-        }
-
-        return distanceBetween;
+        return (float) Math.hypot(attackDistanceX, attackDistanceY);
     }
-    public float angleBetween(GameObject subject, GameObject target){
+
+    public static float angleBetween(GameObject subject, GameObject target) {
 
         float attackDistanceX = target.getPosition().x - subject.getPosition().x;
         float attackDistanceY = target.getPosition().y - subject.getPosition().y;
@@ -94,41 +88,17 @@ public abstract class GameObject {
         return angle;
     }
 
-    public void attack(GameObject target){
+    public void attack(GameObject target) {
 
     }
 
-    public void shootingBullets(GameObject bullet, Set<GameObject>toAdd, Set<GameObject>toDelete){}
-
-
-    public void objectRemover(Set<GameObject>toDelete){
-
+    public void shootingBullets(GameObject bullet, Set<GameObject> toAdd, Set<GameObject> toDelete) {
     }
 
 
-    public Integer getDistanceTravelled() {
+    public void objectRemover(Set<GameObject> toDelete) {
 
-        if (snapshot != null) {
-            for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
-                if ("Player".equals(object.getType())) {
-                    float newX = object.getPosition().x;
-                    float newY = object.getPosition().y;
-
-                    distanceTravelled = (int) Math.sqrt(Math.pow(newX - object.getPosition().x, 2) + Math.pow(newY - object.getPosition().y, 2));
-                }
-            }
-        }
-
-/*
-        if(subject instanceof Player) {
-            Vector2 newPosition = subject.getPosition();
-
-            distanceTravelled = (int) Math.sqrt(Math.pow(newPosition.x - subject.getPosition().x, 2) + Math.pow(newPosition.y - subject.getPosition().y, 2));
-        }
-        */
-        return distanceTravelled;
     }
-
 
     public float getCollisionRadius() {
         return collisionRadius;
@@ -139,9 +109,8 @@ public abstract class GameObject {
     }
 
     public Map<String, Object> getExtraSnapshotProperties() {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
-
 
 
 }

@@ -3,6 +3,8 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Spaceship extends GameObject {
@@ -13,10 +15,11 @@ public abstract class Spaceship extends GameObject {
 
     private float speed = 0;
     private float angle = (float) Math.PI / 2;
-    private Integer distanceTravelled = 0;
-    private float ammoCount;
+    private float distanceTravelled = 0;
+    private int ammoCount;
 
     private static final float DEFAULT_BULLET_SPEED = 80;
+    private float shotLeftOver;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -24,7 +27,7 @@ public abstract class Spaceship extends GameObject {
         setCollisionRadius(10);
     }
 
-    public Spaceship getSpaceship(){
+    public Spaceship getSpaceship() {
 
         return this;
     }
@@ -59,7 +62,7 @@ public abstract class Spaceship extends GameObject {
     }
 
     @Override
-    public void elapseTime(float delta) {
+    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
             case LEFT:
                 angle = angle + delta * 2f;
@@ -84,6 +87,8 @@ public abstract class Spaceship extends GameObject {
             speed = 0;
         }
 
+        distanceTravelled = distanceTravelled + Math.abs(delta * speed);
+
         setPosition(new Vector2(
                 getPosition().x + delta * speed * (float) Math.cos(angle),
                 getPosition().y + delta * speed * (float) Math.sin(angle)
@@ -91,24 +96,37 @@ public abstract class Spaceship extends GameObject {
 
         setOrientation(angle);
 
-        switch (powerState){
+        switch (powerState) {
             case BOOSTING:
                 speed = Math.min(speed + delta * 200f, 500);
                 break;
             case ULTRA_DODGE:
-                setPosition(new Vector2(getPosition().x +10, getPosition().y + 10));
+                setPosition(new Vector2(getPosition().x + 10, getPosition().y + 10));
 
                 break;
         }
 
-        switch (shootingState){
+        switch (shootingState) {
             case FIRING:
+                float shotCount = delta / 0.1f + shotLeftOver;
 
+                int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
-                ammoCount--;
+                ammoCount = ammoCount - exactShotCount;
+                if (ammoCount > 0) {
+                    shotLeftOver = shotCount - exactShotCount;
+                } else {
+                    shotLeftOver = 0;
+                }
+
+                for (int i = 0; i < exactShotCount; i++) {
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getAngle(), 400, 2f));
+                }
+
                 break;
 
             case PACIFIST:
+                shotLeftOver = 0;
                 break;
 
         }
@@ -120,7 +138,7 @@ public abstract class Spaceship extends GameObject {
 
     }
 
-    private Bullet createBullet(){
+    private Bullet createBullet() {
 
         return new Bullet("Bullito", this.getPosition(), getSpace(), this.getAngle(), DEFAULT_BULLET_SPEED, 2f);
 
@@ -143,15 +161,20 @@ public abstract class Spaceship extends GameObject {
         return angle;
     }
 
-    public float getAmmoCount() {
+    public int getAmmoCount() {
         return ammoCount;
     }
 
-
-
-    @Override
-    public Integer getDistanceTravelled() {
+    public float getDistanceTravelled() {
         return distanceTravelled;
     }
 
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("distanceTravelled", distanceTravelled);
+
+        return result;
+    }
 }

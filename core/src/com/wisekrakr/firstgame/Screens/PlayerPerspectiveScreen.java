@@ -84,13 +84,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         miniMapCamera.update();
 
 //TODO: see how we can create a background....either by using stage like now, or to use another camera
-        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
-        texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+//        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
+//        texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
 
-        BackgroundStars backgroundStars = new BackgroundStars(texture);
-        backgroundStars.setSize(Constants.WORLD_WIDTH*2, Constants.WORLD_HEIGHT*2);
-        backgroundStars.setSpeed(1);
-        stage.addActor(backgroundStars);
+//        BackgroundStars backgroundStars = new BackgroundStars(texture);
+//        backgroundStars.setSize(Constants.WORLD_WIDTH*2, Constants.WORLD_HEIGHT*2);
+//        backgroundStars.setSpeed(1);
+//        stage.addActor(backgroundStars);
         Gdx.input.setInputProcessor(stage);
 
 
@@ -187,6 +187,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+        SpaceSnapshot.GameObjectSnapshot myself = null;
+
         if (snapshot != null) {
             for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
                 if (mySelf.equals(object.getName())) {
@@ -195,6 +197,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
 
+                    myself = object;
                 }
 
                 if ("Player".equals(object.getType())) {
@@ -278,12 +281,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         miniMapCamera.position.set(0,0,0);
         miniMapCamera.update();
         batch.setProjectionMatrix(stage.getCamera().combined);
-        hud.update(delta);
+        hud.update(myself, delta);
         hud.stage.draw();
-
-
-
-
     }
 
 

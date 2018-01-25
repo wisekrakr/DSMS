@@ -34,7 +34,7 @@ public class Asteroid extends GameObject {
     }
 
     @Override
-    public void elapseTime(float delta) {
+    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         setOrientation(getOrientation() + rotationSpeed * delta);
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * speed * delta,
                 getPosition().y + (float) Math.sin(direction) * speed * delta)

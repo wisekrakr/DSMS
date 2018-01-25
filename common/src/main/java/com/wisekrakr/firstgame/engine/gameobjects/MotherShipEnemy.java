@@ -86,7 +86,7 @@ public class MotherShipEnemy extends Enemy{
 
 
     @Override
-    public void elapseTime(float delta) {
+    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
 
         setPosition(new Vector2(getPosition().x + (float) Math.cos(changeDirection()) * DEFAULT_ENEMY_SPEED * delta,

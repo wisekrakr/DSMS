@@ -24,7 +24,7 @@ public class DodgingEnemy extends Enemy {
     }
 
     @Override
-    public void signalOutOfBounds() {
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         this.setDirection(-direction);
     }
 
@@ -63,7 +63,7 @@ public class DodgingEnemy extends Enemy {
 
 
     @Override
-    public void elapseTime(float delta) {
+    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)

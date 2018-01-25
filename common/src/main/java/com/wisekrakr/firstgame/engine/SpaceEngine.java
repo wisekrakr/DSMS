@@ -28,6 +28,7 @@ public class SpaceEngine {
             gameObjects.add(object);
         }
     }
+
     public void removeGameObject(GameObject object) {
         synchronized (monitor) {
             gameObjects.remove(object);
@@ -62,9 +63,6 @@ public class SpaceEngine {
     }
 
 
-
-
-
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
             List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
@@ -79,18 +77,20 @@ public class SpaceEngine {
 
     public void elapseTime(final float delta) {
         synchronized (monitor) {
-            for (GameObject target : gameObjects) {
-                target.elapseTime(delta);
-            }
-
             Set<GameObject> toDelete = new HashSet<GameObject>();
             Set<GameObject> toAdd = new HashSet<GameObject>();
+
+            for (GameObject target : gameObjects) {
+                target.elapseTime(delta, toDelete, toAdd);
+            }
+
 //TODO: signalOutOfBounds() bounces the target up and down (y-axis), but not left and right (x-axis)...fix it!
             for (GameObject target : gameObjects) {
-                if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
-                        target.getPosition().y < minY || target.getPosition().y - minY > height) {
-                    target.signalOutOfBounds(toDelete, toAdd);
-                    target.signalOutOfBounds();
+                if (!toDelete.contains(target)) {
+                    if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
+                            target.getPosition().y < minY || target.getPosition().y - minY > height) {
+                        target.signalOutOfBounds(toDelete, toAdd);
+                    }
                 }
             }
 
@@ -103,50 +103,35 @@ public class SpaceEngine {
 
                                 if (collision(target, subject)) {
                                     target.collide(subject, toDelete, toAdd);
-
                                 }
-
                             }
                         }
                     }
                 }
             }
-// Todo: create a way to make these bullet objects in the classes themselves, without the game freezing up
-            for (GameObject subject: gameObjects){
-                if(subject instanceof Player) {
-                    if(((Player) subject).shootingState == Spaceship.ShootingState.FIRING){
-                        float ammoCount = ((Player) subject).getAmmoCount();
-                        Bullet bullet = new Bullet("bullito", subject.getPosition(), this, ((Player) subject).getAngle(), 400, 2f);
-                        for(int i = 0; i < ammoCount; i++) {
-                            toAdd.add(bullet);
-                        }
-                        //toDelete.remove(bullet);
 
-                    }
 
-                }
-            }
 // Todo: create a way to make the ChaserEnemy objects in the MotherEnemy class itself, without the game freezing up
-            for(GameObject subject: gameObjects){
-                if(subject instanceof MotherShipEnemy){
-                    for (GameObject target: gameObjects){
-                        if(target instanceof Player){
-                                if(subject.distanceBetween(subject, target) < 150){
+            for (GameObject subject : gameObjects) {
+                if (subject instanceof MotherShipEnemy) {
+                    for (GameObject target : gameObjects) {
+                        if (target instanceof Player) {
+                            if (subject.distanceBetween(subject, target) < 150) {
 
-                                    ChaserEnemy chaserEnemy = new ChaserEnemy("minion", new Vector2(
-                                            subject.getPosition().x + subject.getCollisionRadius()+2,
-                                            subject.getPosition().y + subject.getCollisionRadius()+2),
-                                            target.getPosition().x, 10f, this );
-                                    float mothersMinions = 2;
-                                    for(int i = 0; i < mothersMinions; i++){
-                                        toAdd.add(chaserEnemy);
-                                        chaserEnemy.setDirection(target.getPosition().x);
-                                    }
+                                ChaserEnemy chaserEnemy = new ChaserEnemy("minion", new Vector2(
+                                        subject.getPosition().x + subject.getCollisionRadius() + 2,
+                                        subject.getPosition().y + subject.getCollisionRadius() + 2),
+                                        target.getPosition().x, 10f, this);
+                                float mothersMinions = 2;
+                                for (int i = 0; i < mothersMinions; i++) {
+                                    toAdd.add(chaserEnemy);
+                                    chaserEnemy.setDirection(target.getPosition().x);
                                 }
                             }
                         }
                     }
                 }
+            }
 
 
             for (GameObject gameObject : toDelete) {
