@@ -37,10 +37,7 @@ public class MotherShipEnemy extends Enemy{
             setCollisionRadius(radius);
             toDelete.remove(subject);
         }
-        if(subject instanceof Enemy){
-            toAdd.add(subject);
 
-        }
 
     }
 

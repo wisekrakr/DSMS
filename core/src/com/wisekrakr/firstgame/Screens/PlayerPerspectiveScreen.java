@@ -6,32 +6,21 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import javafx.scene.layout.Background;
 
-import java.awt.*;
 import java.util.List;
 
 /**
  * Created by David on 11/23/2017.
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter {
-
 
 
     private float minX = -500;
@@ -43,7 +32,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private Stage stage;
     private OrthographicCamera camera;
-    private OrthographicCamera miniMapCamera;
+
+    private OrthographicCamera minimapcamera;
+
+    private MiniMap miniMap;
 
     private SpaceGameContainer container;
 
@@ -79,9 +71,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         camera.update();
 
 // TODO: how to create a minimap?
-        miniMapCamera = new OrthographicCamera();
-        miniMapCamera.setToOrtho(false, Constants.WORLD_WIDTH * 10, Constants.WORLD_HEIGHT * 10);
-        miniMapCamera.update();
+//        minimapcamera = new OrthographicCamera();
+//        minimapcamera.setToOrtho(false, 1000, 1000);
+
+//        miniMap = new MiniMap(0.2f, 0.025f, minimapcamera);
+//        miniMap.setWorldSize(width, height);
+
 
 //TODO: see how we can create a background....either by using stage like now, or to use another camera
 //        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
@@ -176,6 +171,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         stage.act();
         stage.draw();
 
+
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -196,6 +192,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.up.set(1, 0, 0);
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
+
+
 
                     myself = object;
                 }
@@ -277,15 +275,20 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         shapeRenderer.end();
 
-        shapeRenderer.setProjectionMatrix(miniMapCamera.combined);
-        miniMapCamera.position.set(0,0,0);
-        miniMapCamera.update();
         batch.setProjectionMatrix(stage.getCamera().combined);
         hud.update(myself, delta);
         hud.stage.draw();
+
+        //miniMap.apply();
+
+
     }
 
+    @Override
+    public void resize(int width, int height) {
 
+        //miniMap.update(width, height);
+    }
 
     @Override
     public void dispose() {

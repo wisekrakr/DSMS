@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame;
 
 import com.badlogic.gdx.Game;
 import com.wisekrakr.firstgame.Screens.PlayerPerspectiveScreen;
+import com.wisekrakr.firstgame.Screens.StartScreen;
 import com.wisekrakr.firstgame.client.ClientConnector;
 
 import java.net.InetSocketAddress;

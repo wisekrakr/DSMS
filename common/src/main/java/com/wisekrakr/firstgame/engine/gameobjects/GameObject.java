@@ -96,9 +96,6 @@ public abstract class GameObject {
     }
 
 
-    public void objectRemover(Set<GameObject> toDelete) {
-
-    }
 
     public float getCollisionRadius() {
         return collisionRadius;

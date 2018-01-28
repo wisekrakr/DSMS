@@ -1,5 +1,7 @@
 package com.wisekrakr.firstgame.Screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
@@ -18,6 +21,7 @@ import com.wisekrakr.firstgame.engine.SpaceSnapshot;
  */
 public class Hud implements Disposable {
 
+
     public Stage stage;
     private Viewport viewport;
 
@@ -25,12 +29,15 @@ public class Hud implements Disposable {
     private float timeCounter;
     private Integer distanceCounter;
     private float score;
+    private String name;
 
     private Label timeLabel;
     private Label nameLabel;
+    private Label nameSetLabel;
     private Label timeCountLabel;
     private Label distanceLabel;
     private Label distanceCountLabel;
+    private Label scoreCountLabel;
     private Label scoreLabel;
 
     public Hud(SpriteBatch batch) {
@@ -38,6 +45,7 @@ public class Hud implements Disposable {
         timeCounter = 0;
         distanceCounter = 1;
         score = 0;
+        name = "Wisekrakr";
 
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -46,41 +54,51 @@ public class Hud implements Disposable {
         table.top();
         table.setFillParent(true);
 
-        timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
+        BitmapFont font = new BitmapFont(fontStyle);
+        font.getData().setScale(0.4f);
+
+        timeLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
         timeCountLabel = new Label(String.format("%06d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
-        distanceLabel = new Label("Distance", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        distanceLabel = new Label("Distance", new Label.LabelStyle(font, Color.WHITE));
         distanceCountLabel = new Label(String.format("%06d", distanceCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
-        scoreLabel = new Label(String.format("%08f", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
-        nameLabel = new Label("Your name here", new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
+        scoreLabel = new Label("Score", new Label.LabelStyle(font, Color.WHITE));
+        scoreCountLabel = new Label(String.format("%08f", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
+        nameLabel = new Label("Your name here", new Label.LabelStyle(font, Color.WHITE));
+        nameSetLabel = new Label(String.format("%s", getNameSetLabel()), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
 
         table.add(timeLabel).expandX().padTop(10);
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
+        table.add(nameLabel).expandX().padTop(10);
         table.row();
         table.add(timeCountLabel).expandX();
         table.add(distanceCountLabel).expandX();
-        table.add(scoreLabel).expandX();
-        table.row();
-        table.add(nameLabel).expandX();
+        table.add(scoreCountLabel).expandX();
+        table.add(nameSetLabel).expandX();
 
         stage.addActor(table);
     }
 
 
+    public Label getNameSetLabel() {
+        return nameSetLabel;
+    }
+
+
+
     public void update(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
-        float miliCount = 0;
-        float secCount = 0;
-        float minCount = 0;
-        float hourCount = 0;
+
+
 
         timeCounter += delta;
         if (timeCounter >= 1) {
             timeCounter = 0;
             worldTimer++;
 
-            timeCountLabel.setText(String.format("%06d", worldTimer));
+            timeCountLabel.setText(String.format("%s",worldTimer));
             distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
-            nameLabel.setText(myself.getName());
+            nameSetLabel.setText(String.format("%s", myself.getType()));
 
         }
     }

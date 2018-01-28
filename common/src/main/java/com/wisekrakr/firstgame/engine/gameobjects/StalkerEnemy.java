@@ -27,11 +27,7 @@ public class StalkerEnemy extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Player){
-            if(subject.getOrientation() == this.getPosition().x +this.getCollisionRadius()){
-                objectRemover(toDelete);
-            }
-        }
+       toDelete.remove(subject);
     }
 
     @Override
@@ -55,10 +51,7 @@ public class StalkerEnemy extends Enemy {
         }
     }
 
-    @Override
-    public void objectRemover(Set<GameObject> toDelete) {
-        toDelete.remove(this);
-    }
+
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {

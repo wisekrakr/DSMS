@@ -11,7 +11,7 @@ public abstract class Spaceship extends GameObject {
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
-    public ShootingState shootingState = ShootingState.PACIFIST;
+    private ShootingState shootingState = ShootingState.PACIFIST;
 
     private float speed = 0;
     private float angle = (float) Math.PI / 2;
@@ -138,11 +138,6 @@ public abstract class Spaceship extends GameObject {
 
     }
 
-    private Bullet createBullet() {
-
-        return new Bullet("Bullito", this.getPosition(), getSpace(), this.getAngle(), DEFAULT_BULLET_SPEED, 2f);
-
-    }
 
     @Override
     public void attack(GameObject target) {
