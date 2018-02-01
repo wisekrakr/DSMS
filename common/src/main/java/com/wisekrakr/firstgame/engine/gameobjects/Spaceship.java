@@ -132,17 +132,7 @@ public abstract class Spaceship extends GameObject {
         }
     }
 
-    @Override
-    public void shootingBullets(GameObject bullet, Set<GameObject> toAdd, Set<GameObject> toDelete) {
-        toAdd.add(bullet);
 
-    }
-
-
-    @Override
-    public void attack(GameObject target) {
-
-    }
 
     public ShootingState getShootingState() {
         return shootingState;
@@ -172,4 +162,15 @@ public abstract class Spaceship extends GameObject {
 
         return result;
     }
+
+    @Override
+    public Map<String, Object> getMoreExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("ammoCount", ammoCount);
+
+        return result;
+    }
+
+
 }

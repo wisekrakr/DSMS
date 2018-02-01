@@ -31,9 +31,12 @@ public class DodgingEnemy extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
+        toDelete.add(subject);
+
         if (subject instanceof Asteroid) {
             toDelete.add(this);
         }
+
         if(subject instanceof Bullet){
             toDelete.add(this);
         }
@@ -61,6 +64,28 @@ public class DodgingEnemy extends Enemy {
         }
     }
 
+    @Override
+    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (subject instanceof Player) {
+
+            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
+
+                float angle = angleBetween(this, subject);
+
+                setPosition(new Vector2(getPosition().x -=  Math.cos(angle) *2 , getPosition().y -=  Math.sin(angle) *2 ));
+
+                setOrientation(angle);
+
+                setDirection(angle);
+
+            }
+        }
+    }
+
+    @Override
+    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(subject, toDelete, toAdd);
+    }
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {

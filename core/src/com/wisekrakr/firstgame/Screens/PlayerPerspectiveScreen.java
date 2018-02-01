@@ -193,8 +193,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
 
-
-
                     myself = object;
                 }
 

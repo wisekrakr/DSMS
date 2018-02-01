@@ -55,10 +55,10 @@ public class SpaceEngine {
 
     private boolean collision(GameObject object1, GameObject object2) {
         return
-                ((object1.getPosition().x + object1.getCollisionRadius()) - (object2.getPosition().x + object2.getCollisionRadius()))
-                        * ((object1.getPosition().x + object1.getCollisionRadius()) - (object2.getPosition().x + object2.getCollisionRadius()))
-                        + ((object1.getPosition().y + object1.getCollisionRadius()) - (object2.getPosition().y + object2.getCollisionRadius()))
-                        * ((object1.getPosition().y + object1.getCollisionRadius()) - (object2.getPosition().y + object2.getCollisionRadius()))
+                ((object1.getPosition().x - object2.getPosition().x ))
+                        * ((object1.getPosition().x ) - (object2.getPosition().x ))
+                        + ((object1.getPosition().y ) - (object2.getPosition().y ))
+                        * ((object1.getPosition().y ) - (object2.getPosition().y ))
                         < object1.getCollisionRadius() + object2.getCollisionRadius();
     }
 
@@ -93,14 +93,14 @@ public class SpaceEngine {
                     }
                 }
             }
-
+/**
+ * See if any gameobjects collide with each other
+ */
             for (GameObject target : gameObjects) {
                 if (!toDelete.contains(target)) {
                     for (GameObject subject : gameObjects) {
                         if (!toDelete.contains(subject)) {
                             if (target != subject) {
-                                target.attack(subject);
-
                                 if (collision(target, subject)) {
                                     target.collide(subject, toDelete, toAdd);
                                 }
@@ -111,23 +111,17 @@ public class SpaceEngine {
             }
 
 
-// Todo: create a way to make the ChaserEnemy objects in the MotherEnemy class itself, without the game freezing up
-            for (GameObject subject : gameObjects) {
-                if (subject instanceof MotherShipEnemy) {
-                    for (GameObject target : gameObjects) {
-                        if (target instanceof Player) {
-                            if (subject.distanceBetween(subject, target) < 150) {
+/**
+ * In this section gameobjects calculate how far they are of each other and they attack in their different ways
+ */
 
-                                ChaserEnemy chaserEnemy = new ChaserEnemy("minion", new Vector2(
-                                        subject.getPosition().x + subject.getCollisionRadius() + 2,
-                                        subject.getPosition().y + subject.getCollisionRadius() + 2),
-                                        target.getPosition().x, 10f, this);
-                                float mothersMinions = 2;
-                                for (int i = 0; i < mothersMinions; i++) {
-                                    toAdd.add(chaserEnemy);
-                                    chaserEnemy.setDirection(target.getPosition().x);
-                                }
-                            }
+
+            for(GameObject subject: gameObjects){
+                if(subject instanceof Enemy){
+                    for(GameObject target: gameObjects){
+                        if(target instanceof Player){
+                            subject.targetSpotted(target, toDelete, toAdd);
+                            subject.attackTarget(target, toDelete, toAdd);
                         }
                     }
                 }

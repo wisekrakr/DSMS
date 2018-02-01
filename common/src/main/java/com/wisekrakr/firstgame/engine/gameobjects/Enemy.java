@@ -9,11 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class Enemy extends GameObject {
-    private float DEFAULT_ENEMY_SPEED = 40;
-    private static final float AGRO_DISTANCE = 150;
-    private static final int CHANGE_DIRECTION_TIME = 3000;
+
     private float direction;
     private float radius;
+
 
     public Enemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
         super(name, position, space);
@@ -50,23 +49,20 @@ public class Enemy extends GameObject {
     }
 
 
-    @Override
-    public void attack(GameObject target) {
-
-
+    public enum AttackState {
+        PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
     }
-
 
 
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+/*
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );
         setOrientation(direction);
-
+*/
     }
 
 
@@ -82,6 +78,7 @@ public class Enemy extends GameObject {
     public float getRadius() {
         return radius;
     }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -90,4 +87,6 @@ public class Enemy extends GameObject {
 
         return result;
     }
+
+
 }

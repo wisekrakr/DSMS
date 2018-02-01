@@ -65,8 +65,6 @@ public abstract class GameObject {
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
-    public void signalOutOfBounds() {
-    }
 
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
@@ -92,22 +90,25 @@ public abstract class GameObject {
 
     }
 
-    public void shootingBullets(GameObject bullet, Set<GameObject> toAdd, Set<GameObject> toDelete) {
-    }
 
-
+    public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
+    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
+    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
 
     public float getCollisionRadius() {
         return collisionRadius;
     }
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
-        return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position, getExtraSnapshotProperties());
+        return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
+                getExtraSnapshotProperties(), getMoreExtraSnapshotProperties());
     }
 
     public Map<String, Object> getExtraSnapshotProperties() {
         return new HashMap<>();
     }
-
+    public Map<String, Object> getMoreExtraSnapshotProperties() {
+        return new HashMap<>();
+    }
 
 }

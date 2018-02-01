@@ -75,15 +75,15 @@ public class Daemon {
         engine.addGameObject(motherShipEnemy);
 
         for (int i = 0; i < 20; i++) {
-            DodgingEnemy dodgingEnemy1 = new DodgingEnemy("Dodger", new Vector2(
+            DodgingEnemy dodgingEnemy = new DodgingEnemy("Dodger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 2000 - 1000 ,
                     6f, engine);
-            engine.addGameObject(dodgingEnemy1);
+            engine.addGameObject(dodgingEnemy);
         }
 
-        for(int i = 0; i < 30; i++){
+        for(int i = 0; i < 6; i++){
             StalkerEnemy stalkerEnemy = new StalkerEnemy("Stalker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),

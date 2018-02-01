@@ -29,6 +29,7 @@ public class Hud implements Disposable {
     private float timeCounter;
     private Integer distanceCounter;
     private float score;
+    private Integer ammoCounter;
     private String name;
 
     private Label timeLabel;
@@ -39,11 +40,14 @@ public class Hud implements Disposable {
     private Label distanceCountLabel;
     private Label scoreCountLabel;
     private Label scoreLabel;
+    private Label ammoLabel;
+    private Label ammoCountLabel;
 
     public Hud(SpriteBatch batch) {
         worldTimer = 0;
         timeCounter = 0;
         distanceCounter = 1;
+        ammoCounter = 0;
         score = 0;
         name = "Wisekrakr";
 
@@ -64,17 +68,21 @@ public class Hud implements Disposable {
         distanceCountLabel = new Label(String.format("%06d", distanceCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         scoreLabel = new Label("Score", new Label.LabelStyle(font, Color.WHITE));
         scoreCountLabel = new Label(String.format("%08f", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
+        ammoLabel = new Label("Ammo", new Label.LabelStyle(font, Color.WHITE));
+        ammoCountLabel = new Label(String.format("%06d", ammoCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         nameLabel = new Label("Your name here", new Label.LabelStyle(font, Color.WHITE));
         nameSetLabel = new Label(String.format("%s", getNameSetLabel()), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
 
         table.add(timeLabel).expandX().padTop(10);
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
+        table.add(ammoLabel).expandX().padTop(10);
         table.add(nameLabel).expandX().padTop(10);
         table.row();
         table.add(timeCountLabel).expandX();
         table.add(distanceCountLabel).expandX();
         table.add(scoreCountLabel).expandX();
+        table.add(ammoCountLabel).expandX();
         table.add(nameSetLabel).expandX();
 
         stage.addActor(table);
@@ -98,6 +106,7 @@ public class Hud implements Disposable {
 
             timeCountLabel.setText(String.format("%s",worldTimer));
             distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
+            ammoCountLabel.setText(Integer.toString((Integer) myself.moreExtraProperties().get("ammoCount")));
             nameSetLabel.setText(String.format("%s", myself.getType()));
 
         }

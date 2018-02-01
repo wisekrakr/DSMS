@@ -27,9 +27,8 @@ public class Bullet extends GameObject{
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Enemy){
-            toDelete.remove(subject);
-        }
+        toDelete.add(subject);
+        toDelete.add(this);
 
     }
 
