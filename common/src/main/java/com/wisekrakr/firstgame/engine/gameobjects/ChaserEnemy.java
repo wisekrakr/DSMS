@@ -10,9 +10,9 @@ import java.util.*;
 public class ChaserEnemy extends Enemy{
 
 
-    private float DEFAULT_ENEMY_SPEED = 80;
-    private static final float AGRO_DISTANCE = 250;
-    private static final float ATTACK_DISTANCE = 150;
+    private float DEFAULT_ENEMY_SPEED = 120;
+    private static final float AGRO_DISTANCE = 450;
+    private static final float ATTACK_DISTANCE = 350;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
@@ -36,13 +36,13 @@ public class ChaserEnemy extends Enemy{
 
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        this.setDirection(-direction);
+        super.signalOutOfBounds(toDelete, toAdd);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         //        if (!(subject instanceof Enemy)) {
-        toDelete.add(subject);
+        //toDelete.add(subject);
 
         if (subject instanceof Asteroid) {
             toDelete.add(this);
@@ -69,7 +69,6 @@ public class ChaserEnemy extends Enemy{
 
                 setDirection(angle);
 
-                attackState = AttackState.PACIFIST;
 
             }
         }
@@ -90,7 +89,7 @@ public class ChaserEnemy extends Enemy{
     public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
 
-            if (!(distanceBetween(this, subject) <= AGRO_DISTANCE)) {
+            if ((distanceBetween(this, subject) > AGRO_DISTANCE)) {
 
                 attackState = AttackState.PACIFIST;
             }

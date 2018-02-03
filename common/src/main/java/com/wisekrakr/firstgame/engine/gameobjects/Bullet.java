@@ -12,6 +12,7 @@ public class Bullet extends GameObject{
     private float speed;
 
     private static final float DEFAULT_BULLET_SPEED = 800;
+    private float time;
 
 
     public Bullet(String name, Vector2 initialPosition, SpaceEngine space, float direction,float speed, float radius) {
@@ -20,15 +21,20 @@ public class Bullet extends GameObject{
         this.radius = radius;
         this.speed = speed;
 
-        setCollisionRadius(2);
+        setCollisionRadius(4);
     }
 
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        toDelete.add(subject);
-        toDelete.add(this);
+        if(subject instanceof Player){
+            toDelete.add(this);
+        }
+        if(subject instanceof Enemy){
+            toDelete.add(subject);
+            toDelete.add(this);
+        }
 
     }
 
@@ -39,12 +45,15 @@ public class Bullet extends GameObject{
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_BULLET_SPEED * delta)
         );
         setOrientation(direction);
+
+        float destructTime = 3.0f;
+        time += delta;
+        if(time >= destructTime){
+            toDelete.add(this);
+        }
     }
 
-    @Override
-    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        toDelete.add(this);
-    }
+
 
     public float getDirection() {
         return direction;

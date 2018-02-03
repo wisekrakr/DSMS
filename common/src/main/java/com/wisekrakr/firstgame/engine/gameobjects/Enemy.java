@@ -30,7 +30,6 @@ public class Enemy extends GameObject {
             this.setDirection(direction);
         }
 
-
     }
 
     @Override
@@ -65,6 +64,18 @@ public class Enemy extends GameObject {
 */
     }
 
+    public void getNearestTarget(GameObject target, GameObject target2, Set<GameObject> toDelete, Set<GameObject> toAdd){
+
+        if(target instanceof Player){
+            float distance = distanceBetween(this, target);
+            if(distance < distanceBetween(this, target2)){
+                attackTarget(target, toDelete, toAdd);
+            }else {
+                attackTarget(target2, toDelete, toAdd);
+            }
+        }
+    }
+
 
 
     public float getDirection() {
@@ -87,6 +98,7 @@ public class Enemy extends GameObject {
 
         return result;
     }
+
 
 
 }

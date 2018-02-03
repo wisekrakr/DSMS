@@ -4,26 +4,27 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class MotherShipEnemy extends Enemy{
-    private static final float DEFAULT_ENEMY_SPEED = 10;
-    private static final float AGRO_DISTANCE = 450;
-    private static final float ATTACK_DISTANCE = 150;
+    private static final float DEFAULT_ENEMY_SPEED = 20;
+    private static final float AGRO_DISTANCE = 850;
+    private static final float ATTACK_DISTANCE = 450;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
-    private int minionCount;
+    private int ammoCount;
 
     private AttackState attackState = AttackState.PACIFIST;
+    private float shotLeftOver;
+    private float time;
+
 
     public MotherShipEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
         super(name, position, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
-
+        ammoCount = 6;
+        shotLeftOver = ammoCount;
         setCollisionRadius(radius);
     }
 
@@ -34,12 +35,15 @@ public class MotherShipEnemy extends Enemy{
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        toDelete.add(subject);
 
-        if (subject instanceof Enemy) {
-            radius = radius - ((Enemy) subject).getRadius();
+
+        if (subject instanceof DodgingEnemy) {
+            radius = radius + ((DodgingEnemy) subject).getRadius();
             setCollisionRadius(radius);
-            toDelete.remove(subject);
+            toDelete.add(subject);
+        }else{
+            toDelete.add(subject);
+            toDelete.add(this);
         }
 
 
@@ -70,30 +74,28 @@ public class MotherShipEnemy extends Enemy{
         if (subject instanceof Player) {
 
             if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
-                float angle = angleBetween(this, subject);
-                minionCount = 4;
+                attackState = AttackState.SHOOT;
+            }
+        }
+    }
 
-                for(int i = 0; i < minionCount; i++) {
-                    toAdd.add(new ChaserEnemy("ChaserMinion1", new Vector2(getPosition().x + 40, getPosition().y), angle, 10f, getSpace()));
-                }
+    @Override
+    public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (subject instanceof Player) {
 
-                setOrientation(angle);
+            if ((distanceBetween(this, subject) > AGRO_DISTANCE)) {
 
-                setDirection(angle);
-
+                attackState = AttackState.PACIFIST;
             }
         }
     }
 
 
 
-
-
     public float changeDirection(){
 
         Random randomGenerator = new Random();
-        float newDirection = 0;
-        newDirection = randomGenerator.nextFloat();
+        float newDirection = randomGenerator.nextFloat();
 
         direction = (float) Math.atan(direction - newDirection);
 
@@ -109,21 +111,57 @@ public class MotherShipEnemy extends Enemy{
                 getPosition().y + (float) Math.sin(getDirection()) * DEFAULT_ENEMY_SPEED * delta)
         );
 
-        setOrientation(changeDirection());
+        setOrientation(getDirection());
 
         switch (attackState){
             case SHOOT:
+                ammoCount = getAmmoCount();
+                float shotCount = delta / 1.5f + shotLeftOver;
+
+                int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
+
+                ammoCount = ammoCount - exactShotCount;
+                if (ammoCount > 0) {
+                    shotLeftOver = shotCount - exactShotCount;
+                } else {
+                    shotLeftOver = 0;
+                }
+
+                for(int i = 0; i < exactShotCount; i++) {
+                    Random randomGenerator = new Random();
+                    ChaserEnemy chaserEnemy = new ChaserEnemy("ChaserMinion1", new Vector2(
+                            getPosition().x + randomGenerator.nextFloat() * radius,
+                            getPosition().y + randomGenerator.nextFloat() * radius),
+                            getOrientation(), 10f, getSpace());
+                    toAdd.add(chaserEnemy);
+
+                    float destructTime = 8.0f;
+                    time += delta;
+                    if(time >= destructTime){
+                        float angle = angleBetween(this, chaserEnemy);
+
+                        // to make the chaser chase the player with less vigilance, divide cos and sin by 2
+                        chaserEnemy.setPosition(new Vector2(this.getPosition().x +=  Math.cos(angle)  , this.getPosition().y +=  Math.sin(angle) ));
+
+                        chaserEnemy.setOrientation(angle);
+
+                        chaserEnemy.setDirection(angle);
+
+                    }
+                }
 
                 break;
-            case CHASE:
 
-                break;
-            case SELF_DESTRUCT:
-                toDelete.add(this);
+            case PACIFIST:
+                shotLeftOver = 0;
         }
 
 
 
+    }
+
+    public int getAmmoCount() {
+        return ammoCount;
     }
 
     public float getDirection() {

@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public abstract class Spaceship extends GameObject {
@@ -17,19 +18,12 @@ public abstract class Spaceship extends GameObject {
     private float angle = (float) Math.PI / 2;
     private float distanceTravelled = 0;
     private int ammoCount;
-
-    private static final float DEFAULT_BULLET_SPEED = 80;
     private float shotLeftOver;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
         ammoCount = 10000;
         setCollisionRadius(10);
-    }
-
-    public Spaceship getSpaceship() {
-
-        return this;
     }
 
     public void resetControl() {
@@ -53,7 +47,6 @@ public abstract class Spaceship extends GameObject {
         PACIFIST, FIRING;
     }
 
-
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState) {
         this.throttle = throttle;
         this.steering = steering;
@@ -76,10 +69,10 @@ public abstract class Spaceship extends GameObject {
 
         switch (throttle) {
             case FORWARDS:
-                speed = Math.min(speed + delta * 105f, 200);
+                speed = Math.min(speed + delta * 125f, 250);
                 break;
             case REVERSE:
-                speed = Math.max(speed - delta * 65f, -100);
+                speed = Math.max(speed - delta * 85f, -150);
                 break;
         }
 
@@ -98,10 +91,12 @@ public abstract class Spaceship extends GameObject {
 
         switch (powerState) {
             case BOOSTING:
-                speed = Math.min(speed + delta * 200f, 500);
+                speed = Math.min(speed + delta * 300f, 500);
                 break;
             case ULTRA_DODGE:
-                setPosition(new Vector2(getPosition().x + 10, getPosition().y + 10));
+                Random random = new Random();
+                setPosition(new Vector2(getPosition().x + random.nextFloat() * getCollisionRadius(),
+                        getPosition().y + + random.nextFloat() * getCollisionRadius()));
 
                 break;
         }

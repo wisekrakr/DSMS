@@ -209,7 +209,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 else if ("Bullet".equals(object.getType())) {
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y + 12,  2);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
                 }
 
@@ -256,7 +256,26 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.PINK);
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
-                }else {
+                }else if("MissileEnemy".equals(object.getType())){
+                    shapeRenderer.setColor(Color.ORANGE);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.VIOLET);
+                    shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
+
+                }else if("Missile".equals(object.getType())){
+
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
+                    //shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 4, 4);
+                }
+
+                else {
                     shapeRenderer.setColor(Color.MAROON);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 

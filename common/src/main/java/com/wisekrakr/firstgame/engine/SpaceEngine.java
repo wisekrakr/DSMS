@@ -62,7 +62,6 @@ public class SpaceEngine {
                         < object1.getCollisionRadius() + object2.getCollisionRadius();
     }
 
-
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
             List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
@@ -115,13 +114,14 @@ public class SpaceEngine {
  * In this section gameobjects calculate how far they are of each other and they attack in their different ways
  */
 
-
             for(GameObject subject: gameObjects){
                 if(subject instanceof Enemy){
                     for(GameObject target: gameObjects){
                         if(target instanceof Player){
+                            ((Enemy) subject).getNearestTarget(target,target,toDelete, toAdd);
                             subject.targetSpotted(target, toDelete, toAdd);
                             subject.attackTarget(target, toDelete, toAdd);
+                            subject.nothingSpotted(target, toDelete, toAdd);
                         }
                     }
                 }

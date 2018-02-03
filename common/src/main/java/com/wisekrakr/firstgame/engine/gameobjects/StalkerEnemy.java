@@ -10,9 +10,9 @@ import java.util.Set;
 
 public class StalkerEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 20;
-    private static final float AGRO_DISTANCE = 650;
-    private static final float ATTACK_DISTANCE = 150;
+    private float DEFAULT_ENEMY_SPEED = 60;
+    private static final float AGRO_DISTANCE = 950;
+    private static final float ATTACK_DISTANCE = 550;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
@@ -96,9 +96,7 @@ public class StalkerEnemy extends Enemy {
         );
         setOrientation(direction);
 
-
         switch (attackState){
-
 
             case SHOOT:
                 ammoCount = getAmmoCount();
@@ -155,7 +153,7 @@ public class StalkerEnemy extends Enemy {
 
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        this.setDirection(-direction);
+        super.signalOutOfBounds(toDelete, toAdd);
     }
 }
 

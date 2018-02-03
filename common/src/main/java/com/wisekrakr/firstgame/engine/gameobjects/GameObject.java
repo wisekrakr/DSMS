@@ -86,9 +86,6 @@ public abstract class GameObject {
         return angle;
     }
 
-    public void attack(GameObject target) {
-
-    }
 
 
     public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}

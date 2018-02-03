@@ -17,11 +17,11 @@ import java.util.*;
 public class Daemon {
 
     private static SpaceEngine initializeEngine() {
-        float minX = -2000;
-        float minY = -2000;
-        float width = 4000;
-        float height = 4000;
-        float plusOfXY = 2000;
+        float minX = -3000;
+        float minY = -3000;
+        float width = 6000;
+        float height = 6000;
+        float plusOfXY = 3000;
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
 
@@ -71,7 +71,7 @@ public class Daemon {
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 randomGenerator.nextFloat(),
-                30f, engine);
+                80f, engine);
         engine.addGameObject(motherShipEnemy);
 
         for (int i = 0; i < 20; i++) {
@@ -92,6 +92,15 @@ public class Daemon {
             engine.addGameObject(stalkerEnemy);
         }
 
+        for(int i = 0; i < 30; i++){
+            MissileEnemy missileEnemy = new MissileEnemy("MissileEnemy", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    randomGenerator.nextFloat() * 2000 - 1000,
+                    15f, engine);
+            engine.addGameObject(missileEnemy);
+        }
+
 /*
 //Todo: Put all Enemy gameObjects in one set and randomly pick a number of different kind of enemies
         Set<Enemy>enemies = new HashSet<>();
@@ -108,7 +117,7 @@ public class Daemon {
 
         }
 */
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 50; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
