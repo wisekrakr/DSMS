@@ -1,32 +1,40 @@
-package com.wisekrakr.firstgame.engine.gameobjects;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
-public class MissileEnemy extends Enemy {
+public class SporeEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 80;
-    private static final float AGRO_DISTANCE = 450;
-    private static final float ATTACK_DISTANCE = 400;
-
+    private float DEFAULT_ENEMY_SPEED = 30;
+    private static final float AGRO_DISTANCE = 850;
+    private static final float ATTACK_DISTANCE = 450;
+    private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
     private float shotLeftOver;
     private int ammoCount;
     private AttackState attackState = AttackState.PACIFIST;
 
-
-    public MissileEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
+    public SporeEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
         super(name, position, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
 
-        ammoCount = 10;
+        ammoCount = 1000000;
         shotLeftOver = ammoCount;
-        setCollisionRadius(radius);
+
+        setCollisionRadius(10);
+
     }
 
     @Override
@@ -36,14 +44,11 @@ public class MissileEnemy extends Enemy {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        //toDelete.add(subject);
-
-        if (subject instanceof Asteroid) {
-            toDelete.add(this);
-        }
 
         if(subject instanceof Bullet){
-            toDelete.add(this);
+            radius = radius - ((Bullet) subject).getRadius();
+            setCollisionRadius(radius);
+            toDelete.add(subject);
         }
     }
 
@@ -54,10 +59,10 @@ public class MissileEnemy extends Enemy {
         );
         setOrientation(direction);
 
-        switch (attackState) {
+        switch (attackState){
             case SHOOT:
                 ammoCount = getAmmoCount();
-                float shotCount = delta / 2f + shotLeftOver;
+                float shotCount = delta / 0.09f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -69,8 +74,11 @@ public class MissileEnemy extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new Missile("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getOrientation(), 4f, getSpace()));
+                    Random randomGenerator = new Random();
+                    toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * radius,
+                            getPosition().y + randomGenerator.nextFloat() * radius),
+                            getSpace(), getOrientation(), 1.5f));
+
                 }
 
                 break;
@@ -84,32 +92,15 @@ public class MissileEnemy extends Enemy {
         return ammoCount;
     }
 
+
     @Override
     public float getDirection() {
         return super.getDirection();
     }
 
-
-    @Override
-    public float getRadius() {
-        return super.getRadius();
-    }
-
-
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         return super.getExtraSnapshotProperties();
-    }
-
-    @Override
-    public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player) {
-
-            if ((distanceBetween(this, subject) > AGRO_DISTANCE)) {
-
-                attackState = AttackState.PACIFIST;
-            }
-        }
     }
 
     @Override
@@ -127,7 +118,6 @@ public class MissileEnemy extends Enemy {
                 setDirection(angle);
 
 
-
             }
         }
     }
@@ -139,6 +129,8 @@ public class MissileEnemy extends Enemy {
             if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
 
                 attackState = AttackState.SHOOT;
+            }else{
+                attackState = AttackState.PACIFIST;
             }
         }
     }

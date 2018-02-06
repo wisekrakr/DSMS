@@ -1,7 +1,7 @@
 package com.wisekrakr.firstgame.engine;
 
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
+import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,6 +62,30 @@ public class SpaceEngine {
                         < object1.getCollisionRadius() + object2.getCollisionRadius();
     }
 
+    private float nearestTarget(GameObject enemy, GameObject object1, GameObject object2){
+        float closest = 0;
+        if(enemy instanceof Enemy){
+            while(object1 instanceof Player){
+                while (object2 instanceof Player){
+                    if(object1 != object2){
+
+                        float dstEnemyObject1 = (float) Math.sqrt(Math.pow((enemy.getPosition().x - object1.getPosition().x), 2)
+                                + Math.pow((enemy.getPosition().y - object1.getPosition().y), 2));
+                        float dstEnemyObject2 = (float) Math.sqrt(Math.pow((enemy.getPosition().x - object2.getPosition().x), 2)
+                                + Math.pow((enemy.getPosition().y - object2.getPosition().y), 2));
+                        if(dstEnemyObject1 < dstEnemyObject2){
+                            closest = dstEnemyObject1;
+                        }else {
+                            closest = dstEnemyObject2;
+                        }
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+
+
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
             List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
@@ -111,21 +135,37 @@ public class SpaceEngine {
 
 
 /**
- * In this section gameobjects calculate how far they are of each other and they attack in their different ways
+ * In this section gameobjects(enemy package) calculate how far they are of each other and they attack in their different ways
  */
 
             for(GameObject subject: gameObjects){
                 if(subject instanceof Enemy){
                     for(GameObject target: gameObjects){
-                        if(target instanceof Player){
-                            ((Enemy) subject).getNearestTarget(target,target,toDelete, toAdd);
-                            subject.targetSpotted(target, toDelete, toAdd);
-                            subject.attackTarget(target, toDelete, toAdd);
-                            subject.nothingSpotted(target, toDelete, toAdd);
+                        if(target instanceof Player) {
+                            if (target != subject) {
+                                subject.targetSpotted(target, toDelete, toAdd);
+                                subject.attackTarget(target, toDelete, toAdd);
+                            }
                         }
                     }
                 }
             }
+/**
+ * In this section gameobjects( weaponry package) calculate how far they are of each other and they attack in their different ways
+ */
+
+            for(GameObject subject: gameObjects){
+                if(subject instanceof Weapons){
+                    for(GameObject target: gameObjects){
+                        if(target instanceof Player) {
+                            if (target != subject) {
+                                subject.attackTarget(target, toDelete, toAdd);
+                            }
+                        }
+                    }
+                }
+            }
+
 
 
             for (GameObject gameObject : toDelete) {

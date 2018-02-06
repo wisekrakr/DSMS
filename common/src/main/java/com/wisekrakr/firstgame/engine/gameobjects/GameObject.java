@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
@@ -21,8 +22,11 @@ public abstract class GameObject {
     private SpaceSnapshot snapshot;
     private SpaceEngine space;
     private float collisionRadius;
+    private int health;
 
-    GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
+
+
+    protected GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
         this.position = initialPosition;
         this.name = name;
         this.space = space;
@@ -87,8 +91,6 @@ public abstract class GameObject {
     }
 
 
-
-    public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
 
@@ -98,13 +100,24 @@ public abstract class GameObject {
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
-                getExtraSnapshotProperties(), getMoreExtraSnapshotProperties());
+                getExtraSnapshotProperties(), getMoreExtraSnapshotProperties(), getHealthProperties());
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public Map<String, Object> getExtraSnapshotProperties() {
         return new HashMap<>();
     }
     public Map<String, Object> getMoreExtraSnapshotProperties() {
+        return new HashMap<>();
+    }
+    public Map<String, Object> getHealthProperties() {
         return new HashMap<>();
     }
 

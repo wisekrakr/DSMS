@@ -1,39 +1,44 @@
-package com.wisekrakr.firstgame.engine.gameobjects;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Timer;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class StalkerEnemy extends Enemy {
+public class DodgingEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 60;
-    private static final float AGRO_DISTANCE = 950;
-    private static final float ATTACK_DISTANCE = 550;
-    private static final int CHANGE_DIRECTION_TIME = 3000;
+    private float DEFAULT_ENEMY_SPEED = 20;
+    private static final float AGRO_DISTANCE = 220;
+    private static final float ATTACK_DISTANCE = 200;
+    private AttackState attackState = AttackState.PACIFIST;
+
     private float direction;
     private float radius;
-    private AttackState attackState = AttackState.PACIFIST;
     private int ammoCount;
     private float shotLeftOver;
 
-
-    public StalkerEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
+    public DodgingEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
         super(name, position, direction, radius, space);
-        setCollisionRadius(5);
-        ammoCount = 10000;
-
-
+        this.direction = direction;
+        this.radius = radius;
+        ammoCount = (int) Double.POSITIVE_INFINITY;
+        setCollisionRadius(radius);
     }
 
+    @Override
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.signalOutOfBounds(toDelete, toAdd);
+    }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        toDelete.add(subject);
 
         if (subject instanceof Asteroid) {
             toDelete.add(this);
@@ -42,8 +47,8 @@ public class StalkerEnemy extends Enemy {
         if(subject instanceof Bullet){
             toDelete.add(this);
         }
-    }
 
+    }
 
 
     @Override
@@ -54,14 +59,13 @@ public class StalkerEnemy extends Enemy {
 
                 float angle = angleBetween(this, subject);
 
-                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle) /2 ));
+                setPosition(new Vector2(getPosition().x -=  Math.cos(angle) , getPosition().y -=  Math.sin(angle) ));
 
                 setOrientation(angle);
 
                 setDirection(angle);
 
-                attackState = AttackState.PACIFIST;
+
 
             }
         }
@@ -74,34 +78,27 @@ public class StalkerEnemy extends Enemy {
             if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
 
                 attackState = AttackState.SHOOT;
-            }
-        }
-    }
-
-    @Override
-    public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player) {
-
-            if (!(distanceBetween(this, subject) <= AGRO_DISTANCE)) {
-
+            }else{
                 attackState = AttackState.PACIFIST;
             }
         }
     }
 
+
+
+
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );
         setOrientation(direction);
 
-        switch (attackState){
-
+        switch (attackState) {
             case SHOOT:
                 ammoCount = getAmmoCount();
-
-                float shotCount = delta / 0.8f + shotLeftOver;
+                float shotCount = delta / 0.3f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -113,14 +110,29 @@ public class StalkerEnemy extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getDirection(), 400, 2f));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f));
                 }
-                break;
 
+                break;
             case PACIFIST:
                 shotLeftOver = 0;
-        }
+                break;
 
+        }
+    }
+
+
+
+    public float getDirection() {
+        return direction;
+    }
+
+    public void setDirection(float direction) {
+        this.direction = direction;
+    }
+
+    public float getRadius() {
+        return radius;
     }
 
     public int getAmmoCount() {
@@ -132,28 +144,16 @@ public class StalkerEnemy extends Enemy {
     }
 
     @Override
-    public float getDirection() {
-        return super.getDirection();
-    }
-
-    @Override
-    public void setDirection(float direction) {
-        super.setDirection(direction);
-    }
-
-    @Override
-    public float getRadius() {
-        return super.getRadius();
-    }
-
-    @Override
     public Map<String, Object> getExtraSnapshotProperties() {
-        return super.getExtraSnapshotProperties();
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 
-    @Override
-    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.signalOutOfBounds(toDelete, toAdd);
-    }
 }
+
+
+
 

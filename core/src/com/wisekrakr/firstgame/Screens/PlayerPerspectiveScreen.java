@@ -8,7 +8,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
@@ -22,24 +26,22 @@ import java.util.List;
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter {
 
-
     private float minX = -500;
     private float minY = -500;
-    private float width = 1000;
-    private float height = 1000;
+    private float width = 4000;
+    private float height = 4000;
 
     private Hud hud;
     private SpriteBatch batch;
     private Stage stage;
+
     private OrthographicCamera camera;
-
     private OrthographicCamera minimapcamera;
-
-    private MiniMap miniMap;
 
     private SpaceGameContainer container;
 
     private ShapeRenderer shapeRenderer;
+    private ShapeRenderer miniMapShapeRender;
 
     private ClientConnector connector;
     private String mySelf;
@@ -71,12 +73,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         camera.update();
 
 // TODO: how to create a minimap?
+
 //        minimapcamera = new OrthographicCamera();
-//        minimapcamera.setToOrtho(false, 1000, 1000);
-
-//        miniMap = new MiniMap(0.2f, 0.025f, minimapcamera);
-//        miniMap.setWorldSize(width, height);
-
+//        minimapcamera.setToOrtho(false, width, height);
+//        minimapcamera.update();
 
 //TODO: see how we can create a background....either by using stage like now, or to use another camera
 //        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
@@ -88,9 +88,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 //        stage.addActor(backgroundStars);
         Gdx.input.setInputProcessor(stage);
 
-
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
+
+//        miniMapShapeRender = new ShapeRenderer();
+//        miniMapShapeRender.setAutoShapeType(true);
 
         batch = new SpriteBatch();
 
@@ -171,17 +173,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         stage.act();
         stage.draw();
 
-
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
+//        miniMapShapeRender.setProjectionMatrix(minimapcamera.combined);
 
         //        System.out.println("Myself is at " + mySelf.getPosition() + ", with an orientation of: " + mySelf.getOrientation() * 180 / Math.PI);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        miniMapShapeRender.begin(ShapeRenderer.ShapeType.Filled);
 
         SpaceSnapshot.GameObjectSnapshot myself = null;
 
@@ -192,7 +195,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.up.set(1, 0, 0);
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
-
+/*
+                    minimapcamera.position.set(object.getPosition().x, object.getPosition().y, 100);
+                    minimapcamera.up.set(1, 0, 0);
+                    minimapcamera.translate(-1000,-1000);
+                    minimapcamera.update();
+*/
                     myself = object;
                 }
 
@@ -204,6 +212,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                              (10/2));
+
+//                    miniMapShapeRender.setColor(Color.GOLD);
+//                    miniMapShapeRender.set(ShapeRenderer.ShapeType.Filled);
+//                    miniMapShapeRender.circle(object.getPosition().x, object.getPosition().y, 10);
+//                    miniMapShapeRender.setColor(Color.BLUE);
+//                    miniMapShapeRender.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
+//                            object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
+//                            (10/2));
                 }
 
                 else if ("Bullet".equals(object.getType())) {
@@ -232,8 +248,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
                     shapeRenderer.setColor(Color.BLUE);
-                    shapeRenderer.circle(object.getPosition().x + 2 * (float) Math.cos(object.getOrientation()),
-                            object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()),  (radius / 2));
 
                 }else if ("MotherShipEnemy".equals(object.getType())){
                     shapeRenderer.setColor(Color.CYAN);
@@ -269,10 +285,25 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                 }else if("Missile".equals(object.getType())){
 
-                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
-                    //shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 4, 4);
+                    //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
+                    shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 4, 4);
+                }else if ("SporeEnemy".equals(object.getType())){
+                    shapeRenderer.setColor(Color.FIREBRICK);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.ORANGE);
+                    shapeRenderer.circle(object.getPosition().x + 60 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 20 * (float) Math.sin(object.getOrientation()),  (radius/2));
+                }else if("Spores".equals(object.getType())){
+                    shapeRenderer.setColor(Color.GREEN);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
+                    shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 1.5f, 1.5f);
                 }
 
                 else {
@@ -291,20 +322,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         shapeRenderer.end();
+//        miniMapShapeRender.end();
+
 
         batch.setProjectionMatrix(stage.getCamera().combined);
         hud.update(myself, delta);
         hud.stage.draw();
-
-        //miniMap.apply();
-
 
     }
 
     @Override
     public void resize(int width, int height) {
 
-        //miniMap.update(width, height);
     }
 
     @Override
@@ -312,7 +341,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         stage.dispose();
         shapeRenderer.dispose();
-
+//        miniMapShapeRender.dispose();
 
 
     }

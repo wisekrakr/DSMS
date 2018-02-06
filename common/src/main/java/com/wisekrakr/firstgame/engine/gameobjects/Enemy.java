@@ -1,8 +1,9 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,20 +33,6 @@ public class Enemy extends GameObject {
 
     }
 
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        //        if (!(subject instanceof Enemy)) {
-        toDelete.add(subject);
-
-        if (subject instanceof Asteroid) {
-            toDelete.add(this);
-        }
-
-        if(subject instanceof Bullet){
-            toDelete.add(this);
-        }
-//        }
-    }
 
 
     public enum AttackState {
@@ -63,19 +50,6 @@ public class Enemy extends GameObject {
         setOrientation(direction);
 */
     }
-
-    public void getNearestTarget(GameObject target, GameObject target2, Set<GameObject> toDelete, Set<GameObject> toAdd){
-
-        if(target instanceof Player){
-            float distance = distanceBetween(this, target);
-            if(distance < distanceBetween(this, target2)){
-                attackTarget(target, toDelete, toAdd);
-            }else {
-                attackTarget(target2, toDelete, toAdd);
-            }
-        }
-    }
-
 
 
     public float getDirection() {
@@ -98,6 +72,8 @@ public class Enemy extends GameObject {
 
         return result;
     }
+
+
 
 
 

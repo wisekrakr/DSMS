@@ -1,11 +1,14 @@
-package com.wisekrakr.firstgame.engine.gameobjects;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
 import java.util.*;
 
-public class MotherShipEnemy extends Enemy{
+public class MotherShipEnemy extends Enemy {
     private static final float DEFAULT_ENEMY_SPEED = 20;
     private static final float AGRO_DISTANCE = 850;
     private static final float ATTACK_DISTANCE = 450;
@@ -42,8 +45,9 @@ public class MotherShipEnemy extends Enemy{
             setCollisionRadius(radius);
             toDelete.add(subject);
         }else{
+            radius = radius - subject.getCollisionRadius();
+            setCollisionRadius(radius);
             toDelete.add(subject);
-            toDelete.add(this);
         }
 
 
@@ -75,20 +79,14 @@ public class MotherShipEnemy extends Enemy{
 
             if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
                 attackState = AttackState.SHOOT;
-            }
-        }
-    }
-
-    @Override
-    public void nothingSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player) {
-
-            if ((distanceBetween(this, subject) > AGRO_DISTANCE)) {
-
+            }else{
                 attackState = AttackState.PACIFIST;
             }
+
         }
     }
+
+
 
 
 
@@ -132,7 +130,7 @@ public class MotherShipEnemy extends Enemy{
                     ChaserEnemy chaserEnemy = new ChaserEnemy("ChaserMinion1", new Vector2(
                             getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            getOrientation(), 10f, getSpace());
+                            getDirection(), 10f, getSpace());
                     toAdd.add(chaserEnemy);
 
                     float destructTime = 8.0f;

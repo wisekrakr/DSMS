@@ -1,11 +1,16 @@
-package com.wisekrakr.firstgame.engine.gameobjects;
+package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.Weapons;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.Set;
 
-public class Missile extends Enemy {
+public class Missile extends Weapons {
     private float rotationSpeed;
     private float direction;
     private float radius;
@@ -14,8 +19,8 @@ public class Missile extends Enemy {
 
     private static final float DEFAULT_MISSILE_SPEED = 150;
 
-    public Missile(String name, Vector2 position, float direction, float radius,  SpaceEngine space) {
-        super(name, position, direction, radius, space);
+    public Missile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
+        super(name, initialPosition, space, direction, radius);
         this.direction = direction;
         this.radius = radius;
 
@@ -27,9 +32,12 @@ public class Missile extends Enemy {
 
         if(subject instanceof Player){
             toDelete.add(this);
-        }
-        if(subject instanceof Enemy){
+
+
+        }else if(subject instanceof Asteroid){
+            toDelete.add(this);
             toDelete.add(subject);
+        }else {
             toDelete.add(this);
         }
 

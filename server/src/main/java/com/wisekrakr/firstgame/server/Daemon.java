@@ -5,6 +5,8 @@ import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,6 +26,7 @@ public class Daemon {
         float plusOfXY = 3000;
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
+
 
         Thread timeThread = new Thread(new Runnable() {
             @Override
@@ -74,6 +77,13 @@ public class Daemon {
                 80f, engine);
         engine.addGameObject(motherShipEnemy);
 
+        SporeEnemy sporeEnemy = new SporeEnemy("SporeShip", new Vector2(
+                randomGenerator.nextFloat() * width - plusOfXY,
+                randomGenerator.nextFloat() * height - plusOfXY),
+                randomGenerator.nextFloat(),
+                120f, engine);
+        engine.addGameObject(sporeEnemy);
+
         for (int i = 0; i < 20; i++) {
             DodgingEnemy dodgingEnemy = new DodgingEnemy("Dodger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -92,7 +102,7 @@ public class Daemon {
             engine.addGameObject(stalkerEnemy);
         }
 
-        for(int i = 0; i < 30; i++){
+        for(int i = 0; i < 10; i++){
             MissileEnemy missileEnemy = new MissileEnemy("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),

@@ -1,7 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Missile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +23,14 @@ public abstract class Spaceship extends GameObject {
     private float distanceTravelled = 0;
     private int ammoCount;
     private float shotLeftOver;
+    private int health;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
         ammoCount = 10000;
-        setCollisionRadius(10);
+        health = 100;
+
+        setCollisionRadius(10f);
     }
 
     public void resetControl() {
@@ -55,6 +62,18 @@ public abstract class Spaceship extends GameObject {
     }
 
     @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        if(subject instanceof Enemy){
+            health = health - 10;
+        }
+        if(subject instanceof Bullet){
+            health = health - 5;
+        }
+
+    }
+
+    @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
             case LEFT:
@@ -81,6 +100,10 @@ public abstract class Spaceship extends GameObject {
         }
 
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
+
+        if(health == 0){
+            toDelete.add(this);
+        }
 
         setPosition(new Vector2(
                 getPosition().x + delta * speed * (float) Math.cos(angle),
@@ -116,7 +139,9 @@ public abstract class Spaceship extends GameObject {
 
                 for (int i = 0; i < exactShotCount; i++) {
                     toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getAngle(), 400, 2f));
+
                 }
+
 
                 break;
 
@@ -127,7 +152,15 @@ public abstract class Spaceship extends GameObject {
         }
     }
 
+    @Override
+    public int getHealth() {
+        return health;
+    }
 
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
     public ShootingState getShootingState() {
         return shootingState;
@@ -167,5 +200,12 @@ public abstract class Spaceship extends GameObject {
         return result;
     }
 
+    @Override
+    public Map<String, Object> getHealthProperties() {
+        Map<String, Object> result = new HashMap<>();
 
+        result.put("health", health);
+
+        return result;
+    }
 }
