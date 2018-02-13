@@ -1,7 +1,9 @@
 package com.wisekrakr.firstgame.engine;
 
+import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ public class SpaceEngine {
     private final float width;
     private final float height;
     private Set<GameObject> gameObjects = new HashSet<GameObject>();
+
 
     public SpaceEngine(float minX, float minY, float width, float height) {
         this.minX = minX;
@@ -55,34 +58,22 @@ public class SpaceEngine {
 
     private boolean collision(GameObject object1, GameObject object2) {
         return
-                ((object1.getPosition().x - object2.getPosition().x ))
+                (((object1.getPosition().x + object1.getCollisionRadius()) - (object2.getPosition().x + object2.getCollisionRadius()) ))
                         * ((object1.getPosition().x ) - (object2.getPosition().x ))
                         + ((object1.getPosition().y ) - (object2.getPosition().y ))
                         * ((object1.getPosition().y ) - (object2.getPosition().y ))
                         < object1.getCollisionRadius() + object2.getCollisionRadius();
     }
 
-    private float nearestTarget(GameObject enemy, GameObject object1, GameObject object2){
-        float closest = 0;
-        if(enemy instanceof Enemy){
-            while(object1 instanceof Player){
-                while (object2 instanceof Player){
-                    if(object1 != object2){
+    private void nearestTarget(GameObject subject, Set<GameObject> targets, Set<GameObject> toDelete, Set<GameObject> toAdd){
 
-                        float dstEnemyObject1 = (float) Math.sqrt(Math.pow((enemy.getPosition().x - object1.getPosition().x), 2)
-                                + Math.pow((enemy.getPosition().y - object1.getPosition().y), 2));
-                        float dstEnemyObject2 = (float) Math.sqrt(Math.pow((enemy.getPosition().x - object2.getPosition().x), 2)
-                                + Math.pow((enemy.getPosition().y - object2.getPosition().y), 2));
-                        if(dstEnemyObject1 < dstEnemyObject2){
-                            closest = dstEnemyObject1;
-                        }else {
-                            closest = dstEnemyObject2;
-                        }
-                    }
+        for(GameObject target: targets){
+                if(Math.abs(target.getPosition().x - subject.getPosition().x)  < Math.abs(target.getPosition().x - subject.getPosition().x)){
+                    if(Math.abs(target.getPosition().y - subject.getPosition().y) < Math.abs(target.getPosition().y - subject.getPosition().y)) {
+                        subject.attackTarget(target, toDelete, toAdd);
                 }
             }
         }
-        return closest;
     }
 
 
@@ -165,6 +156,22 @@ public class SpaceEngine {
                     }
                 }
             }
+
+ /**
+ * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
+ */
+
+            for(GameObject subject: gameObjects){
+                if(subject instanceof PlayerMissile){ //change this to PlayerWeapons when we made a PlayerWeapons Parent Class
+                    for(GameObject target: gameObjects){
+                        if(target instanceof Enemy) {
+                            //nearestTarget(subject, gameObjects, toDelete, toAdd);
+                            subject.getClosestTarget(target, toDelete, toAdd);
+                        }
+                    }
+                }
+            }
+
 
 
 

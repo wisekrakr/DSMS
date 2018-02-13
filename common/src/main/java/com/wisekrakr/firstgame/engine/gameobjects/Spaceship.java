@@ -1,16 +1,14 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.MissileEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Missile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Spaceship extends GameObject {
     private ThrottleState throttle = ThrottleState.STATUSQUO;
@@ -22,15 +20,21 @@ public abstract class Spaceship extends GameObject {
     private float angle = (float) Math.PI / 2;
     private float distanceTravelled = 0;
     private int ammoCount;
+    private int missileAmmoCount;
     private float shotLeftOver;
+    private float missileLeftOver;
     private int health;
+    private int score;
+
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
         ammoCount = 10000;
-        health = 100;
-
+        missileAmmoCount = 100;
+        health = 1000;
+        score = 0;
         setCollisionRadius(10f);
+
     }
 
     public void resetControl() {
@@ -51,7 +55,7 @@ public abstract class Spaceship extends GameObject {
     }
 
     public enum ShootingState {
-        PACIFIST, FIRING;
+        PACIFIST, FIRING, MISSILE_FIRING
     }
 
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState) {
@@ -64,23 +68,23 @@ public abstract class Spaceship extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Enemy){
-            health = health - 10;
-        }
-        if(subject instanceof Bullet){
-            health = health - 5;
+        if(subject != null){
+            toDelete.add(subject);
         }
 
+
     }
+
+
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
             case LEFT:
-                angle = angle + delta * 2f;
+                angle = angle + delta * 3f;
                 break;
             case RIGHT:
-                angle = angle - delta * 2f;
+                angle = angle - delta * 3f;
                 break;
         }
 
@@ -88,10 +92,10 @@ public abstract class Spaceship extends GameObject {
 
         switch (throttle) {
             case FORWARDS:
-                speed = Math.min(speed + delta * 125f, 250);
+                speed = Math.min(speed + delta * 200f, 350);
                 break;
             case REVERSE:
-                speed = Math.max(speed - delta * 85f, -150);
+                speed = Math.max(speed - delta * 105f, -180);
                 break;
         }
 
@@ -101,7 +105,7 @@ public abstract class Spaceship extends GameObject {
 
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
-        if(health == 0){
+        if (health <= 0) {
             toDelete.add(this);
         }
 
@@ -119,13 +123,14 @@ public abstract class Spaceship extends GameObject {
             case ULTRA_DODGE:
                 Random random = new Random();
                 setPosition(new Vector2(getPosition().x + random.nextFloat() * getCollisionRadius(),
-                        getPosition().y + + random.nextFloat() * getCollisionRadius()));
+                        getPosition().y + +random.nextFloat() * getCollisionRadius()));
 
                 break;
         }
 
         switch (shootingState) {
             case FIRING:
+
                 float shotCount = delta / 0.1f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
@@ -138,10 +143,29 @@ public abstract class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getAngle(), 400, 2f));
+                    toAdd.add(new Bullet("bullito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
+                            getSpace(), getAngle(), 400, 0.1f));
 
                 }
 
+                break;
+
+            case MISSILE_FIRING:
+
+                float missileCount = delta / 0.5f + missileLeftOver;
+
+                int exactMissileCount = Math.min(Math.round(missileCount), missileAmmoCount);
+
+                missileAmmoCount = missileAmmoCount - exactMissileCount;
+                if (missileAmmoCount > 0) {
+                    missileLeftOver = missileCount - exactMissileCount;
+                } else {
+                    missileLeftOver = 0;
+                }
+                for (int i = 0; i < exactMissileCount; i++) {
+                    toAdd.add(new PlayerMissile("missilito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
+                            getSpace(), getAngle(), 200, 5f));
+                }
 
                 break;
 
@@ -161,6 +185,15 @@ public abstract class Spaceship extends GameObject {
     public void setHealth(int health) {
         this.health = health;
     }
+
+    public int getMissileAmmoCount() {
+        return missileAmmoCount;
+    }
+
+    public void setMissileAmmoCount(int missileAmmoCount) {
+        this.missileAmmoCount = missileAmmoCount;
+    }
+
 
     public ShootingState getShootingState() {
         return shootingState;
@@ -182,6 +215,14 @@ public abstract class Spaceship extends GameObject {
         return distanceTravelled;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -192,7 +233,7 @@ public abstract class Spaceship extends GameObject {
     }
 
     @Override
-    public Map<String, Object> getMoreExtraSnapshotProperties() {
+    public Map<String, Object> getAmmoProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("ammoCount", ammoCount);
@@ -205,6 +246,24 @@ public abstract class Spaceship extends GameObject {
         Map<String, Object> result = new HashMap<>();
 
         result.put("health", health);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getScoreProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("score", score);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getMissileProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("missileCount", missileAmmoCount);
 
         return result;
     }

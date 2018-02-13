@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
@@ -32,6 +31,7 @@ public class Hud implements Disposable {
     private Integer distanceCounter;
     private float score;
     private Integer ammoCounter;
+    private Integer missileCounter;
     private String name;
     private Integer healthCounter;
 
@@ -45,6 +45,8 @@ public class Hud implements Disposable {
     private Label scoreLabel;
     private Label ammoLabel;
     private Label ammoCountLabel;
+    private Label missileLabel;
+    private Label missileCountLabel;
     private Label healthLabel;
     private Label healthCountLabel;
 
@@ -56,6 +58,7 @@ public class Hud implements Disposable {
         timeCounter = 0;
         distanceCounter = 1;
         ammoCounter = 0;
+        missileCounter = 0;
         score = 0;
         name = "Wisekrakr";
 
@@ -78,6 +81,8 @@ public class Hud implements Disposable {
         scoreCountLabel = new Label(String.format("%08f", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         ammoLabel = new Label("Ammo", new Label.LabelStyle(font, Color.WHITE));
         ammoCountLabel = new Label(String.format("%06d", ammoCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
+        missileLabel = new Label("Missiles", new Label.LabelStyle(font, Color.WHITE));
+        missileCountLabel = new Label(String.format("%06d", missileCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         nameLabel = new Label("Your name here", new Label.LabelStyle(font, Color.WHITE));
         nameSetLabel = new Label(String.format("%s", getNameSetLabel()), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         healthLabel = new Label("HP", new Label.LabelStyle(font, Color.WHITE));
@@ -87,6 +92,7 @@ public class Hud implements Disposable {
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
         table.add(ammoLabel).expandX().padTop(10);
+        table.add(missileLabel).expandX().padTop(10);
         table.add(nameLabel).expandX().padTop(10);
         table.add(healthLabel).expandX().padTop(10);
         table.row();
@@ -94,6 +100,7 @@ public class Hud implements Disposable {
         table.add(distanceCountLabel).expandX();
         table.add(scoreCountLabel).expandX();
         table.add(ammoCountLabel).expandX();
+        table.add(missileCountLabel).expandX();
         table.add(nameSetLabel).expandX();
         table.add(healthCountLabel).expandX();
 
@@ -116,7 +123,8 @@ public class Hud implements Disposable {
 
             timeCountLabel.setText(String.format("%s",worldTimer));
             distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
-            ammoCountLabel.setText(Integer.toString((Integer) myself.moreExtraProperties().get("ammoCount")));
+            ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
+            missileCountLabel.setText(Integer.toString((Integer) myself.missileProperties().get("missileCount")));
             healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
             nameSetLabel.setText(String.format("%s", myself.getType()));
 

@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.Weapons;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -16,8 +17,8 @@ import java.util.Set;
 public class SporeEnemy extends Enemy {
 
     private float DEFAULT_ENEMY_SPEED = 30;
-    private static final float AGRO_DISTANCE = 850;
-    private static final float ATTACK_DISTANCE = 450;
+    private static final float AGRO_DISTANCE = 800;
+    private static final float ATTACK_DISTANCE = 550;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
@@ -30,7 +31,7 @@ public class SporeEnemy extends Enemy {
         this.direction = direction;
         this.radius = radius;
 
-        ammoCount = 1000000;
+        ammoCount = 10000;
         shotLeftOver = ammoCount;
 
         setCollisionRadius(10);
@@ -45,7 +46,7 @@ public class SporeEnemy extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Bullet){
+        if(subject instanceof Weapons){
             radius = radius - ((Bullet) subject).getRadius();
             setCollisionRadius(radius);
             toDelete.add(subject);
@@ -61,6 +62,7 @@ public class SporeEnemy extends Enemy {
 
         switch (attackState){
             case SHOOT:
+
                 ammoCount = getAmmoCount();
                 float shotCount = delta / 0.09f + shotLeftOver;
 
@@ -77,7 +79,7 @@ public class SporeEnemy extends Enemy {
                     Random randomGenerator = new Random();
                     toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            getSpace(), getOrientation(), 1.5f));
+                            getSpace(), getOrientation(), 0.05f));
 
                 }
 

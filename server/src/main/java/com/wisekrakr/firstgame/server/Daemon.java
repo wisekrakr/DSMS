@@ -6,6 +6,7 @@ import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
@@ -21,8 +22,8 @@ public class Daemon {
     private static SpaceEngine initializeEngine() {
         float minX = -3000;
         float minY = -3000;
-        float width = 6000;
-        float height = 6000;
+        float width = 5000;
+        float height = 5000;
         float plusOfXY = 3000;
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
@@ -60,13 +61,18 @@ public class Daemon {
 //        engine.addGameObject(player1);
 //        engine.addGameObject(player2);
 
+        PowerUpMissile powerUpMissile = new PowerUpMissile("MissilePowerUp", new Vector2(
+                randomGenerator.nextFloat() * width - plusOfXY,
+                randomGenerator.nextFloat() * height - plusOfXY),
+                engine);
+        engine.addGameObject(powerUpMissile);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 5; i++) {
             ChaserEnemy chaser = new ChaserEnemy("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 2000 - 1000,
-                    10f, engine);
+                    22f, engine);
             engine.addGameObject(chaser);
         }
 
@@ -74,40 +80,40 @@ public class Daemon {
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 randomGenerator.nextFloat(),
-                80f, engine);
+                90f, engine);
         engine.addGameObject(motherShipEnemy);
 
         SporeEnemy sporeEnemy = new SporeEnemy("SporeShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 randomGenerator.nextFloat(),
-                120f, engine);
+                140f, engine);
         engine.addGameObject(sporeEnemy);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             DodgingEnemy dodgingEnemy = new DodgingEnemy("Dodger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 2000 - 1000 ,
-                    6f, engine);
+                    12f, engine);
             engine.addGameObject(dodgingEnemy);
         }
 
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < 5; i++){
             StalkerEnemy stalkerEnemy = new StalkerEnemy("Stalker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 2000 - 1000,
-                    5f, engine);
+                    12f, engine);
             engine.addGameObject(stalkerEnemy);
         }
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 3; i++){
             MissileEnemy missileEnemy = new MissileEnemy("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 2000 - 1000,
-                    15f, engine);
+                    30f, engine);
             engine.addGameObject(missileEnemy);
         }
 
@@ -127,14 +133,14 @@ public class Daemon {
 
         }
 */
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 30; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     randomGenerator.nextFloat() * 20,
-                    40 * randomGenerator.nextFloat(),
+                    10 * randomGenerator.nextFloat(),
                     randomGenerator.nextFloat() * 2 * (float) Math.PI, engine,
-                    2f);
+                    3f);
             engine.addGameObject(asteroid);
         }
 

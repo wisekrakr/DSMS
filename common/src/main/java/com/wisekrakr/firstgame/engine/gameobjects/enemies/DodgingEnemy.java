@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class DodgingEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 20;
+    private float DEFAULT_ENEMY_SPEED = 50;
     private static final float AGRO_DISTANCE = 220;
     private static final float ATTACK_DISTANCE = 200;
     private AttackState attackState = AttackState.PACIFIST;
@@ -65,6 +65,8 @@ public class DodgingEnemy extends Enemy {
 
                 setDirection(angle);
 
+                attackState = AttackState.CHASE;
+
 
 
             }
@@ -114,6 +116,8 @@ public class DodgingEnemy extends Enemy {
                 }
 
                 break;
+
+
             case PACIFIST:
                 shotLeftOver = 0;
                 break;

@@ -13,8 +13,8 @@ import java.util.Set;
 
 public class StalkerEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 60;
-    private static final float AGRO_DISTANCE = 950;
+    private float DEFAULT_ENEMY_SPEED = 175;
+    private static final float AGRO_DISTANCE = 2050;
     private static final float ATTACK_DISTANCE = 550;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
@@ -26,12 +26,11 @@ public class StalkerEnemy extends Enemy {
 
     public StalkerEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
         super(name, position, direction, radius, space);
-        setCollisionRadius(5);
+        this.direction = direction;
+        this.radius = radius;
+        setCollisionRadius(radius);
         ammoCount = 10000;
-
-
     }
-
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -44,8 +43,6 @@ public class StalkerEnemy extends Enemy {
             toDelete.add(this);
         }
     }
-
-
 
     @Override
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {

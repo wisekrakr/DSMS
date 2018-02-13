@@ -10,7 +10,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.Set;
 
-public class Missile extends Weapons {
+public class EnemyMissile extends Weapons {
     private float rotationSpeed;
     private float direction;
     private float radius;
@@ -19,7 +19,7 @@ public class Missile extends Weapons {
 
     private static final float DEFAULT_MISSILE_SPEED = 150;
 
-    public Missile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
+    public EnemyMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);
         this.direction = direction;
         this.radius = radius;
@@ -27,21 +27,7 @@ public class Missile extends Weapons {
         setCollisionRadius(4);
     }
 
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Player){
-            toDelete.add(this);
-
-
-        }else if(subject instanceof Asteroid){
-            toDelete.add(this);
-            toDelete.add(subject);
-        }else {
-            toDelete.add(this);
-        }
-
-    }
 
     @Override
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {

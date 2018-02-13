@@ -7,16 +7,16 @@ import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Missile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.EnemyMissile;
 
 import java.util.Map;
 import java.util.Set;
 
 public class MissileEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 80;
-    private static final float AGRO_DISTANCE = 450;
-    private static final float ATTACK_DISTANCE = 400;
+    private float DEFAULT_ENEMY_SPEED = 120;
+    private static final float AGRO_DISTANCE = 750;
+    private static final float ATTACK_DISTANCE = 500;
 
     private float direction;
     private float radius;
@@ -61,7 +61,7 @@ public class MissileEnemy extends Enemy {
         switch (attackState) {
             case SHOOT:
                 ammoCount = getAmmoCount();
-                float shotCount = delta / 2f + shotLeftOver;
+                float shotCount = delta / 0.8f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -73,11 +73,11 @@ public class MissileEnemy extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new Missile("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getSpace(), getOrientation(), 4f));
+                    toAdd.add(new EnemyMissile("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
+                            getSpace(), getOrientation(), 2.5f));
                 }
-
                 break;
+
             case PACIFIST:
                 shotLeftOver = 0;
                 break;
@@ -115,13 +115,11 @@ public class MissileEnemy extends Enemy {
                 float angle = angleBetween(this, subject);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
+                setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle) ));
 
                 setOrientation(angle);
 
                 setDirection(angle);
-
-
 
             }
         }

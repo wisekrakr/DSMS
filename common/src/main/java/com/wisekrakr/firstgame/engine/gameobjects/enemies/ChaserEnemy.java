@@ -13,8 +13,8 @@ import java.util.*;
 public class ChaserEnemy extends Enemy {
 
 
-    private float DEFAULT_ENEMY_SPEED = 120;
-    private static final float AGRO_DISTANCE = 450;
+    private float DEFAULT_ENEMY_SPEED = 150;
+    private static final float AGRO_DISTANCE = 850;
     private static final float ATTACK_DISTANCE = 350;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
@@ -51,6 +51,7 @@ public class ChaserEnemy extends Enemy {
 
         if(subject instanceof Bullet){
             toDelete.add(this);
+
         }
 
     }

@@ -39,22 +39,27 @@ public class SpaceSnapshot implements Serializable {
         private float orientation;
         private Vector2 position;
         private Map<String, Object> extra;
-        private Map<String, Object> moreExtra;
+        private Map<String, Object> ammoExtra;
         private Map<String, Object> healthExtra;
+        private Map<String, Object> scoreExtra;
+        private Map<String, Object> missileExtra;
 
         public GameObjectSnapshot() {
         }
 
         public GameObjectSnapshot(String name, String type, float speed, float orientation, Vector2 position, Map<String,
-                Object> extra, Map<String, Object> moreExtra, Map<String, Object> healthExtra) {
+                Object> extra, Map<String, Object> ammoExtra, Map<String, Object> healthExtra, Map<String, Object> scoreExtra, Map<String, Object> missileExtra) {
             this.name = name;
             this.type = type;
             this.speed = speed;
             this.orientation = orientation;
             this.position = position;
             this.extra = extra;
-            this.moreExtra = moreExtra;
+            this.ammoExtra = ammoExtra;
             this.healthExtra = healthExtra;
+            this.scoreExtra = scoreExtra;
+            this.missileExtra = missileExtra;
+
         }
 
         public String getName() {
@@ -81,14 +86,21 @@ public class SpaceSnapshot implements Serializable {
             return extra;
         }
 
-        public Map<String, Object> moreExtraProperties() {
-            return moreExtra;
+        public Map<String, Object> ammoProperties() {
+            return ammoExtra;
         }
 
         public Map<String, Object> healthProperties() {
             return healthExtra;
         }
 
+        public Map<String, Object> scoreProperties() {
+            return scoreExtra;
+        }
+
+        public Map<String, Object> missileProperties() {
+            return missileExtra;
+        }
 
     }
 }

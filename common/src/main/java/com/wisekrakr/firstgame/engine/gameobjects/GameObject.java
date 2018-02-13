@@ -1,11 +1,12 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 /**
  * Created by David on 11/6/2017.
  */
-public abstract class GameObject {
+public abstract class GameObject{
     private String name;
     private Vector2 position;
     private float orientation;
@@ -24,12 +25,12 @@ public abstract class GameObject {
     private float collisionRadius;
     private int health;
 
-
-
     protected GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
+
         this.position = initialPosition;
         this.name = name;
         this.space = space;
+
     }
 
     /**
@@ -90,6 +91,8 @@ public abstract class GameObject {
         return angle;
     }
 
+    public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
+
 
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
@@ -100,7 +103,7 @@ public abstract class GameObject {
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
-                getExtraSnapshotProperties(), getMoreExtraSnapshotProperties(), getHealthProperties());
+                getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(), getMissileProperties());
     }
 
     public int getHealth() {
@@ -114,11 +117,17 @@ public abstract class GameObject {
     public Map<String, Object> getExtraSnapshotProperties() {
         return new HashMap<>();
     }
-    public Map<String, Object> getMoreExtraSnapshotProperties() {
+    public Map<String, Object> getAmmoProperties() {
         return new HashMap<>();
     }
     public Map<String, Object> getHealthProperties() {
         return new HashMap<>();
     }
+    public Map<String, Object> getScoreProperties() {
+        return new HashMap<>();
+    }
 
+    public Map<String, Object> getMissileProperties() {
+        return new HashMap<>();
+    }
 }

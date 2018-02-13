@@ -91,8 +91,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-//        miniMapShapeRender = new ShapeRenderer();
-//        miniMapShapeRender.setAutoShapeType(true);
+        miniMapShapeRender = new ShapeRenderer();
+        miniMapShapeRender.setAutoShapeType(true);
 
         batch = new SpriteBatch();
 
@@ -103,8 +103,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     private void handleInput() {
-        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.X, first);
-        applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COMMA, second);
+        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.X, first);
+        applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COLON, Input.Keys.COMMA, second);
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)){
             camera.zoom += 0.08;
@@ -119,7 +119,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         */
     }
 
-    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey, int shootKey, int resetKey, final String target) {
+    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
+                              int shootKey, int altShootKey, int resetKey, final String target) {
         /*
         if (Gdx.input.isKeyPressed(resetKey)) {
             target.setPosition(new Vector2(0, 0));
@@ -157,9 +158,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         final Spaceship.ShootingState shootingState;
         if(Gdx.input.isKeyPressed(shootKey)){
             shootingState = Spaceship.ShootingState.FIRING;
-        }else{
+        }else if(Gdx.input.isKeyPressed(altShootKey)){
+            shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+        }else {
             shootingState = Spaceship.ShootingState.PACIFIST;
         }
+
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState);
     }
@@ -207,19 +211,21 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 if ("Player".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 10);
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20f);
                     shapeRenderer.setColor(Color.BLUE);
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
-                             (10/2));
-
-//                    miniMapShapeRender.setColor(Color.GOLD);
-//                    miniMapShapeRender.set(ShapeRenderer.ShapeType.Filled);
-//                    miniMapShapeRender.circle(object.getPosition().x, object.getPosition().y, 10);
-//                    miniMapShapeRender.setColor(Color.BLUE);
-//                    miniMapShapeRender.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
-//                            object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
-//                            (10/2));
+                             (20f/2));
+/*
+                    miniMapShapeRender.setColor(Color.GOLD);
+                    miniMapShapeRender.set(ShapeRenderer.ShapeType.Filled);
+                    miniMapShapeRender.circle(object.getPosition().x, object.getPosition().y, 10);
+                    miniMapShapeRender.setColor(Color.BLUE);
+                    miniMapShapeRender.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
+                            (10/2));
+ */
                 }
 
                 else if ("Bullet".equals(object.getType())) {
@@ -283,7 +289,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
 
-                }else if("Missile".equals(object.getType())){
+                }else if("EnemyMissile".equals(object.getType())){
 
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -306,7 +312,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 1.5f, 1.5f);
                 }
 
-                else {
+                else if("StalkerEnemy".equals(object.getType())){
                     shapeRenderer.setColor(Color.MAROON);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -316,14 +322,27 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.TEAL);
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
+                }else if("PlayerMissile".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 5f);
+
+                }else if("PowerUpMissile".equals(object.getType())){
+                    shapeRenderer.setColor(Color.GOLD);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 28, 10);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25, 6);
+                    shapeRenderer.setColor(Color.GOLD);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2, 3);
                 }
 
             }
         }
 
         shapeRenderer.end();
-//        miniMapShapeRender.end();
-
+        miniMapShapeRender.end();
 
         batch.setProjectionMatrix(stage.getCamera().combined);
         hud.update(myself, delta);
@@ -341,7 +360,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         stage.dispose();
         shapeRenderer.dispose();
-//        miniMapShapeRender.dispose();
+        miniMapShapeRender.dispose();
 
 
     }

@@ -16,7 +16,7 @@ public class Bullet extends Weapons {
     private float radius;
     private float speed;
 
-    private static final float DEFAULT_BULLET_SPEED = 800;
+    private static final float DEFAULT_BULLET_SPEED = 1200;
     private float time;
 
 
@@ -30,19 +30,6 @@ public class Bullet extends Weapons {
     }
 
 
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if(subject instanceof Player){
-            toDelete.add(this);
-        }else if(subject instanceof Asteroid){
-            toDelete.add(this);
-            toDelete.add(subject);
-        }else {
-            toDelete.add(this);
-        }
-
-    }
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -52,7 +39,7 @@ public class Bullet extends Weapons {
         );
         setOrientation(direction);
 
-        float destructTime = 1.0f;
+        float destructTime = 1.5f;
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);

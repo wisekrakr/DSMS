@@ -27,19 +27,6 @@ public class Spores extends Weapons {
 
 
     @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(subject instanceof Player){
-            toDelete.add(this);
-
-        }else if(subject instanceof Asteroid){
-            toDelete.add(this);
-            toDelete.add(subject);
-        }else {
-            toDelete.add(this);
-        }
-    }
-
-    @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_TENTACLE_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_TENTACLE_SPEED * delta)

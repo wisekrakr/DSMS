@@ -5,13 +5,14 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.Weapons;
 
 import java.util.*;
 
 public class MotherShipEnemy extends Enemy {
-    private static final float DEFAULT_ENEMY_SPEED = 20;
-    private static final float AGRO_DISTANCE = 850;
-    private static final float ATTACK_DISTANCE = 450;
+    private static final float DEFAULT_ENEMY_SPEED = 30;
+    private static final float AGRO_DISTANCE = 1250;
+    private static final float ATTACK_DISTANCE = 750;
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
@@ -44,7 +45,8 @@ public class MotherShipEnemy extends Enemy {
             radius = radius + ((DodgingEnemy) subject).getRadius();
             setCollisionRadius(radius);
             toDelete.add(subject);
-        }else{
+        }
+        if(subject instanceof Weapons){
             radius = radius - subject.getCollisionRadius();
             setCollisionRadius(radius);
             toDelete.add(subject);
