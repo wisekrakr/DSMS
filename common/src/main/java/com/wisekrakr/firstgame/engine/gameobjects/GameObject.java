@@ -6,10 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -30,7 +27,6 @@ public abstract class GameObject{
         this.position = initialPosition;
         this.name = name;
         this.space = space;
-
     }
 
     /**
@@ -72,6 +68,17 @@ public abstract class GameObject{
 
 
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    }
+
+
+
+    public float setRandomDirection(){
+        Random random = new Random();
+        return random.nextFloat() * 2000 - 1000;
+    }
+    public Vector2 setRandomPosition(){
+        Random random = new Random();
+        return new Vector2(random.nextFloat() * 200 - 100,random.nextFloat() * 200 - 100);
     }
 
     public static float distanceBetween(GameObject subject, GameObject target) {

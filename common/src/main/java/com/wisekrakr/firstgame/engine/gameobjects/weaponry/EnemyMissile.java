@@ -17,7 +17,7 @@ public class EnemyMissile extends Weapons {
     private float time;
 
 
-    private static final float DEFAULT_MISSILE_SPEED = 150;
+    private static final float DEFAULT_MISSILE_SPEED = 200;
 
     public EnemyMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);

@@ -226,16 +226,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (10/2));
  */
-                }
-
-                else if ("Bullet".equals(object.getType())) {
+                }else if ("PlayerBullet".equals(object.getType())) {
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
-                }
+                }else if ("EnemyBullet".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
-                else if ("Asteroid".equals(object.getType())) {
+                }else if ("Asteroid".equals(object.getType())) {
                     shapeRenderer.setColor(Color.BROWN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -246,7 +247,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()),  (radius / 2));
 
-                } else if ("ChaserEnemy".equals(object.getType())) {
+                }else if ("ChaserEnemy".equals(object.getType())) {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -310,9 +311,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
                     shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 1.5f, 1.5f);
-                }
-
-                else if("StalkerEnemy".equals(object.getType())){
+                }else if("StalkerEnemy".equals(object.getType())){
                     shapeRenderer.setColor(Color.MAROON);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -322,6 +321,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.TEAL);
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
+
                 }else if("PlayerMissile".equals(object.getType())) {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -331,11 +331,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }else if("PowerUpMissile".equals(object.getType())){
                     shapeRenderer.setColor(Color.GOLD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 28, 10);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 28);
                     shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25, 6);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25);
                     shapeRenderer.setColor(Color.GOLD);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2, 3);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2);
+                }else{
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 40);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2);
                 }
 
             }

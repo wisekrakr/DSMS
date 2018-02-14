@@ -18,7 +18,7 @@ public class PlayerMissile extends GameObject {
     private float time;
     private float speed;
 
-    private static final float ATTACK_RANGE = 400;
+    private static final float ATTACK_RANGE = 300;
     private static final float DEFAULT_MISSILE_SPEED = 800;
 
     public PlayerMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
@@ -33,7 +33,7 @@ public class PlayerMissile extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Enemy){
-            toDelete.add(subject);
+            subject.setHealth(getHealth() - 25);
             toDelete.add(this);
         }
     }
@@ -42,9 +42,7 @@ public class PlayerMissile extends GameObject {
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if(target instanceof Enemy) {
-            Vector2 targetPosition = target.getPosition();
-            float targetX = targetPosition.x;
-            float targetY = targetPosition.y;
+
             if(distanceBetween(this, target)< ATTACK_RANGE){
                 attackTarget(target, toDelete, toAdd);
             }
@@ -79,7 +77,7 @@ public class PlayerMissile extends GameObject {
         );
         setOrientation(direction);
 
-        float destructTime = 4.0f;
+        float destructTime = 3.0f;
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);

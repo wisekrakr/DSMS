@@ -7,27 +7,31 @@ import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.EnemyBullet;
 
 import java.util.Map;
 import java.util.Set;
 
 public class StalkerEnemy extends Enemy {
 
-    private float DEFAULT_ENEMY_SPEED = 175;
+    private static final float DEFAULT_ENEMY_SPEED = 175;
     private static final float AGRO_DISTANCE = 2050;
     private static final float ATTACK_DISTANCE = 550;
-    private static final int CHANGE_DIRECTION_TIME = 3000;
+    private static final int CHANGE_DIRECTION_TIME = 12;
     private float direction;
     private float radius;
+    private int health;
     private AttackState attackState = AttackState.PACIFIST;
     private int ammoCount;
     private float shotLeftOver;
+    private float time;
 
 
-    public StalkerEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
-        super(name, position, direction, radius, space);
+    public StalkerEnemy(String name, Vector2 position, int health,float direction, float radius, SpaceEngine space) {
+        super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
+        this.health = health;
         setCollisionRadius(radius);
         ammoCount = 10000;
     }
@@ -81,6 +85,14 @@ public class StalkerEnemy extends Enemy {
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.elapseTime(delta, toDelete, toAdd);
+        time += delta;
+        if(time >= CHANGE_DIRECTION_TIME){
+            float randomDirection = setRandomDirection();
+            setDirection(randomDirection);
+            time=0;
+        }
+
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );
@@ -103,7 +115,7 @@ public class StalkerEnemy extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getDirection(), 400, 2f));
+                    toAdd.add(new EnemyBullet("bullito", getPosition(), getSpace(), getDirection(), 400, 2f));
                 }
                 break;
 

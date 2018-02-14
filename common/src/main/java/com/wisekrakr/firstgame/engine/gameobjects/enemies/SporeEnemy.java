@@ -22,15 +22,16 @@ public class SporeEnemy extends Enemy {
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
+    private int health;
     private float shotLeftOver;
     private int ammoCount;
     private AttackState attackState = AttackState.PACIFIST;
 
-    public SporeEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
-        super(name, position, direction, radius, space);
+    public SporeEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+        super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
-
+        this.health = health;
         ammoCount = 10000;
         shotLeftOver = ammoCount;
 
@@ -55,6 +56,7 @@ public class SporeEnemy extends Enemy {
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.elapseTime(delta, toDelete, toAdd);
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );

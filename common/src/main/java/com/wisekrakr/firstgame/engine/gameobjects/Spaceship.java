@@ -1,11 +1,14 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.MissileEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
 
 import java.util.*;
@@ -30,16 +33,11 @@ public abstract class Spaceship extends GameObject {
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
         ammoCount = 10000;
-        missileAmmoCount = 100;
+        missileAmmoCount = 10;
         health = 1000;
         score = 0;
         setCollisionRadius(10f);
 
-    }
-
-    public void resetControl() {
-        speed = 0;
-        angle = (float) Math.PI / 2;
     }
 
     public enum ThrottleState {
@@ -67,14 +65,11 @@ public abstract class Spaceship extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+//When player collides with other gameObjects (for now) nothing happens to player.
         if(subject != null){
             toDelete.add(subject);
         }
-
-
     }
-
 
 
     @Override
@@ -105,10 +100,11 @@ public abstract class Spaceship extends GameObject {
 
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
+ //Player gets deleted when health is 0
         if (health <= 0) {
             toDelete.add(this);
         }
-
+ //Player movement
         setPosition(new Vector2(
                 getPosition().x + delta * speed * (float) Math.cos(angle),
                 getPosition().y + delta * speed * (float) Math.sin(angle)
@@ -121,9 +117,7 @@ public abstract class Spaceship extends GameObject {
                 speed = Math.min(speed + delta * 300f, 500);
                 break;
             case ULTRA_DODGE:
-                Random random = new Random();
-                setPosition(new Vector2(getPosition().x + random.nextFloat() * getCollisionRadius(),
-                        getPosition().y + +random.nextFloat() * getCollisionRadius()));
+                setRandomPosition();
 
                 break;
         }
@@ -143,11 +137,10 @@ public abstract class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new Bullet("bullito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
+                    toAdd.add(new PlayerBullet("bullito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
                             getSpace(), getAngle(), 400, 0.1f));
 
                 }
-
                 break;
 
             case MISSILE_FIRING:
@@ -166,13 +159,11 @@ public abstract class Spaceship extends GameObject {
                     toAdd.add(new PlayerMissile("missilito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
                             getSpace(), getAngle(), 200, 5f));
                 }
-
                 break;
 
             case PACIFIST:
                 shotLeftOver = 0;
                 break;
-
         }
     }
 
@@ -193,7 +184,6 @@ public abstract class Spaceship extends GameObject {
     public void setMissileAmmoCount(int missileAmmoCount) {
         this.missileAmmoCount = missileAmmoCount;
     }
-
 
     public ShootingState getShootingState() {
         return shootingState;

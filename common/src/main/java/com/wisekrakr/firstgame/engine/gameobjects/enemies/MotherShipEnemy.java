@@ -16,6 +16,7 @@ public class MotherShipEnemy extends Enemy {
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
+    private int health;
     private int ammoCount;
 
     private AttackState attackState = AttackState.PACIFIST;
@@ -23,10 +24,11 @@ public class MotherShipEnemy extends Enemy {
     private float time;
 
 
-    public MotherShipEnemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
-        super(name, position, direction, radius, space);
+    public MotherShipEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+        super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
+        this.health = health;
         ammoCount = 6;
         shotLeftOver = ammoCount;
         setCollisionRadius(radius);
@@ -105,7 +107,7 @@ public class MotherShipEnemy extends Enemy {
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+        super.elapseTime(delta, toDelete, toAdd);
 
         setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(getDirection()) * DEFAULT_ENEMY_SPEED * delta)
@@ -132,7 +134,7 @@ public class MotherShipEnemy extends Enemy {
                     ChaserEnemy chaserEnemy = new ChaserEnemy("ChaserMinion1", new Vector2(
                             getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            getDirection(), 10f, getSpace());
+                            25, getDirection(), 10f, getSpace());
                     toAdd.add(chaserEnemy);
 
                     float destructTime = 8.0f;

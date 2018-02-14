@@ -13,12 +13,17 @@ public class Enemy extends GameObject {
 
     private float direction;
     private float radius;
+    private int health;
+
+    private static final float CLOSEST_TARGET = 100;
 
 
-    public Enemy(String name, Vector2 position, float direction, float radius, SpaceEngine space) {
+    public Enemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, space);
         this.direction = direction;
         this.radius = radius;
+        this.health = health;
+
 
         setCollisionRadius(radius);
     }
@@ -33,22 +38,25 @@ public class Enemy extends GameObject {
 
     }
 
-
-
     public enum AttackState {
         PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
     }
 
 
+    @Override
+    public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if(target instanceof Player){
+            if(distanceBetween(this, target)< CLOSEST_TARGET){
+                attackTarget(target, toDelete, toAdd);
+            }
+        }
+    }
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-/*
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
-        );
-        setOrientation(direction);
-*/
+        if (health <= 0) {
+            toDelete.add(this);
+        }
     }
 
 

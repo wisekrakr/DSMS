@@ -71,7 +71,7 @@ public class Daemon {
             ChaserEnemy chaser = new ChaserEnemy("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    randomGenerator.nextFloat() * 2000 - 1000,
+                    50,randomGenerator.nextFloat() * 2000 - 1000,
                     22f, engine);
             engine.addGameObject(chaser);
         }
@@ -79,14 +79,14 @@ public class Daemon {
         MotherShipEnemy motherShipEnemy = new MotherShipEnemy("MotherShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
-                randomGenerator.nextFloat(),
+                200, randomGenerator.nextFloat(),
                 90f, engine);
         engine.addGameObject(motherShipEnemy);
 
         SporeEnemy sporeEnemy = new SporeEnemy("SporeShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
-                randomGenerator.nextFloat(),
+                150, randomGenerator.nextFloat(),
                 140f, engine);
         engine.addGameObject(sporeEnemy);
 
@@ -94,7 +94,7 @@ public class Daemon {
             DodgingEnemy dodgingEnemy = new DodgingEnemy("Dodger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    randomGenerator.nextFloat() * 2000 - 1000 ,
+                    30,randomGenerator.nextFloat() * 2000 - 1000 ,
                     12f, engine);
             engine.addGameObject(dodgingEnemy);
         }
@@ -103,7 +103,7 @@ public class Daemon {
             StalkerEnemy stalkerEnemy = new StalkerEnemy("Stalker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    randomGenerator.nextFloat() * 2000 - 1000,
+                    25,randomGenerator.nextFloat() * 2000 - 1000,
                     12f, engine);
             engine.addGameObject(stalkerEnemy);
         }
@@ -112,7 +112,7 @@ public class Daemon {
             MissileEnemy missileEnemy = new MissileEnemy("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    randomGenerator.nextFloat() * 2000 - 1000,
+                    75,randomGenerator.nextFloat() * 2000 - 1000,
                     30f, engine);
             engine.addGameObject(missileEnemy);
         }
