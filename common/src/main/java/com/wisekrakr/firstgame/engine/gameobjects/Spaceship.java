@@ -56,6 +56,11 @@ public abstract class Spaceship extends GameObject {
         PACIFIST, FIRING, MISSILE_FIRING
     }
 
+    @Override
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        angle = angle + (float) Math.PI;
+    }
+
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState) {
         this.throttle = throttle;
         this.steering = steering;

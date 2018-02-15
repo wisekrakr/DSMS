@@ -30,12 +30,7 @@ public class Enemy extends GameObject {
 
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(direction == direction){
-            this.setDirection(-direction);
-        }else{
-            this.setDirection(direction);
-        }
-
+       this.setDirection(direction + (float) Math.PI);
     }
 
     public enum AttackState {

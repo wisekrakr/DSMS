@@ -36,8 +36,6 @@ public class ClientConnector {
                     Object incoming = null;
 
                     while ((incoming = input.readObject()) != null) {
-                        System.out.println("Received from  server: " + incoming);
-
                         if (incoming instanceof SpaceSnapshot) {
                             synchronized (monitor) {
                                 latestSnapshot = (SpaceSnapshot) incoming;

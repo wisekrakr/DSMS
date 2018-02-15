@@ -46,8 +46,7 @@ public class SporeEnemy extends Enemy {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if(subject instanceof Weapons){
+        if(subject instanceof Bullet){
             radius = radius - ((Bullet) subject).getRadius();
             setCollisionRadius(radius);
             toDelete.add(subject);

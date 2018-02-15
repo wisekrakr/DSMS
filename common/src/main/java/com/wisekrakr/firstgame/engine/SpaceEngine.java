@@ -58,19 +58,20 @@ public class SpaceEngine {
 
     private boolean collision(GameObject object1, GameObject object2) {
         return
-                (((object1.getPosition().x + object1.getCollisionRadius()) - (object2.getPosition().x + object2.getCollisionRadius()) ))
-                        * ((object1.getPosition().x ) - (object2.getPosition().x ))
-                        + ((object1.getPosition().y ) - (object2.getPosition().y ))
-                        * ((object1.getPosition().y ) - (object2.getPosition().y ))
-                        < object1.getCollisionRadius() + object2.getCollisionRadius();
+                Math.sqrt(
+                        (((object1.getPosition().x) - (object2.getPosition().x)))
+                                * ((object1.getPosition().x) - (object2.getPosition().x))
+                                + ((object1.getPosition().y) - (object2.getPosition().y))
+                                * ((object1.getPosition().y) - (object2.getPosition().y)))
+                        < (object1.getCollisionRadius() + object2.getCollisionRadius());
     }
 
-    private void nearestTarget(GameObject subject, Set<GameObject> targets, Set<GameObject> toDelete, Set<GameObject> toAdd){
+    private void nearestTarget(GameObject subject, Set<GameObject> targets, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        for(GameObject target: targets){
-                if(Math.abs(target.getPosition().x - subject.getPosition().x)  < Math.abs(target.getPosition().x - subject.getPosition().x)){
-                    if(Math.abs(target.getPosition().y - subject.getPosition().y) < Math.abs(target.getPosition().y - subject.getPosition().y)) {
-                        subject.attackTarget(target, toDelete, toAdd);
+        for (GameObject target : targets) {
+            if (Math.abs(target.getPosition().x - subject.getPosition().x) < Math.abs(target.getPosition().x - subject.getPosition().x)) {
+                if (Math.abs(target.getPosition().y - subject.getPosition().y) < Math.abs(target.getPosition().y - subject.getPosition().y)) {
+                    subject.attackTarget(target, toDelete, toAdd);
                 }
             }
         }
@@ -129,10 +130,10 @@ public class SpaceEngine {
  * In this section gameobjects(enemy package) calculate how far they are of each other and they attack in their different ways
  */
 
-            for(GameObject subject: gameObjects){
-                if(subject instanceof Enemy){
-                    for(GameObject target: gameObjects){
-                        if(target instanceof Player) {
+            for (GameObject subject : gameObjects) {
+                if (subject instanceof Enemy) {
+                    for (GameObject target : gameObjects) {
+                        if (target instanceof Player) {
                             if (target != subject) {
                                 subject.targetSpotted(target, toDelete, toAdd);
                                 subject.attackTarget(target, toDelete, toAdd);
@@ -145,10 +146,10 @@ public class SpaceEngine {
  * In this section gameobjects( weaponry package) calculate how far they are of each other and they attack in their different ways
  */
 
-            for(GameObject subject: gameObjects){
-                if(subject instanceof Weapons){
-                    for(GameObject target: gameObjects){
-                        if(target instanceof Player) {
+            for (GameObject subject : gameObjects) {
+                if (subject instanceof Weapons) {
+                    for (GameObject target : gameObjects) {
+                        if (target instanceof Player) {
                             if (target != subject) {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }
@@ -157,22 +158,20 @@ public class SpaceEngine {
                 }
             }
 
- /**
- * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
- */
+            /**
+             * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
+             */
 
-            for(GameObject subject: gameObjects){
-                if(subject instanceof PlayerMissile){ //change this to PlayerWeapons when we made a PlayerWeapons Parent Class
-                    for(GameObject target: gameObjects){
-                        if(target instanceof Enemy) {
+            for (GameObject subject : gameObjects) {
+                if (subject instanceof PlayerMissile) { //change this to PlayerWeapons when we made a PlayerWeapons Parent Class
+                    for (GameObject target : gameObjects) {
+                        if (target instanceof Enemy) {
                             //nearestTarget(subject, gameObjects, toDelete, toAdd);
                             subject.getClosestTarget(target, toDelete, toAdd);
                         }
                     }
                 }
             }
-
-
 
 
             for (GameObject gameObject : toDelete) {
