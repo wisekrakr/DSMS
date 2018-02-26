@@ -70,7 +70,14 @@ public abstract class GameObject{
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
-
+    public int randomDamageCountBullet(){
+        Random random = new Random();
+        return random.nextInt(10) + 1;
+    }
+    public int randomDamageCountMissile(){
+        Random random = new Random();
+        return random.nextInt(20 - 10 + 1) + 10;
+    }
 
     public float setRandomDirection(){
         Random random = new Random();

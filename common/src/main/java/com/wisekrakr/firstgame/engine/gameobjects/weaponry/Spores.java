@@ -25,6 +25,15 @@ public class Spores extends Weapons {
         setCollisionRadius(radius);
     }
 
+    @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        if(subject instanceof Player){
+            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - randomDamageCountBullet());
+        }
+    }
+
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {

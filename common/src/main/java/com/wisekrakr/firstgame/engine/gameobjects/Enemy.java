@@ -24,7 +24,7 @@ public class Enemy extends GameObject {
         this.radius = radius;
         this.health = health;
 
-
+        setHealth(health);
         setCollisionRadius(radius);
     }
 
@@ -47,10 +47,13 @@ public class Enemy extends GameObject {
         }
     }
 
+    
+
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (health <= 0) {
             toDelete.add(this);
+
         }
     }
 
@@ -65,6 +68,20 @@ public class Enemy extends GameObject {
 
     public float getRadius() {
         return radius;
+    }
+
+    @Override
+    public int getHealth() {
+        return health;
+    }
+
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
     }
 
     @Override

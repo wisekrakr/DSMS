@@ -8,6 +8,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
 
 import java.util.Map;
@@ -35,7 +37,8 @@ public class SporeEnemy extends Enemy {
         ammoCount = 10000;
         shotLeftOver = ammoCount;
 
-        setCollisionRadius(10);
+        setCollisionRadius(radius);
+        setHealth(health);
 
     }
 
@@ -46,9 +49,18 @@ public class SporeEnemy extends Enemy {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(subject instanceof Bullet){
-            radius = radius - ((Bullet) subject).getRadius();
+        if(subject instanceof PlayerBullet ){
+            radius = radius - subject.getCollisionRadius();
             setCollisionRadius(radius);
+            toDelete.add(subject);
+        }
+        if(subject instanceof PlayerMissile){
+            radius = radius - subject.getCollisionRadius();
+            setCollisionRadius(radius);
+            toDelete.add(subject);
+        }
+        if(subject instanceof Player){
+            subject.setHealth(subject.getHealth() - 20);
             toDelete.add(subject);
         }
     }

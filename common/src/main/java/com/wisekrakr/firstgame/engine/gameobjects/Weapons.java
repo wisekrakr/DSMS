@@ -25,15 +25,11 @@ public class Weapons extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Player){
-            toDelete.add(this);
-            subject.setHealth(subject.getHealth() - 10);
-        }else if(subject instanceof Asteroid){
-            toDelete.add(this);
-            toDelete.add(subject);
-        }else {
-            toDelete.add(this);
-        }
+
+    if(subject instanceof Asteroid){
+        toDelete.add(this);
+        toDelete.add(subject);
+    }
 
     }
 }

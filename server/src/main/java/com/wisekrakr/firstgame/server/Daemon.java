@@ -7,6 +7,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
@@ -66,7 +67,13 @@ public class Daemon {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine);
         engine.addGameObject(powerUpMissile);
-
+/*
+        PowerUpShield powerUpShield = new PowerUpShield("ShieldPowerUp", new Vector2(
+                randomGenerator.nextFloat() * width - plusOfXY,
+                randomGenerator.nextFloat() * height - plusOfXY),
+                engine);
+        engine.addGameObject(powerUpShield);
+*/
         for (int i = 0; i < 5; i++) {
             ChaserEnemy chaser = new ChaserEnemy("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -94,7 +101,7 @@ public class Daemon {
             DodgingEnemy dodgingEnemy = new DodgingEnemy("Dodger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    30,randomGenerator.nextFloat() * 2000 - 1000 ,
+                    10,randomGenerator.nextFloat() * 2000 - 1000 ,
                     12f, engine);
             engine.addGameObject(dodgingEnemy);
         }
@@ -133,7 +140,7 @@ public class Daemon {
 
         }
 */
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),

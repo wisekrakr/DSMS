@@ -14,9 +14,9 @@ import java.util.*;
 public class ChaserEnemy extends Enemy {
 
 
-    private static final float DEFAULT_ENEMY_SPEED = 150;
-    private static final float AGRO_DISTANCE = 850;
-    private static final float ATTACK_DISTANCE = 350;
+    private static final float DEFAULT_ENEMY_SPEED = 220;
+    private static final float AGRO_DISTANCE = 950;
+    private static final float ATTACK_DISTANCE = 750;
     private static final float CHANGE_DIRECTION_TIME = 5;
     private float direction;
     private float radius;
@@ -34,10 +34,11 @@ public class ChaserEnemy extends Enemy {
         this.radius = radius;
         this.health = health;
 
-        ammoCount = 10000;
+        ammoCount = (int) Double.POSITIVE_INFINITY;;
         shotLeftOver = ammoCount;
 
         setCollisionRadius(radius);
+        setHealth(health);
 
     }
 
@@ -49,13 +50,9 @@ public class ChaserEnemy extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Asteroid) {
+        if(subject instanceof Player){
             toDelete.add(this);
-        }
-
-        if(subject instanceof Bullet){
-            toDelete.add(this);
-
+            subject.setHealth(subject.getHealth() - 20);
         }
 
     }
@@ -97,7 +94,7 @@ public class ChaserEnemy extends Enemy {
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
- //Todo: see if the timer works....to change direction of the chaser...make timer random
+
         super.elapseTime(delta, toDelete, toAdd);
 
         time += delta;

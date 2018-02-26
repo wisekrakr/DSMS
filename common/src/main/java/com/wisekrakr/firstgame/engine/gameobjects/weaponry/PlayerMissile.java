@@ -19,7 +19,7 @@ public class PlayerMissile extends GameObject {
     private float speed;
 
     private static final float ATTACK_RANGE = 300;
-    private static final float DEFAULT_MISSILE_SPEED = 800;
+    private static final float DEFAULT_MISSILE_SPEED = 750;
 
     public PlayerMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space);
@@ -27,13 +27,13 @@ public class PlayerMissile extends GameObject {
         this.radius = radius;
         this.speed = speed;
 
-        setCollisionRadius(5);
+        setCollisionRadius(radius);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Enemy){
-            subject.setHealth(getHealth() - 25);
+            subject.setHealth(subject.getHealth() - randomDamageCountMissile());
             toDelete.add(this);
         }
     }

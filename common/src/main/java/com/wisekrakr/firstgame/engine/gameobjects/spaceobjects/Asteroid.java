@@ -2,7 +2,10 @@ package com.wisekrakr.firstgame.engine.gameobjects.spaceobjects;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,14 +48,15 @@ public class Asteroid extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Asteroid) {
-            radius = radius + ((Asteroid) subject).getRadius();
-            setCollisionRadius(radius);
-        }else{
-            setDirection(-direction);
+        if(subject instanceof Enemy){
+            subject.setHealth(subject.getHealth() - 10);
+            toDelete.add(this);
         }
-
-
+        if (subject instanceof Shield) {
+            //radius = radius + ((Asteroid) subject).getRadius();
+            //setCollisionRadius(radius);
+            setDirection((direction + (float)Math.PI));
+        }
     }
 
     public float getDirection() {

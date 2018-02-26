@@ -17,7 +17,7 @@ public class EnemyMissile extends Weapons {
     private float time;
 
 
-    private static final float DEFAULT_MISSILE_SPEED = 200;
+    private static final float DEFAULT_MISSILE_SPEED = 300;
 
     public EnemyMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);
@@ -27,7 +27,13 @@ public class EnemyMissile extends Weapons {
         setCollisionRadius(4);
     }
 
-
+    @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if(subject instanceof Player){
+            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - randomDamageCountMissile());
+        }
+    }
 
     @Override
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {

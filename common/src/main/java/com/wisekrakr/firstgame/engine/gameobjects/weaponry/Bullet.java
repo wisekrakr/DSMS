@@ -10,7 +10,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.Set;
 
-public class Bullet extends Weapons {
+public class Bullet extends GameObject {
 
     private float direction;
     private float radius;
@@ -21,12 +21,12 @@ public class Bullet extends Weapons {
 
 
     public Bullet(String name, Vector2 initialPosition, SpaceEngine space, float direction,float speed, float radius) {
-        super(name, initialPosition, space, direction, radius);
+        super(name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
 
-        setCollisionRadius(4);
+        setCollisionRadius(radius);
     }
 
 

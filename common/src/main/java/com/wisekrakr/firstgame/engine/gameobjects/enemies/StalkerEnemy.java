@@ -14,9 +14,9 @@ import java.util.Set;
 
 public class StalkerEnemy extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 175;
+    private static final float DEFAULT_ENEMY_SPEED = 230;
     private static final float AGRO_DISTANCE = 2050;
-    private static final float ATTACK_DISTANCE = 550;
+    private static final float ATTACK_DISTANCE = 850;
     private static final int CHANGE_DIRECTION_TIME = 12;
     private float direction;
     private float radius;
@@ -32,19 +32,19 @@ public class StalkerEnemy extends Enemy {
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+
+        ammoCount = (int) Double.POSITIVE_INFINITY;
         setCollisionRadius(radius);
-        ammoCount = 10000;
+        setHealth(health);
+
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Asteroid) {
+        if(subject instanceof Player){
             toDelete.add(this);
-        }
-
-        if(subject instanceof Bullet){
-            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - 20);
         }
     }
 

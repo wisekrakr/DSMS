@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
 
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class SpaceEngine {
                 }
             }
 /**
- * See if any gameobjects collide with each other
+ * See if any gameobjects collide with each other, than proceed with the collide method of GameObject extended classes
  */
             for (GameObject target : gameObjects) {
                 if (!toDelete.contains(target)) {
@@ -150,7 +151,7 @@ public class SpaceEngine {
                 if (subject instanceof Weapons) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Player) {
-                            if (target != subject) {
+                            if (target != subject ) {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }
                         }

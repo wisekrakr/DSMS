@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class MissileEnemy extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 120;
+    private static final float DEFAULT_ENEMY_SPEED = 205;
     private static final float AGRO_DISTANCE = 750;
     private static final float ATTACK_DISTANCE = 500;
     private static final float CHANGE_DIRECTION_TIME = 30;
@@ -34,24 +34,18 @@ public class MissileEnemy extends Enemy {
         this.radius = radius;
         this.health = health;
 
-        ammoCount = 10;
+        ammoCount = (int) Double.POSITIVE_INFINITY;;
         shotLeftOver = ammoCount;
         setCollisionRadius(radius);
-    }
-
-    @Override
-    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.signalOutOfBounds(toDelete, toAdd);
+        setHealth(health);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Asteroid) {
-            toDelete.add(this);
-        }
 
-        if(subject instanceof Bullet){
+        if(subject instanceof Player){
             toDelete.add(this);
+            subject.setHealth(subject.getHealth() - 20);
         }
     }
 

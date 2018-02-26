@@ -1,19 +1,18 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.RandomXS128;
+
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
+
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.MissileEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.*;
 
-public abstract class Spaceship extends GameObject {
+public class Spaceship extends GameObject {
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
@@ -36,7 +35,7 @@ public abstract class Spaceship extends GameObject {
         missileAmmoCount = 10;
         health = 1000;
         score = 0;
-        setCollisionRadius(10f);
+        setCollisionRadius(20f);
 
     }
 
@@ -58,7 +57,8 @@ public abstract class Spaceship extends GameObject {
 
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        angle = angle + (float) Math.PI;
+
+       // angle = angle + (float) Math.PI;
     }
 
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState) {
@@ -70,11 +70,18 @@ public abstract class Spaceship extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-//When player collides with other gameObjects (for now) nothing happens to player.
-        if(subject != null){
+
+        if(subject instanceof Enemy){
             toDelete.add(subject);
         }
+        if(subject instanceof PowerUpShield){
+            toDelete.add(this);
+            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), 25f));
+        }
+
     }
+
+
 
 
     @Override
@@ -92,10 +99,10 @@ public abstract class Spaceship extends GameObject {
 
         switch (throttle) {
             case FORWARDS:
-                speed = Math.min(speed + delta * 200f, 350);
+                speed = Math.min(speed + delta * 280f, 450);
                 break;
             case REVERSE:
-                speed = Math.max(speed - delta * 105f, -180);
+                speed = Math.max(speed - delta * 155f, -230);
                 break;
         }
 
@@ -119,7 +126,7 @@ public abstract class Spaceship extends GameObject {
 
         switch (powerState) {
             case BOOSTING:
-                speed = Math.min(speed + delta * 300f, 500);
+                speed = Math.min(speed + delta * 400f, 600);
                 break;
             case ULTRA_DODGE:
                 setRandomPosition();
@@ -130,7 +137,7 @@ public abstract class Spaceship extends GameObject {
         switch (shootingState) {
             case FIRING:
 
-                float shotCount = delta / 0.1f + shotLeftOver;
+                float shotCount = delta / 0.2f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -142,9 +149,8 @@ public abstract class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new PlayerBullet("bullito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
-                            getSpace(), getAngle(), 400, 0.1f));
-
+                    toAdd.add(new PlayerBullet("bullito", getPosition(),
+                            getSpace(), getAngle(), 400, 2f));
                 }
                 break;
 
@@ -161,7 +167,7 @@ public abstract class Spaceship extends GameObject {
                     missileLeftOver = 0;
                 }
                 for (int i = 0; i < exactMissileCount; i++) {
-                    toAdd.add(new PlayerMissile("missilito", new Vector2(getPosition().x + getAngle(), getPosition().y + getAngle()),
+                    toAdd.add(new PlayerMissile("missilito", getPosition(),
                             getSpace(), getAngle(), 200, 5f));
                 }
                 break;

@@ -20,6 +20,8 @@ import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 /**
  * Created by David on 11/23/2017.
@@ -73,11 +75,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         camera.update();
 
 // TODO: how to create a minimap?
-
+/*
         minimapcamera = new OrthographicCamera();
         minimapcamera.setToOrtho(false, width, height);
         minimapcamera.update();
-
+*/
 //TODO: see how we can create a background....either by using stage like now, or to use another camera
 //        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
 //        texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
@@ -91,8 +93,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-        miniMapShapeRender = new ShapeRenderer();
-        miniMapShapeRender.setAutoShapeType(true);
+//        miniMapShapeRender = new ShapeRenderer();
+//        miniMapShapeRender.setAutoShapeType(true);
 
         batch = new SpriteBatch();
 
@@ -183,12 +185,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         shapeRenderer.setProjectionMatrix(camera.combined);
-        miniMapShapeRender.setProjectionMatrix(minimapcamera.combined);
+//        miniMapShapeRender.setProjectionMatrix(minimapcamera.combined);
 
         //        System.out.println("Myself is at " + mySelf.getPosition() + ", with an orientation of: " + mySelf.getOrientation() * 180 / Math.PI);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        miniMapShapeRender.begin(ShapeRenderer.ShapeType.Filled);
+//        miniMapShapeRender.begin(ShapeRenderer.ShapeType.Filled);
 
         SpaceSnapshot.GameObjectSnapshot myself = null;
 
@@ -199,12 +201,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.up.set(1, 0, 0);
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
-
+/*
                     minimapcamera.position.set(object.getPosition().x, object.getPosition().y, 100);
                     minimapcamera.up.set(1, 0, 0);
                     minimapcamera.translate(-1000,-1000);
                     minimapcamera.update();
-
+*/
                     myself = object;
                 }
 
@@ -217,7 +219,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                              (20f/2));
-
+/*
                     miniMapShapeRender.setColor(Color.GOLD);
                     miniMapShapeRender.set(ShapeRenderer.ShapeType.Filled);
                     miniMapShapeRender.circle(object.getPosition().x, object.getPosition().y, 10);
@@ -225,14 +227,30 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     miniMapShapeRender.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (10/2));
-
+*/
                 }else if ("PlayerBullet".equals(object.getType())) {
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
                 }else if ("EnemyBullet".equals(object.getType())) {
-                    shapeRenderer.setColor(Color.CYAN);
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(4) + 1;
+                    Color bulletColor = new Color();
+                    if(randomNumber == 1){
+                        bulletColor.set(Color.BLUE);
+                    }
+                    if(randomNumber == 2){
+                        bulletColor.set(Color.RED);
+                    }
+                    if(randomNumber == 3){
+                        bulletColor.set(Color.YELLOW);
+                    }
+                    if(randomNumber == 4){
+                        bulletColor.set(Color.GREEN);
+                    }
+                    
+                    shapeRenderer.setColor(bulletColor);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
@@ -336,7 +354,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25);
                     shapeRenderer.setColor(Color.GOLD);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2);
-                }else{
+                }else if("PowerUpShield".equals(object.getType())){
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 40);
@@ -344,13 +362,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25);
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2);
+                }else if("Shield".equals(object.getType())){
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25f);
                 }
 
             }
         }
 
         shapeRenderer.end();
-        miniMapShapeRender.end();
+//        miniMapShapeRender.end();
 
         batch.setProjectionMatrix(stage.getCamera().combined);
         hud.update(myself, delta);
@@ -368,7 +391,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         stage.dispose();
         shapeRenderer.dispose();
-        miniMapShapeRender.dispose();
+ //       miniMapShapeRender.dispose();
 
 
     }

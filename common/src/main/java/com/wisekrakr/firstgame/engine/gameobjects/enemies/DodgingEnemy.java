@@ -8,6 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.EnemyBullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +16,10 @@ import java.util.Set;
 
 public class DodgingEnemy extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 50;
+    private static final float DEFAULT_ENEMY_SPEED = 130;
     private static final float CHANGE_DIRECTION_TIME = 20;
-    private static final float AGRO_DISTANCE = 220;
-    private static final float ATTACK_DISTANCE = 200;
+    private static final float AGRO_DISTANCE = 420;
+    private static final float ATTACK_DISTANCE = 400;
     private AttackState attackState = AttackState.PACIFIST;
 
     private float direction;
@@ -35,6 +36,7 @@ public class DodgingEnemy extends Enemy {
         this.health = health;
         ammoCount = (int) Double.POSITIVE_INFINITY;
         setCollisionRadius(radius);
+        setHealth(health);
     }
 
     @Override
@@ -45,12 +47,9 @@ public class DodgingEnemy extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Asteroid) {
+        if(subject instanceof Player){
             toDelete.add(this);
-        }
-
-        if(subject instanceof Bullet){
-            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - 10);
         }
 
     }

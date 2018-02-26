@@ -4,18 +4,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
-import java.util.Map;
 import java.util.Set;
 
-import static com.badlogic.gdx.math.MathUtils.random;
-
-public class PowerUpMissile extends GameObject{
+public class PowerUpShield extends GameObject {
 
     private float time;
-    private static final float SPAWN_TIME = 45;
+    private static final float SPAWN_TIME = 60;
 
-    public PowerUpMissile(String name, Vector2 initialPosition, SpaceEngine space) {
+    public PowerUpShield(String name, Vector2 initialPosition, SpaceEngine space) {
         super(name, initialPosition, space);
         setCollisionRadius(30);
     }
@@ -23,23 +21,17 @@ public class PowerUpMissile extends GameObject{
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Player){
-            toDelete.add(this);
-            ((Player) subject).setMissileAmmoCount(((Player) subject).getMissileAmmoCount() + 20);
-        }
-
     }
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         time += delta;
 
-        if(time >= SPAWN_TIME){
-            toAdd.add(new PowerUpMissile("powerupmissile", new Vector2(setRandomDirection(),
-                    setRandomDirection()),getSpace()));
-
+        if(time >= SPAWN_TIME) {
+            toAdd.add(new PowerUpShield("powerupshield", new Vector2(setRandomDirection(),
+                    setRandomDirection()), getSpace()));
             time=0;
         }
-
     }
 }
