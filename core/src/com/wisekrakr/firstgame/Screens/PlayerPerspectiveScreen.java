@@ -228,29 +228,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (10/2));
 */
-                }else if ("PlayerBullet".equals(object.getType())) {
+                }else if ("BulletPlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
-                }else if ("EnemyBullet".equals(object.getType())) {
-                    Random random = new Random();
-                    int randomNumber = random.nextInt(4) + 1;
-                    Color bulletColor = new Color();
-                    if(randomNumber == 1){
-                        bulletColor.set(Color.BLUE);
-                    }
-                    if(randomNumber == 2){
-                        bulletColor.set(Color.RED);
-                    }
-                    if(randomNumber == 3){
-                        bulletColor.set(Color.YELLOW);
-                    }
-                    if(randomNumber == 4){
-                        bulletColor.set(Color.GREEN);
-                    }
-                    
-                    shapeRenderer.setColor(bulletColor);
+                }else if ("BulletEnemy".equals(object.getType())) {
+
+                    shapeRenderer.setColor(Color.TEAL);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
 
@@ -265,7 +250,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()),  (radius / 2));
 
-                }else if ("ChaserEnemy".equals(object.getType())) {
+                }else if ("EnemyChaser".equals(object.getType())) {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -276,7 +261,42 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()),  (radius / 2));
 
-                }else if ("MotherShipEnemy".equals(object.getType())){
+                }else if ("EnemyBlinker".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.GOLDENROD);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()),  (radius / 2));
+
+                }else if ("LaserBeamEnemy".equals(object.getType())) {
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(4) + 1;
+                    Color bulletColor = new Color();
+
+                    if(randomNumber == 1){
+                        bulletColor.set(Color.BLUE);
+                    }
+                    if(randomNumber == 2){
+                        bulletColor.set(Color.RED);
+                    }
+                    if(randomNumber == 3){
+                        bulletColor.set(Color.YELLOW);
+                    }
+                    if(randomNumber == 4){
+                        bulletColor.set(Color.GREEN);
+                    }
+
+                    shapeRenderer.setColor(bulletColor);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.rectLine(object.getPosition().x, object.getPosition().y,
+                            object.getPosition().x + 40 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 40 * (float) Math.sin(object.getOrientation()), 3);
+
+                }else if ("EnemyMotherShip".equals(object.getType())){
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -287,7 +307,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 6 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()),  (radius/2));
 
-                }else if ("DodgingEnemy".equals(object.getType())){
+                }else if ("EnemyDodger".equals(object.getType())){
                     shapeRenderer.setColor(Color.LIME);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -297,7 +317,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.PINK);
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
-                }else if("MissileEnemy".equals(object.getType())){
+                }else if("EnemyHomer".equals(object.getType())){
                     shapeRenderer.setColor(Color.ORANGE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -308,13 +328,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
 
-                }else if("EnemyMissile".equals(object.getType())){
+                }else if("MissileEnemy".equals(object.getType())){
 
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
                     shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 4, 4);
-                }else if ("SporeEnemy".equals(object.getType())){
+                }else if ("EnemyMutator".equals(object.getType())){
                     shapeRenderer.setColor(Color.FIREBRICK);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -329,7 +349,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
                     shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 1.5f, 1.5f);
-                }else if("StalkerEnemy".equals(object.getType())){
+                }else if("EnemyStalker".equals(object.getType())){
                     shapeRenderer.setColor(Color.MAROON);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -340,7 +360,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 3 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius/2));
 
-                }else if("PlayerMissile".equals(object.getType())) {
+                }else if("MissilePlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 

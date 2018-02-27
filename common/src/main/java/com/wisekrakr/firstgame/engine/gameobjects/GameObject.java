@@ -63,6 +63,8 @@ public abstract class GameObject{
         return name;
     }
 
+
+
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
@@ -82,10 +84,6 @@ public abstract class GameObject{
     public float setRandomDirection(){
         Random random = new Random();
         return random.nextFloat() * 2000 - 1000;
-    }
-    public Vector2 setRandomPosition(){
-        Random random = new Random();
-        return new Vector2(random.nextFloat() * 200 - 100,random.nextFloat() * 200 - 100);
     }
 
     public static float distanceBetween(GameObject subject, GameObject target) {

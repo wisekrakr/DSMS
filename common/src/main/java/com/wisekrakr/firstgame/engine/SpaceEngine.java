@@ -1,10 +1,8 @@
 package com.wisekrakr.firstgame.engine;
 
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -134,7 +132,7 @@ public class SpaceEngine {
             for (GameObject subject : gameObjects) {
                 if (subject instanceof Enemy) {
                     for (GameObject target : gameObjects) {
-                        if (target instanceof Player) {
+                        if (target instanceof Spaceship) {
                             if (target != subject) {
                                 subject.targetSpotted(target, toDelete, toAdd);
                                 subject.attackTarget(target, toDelete, toAdd);
@@ -150,7 +148,7 @@ public class SpaceEngine {
             for (GameObject subject : gameObjects) {
                 if (subject instanceof Weapons) {
                     for (GameObject target : gameObjects) {
-                        if (target instanceof Player) {
+                        if (target instanceof Spaceship) {
                             if (target != subject ) {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }
@@ -164,7 +162,7 @@ public class SpaceEngine {
              */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof PlayerMissile) { //change this to PlayerWeapons when we made a PlayerWeapons Parent Class
+                if (subject instanceof MissilePlayer) { //change this to PlayerWeapons when we make a PlayerWeapons Parent Class
                     for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
                             //nearestTarget(subject, gameObjects, toDelete, toAdd);

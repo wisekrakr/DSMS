@@ -5,14 +5,12 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.Weapons;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.*;
 
-public class MotherShipEnemy extends Enemy {
+public class EnemyMotherShip extends Enemy {
     private static final float DEFAULT_ENEMY_SPEED = 30;
     private static final float AGRO_DISTANCE = 1250;
     private static final float ATTACK_DISTANCE = 850;
@@ -27,7 +25,7 @@ public class MotherShipEnemy extends Enemy {
     private float time;
 
 
-    public MotherShipEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+    public EnemyMotherShip(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
@@ -41,12 +39,12 @@ public class MotherShipEnemy extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof PlayerBullet ){
+        if(subject instanceof BulletPlayer){
             radius = radius - subject.getCollisionRadius();
             setCollisionRadius(radius);
             toDelete.add(subject);
         }
-        if(subject instanceof PlayerMissile ){
+        if(subject instanceof MissilePlayer){
             radius = radius - subject.getCollisionRadius();
             setCollisionRadius(radius);
             toDelete.add(subject);
@@ -119,23 +117,23 @@ public class MotherShipEnemy extends Enemy {
 
                 for(int i = 0; i < exactShotCount; i++) {
                     Random randomGenerator = new Random();
-                    ChaserEnemy chaserEnemy = new ChaserEnemy("ChaserMinion1", new Vector2(
+                    EnemyChaser enemyChaser = new EnemyChaser("ChaserMinion1", new Vector2(
                             getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
                             8, getDirection(), 10f, getSpace());
-                    toAdd.add(chaserEnemy);
+                    toAdd.add(enemyChaser);
 
                     float destructTime = 8.0f;
                     time += delta;
                     if(time >= destructTime){
-                        float angle = angleBetween(this, chaserEnemy);
+                        float angle = angleBetween(this, enemyChaser);
 
                         // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                        chaserEnemy.setPosition(new Vector2(this.getPosition().x +=  Math.cos(angle)  , this.getPosition().y +=  Math.sin(angle) ));
+                        enemyChaser.setPosition(new Vector2(this.getPosition().x +=  Math.cos(angle)  , this.getPosition().y +=  Math.sin(angle) ));
 
-                        chaserEnemy.setOrientation(angle);
+                        enemyChaser.setOrientation(angle);
 
-                        chaserEnemy.setDirection(angle);
+                        enemyChaser.setDirection(angle);
 
                     }
                 }

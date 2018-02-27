@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerBullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.PlayerMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.*;
@@ -81,9 +81,6 @@ public class Spaceship extends GameObject {
 
     }
 
-
-
-
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
@@ -129,7 +126,11 @@ public class Spaceship extends GameObject {
                 speed = Math.min(speed + delta * 400f, 600);
                 break;
             case ULTRA_DODGE:
-                setRandomPosition();
+                Random random = new Random();
+                setPosition(new Vector2(
+                        getPosition().x + delta * speed * (random.nextFloat() * 200 - 100),
+                        getPosition().y + delta * speed * (random.nextFloat() * 200 - 100)
+                ));
 
                 break;
         }
@@ -149,8 +150,9 @@ public class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new PlayerBullet("bullito", getPosition(),
+                    toAdd.add(new BulletPlayer("bullito", getPosition(),
                             getSpace(), getAngle(), 400, 2f));
+
                 }
                 break;
 
@@ -167,7 +169,7 @@ public class Spaceship extends GameObject {
                     missileLeftOver = 0;
                 }
                 for (int i = 0; i < exactMissileCount; i++) {
-                    toAdd.add(new PlayerMissile("missilito", getPosition(),
+                    toAdd.add(new MissilePlayer("missilito", getPosition(),
                             getSpace(), getAngle(), 200, 5f));
                 }
                 break;

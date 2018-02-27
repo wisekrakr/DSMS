@@ -52,10 +52,10 @@ public class Asteroid extends GameObject {
             subject.setHealth(subject.getHealth() - 10);
             toDelete.add(this);
         }
-        if (subject instanceof Shield) {
-            //radius = radius + ((Asteroid) subject).getRadius();
-            //setCollisionRadius(radius);
-            setDirection((direction + (float)Math.PI));
+        if (subject instanceof Asteroid) {
+            radius = radius + ((Asteroid) subject).getRadius();
+            setCollisionRadius(radius);
+            
         }
     }
 

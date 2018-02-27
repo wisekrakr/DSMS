@@ -7,7 +7,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
@@ -75,7 +74,7 @@ public class Daemon {
         engine.addGameObject(powerUpShield);
 */
         for (int i = 0; i < 5; i++) {
-            ChaserEnemy chaser = new ChaserEnemy("Chaser", new Vector2(
+            EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     50,randomGenerator.nextFloat() * 2000 - 1000,
@@ -83,45 +82,54 @@ public class Daemon {
             engine.addGameObject(chaser);
         }
 
-        MotherShipEnemy motherShipEnemy = new MotherShipEnemy("MotherShip", new Vector2(
+        for (int i = 0; i < 5; i++) {
+            EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    50,randomGenerator.nextFloat() * 2000 - 1000,
+                    25f, engine);
+            engine.addGameObject(enemyBlinker);
+        }
+
+        EnemyMotherShip enemyMotherShip = new EnemyMotherShip("MotherShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 200, randomGenerator.nextFloat(),
                 90f, engine);
-        engine.addGameObject(motherShipEnemy);
+        engine.addGameObject(enemyMotherShip);
 
-        SporeEnemy sporeEnemy = new SporeEnemy("SporeShip", new Vector2(
+        EnemyMutator enemyMutator = new EnemyMutator("SporeShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 150, randomGenerator.nextFloat(),
                 140f, engine);
-        engine.addGameObject(sporeEnemy);
+        engine.addGameObject(enemyMutator);
 
         for (int i = 0; i < 10; i++) {
-            DodgingEnemy dodgingEnemy = new DodgingEnemy("Dodger", new Vector2(
+            EnemyDodger enemyDodger = new EnemyDodger("Dodger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     10,randomGenerator.nextFloat() * 2000 - 1000 ,
                     12f, engine);
-            engine.addGameObject(dodgingEnemy);
+            engine.addGameObject(enemyDodger);
         }
 
         for(int i = 0; i < 5; i++){
-            StalkerEnemy stalkerEnemy = new StalkerEnemy("Stalker", new Vector2(
+            EnemyStalker enemyStalker = new EnemyStalker("Stalker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     25,randomGenerator.nextFloat() * 2000 - 1000,
                     12f, engine);
-            engine.addGameObject(stalkerEnemy);
+            engine.addGameObject(enemyStalker);
         }
 
         for(int i = 0; i < 3; i++){
-            MissileEnemy missileEnemy = new MissileEnemy("MissileEnemy", new Vector2(
+            EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     75,randomGenerator.nextFloat() * 2000 - 1000,
                     30f, engine);
-            engine.addGameObject(missileEnemy);
+            engine.addGameObject(enemyHomer);
         }
 
 /*
@@ -147,7 +155,7 @@ public class Daemon {
                     randomGenerator.nextFloat() * 20,
                     10 * randomGenerator.nextFloat(),
                     randomGenerator.nextFloat() * 2 * (float) Math.PI, engine,
-                    3f);
+                    6f);
             engine.addGameObject(asteroid);
         }
 

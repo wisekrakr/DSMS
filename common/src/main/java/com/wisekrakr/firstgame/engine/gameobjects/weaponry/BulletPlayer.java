@@ -7,8 +7,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 import java.util.Set;
 
-public class PlayerBullet extends Bullet {
-    public PlayerBullet(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
+public class BulletPlayer extends Bullet {
+    public BulletPlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space, direction, speed, radius);
     }
 
@@ -17,6 +17,7 @@ public class PlayerBullet extends Bullet {
         if (subject instanceof Enemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - randomDamageCountBullet());
+
         }
     }
 }

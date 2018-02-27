@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-public class PlayerMissile extends GameObject {
+public class MissilePlayer extends GameObject {
 
     private float direction;
     private float radius;
@@ -21,7 +21,7 @@ public class PlayerMissile extends GameObject {
     private static final float ATTACK_RANGE = 300;
     private static final float DEFAULT_MISSILE_SPEED = 750;
 
-    public PlayerMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
+    public MissilePlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;

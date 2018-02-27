@@ -29,7 +29,7 @@ public class Hud implements Disposable {
     private Integer worldTimer;
     private float timeCounter;
     private Integer distanceCounter;
-    private float score;
+    private Integer score;
     private Integer ammoCounter;
     private Integer missileCounter;
     private String name;
@@ -62,7 +62,7 @@ public class Hud implements Disposable {
         score = 0;
         name = "Wisekrakr";
 
-        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
 
         Table table = new Table();
@@ -78,7 +78,7 @@ public class Hud implements Disposable {
         distanceLabel = new Label("Distance", new Label.LabelStyle(font, Color.WHITE));
         distanceCountLabel = new Label(String.format("%06d", distanceCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         scoreLabel = new Label("Score", new Label.LabelStyle(font, Color.WHITE));
-        scoreCountLabel = new Label(String.format("%08f", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
+        scoreCountLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         ammoLabel = new Label("Ammo", new Label.LabelStyle(font, Color.WHITE));
         ammoCountLabel = new Label(String.format("%06d", ammoCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         missileLabel = new Label("Missiles", new Label.LabelStyle(font, Color.WHITE));
@@ -123,6 +123,7 @@ public class Hud implements Disposable {
 
             timeCountLabel.setText(String.format("%s",worldTimer));
             distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
+            scoreCountLabel.setText(Integer.toString((Integer) myself.scoreProperties().get("score")));
             ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
             missileCountLabel.setText(Integer.toString((Integer) myself.missileProperties().get("missileCount")));
             healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));

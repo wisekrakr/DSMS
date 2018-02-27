@@ -2,72 +2,79 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.EnemyMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
-public class MissileEnemy extends Enemy {
+public class EnemyMutator extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 205;
-    private static final float AGRO_DISTANCE = 750;
-    private static final float ATTACK_DISTANCE = 500;
-    private static final float CHANGE_DIRECTION_TIME = 30;
-
+    private float DEFAULT_ENEMY_SPEED = 30;
+    private static final float AGRO_DISTANCE = 800;
+    private static final float ATTACK_DISTANCE = 550;
+    private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
     private int health;
     private float shotLeftOver;
     private int ammoCount;
     private AttackState attackState = AttackState.PACIFIST;
-    private float time;
 
-
-    public MissileEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+    public EnemyMutator(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
-
-        ammoCount = (int) Double.POSITIVE_INFINITY;;
+        ammoCount = 10000;
         shotLeftOver = ammoCount;
+
         setCollisionRadius(radius);
         setHealth(health);
+
+    }
+
+    @Override
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.signalOutOfBounds(toDelete, toAdd);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+        if(subject instanceof BulletPlayer){
+            radius = radius - subject.getCollisionRadius();
+            setCollisionRadius(radius);
+            toDelete.add(subject);
+        }
+        if(subject instanceof MissilePlayer){
+            radius = radius - subject.getCollisionRadius();
+            setCollisionRadius(radius);
+            toDelete.add(subject);
+        }
         if(subject instanceof Player){
-            toDelete.add(this);
             subject.setHealth(subject.getHealth() - 20);
+            toDelete.add(subject);
         }
     }
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(delta, toDelete, toAdd);
-        time += delta;
-        if(time >= CHANGE_DIRECTION_TIME){
-            float randomDirection = setRandomDirection();
-            setDirection(randomDirection);
-            time=0;
-        }
-
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );
         setOrientation(direction);
 
-        switch (attackState) {
+        switch (attackState){
             case SHOOT:
+
                 ammoCount = getAmmoCount();
-                float shotCount = delta / 0.8f + shotLeftOver;
+                float shotCount = delta / 0.09f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -79,11 +86,14 @@ public class MissileEnemy extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new EnemyMissile("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getSpace(), getOrientation(), 2.5f));
-                }
-                break;
+                    Random randomGenerator = new Random();
+                    toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * radius,
+                            getPosition().y + randomGenerator.nextFloat() * radius),
+                            getSpace(), getOrientation(), 0.05f));
 
+                }
+
+                break;
             case PACIFIST:
                 shotLeftOver = 0;
                 break;
@@ -94,24 +104,16 @@ public class MissileEnemy extends Enemy {
         return ammoCount;
     }
 
+
     @Override
     public float getDirection() {
         return super.getDirection();
     }
 
-
-    @Override
-    public float getRadius() {
-        return super.getRadius();
-    }
-
-
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         return super.getExtraSnapshotProperties();
     }
-
-
 
     @Override
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -121,11 +123,12 @@ public class MissileEnemy extends Enemy {
                 float angle = angleBetween(this, subject);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle) ));
+                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
 
                 setOrientation(angle);
 
                 setDirection(angle);
+
 
             }
         }

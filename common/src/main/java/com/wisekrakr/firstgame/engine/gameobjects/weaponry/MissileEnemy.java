@@ -10,7 +10,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.Set;
 
-public class EnemyMissile extends Weapons {
+public class MissileEnemy extends Weapons {
     private float rotationSpeed;
     private float direction;
     private float radius;
@@ -19,7 +19,7 @@ public class EnemyMissile extends Weapons {
 
     private static final float DEFAULT_MISSILE_SPEED = 300;
 
-    public EnemyMissile(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
+    public MissileEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);
         this.direction = direction;
         this.radius = radius;

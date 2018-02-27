@@ -7,9 +7,9 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
 import java.util.Set;
 
+public class LaserBeamEnemy extends LaserBeam {
 
-public class EnemyBullet extends Bullet {
-    public EnemyBullet(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
+    public LaserBeamEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space, direction, speed, radius);
     }
 
