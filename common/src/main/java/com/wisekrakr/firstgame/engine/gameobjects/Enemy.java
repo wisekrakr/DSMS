@@ -3,10 +3,12 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public class Enemy extends GameObject {
@@ -53,6 +55,13 @@ public class Enemy extends GameObject {
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (health <= 0) {
             toDelete.add(this);
+            Random random = new Random();
+            int debrisParts = random.nextInt(10)+1;
+            for(int i = 0; i < debrisParts; i++) {
+                toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
+                        random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getRadius()));
+
+            }
         }
     }
 

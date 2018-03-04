@@ -146,7 +146,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof Weapons) {
+                if (subject instanceof HomingWeaponsEnemy) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
                             if (target != subject ) {

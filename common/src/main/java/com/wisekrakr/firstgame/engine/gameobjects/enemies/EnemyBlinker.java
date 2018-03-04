@@ -131,7 +131,7 @@ public class EnemyBlinker extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new LaserBeamEnemy("laser", getPosition(), getSpace(), getOrientation(), 400, 2f));
+                    toAdd.add(new LaserBeamEnemy("laser", getPosition(), getSpace(), getOrientation(), 2f));
                 }
 
                 break;

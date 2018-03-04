@@ -219,6 +219,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                              (20f/2));
+
 /*
                     miniMapShapeRender.setColor(Color.GOLD);
                     miniMapShapeRender.set(ShapeRenderer.ShapeType.Filled);
@@ -383,10 +384,37 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20/2);
                 }else if("Shield".equals(object.getType())){
-                    shapeRenderer.setColor(Color.RED);
+                    String lightBlue = "8EE2EC";
+                    shapeRenderer.setColor(Color.valueOf(lightBlue));
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25f);
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                }else if("Debris".equals(object.getType())){
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(4) + 1;
+                    Color debrisColor = new Color();
+
+                    if(randomNumber == 1){
+                        debrisColor.set(Color.BROWN);
+                    }
+                    if(randomNumber == 2){
+                        debrisColor.set(Color.DARK_GRAY);
+                    }
+                    if(randomNumber == 3){
+                        debrisColor.set(Color.LIGHT_GRAY);
+                    }
+                    if(randomNumber == 4){
+                        debrisColor.set(Color.TAN);
+                    }
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.setColor(debrisColor);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
                 }
 
             }

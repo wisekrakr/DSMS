@@ -7,6 +7,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
@@ -66,13 +67,13 @@ public class Daemon {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine);
         engine.addGameObject(powerUpMissile);
-/*
+
         PowerUpShield powerUpShield = new PowerUpShield("ShieldPowerUp", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine);
         engine.addGameObject(powerUpShield);
-*/
+
         for (int i = 0; i < 5; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,

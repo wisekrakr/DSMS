@@ -9,8 +9,8 @@ import java.util.Set;
 
 public class LaserBeamEnemy extends LaserBeam {
 
-    public LaserBeamEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
-        super(name, initialPosition, space, direction, speed, radius);
+    public LaserBeamEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction,  float radius) {
+        super(name, initialPosition, space, direction,  radius);
     }
 
     @Override

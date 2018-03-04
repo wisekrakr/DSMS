@@ -5,11 +5,13 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.Weapons;
+import com.wisekrakr.firstgame.engine.gameobjects.HomingWeaponsEnemy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-public class Shield extends Weapons {
+public class Shield extends HomingWeaponsEnemy {
 
     private float radius;
     private float direction;
@@ -31,6 +33,22 @@ public class Shield extends Weapons {
             ((Enemy) subject).setDirection(((Enemy) subject).getDirection() + (float)Math.PI);
             setHealth(getHealth() - 10);
         }
+        if(subject instanceof BulletEnemy){
+            toDelete.add(subject);
+        }
+        if(subject instanceof HomingWeaponsEnemy){
+            toDelete.add(subject);
+        }
+        if(subject instanceof LaserBeamEnemy){
+            toDelete.add(subject);
+        }
+    }
+
+    @Override
+    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if(subject instanceof Player){
+            setPosition(new Vector2(subject.getPosition().x , subject.getPosition().y ));
+        }
     }
 
     public float getTime() {
@@ -47,5 +65,14 @@ public class Shield extends Weapons {
             time =0;
         }
 
+    }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 }

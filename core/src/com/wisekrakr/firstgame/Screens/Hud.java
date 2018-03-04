@@ -50,9 +50,6 @@ public class Hud implements Disposable {
     private Label healthLabel;
     private Label healthCountLabel;
 
-    private ProgressBar.ProgressBarStyle healthBarStyle;
-    private ProgressBar healthBar;
-
     public Hud(SpriteBatch batch) {
         worldTimer = 0;
         timeCounter = 0;

@@ -6,12 +6,12 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.Set;
 
-public class Weapons extends GameObject {
+public class HomingWeaponsEnemy extends GameObject {
 
     private float direction;
     private float radius;
 
-    public Weapons(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
+    public HomingWeaponsEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
@@ -25,11 +25,9 @@ public class Weapons extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-
-    if(subject instanceof Asteroid){
-        toDelete.add(this);
-        toDelete.add(subject);
-    }
-
+        if(subject instanceof Asteroid){
+            toDelete.add(this);
+            toDelete.add(subject);
+        }
     }
 }

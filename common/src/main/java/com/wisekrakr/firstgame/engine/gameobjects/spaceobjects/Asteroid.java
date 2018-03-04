@@ -55,7 +55,7 @@ public class Asteroid extends GameObject {
         if (subject instanceof Asteroid) {
             radius = radius + ((Asteroid) subject).getRadius();
             setCollisionRadius(radius);
-            
+
         }
     }
 

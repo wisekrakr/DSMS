@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.Screens;
+package com.wisekrakr.firstgame.PopUps;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -40,8 +40,6 @@ public class PauseScreen extends ScreenAdapter {
 
         white = new BitmapFont(Gdx.files.internal("myFont.fnt"));
         black = new BitmapFont(Gdx.files.internal("myFontBlack.fnt"));
-
-
     }
 
     @Override
@@ -52,7 +50,6 @@ public class PauseScreen extends ScreenAdapter {
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
-
 
     }
 

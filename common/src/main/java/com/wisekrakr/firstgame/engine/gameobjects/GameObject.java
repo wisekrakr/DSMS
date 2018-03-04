@@ -103,6 +103,9 @@ public abstract class GameObject{
         return angle;
     }
 
+
+    public void getsDestroyed(Set<GameObject> toDelete, Set<GameObject> toAdd){}
+
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
 
 

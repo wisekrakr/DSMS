@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import com.wisekrakr.firstgame.engine.SpaceEngine;
@@ -68,6 +69,7 @@ public class Spaceship extends GameObject {
         this.shootingState = shootingState;
     }
 
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
@@ -75,8 +77,8 @@ public class Spaceship extends GameObject {
             toDelete.add(subject);
         }
         if(subject instanceof PowerUpShield){
-            toDelete.add(this);
-            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), 25f));
+            toDelete.add(subject);
+            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), this.getCollisionRadius() *2));
         }
 
     }
@@ -85,10 +87,10 @@ public class Spaceship extends GameObject {
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
             case LEFT:
-                angle = angle + delta * 3f;
+                angle = angle + 3f * delta;
                 break;
             case RIGHT:
-                angle = angle - delta * 3f;
+                angle = angle - 3f * delta;
                 break;
         }
 
@@ -204,6 +206,10 @@ public class Spaceship extends GameObject {
 
     public float getSpeed() {
         return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public float getAngle() {
