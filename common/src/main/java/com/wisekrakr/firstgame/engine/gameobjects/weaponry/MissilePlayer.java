@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -92,7 +93,11 @@ public class MissilePlayer extends GameObject {
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
-        return super.getExtraSnapshotProperties();
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 
     public float getRadius() {

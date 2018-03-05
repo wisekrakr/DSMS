@@ -15,7 +15,7 @@ public class EnemyDodger extends Enemy {
 
     private static final float DEFAULT_ENEMY_SPEED = 130;
     private static final float CHANGE_DIRECTION_TIME = 20;
-    private static final float AGRO_DISTANCE = 420;
+    private static final float AGRO_DISTANCE = 220;
     private static final float ATTACK_DISTANCE = 400;
     private AttackState attackState = AttackState.PACIFIST;
 
@@ -45,7 +45,6 @@ public class EnemyDodger extends Enemy {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if(subject instanceof Player){
-            toDelete.add(this);
             subject.setHealth(subject.getHealth() - 10);
         }
 
@@ -60,7 +59,7 @@ public class EnemyDodger extends Enemy {
 
                 float angle = angleBetween(this, subject);
 
-                setPosition(new Vector2(getPosition().x -=  Math.cos(angle) , getPosition().y -=  Math.sin(angle) ));
+                setPosition(new Vector2(getPosition().x -=  Math.cos(angle)  , getPosition().y -=  Math.sin(angle)  ));
 
                 setOrientation(angle);
 

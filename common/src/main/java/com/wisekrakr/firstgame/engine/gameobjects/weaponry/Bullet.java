@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Bullet extends GameObject {
@@ -59,5 +61,14 @@ public class Bullet extends GameObject {
 
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 }

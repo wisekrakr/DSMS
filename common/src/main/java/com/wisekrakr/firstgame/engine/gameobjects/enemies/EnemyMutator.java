@@ -57,7 +57,6 @@ public class EnemyMutator extends Enemy {
             toDelete.add(subject);
         }
         if(subject instanceof Player){
-            subject.setHealth(subject.getHealth() - 20);
             toDelete.add(subject);
         }
     }
@@ -89,7 +88,7 @@ public class EnemyMutator extends Enemy {
                     Random randomGenerator = new Random();
                     toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            getSpace(), getOrientation(), 0.05f));
+                            getSpace(), getOrientation(), 1f));
 
                 }
 

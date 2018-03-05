@@ -6,6 +6,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.HomingWeaponsEnemy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Spores extends HomingWeaponsEnemy {
@@ -13,7 +15,7 @@ public class Spores extends HomingWeaponsEnemy {
     private float direction;
     private float radius;
     private float time;
-    private static final float DEFAULT_TENTACLE_SPEED = 300;
+    private static final float DEFAULT_TENTACLE_SPEED = 400;
 
     public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);
@@ -29,9 +31,9 @@ public class Spores extends HomingWeaponsEnemy {
         if(subject instanceof Player){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - randomDamageCountBullet());
+            ((Player) subject).setSpeed(((Player) subject).getSpeed() /2);
         }
     }
-
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -70,5 +72,14 @@ public class Spores extends HomingWeaponsEnemy {
             setDirection(angle);
 
         }
+    }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 }

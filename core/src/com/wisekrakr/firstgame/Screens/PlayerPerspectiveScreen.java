@@ -3,9 +3,7 @@ package com.wisekrakr.firstgame.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -88,6 +86,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 //        backgroundStars.setSize(Constants.WORLD_WIDTH*2, Constants.WORLD_HEIGHT*2);
 //        backgroundStars.setSpeed(1);
 //        stage.addActor(backgroundStars);
+
         Gdx.input.setInputProcessor(stage);
 
         shapeRenderer = new ShapeRenderer();
@@ -119,6 +118,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             container.setScreen(new PauseScreen());
         }
         */
+
     }
 
     private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
@@ -158,14 +158,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         final Spaceship.ShootingState shootingState;
-        if(Gdx.input.isKeyPressed(shootKey)){
+        if(Gdx.input.isKeyPressed(shootKey) || Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+
             shootingState = Spaceship.ShootingState.FIRING;
         }else if(Gdx.input.isKeyPressed(altShootKey)){
             shootingState = Spaceship.ShootingState.MISSILE_FIRING;
         }else {
             shootingState = Spaceship.ShootingState.PACIFIST;
         }
-
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState);
     }
@@ -232,13 +232,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }else if ("BulletPlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  radius);
 
                 }else if ("BulletEnemy".equals(object.getType())) {
 
-                    shapeRenderer.setColor(Color.TEAL);
+                    shapeRenderer.setColor(Color.YELLOW);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  2);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  radius);
 
                 }else if ("Asteroid".equals(object.getType())) {
                     shapeRenderer.setColor(Color.BROWN);
@@ -294,8 +300,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(bulletColor);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.rectLine(object.getPosition().x, object.getPosition().y,
-                            object.getPosition().x + 40 * (float) Math.cos(object.getOrientation()),
-                            object.getPosition().y + 40 * (float) Math.sin(object.getOrientation()), 3);
+                            object.getPosition().x + 25 * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + 25 * (float) Math.sin(object.getOrientation()), 2);
 
                 }else if ("EnemyMotherShip".equals(object.getType())){
                     shapeRenderer.setColor(Color.CYAN);
@@ -333,8 +339,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
-                    shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 4, 4);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  radius);
+
                 }else if ("EnemyMutator".equals(object.getType())){
                     shapeRenderer.setColor(Color.FIREBRICK);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -346,11 +355,30 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 60 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 20 * (float) Math.sin(object.getOrientation()),  (radius/2));
                 }else if("Spores".equals(object.getType())){
-                    shapeRenderer.setColor(Color.GREEN);
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(4) + 1;
+                    Color sporeColor = new Color();
+
+                    if(randomNumber == 1){
+                        sporeColor.set(Color.PURPLE);
+                    }
+                    if(randomNumber == 2){
+                        sporeColor.set(Color.RED);
+                    }
+                    if(randomNumber == 3){
+                        sporeColor.set(Color.YELLOW);
+                    }
+                    if(randomNumber == 4){
+                        sporeColor.set(Color.GREEN);
+                    }
+
+                    shapeRenderer.setColor(sporeColor);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    //shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  4);
-                    shapeRenderer.rect(object.getPosition().x, object.getPosition().y, 1.5f, 1.5f);
-                }else if("EnemyStalker".equals(object.getType())){
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y,  radius);
+                }else if("EnemyShotty".equals(object.getType())){
                     shapeRenderer.setColor(Color.MAROON);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -365,7 +393,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 5f);
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
                 }else if("PowerUpMissile".equals(object.getType())){
                     shapeRenderer.setColor(Color.GOLD);
@@ -397,7 +427,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     Color debrisColor = new Color();
 
                     if(randomNumber == 1){
-                        debrisColor.set(Color.BROWN);
+                        String yellowish = "EDE49E";
+                        debrisColor.set(Color.valueOf(yellowish));
                     }
                     if(randomNumber == 2){
                         debrisColor.set(Color.DARK_GRAY);
@@ -406,7 +437,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         debrisColor.set(Color.LIGHT_GRAY);
                     }
                     if(randomNumber == 4){
-                        debrisColor.set(Color.TAN);
+                        String reddish = "F88158";
+                        debrisColor.set(Color.valueOf(reddish));
                     }
 
                     Float radius = (Float) object.extraProperties().get("radius");

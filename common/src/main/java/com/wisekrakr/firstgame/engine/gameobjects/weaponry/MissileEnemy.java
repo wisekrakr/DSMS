@@ -6,6 +6,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.HomingWeaponsEnemy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class MissileEnemy extends HomingWeaponsEnemy {
@@ -28,7 +30,6 @@ public class MissileEnemy extends HomingWeaponsEnemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Player){
-            toDelete.add(this);
             subject.setHealth(subject.getHealth() - randomDamageCountMissile());
         }
     }
@@ -58,7 +59,7 @@ public class MissileEnemy extends HomingWeaponsEnemy {
         );
         setOrientation(direction);
 
-        float destructTime = 5.0f;
+        float destructTime = 3.5f;
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);
@@ -72,5 +73,14 @@ public class MissileEnemy extends HomingWeaponsEnemy {
 
     public void setDirection(float direction) {
         this.direction = direction;
+    }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
     }
 }

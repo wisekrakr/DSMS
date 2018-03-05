@@ -10,10 +10,10 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
 import java.util.Map;
 import java.util.Set;
 
-public class EnemyStalker extends Enemy {
+public class EnemyShotty extends Enemy {
 
     private static final float DEFAULT_ENEMY_SPEED = 230;
-    private static final float AGRO_DISTANCE = 2050;
+    private static final float AGRO_DISTANCE = 1350;
     private static final float ATTACK_DISTANCE = 850;
     private static final int CHANGE_DIRECTION_TIME = 12;
     private float direction;
@@ -25,7 +25,7 @@ public class EnemyStalker extends Enemy {
     private float time;
 
 
-    public EnemyStalker(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+    public EnemyShotty(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
@@ -41,8 +41,7 @@ public class EnemyStalker extends Enemy {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if(subject instanceof Player){
-            toDelete.add(this);
-            subject.setHealth(subject.getHealth() - 20);
+            subject.setHealth(subject.getHealth() - 15);
         }
     }
 
@@ -55,13 +54,11 @@ public class EnemyStalker extends Enemy {
                 float angle = angleBetween(this, subject);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle) /2 ));
+                setPosition(new Vector2(getPosition().x +=  Math.cos(angle)  , getPosition().y +=  Math.sin(angle)  ));
 
                 setOrientation(angle);
 
                 setDirection(angle);
-
-                attackState = AttackState.PACIFIST;
 
             }
         }
@@ -101,7 +98,7 @@ public class EnemyStalker extends Enemy {
             case SHOOT:
                 ammoCount = getAmmoCount();
 
-                float shotCount = delta / 0.8f + shotLeftOver;
+                float shotCount = delta / 2.5f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -114,6 +111,16 @@ public class EnemyStalker extends Enemy {
 
                 for (int i = 0; i < exactShotCount; i++) {
                     toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getDirection(), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /6), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /6), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /7), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /7), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /8), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /8), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), 400, 2f));
+
+
                 }
                 break;
 

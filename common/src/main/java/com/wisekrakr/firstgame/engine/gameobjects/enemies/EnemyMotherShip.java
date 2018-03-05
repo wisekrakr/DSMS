@@ -39,16 +39,6 @@ public class EnemyMotherShip extends Enemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof BulletPlayer){
-            radius = radius - subject.getCollisionRadius();
-            setCollisionRadius(radius);
-            toDelete.add(subject);
-        }
-        if(subject instanceof MissilePlayer){
-            radius = radius - subject.getCollisionRadius();
-            setCollisionRadius(radius);
-            toDelete.add(subject);
-        }
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 20);
             toDelete.add(subject);

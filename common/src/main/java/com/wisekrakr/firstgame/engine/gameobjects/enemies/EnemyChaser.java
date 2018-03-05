@@ -49,12 +49,10 @@ public class EnemyChaser extends Enemy {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if(subject instanceof Player){
-            toDelete.add(this);
-            subject.setHealth(subject.getHealth() - 20);
+            subject.setHealth(subject.getHealth() - 15);
         }
 
     }
-
 
 
     @Override

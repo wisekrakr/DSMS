@@ -115,13 +115,13 @@ public class Daemon {
             engine.addGameObject(enemyDodger);
         }
 
-        for(int i = 0; i < 5; i++){
-            EnemyStalker enemyStalker = new EnemyStalker("Stalker", new Vector2(
+        for(int i = 0; i < 10; i++){
+            EnemyShotty enemyShotty = new EnemyShotty("Stalker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     25,randomGenerator.nextFloat() * 2000 - 1000,
                     12f, engine);
-            engine.addGameObject(enemyStalker);
+            engine.addGameObject(enemyShotty);
         }
 
         for(int i = 0; i < 3; i++){
