@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -42,6 +43,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer miniMapShapeRender;
+
+    private BackgroundStars backgroundStars;
+    private Texture backgroundTexture;
 
     private ClientConnector connector;
     private String mySelf;
@@ -79,13 +83,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         minimapcamera.update();
 */
 //TODO: see how we can create a background....either by using stage like now, or to use another camera
-//        Texture texture = new Texture(Gdx.files.internal("stars.jpg"));
-//        texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+        backgroundTexture = new Texture(Gdx.files.internal("stars.jpg"));
+        backgroundTexture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
 
-//        BackgroundStars backgroundStars = new BackgroundStars(texture);
-//        backgroundStars.setSize(Constants.WORLD_WIDTH*2, Constants.WORLD_HEIGHT*2);
-//        backgroundStars.setSpeed(1);
-//        stage.addActor(backgroundStars);
+        backgroundStars = new BackgroundStars(backgroundTexture);
+
+
+        stage.addActor(backgroundStars);
 
         Gdx.input.setInputProcessor(stage);
 
@@ -133,6 +137,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         final Spaceship.ThrottleState throttle;
         if (Gdx.input.isKeyPressed(forwardsKey)) {
             throttle = Spaceship.ThrottleState.FORWARDS;
+            backgroundStars.setSpeed(0.1f);
         } else if (Gdx.input.isKeyPressed(reverseKey)) {
             throttle = Spaceship.ThrottleState.REVERSE;
         } else {
@@ -184,6 +189,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        batch.begin();
+        backgroundStars.draw(batch, 10);
+        batch.end();
+
         shapeRenderer.setProjectionMatrix(camera.combined);
 //        miniMapShapeRender.setProjectionMatrix(minimapcamera.combined);
 
@@ -201,6 +210,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.up.set(1, 0, 0);
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
+
+                    backgroundStars.rotation = object.getOrientation() ;
 /*
                     minimapcamera.position.set(object.getPosition().x, object.getPosition().y, 100);
                     minimapcamera.up.set(1, 0, 0);
@@ -472,7 +483,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         stage.dispose();
         shapeRenderer.dispose();
  //       miniMapShapeRender.dispose();
-
+        batch.dispose();
 
     }
 
