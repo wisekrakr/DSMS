@@ -28,7 +28,7 @@ public class Spaceship extends GameObject {
     private float missileLeftOver;
     private int health;
     private int score;
-
+    private ArrayList<BulletPlayer>bullets;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -37,6 +37,8 @@ public class Spaceship extends GameObject {
         health = 1000;
         score = 0;
         setCollisionRadius(20f);
+
+        bullets = new ArrayList<>();
 
     }
 
@@ -68,7 +70,6 @@ public class Spaceship extends GameObject {
         this.powerState = powerState;
         this.shootingState = shootingState;
     }
-
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -152,6 +153,7 @@ public class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
+
                     toAdd.add(new BulletPlayer("bullito", getPosition(),
                             getSpace(), getAngle(), 400, 2f));
 

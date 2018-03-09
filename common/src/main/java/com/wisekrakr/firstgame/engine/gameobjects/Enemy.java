@@ -50,7 +50,6 @@ public class Enemy extends GameObject {
     }
 
 
-
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (health <= 0) {

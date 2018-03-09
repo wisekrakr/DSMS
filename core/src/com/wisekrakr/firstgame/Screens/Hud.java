@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -34,6 +37,7 @@ public class Hud implements Disposable {
     private Integer missileCounter;
     private String name;
     private Integer healthCounter;
+    private ProgressBar progressBar;
 
     private Label timeLabel;
     private Label nameLabel;
@@ -57,6 +61,7 @@ public class Hud implements Disposable {
         ammoCounter = 0;
         missileCounter = 0;
         score = 0;
+        healthCounter = 1000;
         name = "Wisekrakr";
 
         viewport = new FitViewport(Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
@@ -85,6 +90,20 @@ public class Hud implements Disposable {
         healthLabel = new Label("HP", new Label.LabelStyle(font, Color.WHITE));
         healthCountLabel = new Label(String.format("%06d", healthCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
 
+        Table infoTable = new Table();
+        infoTable.bottom();
+        infoTable.setFillParent(true);
+/*
+        TextureRegion slider = new TextureRegion(new Texture("healthbar.png"));
+        TextureRegion knob = new TextureRegion(new Texture("knob.png"));
+
+        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle(
+                new TextureRegionDrawable(slider),
+                new TextureRegionDrawable(knob));
+        style.knobBefore = style.knob;
+        progressBar = new ProgressBar(0, 300, 1, false, style);
+        progressBar.setValue(1000);
+*/
         table.add(timeLabel).expandX().padTop(10);
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
@@ -101,7 +120,10 @@ public class Hud implements Disposable {
         table.add(nameSetLabel).expandX();
         table.add(healthCountLabel).expandX();
 
+ //       infoTable.add(progressBar).expandX();
+
         stage.addActor(table);
+ //      stage.addActor(infoTable);
     }
 
 

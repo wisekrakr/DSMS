@@ -3,16 +3,19 @@ package com.wisekrakr.firstgame.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
+
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+
 import com.wisekrakr.firstgame.Constants;
+import com.wisekrakr.firstgame.GamePadControls;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
@@ -25,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 /**
  * Created by David on 11/23/2017.
  */
-public class PlayerPerspectiveScreen extends ScreenAdapter {
+public class PlayerPerspectiveScreen extends ScreenAdapter implements ControllerListener{
 
     private float minX = -500;
     private float minY = -500;
@@ -51,6 +54,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private String mySelf;
     private String first = null;
     private String second = null;
+
+    private boolean hasController = true;
+    private Controller controller;
+
+    private Spaceship.SteeringState steering;
+    private Spaceship.ThrottleState throttle;
+    private Spaceship.ShootingState shootingState;
+    private Spaceship.SpecialPowerState powerState;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -103,6 +114,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         hud = new Hud(batch);
 
+        Controllers.addListener(this);
+
+        if(Controllers.getControllers().size == 0)
+        {
+            hasController = false;
+            System.out.println("no controller detected");
+        }else {
+            controller = Controllers.getControllers().first();
+        }
+
     }
 
 
@@ -134,27 +155,27 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
         */
 
-        final Spaceship.ThrottleState throttle;
-        if (Gdx.input.isKeyPressed(forwardsKey)) {
+        //final Spaceship.ThrottleState throttle;
+        if (Gdx.input.isKeyPressed(forwardsKey) || controller.getAxis(GamePadControls.AXIS_LX) > 0.2f ) {
             throttle = Spaceship.ThrottleState.FORWARDS;
             backgroundStars.setSpeed(0.1f);
-        } else if (Gdx.input.isKeyPressed(reverseKey)) {
+        } else if (Gdx.input.isKeyPressed(reverseKey) || controller.getAxis(GamePadControls.AXIS_LY )> 0.2f) {
             throttle = Spaceship.ThrottleState.REVERSE;
         } else {
             throttle = Spaceship.ThrottleState.STATUSQUO;
         }
 
-        final Spaceship.SteeringState steering;
-        if (Gdx.input.isKeyPressed(leftKey)) {
+        //final Spaceship.SteeringState steering;
+        if (Gdx.input.isKeyPressed(leftKey) || controller.getAxis(GamePadControls.AXIS_RX) > 0.2f) {
             steering = Spaceship.SteeringState.LEFT;
-        } else if (Gdx.input.isKeyPressed(rightKey)) {
+        } else if (Gdx.input.isKeyPressed(rightKey) || controller.getAxis(GamePadControls.AXIS_RY) > 0.2f) {
             steering = Spaceship.SteeringState.RIGHT;
         } else {
             steering = Spaceship.SteeringState.CENTER;
         }
 
-        Spaceship.SpecialPowerState powerState;
-        if(Gdx.input.isKeyPressed(boostKey)) {
+        //Spaceship.SpecialPowerState powerState;
+        if(Gdx.input.isKeyPressed(boostKey) || controller.getAxis(GamePadControls.BUTTON_B )> 0.2f) {
             powerState = Spaceship.SpecialPowerState.BOOSTING;
         } else if(Gdx.input.isKeyPressed(dodgeKey)){
             powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
@@ -162,11 +183,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             powerState = Spaceship.SpecialPowerState.NO_POWER;
         }
 
-        final Spaceship.ShootingState shootingState;
-        if(Gdx.input.isKeyPressed(shootKey) || Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-
+        //final Spaceship.ShootingState shootingState;
+        if(Gdx.input.isKeyPressed(shootKey) || controller.getAxis(GamePadControls.BUTTON_RS )> 0.2f){
             shootingState = Spaceship.ShootingState.FIRING;
-        }else if(Gdx.input.isKeyPressed(altShootKey)){
+        }else if(Gdx.input.isKeyPressed(altShootKey) || controller.getAxis(GamePadControls.BUTTON_LS )> 0.2f){
             shootingState = Spaceship.ShootingState.MISSILE_FIRING;
         }else {
             shootingState = Spaceship.ShootingState.PACIFIST;
@@ -211,7 +231,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                     camera.update();
 
-                    backgroundStars.rotation = object.getOrientation() ;
+                    //backgroundStars.rotation = object.getOrientation() ;
 /*
                     minimapcamera.position.set(object.getPosition().x, object.getPosition().y, 100);
                     minimapcamera.up.set(1, 0, 0);
@@ -487,5 +507,53 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     }
 
+//Todo: Fix how the controller connects to the game.
+    @Override
+    public void connected(Controller controller) {
+        hasController = true;
+    }
 
+    @Override
+    public void disconnected(Controller controller) {
+        hasController = false;
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonCode) {
+
+
+        return false;
+    }
+
+    @Override
+    public boolean buttonUp(Controller controller, int buttonCode) {
+        return false;
+    }
+
+    @Override
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+
+        return false;
+    }
+
+    @Override
+    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+
+        return false;
+    }
+
+    @Override
+    public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
+        return false;
+    }
+
+    @Override
+    public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
+        return false;
+    }
+
+    @Override
+    public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
+        return false;
+    }
 }

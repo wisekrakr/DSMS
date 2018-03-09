@@ -73,7 +73,7 @@ public class Daemon {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine);
         engine.addGameObject(powerUpShield);
-
+/*
         for (int i = 0; i < 5; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
