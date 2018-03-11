@@ -29,7 +29,6 @@ public class Daemon {
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
 
-
         Thread timeThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -56,12 +55,6 @@ public class Daemon {
 
         Random randomGenerator = new Random();
 
-//        Vector2 playerSpawnPoint = new Vector2(0, 0);
-//        Player player1 = new Player("Max", playerSpawnPoint, engine);
-//        Player player2 = new Player("David", playerSpawnPoint, engine);
-//        engine.addGameObject(player1);
-//        engine.addGameObject(player2);
-
         PowerUpMissile powerUpMissile = new PowerUpMissile("MissilePowerUp", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
@@ -73,7 +66,7 @@ public class Daemon {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine);
         engine.addGameObject(powerUpShield);
-/*
+
         for (int i = 0; i < 5; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -82,7 +75,7 @@ public class Daemon {
                     22f, engine);
             engine.addGameObject(chaser);
         }
-
+/*
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -132,22 +125,6 @@ public class Daemon {
                     30f, engine);
             engine.addGameObject(enemyHomer);
         }
-
-/*
-//Todo: Put all Enemy gameObjects in one set and randomly pick a number of different kind of enemies
-        Set<Enemy>enemies = new HashSet<>();
-        float enemyCount = 60;
-        for(Enemy enemy: enemies){
-            for(int i = 0; i < enemyCount; i++){
-                enemies.add(new Enemy("Enemy" + i + enemy.getName(), new Vector2(
-                        randomGenerator.nextFloat() * width - plusOfXY,
-                        randomGenerator.nextFloat() * height - plusOfXY),
-                        randomGenerator.nextFloat() * 2000 - 1000,
-                        10f, engine));
-                engine.addGameObject(enemy);
-            }
-
-        }
 */
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
@@ -175,7 +152,6 @@ public class Daemon {
         System.out.println("Listing on " + port);
 
         ServerSocket serverSocket = new ServerSocket(port, 100, InetAddress.getByAddress(new byte[]{0, 0, 0, 0}));
-
 
         while (true) {
             System.out.println("Waiting for a  connection...");

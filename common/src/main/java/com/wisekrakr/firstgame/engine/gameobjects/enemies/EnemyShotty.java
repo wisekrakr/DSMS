@@ -120,7 +120,6 @@ public class EnemyShotty extends Enemy {
                     toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), 400, 2f));
                     toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), 400, 2f));
 
-
                 }
                 break;
 
