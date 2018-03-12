@@ -75,7 +75,7 @@ public class Daemon {
                     22f, engine);
             engine.addGameObject(chaser);
         }
-/*
+
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -125,7 +125,7 @@ public class Daemon {
                     30f, engine);
             engine.addGameObject(enemyHomer);
         }
-*/
+
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -193,7 +193,8 @@ public class Daemon {
                                     engine.forObject(ship, new SpaceEngine.GameObjectHandler() {
                                         @Override
                                         public void doIt(GameObject target) {
-                                            ship.control(request.getThrottleState(), request.getSteeringState(), request.getSpecialPowerState(), request.getShootingState());
+                                            ship.control(request.getThrottleState(), request.getSteeringState(),
+                                                    request.getSpecialPowerState(), request.getShootingState());
                                         }
                                     });
                                 }

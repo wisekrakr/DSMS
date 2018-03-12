@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.Screens.PlayerPerspectiveScreen;
@@ -17,12 +18,12 @@ import java.util.PriorityQueue;
 
 public class PauseScreen extends ScreenAdapter {
 
-    private SpriteBatch batch;
     private Texture texture;
     private PlayerPerspectiveScreen screen;
     private com.badlogic.gdx.scenes.scene2d.Stage stage;
     private SpaceGameContainer container;
     private OrthographicCamera camera;
+    private SpriteBatch batch;
 
     public PauseScreen(SpaceGameContainer container, OrthographicCamera camera) {
 
@@ -30,6 +31,8 @@ public class PauseScreen extends ScreenAdapter {
         this.camera = camera;
 
         texture = new Texture("badlogic.jpg");
+
+        stage = new Stage();
         batch = new SpriteBatch();
 
         Gdx.input.setInputProcessor(stage);
@@ -39,19 +42,22 @@ public class PauseScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
+        stage.act();
+        stage.draw();
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(texture, camera.position.x, camera.position.y);
+        batch.draw(texture, 0, 0);
         batch.end();
-
 
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
+
         stage.dispose();
+        batch.dispose();
     }
 }

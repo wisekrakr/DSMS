@@ -11,12 +11,15 @@ public class SpaceshipControlRequest implements Serializable {
     private Spaceship.SpecialPowerState specialPowerState;
     private Spaceship.ShootingState shootingState;
 
-    public SpaceshipControlRequest(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState, Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState) {
+
+    public SpaceshipControlRequest(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
+                                   Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState) {
         this.name = name;
         this.throttleState = throttleState;
         this.steeringState = steeringState;
         this.specialPowerState = specialPowerState;
         this.shootingState = shootingState;
+
     }
 /*
     public SpaceshipControlRequest(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState, Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState) {

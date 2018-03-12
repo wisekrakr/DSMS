@@ -1,6 +1,8 @@
 package com.wisekrakr.firstgame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
+import com.wisekrakr.firstgame.PopUps.PauseScreen;
 import com.wisekrakr.firstgame.Screens.PlayerPerspectiveScreen;
 import com.wisekrakr.firstgame.Screens.StartScreen;
 import com.wisekrakr.firstgame.client.ClientConnector;
@@ -27,4 +29,5 @@ public class SpaceGameContainer extends Game {
 
         setScreen(new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A", unique + "-B"), unique + "-A"));
     }
+
 }

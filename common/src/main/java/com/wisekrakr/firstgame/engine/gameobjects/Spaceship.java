@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
@@ -18,6 +19,7 @@ public class Spaceship extends GameObject {
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
+    private AimingState aimingState = AimingState.TWELVE;
 
     private float speed = 0;
     private float angle = (float) Math.PI / 2;
@@ -28,7 +30,7 @@ public class Spaceship extends GameObject {
     private float missileLeftOver;
     private int health;
     private int score;
-    private ArrayList<BulletPlayer>bullets;
+    private VisionCone visionCone;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -37,9 +39,6 @@ public class Spaceship extends GameObject {
         health = 1000;
         score = 0;
         setCollisionRadius(20f);
-
-        bullets = new ArrayList<>();
-
     }
 
     public enum ThrottleState {
@@ -51,11 +50,15 @@ public class Spaceship extends GameObject {
     }
 
     public enum SpecialPowerState {
-        NO_POWER, BOOSTING, ULTRA_DODGE
+        NO_POWER, BOOSTING, ULTRA_DODGE, VISION_CONE
     }
 
     public enum ShootingState {
         PACIFIST, FIRING, MISSILE_FIRING
+    }
+
+    public enum AimingState {
+        TWELVE, SIX, THREE, NINE
     }
 
     @Override
@@ -76,6 +79,13 @@ public class Spaceship extends GameObject {
 
         if(subject instanceof Enemy){
             toDelete.add(subject);
+            Random random = new Random();
+            int debrisParts = random.nextInt(10)+1;
+            for(int i = 0; i < debrisParts; i++) {
+                toAdd.add(new Debris("debris", subject.getPosition(), getSpace(), random.nextFloat() * 10,
+                        random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * ((Enemy) subject).getRadius()));
+
+            }
         }
         if(subject instanceof PowerUpShield){
             toDelete.add(subject);
@@ -134,6 +144,9 @@ public class Spaceship extends GameObject {
                         getPosition().x + delta * speed * (random.nextFloat() * 200 - 100),
                         getPosition().y + delta * speed * (random.nextFloat() * 200 - 100)
                 ));
+                break;
+            case VISION_CONE:
+
 
                 break;
         }
@@ -180,6 +193,19 @@ public class Spaceship extends GameObject {
 
             case PACIFIST:
                 shotLeftOver = 0;
+                break;
+        }
+        switch (aimingState){
+            case TWELVE:
+                this.setOrientation(angle);
+                break;
+            case SIX:
+                break;
+            case THREE:
+                this.setOrientation(angle + 3f * delta);
+                break;
+            case NINE:
+                this.setOrientation(angle - 3f * delta);
                 break;
         }
     }

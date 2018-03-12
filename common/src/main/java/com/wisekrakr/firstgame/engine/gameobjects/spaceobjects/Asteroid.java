@@ -9,6 +9,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -51,11 +52,26 @@ public class Asteroid extends GameObject {
         if(subject instanceof Enemy){
             subject.setHealth(subject.getHealth() - 10);
             toDelete.add(this);
+            Random random = new Random();
+            int debrisParts = random.nextInt(4)+1;
+            for(int i = 0; i < debrisParts; i++) {
+                toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
+                        random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getRadius()));
+
+            }
         }
         if (subject instanceof Asteroid) {
-            radius = radius + ((Asteroid) subject).getRadius();
-            setCollisionRadius(radius);
+            this.setDirection(direction + (float) Math.PI);
+        }
+        if(subject instanceof Player){
+            toDelete.add(this);
+            Random random = new Random();
+            int debrisParts = random.nextInt(4)+1;
+            for(int i = 0; i < debrisParts; i++) {
+                toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
+                        random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getRadius()));
 
+            }
         }
     }
 
