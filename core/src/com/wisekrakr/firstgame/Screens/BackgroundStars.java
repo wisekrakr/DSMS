@@ -19,8 +19,6 @@ public class BackgroundStars extends Actor{
     private Texture texture;
     private float scroll;
 
-    private float angle;
-
     private final float LAYER_SPEED_DIFFERENCE = 1;
 
     private float x,y,width,heigth,scaleX,scaleY;

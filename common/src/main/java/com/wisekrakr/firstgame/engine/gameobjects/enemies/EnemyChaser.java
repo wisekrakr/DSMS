@@ -5,7 +5,10 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.*;
 
@@ -23,8 +26,6 @@ public class EnemyChaser extends Enemy {
     private int ammoCount;
     private float time;
     private AttackState attackState = AttackState.PACIFIST;
-
-
 
     public EnemyChaser(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
@@ -54,6 +55,33 @@ public class EnemyChaser extends Enemy {
 
     }
 
+/*
+    public void scoring(GameObject player, GameObject subject) {
+
+        if (player instanceof Player) {
+            if (subject instanceof BulletPlayer) {
+                if (Math.sqrt(
+                        (((this.getPosition().x) - (subject.getPosition().x)))
+                                * ((this.getPosition().x) - (subject.getPosition().x))
+                                + ((this.getPosition().y) - (subject.getPosition().y))
+                                * ((this.getPosition().y) - (subject.getPosition().y)))
+                        < (this.getCollisionRadius() + subject.getCollisionRadius())) {
+                    ((Player) player).setScore(((Player) player).getScore() + 10);
+                }
+            }
+            if (subject instanceof MissilePlayer) {
+                if (Math.sqrt(
+                        (((this.getPosition().x) - (subject.getPosition().x)))
+                                * ((this.getPosition().x) - (subject.getPosition().x))
+                                + ((this.getPosition().y) - (subject.getPosition().y))
+                                * ((this.getPosition().y) - (subject.getPosition().y)))
+                        < (this.getCollisionRadius() + subject.getCollisionRadius())) {
+                    ((Player) player).setScore(((Player) player).getScore() + 22);
+                }
+            }
+        }
+    }
+*/
 
     @Override
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -105,7 +133,6 @@ public class EnemyChaser extends Enemy {
         );
         setOrientation(direction);
 
-
         switch (attackState){
             case SHOOT:
                 ammoCount = getAmmoCount();
@@ -125,6 +152,7 @@ public class EnemyChaser extends Enemy {
                 }
 
                 break;
+
             case PACIFIST:
                 shotLeftOver = 0;
                 break;

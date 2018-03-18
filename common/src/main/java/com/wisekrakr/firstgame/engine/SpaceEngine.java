@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.ArrayList;
@@ -76,7 +77,6 @@ public class SpaceEngine {
         }
     }
 
-
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
             List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
@@ -98,7 +98,6 @@ public class SpaceEngine {
                 target.elapseTime(delta, toDelete, toAdd);
             }
 
-//TODO: signalOutOfBounds() bounces the target up and down (y-axis), but not left and right (x-axis)...fix it!
             for (GameObject target : gameObjects) {
                 if (!toDelete.contains(target)) {
                     if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
@@ -117,6 +116,7 @@ public class SpaceEngine {
                             if (target != subject) {
                                 if (collision(target, subject)) {
                                     target.collide(subject, toDelete, toAdd);
+
                                 }
                             }
                         }
@@ -133,6 +133,7 @@ public class SpaceEngine {
                 if (subject instanceof Enemy) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
+                            subject.getClosestTarget(target, toDelete, toAdd);
                             if (target != subject) {
                                 subject.targetSpotted(target, toDelete, toAdd);
                                 subject.attackTarget(target, toDelete, toAdd);
@@ -171,6 +172,29 @@ public class SpaceEngine {
                     }
                 }
             }
+
+            /**
+             * Scoring system
+             */
+            for (GameObject player : gameObjects) {
+                if (player instanceof Player) {
+                    for (GameObject enemy : gameObjects) {
+                        if (enemy instanceof Enemy) {
+                            for(GameObject subject: gameObjects){
+                                if(subject instanceof BulletPlayer){
+                                   // enemy.scoring(player, subject);
+                                    ((Player) player).scoringSystem(enemy, subject);
+                                }
+                                if(subject instanceof MissilePlayer){
+                                    //enemy.scoring(player, subject);
+                                    ((Player) player).scoringSystem(enemy, subject);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
 
 
             for (GameObject gameObject : toDelete) {

@@ -30,6 +30,7 @@ public class MissileEnemy extends HomingWeaponsEnemy {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Player){
+            toDelete.add(this);
             subject.setHealth(subject.getHealth() - randomDamageCountMissile());
         }
     }

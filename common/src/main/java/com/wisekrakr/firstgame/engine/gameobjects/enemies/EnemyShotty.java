@@ -37,6 +37,7 @@ public class EnemyShotty extends Enemy {
 
     }
 
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
@@ -98,7 +99,7 @@ public class EnemyShotty extends Enemy {
             case SHOOT:
                 ammoCount = getAmmoCount();
 
-                float shotCount = delta / 2.5f + shotLeftOver;
+                float shotCount = delta / 4.5f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 

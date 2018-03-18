@@ -1,8 +1,10 @@
 package com.wisekrakr.firstgame.server;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.GameState;
 import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
+import com.wisekrakr.firstgame.engine.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
@@ -28,6 +30,8 @@ public class Daemon {
         float plusOfXY = 3000;
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
+
+
 
         Thread timeThread = new Thread(new Runnable() {
             @Override
@@ -75,7 +79,7 @@ public class Daemon {
                     22f, engine);
             engine.addGameObject(chaser);
         }
-
+/*
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -125,7 +129,7 @@ public class Daemon {
                     30f, engine);
             engine.addGameObject(enemyHomer);
         }
-
+*/
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -246,6 +250,7 @@ public class Daemon {
 
             writeThread.setDaemon(true);
             writeThread.start();
+
         }
     }
 }

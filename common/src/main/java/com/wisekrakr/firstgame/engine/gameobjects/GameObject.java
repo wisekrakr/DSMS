@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
@@ -21,12 +22,14 @@ public abstract class GameObject{
     private SpaceEngine space;
     private float collisionRadius;
     private int health;
+    private int score;
 
     protected GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
 
         this.position = initialPosition;
         this.name = name;
         this.space = space;
+
     }
 
     /**
@@ -63,13 +66,16 @@ public abstract class GameObject{
         return name;
     }
 
-
-
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
-
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    }
+    public void scoring(GameObject player, GameObject subject){}
+
+    public int randomScore(int damage){
+
+        return damage;
     }
 
     public int randomDamageCountBullet(){
@@ -104,7 +110,7 @@ public abstract class GameObject{
     }
 
 
-    public void getsDestroyed(Set<GameObject> toDelete, Set<GameObject> toAdd){}
+    public void getsDestroyed(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
 
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
 
@@ -119,6 +125,12 @@ public abstract class GameObject{
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
                 getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(), getMissileProperties());
+    }
+
+    public GameObject exhaust(Vector2 initialPosition, SpaceEngine space){
+
+        return exhaust(this.getPosition(), getSpace());
+
     }
 
     public int getHealth() {
@@ -145,4 +157,6 @@ public abstract class GameObject{
     public Map<String, Object> getMissileProperties() {
         return new HashMap<>();
     }
+
+
 }

@@ -5,6 +5,8 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class Enemy extends GameObject {
     public enum AttackState {
         PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
     }
+
 
 
     @Override

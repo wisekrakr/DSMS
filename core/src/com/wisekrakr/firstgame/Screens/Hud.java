@@ -24,8 +24,6 @@ import com.wisekrakr.firstgame.engine.SpaceSnapshot;
  */
 public class Hud implements Disposable {
 
-
-
     public Stage stage;
     private Viewport viewport;
 

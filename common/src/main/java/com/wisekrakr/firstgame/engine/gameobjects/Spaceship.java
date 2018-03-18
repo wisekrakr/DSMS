@@ -1,13 +1,14 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.VisionCone;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
@@ -15,14 +16,17 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 import java.util.*;
 
 public class Spaceship extends GameObject {
+
+    private VisionCone cone;
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
-    private AimingState aimingState = AimingState.TWELVE;
+    private AimingState aimingState = AimingState.NONE;
 
     private float speed = 0;
     private float angle = (float) Math.PI / 2;
+    private float rotation = 2 * (float) Math.PI;
     private float distanceTravelled = 0;
     private int ammoCount;
     private int missileAmmoCount;
@@ -30,15 +34,34 @@ public class Spaceship extends GameObject {
     private float missileLeftOver;
     private int health;
     private int score;
-    private VisionCone visionCone;
+
+    private List <BulletPlayer> bullets;
+    private BulletPlayer currentBulletPlayer;
+    private List<MissilePlayer> missiles;
+    private MissilePlayer currentMissilePlayer;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
+
         ammoCount = 10000;
         missileAmmoCount = 10;
         health = 1000;
         score = 0;
         setCollisionRadius(20f);
+
+        bullets = new ArrayList<>();
+        missiles = new ArrayList<>();
+
+    }
+
+    public Map<String, GameObject> getBullet() {
+        Map<String, GameObject> result = new HashMap<>();
+        for(GameObject bullet: bullets) {
+            for (int i = 0; i < ammoCount; i++) {
+                result.put("shotBullet" + i, bullet);
+            }
+        }
+        return result;
     }
 
     public enum ThrottleState {
@@ -58,7 +81,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum AimingState {
-        TWELVE, SIX, THREE, NINE
+        TWELVE, SIX, THREE, NINE, NONE
     }
 
     @Override
@@ -94,6 +117,46 @@ public class Spaceship extends GameObject {
 
     }
 
+    public void scoringSystem(GameObject enemy, GameObject subject){
+
+        if (enemy instanceof Enemy){
+            if(subject instanceof BulletPlayer){
+                if (Math.sqrt(
+                        (((enemy.getPosition().x) - (subject.getPosition().x)))
+                                * ((enemy.getPosition().x) - (subject.getPosition().x))
+                                + ((enemy.getPosition().y) - (subject.getPosition().y))
+                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
+                    int damage = subject.randomDamageCountBullet();
+                    this.setScore(this.getScore() + damage);
+                    if(enemy.getHealth() <= 0){
+                        this.setScore(this.getScore() + 50);
+                    }
+                }
+            }
+        }
+
+        if (enemy instanceof Enemy){
+            if(subject instanceof MissilePlayer){
+                if (Math.sqrt(
+                        (((enemy.getPosition().x) - (subject.getPosition().x)))
+                                * ((enemy.getPosition().x) - (subject.getPosition().x))
+                                + ((enemy.getPosition().y) - (subject.getPosition().y))
+                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
+                    int damage = subject.randomDamageCountMissile();
+                    this.setScore(this.getScore() + damage);
+                    if(enemy.getHealth() <= 0){
+                        this.setScore(this.getScore() + 100);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
@@ -109,7 +172,8 @@ public class Spaceship extends GameObject {
 
         switch (throttle) {
             case FORWARDS:
-                speed = Math.min(speed + delta * 280f, 450);
+                speed = Math.min(speed + delta * 280f, 400);
+                toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius()/5));
                 break;
             case REVERSE:
                 speed = Math.max(speed - delta * 155f, -230);
@@ -137,6 +201,7 @@ public class Spaceship extends GameObject {
         switch (powerState) {
             case BOOSTING:
                 speed = Math.min(speed + delta * 400f, 600);
+                toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius()/3));
                 break;
             case ULTRA_DODGE:
                 Random random = new Random();
@@ -153,6 +218,7 @@ public class Spaceship extends GameObject {
 
         switch (shootingState) {
             case FIRING:
+                bullets.add(currentBulletPlayer);
 
                 float shotCount = delta / 0.2f + shotLeftOver;
 
@@ -166,14 +232,16 @@ public class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-
-                    toAdd.add(new BulletPlayer("bullito", getPosition(),
-                            getSpace(), getAngle(), 400, 2f));
+                    currentBulletPlayer = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f);
+                    toAdd.add(currentBulletPlayer);
 
                 }
+
+
                 break;
 
             case MISSILE_FIRING:
+                missiles.add(currentMissilePlayer);
 
                 float missileCount = delta / 0.5f + missileLeftOver;
 
@@ -186,28 +254,35 @@ public class Spaceship extends GameObject {
                     missileLeftOver = 0;
                 }
                 for (int i = 0; i < exactMissileCount; i++) {
-                    toAdd.add(new MissilePlayer("missilito", getPosition(),
-                            getSpace(), getAngle(), 200, 5f));
+                    currentMissilePlayer = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 200, 5f);
+                    toAdd.add(currentMissilePlayer);
                 }
+
                 break;
 
             case PACIFIST:
                 shotLeftOver = 0;
                 break;
         }
+
         switch (aimingState){
             case TWELVE:
-                this.setOrientation(angle);
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), getAngle(), getCollisionRadius()/4));
                 break;
             case SIX:
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), -getAngle(), getCollisionRadius()/4));
                 break;
             case THREE:
-                this.setOrientation(angle + 3f * delta);
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (-getAngle() + Math.PI/2), getCollisionRadius()/4));
                 break;
             case NINE:
-                this.setOrientation(angle - 3f * delta);
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (getAngle() + Math.PI/2), getCollisionRadius()/4));
+                break;
+            case NONE:
+
                 break;
         }
+
     }
 
     @Override

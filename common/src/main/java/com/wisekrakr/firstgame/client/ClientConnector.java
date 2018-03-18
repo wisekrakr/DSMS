@@ -91,8 +91,9 @@ public class ClientConnector {
     }
 
     public void controlSpaceship(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
-                                 Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState) {
-        queue.add(new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState));
+                                 Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState,
+                                 Spaceship.AimingState aimingState) {
+        queue.add(new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState, aimingState));
     }
 
     public SpaceSnapshot getLatestSnapshot() {
