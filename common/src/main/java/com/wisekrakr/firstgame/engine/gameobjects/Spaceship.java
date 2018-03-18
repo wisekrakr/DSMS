@@ -1,8 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 
+import com.wisekrakr.firstgame.engine.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
@@ -17,7 +20,6 @@ import java.util.*;
 
 public class Spaceship extends GameObject {
 
-    private VisionCone cone;
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
@@ -51,6 +53,7 @@ public class Spaceship extends GameObject {
 
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
+
 
     }
 
@@ -152,13 +155,26 @@ public class Spaceship extends GameObject {
                 }
             }
         }
+
+        if (enemy instanceof Enemy){
+            if(subject instanceof Shield){
+                if (Math.sqrt(
+                        (((enemy.getPosition().x) - (subject.getPosition().x)))
+                                * ((enemy.getPosition().x) - (subject.getPosition().x))
+                                + ((enemy.getPosition().y) - (subject.getPosition().y))
+                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
+                    if(enemy.getHealth() <= 0){
+                        this.setScore(this.getScore() + 250);
+                    }
+                }
+            }
+        }
     }
-
-
-
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;
@@ -201,7 +217,7 @@ public class Spaceship extends GameObject {
         switch (powerState) {
             case BOOSTING:
                 speed = Math.min(speed + delta * 400f, 600);
-                toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius()/3));
+                toAdd.add(new Exhaust("exhaust", getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius()/3));
                 break;
             case ULTRA_DODGE:
                 Random random = new Random();
@@ -212,12 +228,12 @@ public class Spaceship extends GameObject {
                 break;
             case VISION_CONE:
 
-
                 break;
         }
 
         switch (shootingState) {
             case FIRING:
+
                 bullets.add(currentBulletPlayer);
 
                 float shotCount = delta / 0.2f + shotLeftOver;
@@ -236,8 +252,6 @@ public class Spaceship extends GameObject {
                     toAdd.add(currentBulletPlayer);
 
                 }
-
-
                 break;
 
             case MISSILE_FIRING:

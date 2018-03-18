@@ -3,22 +3,18 @@ package com.wisekrakr.firstgame.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.GamePadControls;
 import com.wisekrakr.firstgame.GameState;
@@ -70,7 +66,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
     private GameState gameState = GameState.RUN;
     private boolean paused = false;
 
-    private MyAssetManager myAssetManager;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -134,9 +129,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         }
 //Todo: make a pausescreen .... this here does not work ... use the pausescreeen class.
 
-        MyAssetManager myAssetManager = new MyAssetManager();
-        myAssetManager.loadSounds();
-        myAssetManager.assetManager.finishLoading();
+
 
 
     }
@@ -201,7 +194,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         //final Spaceship.ShootingState shootingState;
         if(Gdx.input.isKeyPressed(shootKey) || this.controller.getAxis(GamePadControls.AXIS_RIGHT_TRIGGER ) < -0.2f){
             shootingState = Spaceship.ShootingState.FIRING;
-            Sound laser = myAssetManager.assetManager.get("laser.mp3");
         }else if(Gdx.input.isKeyPressed(altShootKey) || this.controller.getButton(GamePadControls.BUTTON_RB )){
             shootingState = Spaceship.ShootingState.MISSILE_FIRING;
         }else {
@@ -227,6 +219,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
     @Override
     public void render(float delta) {
+
         switch (gameState) {
             case RUN:
                 handleInput();
@@ -558,10 +551,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
             case PAUSE:
                 paused = true;
-
+                pause();
+                container.setScreen(new PauseScreen(batch, container));
                 break;
             case RESUME:
                 paused = false;
+                resume();
                 setGameState(GameState.RUN);
                 break;
             case STOPPED:
@@ -570,23 +565,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
         }
 
-
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-        this.gameState = GameState.PAUSE;
-    }
-
-    @Override
-    public void resume() {
-        this.gameState = GameState.RESUME;
-    }
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
@@ -638,6 +618,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                 gameState = GameState.RESUME;
             }else {
                 gameState = GameState.PAUSE;
+                //container.setScreen(new PauseScreen(batch, container));
             }
             System.out.println("start button pushed");
         }

@@ -4,6 +4,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -182,11 +183,12 @@ public class SpaceEngine {
                         if (enemy instanceof Enemy) {
                             for(GameObject subject: gameObjects){
                                 if(subject instanceof BulletPlayer){
-                                   // enemy.scoring(player, subject);
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                                 if(subject instanceof MissilePlayer){
-                                    //enemy.scoring(player, subject);
+                                    ((Player) player).scoringSystem(enemy, subject);
+                                }
+                                if(subject instanceof Shield){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                             }

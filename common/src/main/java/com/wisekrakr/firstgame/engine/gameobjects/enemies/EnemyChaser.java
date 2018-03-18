@@ -55,34 +55,6 @@ public class EnemyChaser extends Enemy {
 
     }
 
-/*
-    public void scoring(GameObject player, GameObject subject) {
-
-        if (player instanceof Player) {
-            if (subject instanceof BulletPlayer) {
-                if (Math.sqrt(
-                        (((this.getPosition().x) - (subject.getPosition().x)))
-                                * ((this.getPosition().x) - (subject.getPosition().x))
-                                + ((this.getPosition().y) - (subject.getPosition().y))
-                                * ((this.getPosition().y) - (subject.getPosition().y)))
-                        < (this.getCollisionRadius() + subject.getCollisionRadius())) {
-                    ((Player) player).setScore(((Player) player).getScore() + 10);
-                }
-            }
-            if (subject instanceof MissilePlayer) {
-                if (Math.sqrt(
-                        (((this.getPosition().x) - (subject.getPosition().x)))
-                                * ((this.getPosition().x) - (subject.getPosition().x))
-                                + ((this.getPosition().y) - (subject.getPosition().y))
-                                * ((this.getPosition().y) - (subject.getPosition().y)))
-                        < (this.getCollisionRadius() + subject.getCollisionRadius())) {
-                    ((Player) player).setScore(((Player) player).getScore() + 22);
-                }
-            }
-        }
-    }
-*/
-
     @Override
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {

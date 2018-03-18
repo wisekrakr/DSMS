@@ -9,19 +9,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class MyAssetManager {
 
-    public final com.badlogic.gdx.assets.AssetManager assetManager = new com.badlogic.gdx.assets.AssetManager();
+    public com.badlogic.gdx.assets.AssetManager assetManager = new com.badlogic.gdx.assets.AssetManager();
 
-    private final String laserSound = "laser.mp3";
+    private String laserSound = "laser.mp3";
+    private String hadokenSound = "hadoken1.wav";
 
-    private final String myFont = "myFont.fnt";
-    private final String myFontBlack = "myFontBlack.fnt";
+    private String myFont = "myFont.fnt";
+    private String myFontBlack = "myFontBlack.fnt";
 
-    private final String sparksPE ="particles/sparks.pe";
+    private String sparksPE ="particles/sparks.pe";
 
-    private final String skin = "uiskin.json";
+    private String skin = "uiskin.json";
 
     public void loadSounds(){
         assetManager.load(laserSound, Sound.class);
+
     }
 
     public void loadFonts(){

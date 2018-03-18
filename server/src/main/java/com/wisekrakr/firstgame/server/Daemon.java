@@ -1,5 +1,7 @@
 package com.wisekrakr.firstgame.server;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.GameState;
 import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
@@ -31,11 +33,10 @@ public class Daemon {
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
 
-
-
         Thread timeThread = new Thread(new Runnable() {
             @Override
             public void run() {
+
                 engine.elapseTime(0);
                 long then = System.nanoTime();
                 while (true) {
@@ -182,6 +183,7 @@ public class Daemon {
                                 engine.addGameObject(result);
 
                                 myFleet.put(request.getName(), result);
+
 
 
                             }
