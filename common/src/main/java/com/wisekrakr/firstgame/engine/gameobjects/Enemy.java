@@ -41,7 +41,15 @@ public class Enemy extends GameObject {
         PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
     }
 
-
+    @Override
+    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if(distanceBetween(this, subject) <= 300){
+            float angle = angleBetween(this, subject);
+            setPosition(new Vector2(getPosition().x -=  Math.cos(angle)  , getPosition().y -=  Math.sin(angle) ));
+            setOrientation(angle);
+            setDirection(angle);
+        }
+    }
 
     @Override
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {

@@ -11,9 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.wisekrakr.firstgame.Constants;
+import com.wisekrakr.firstgame.GameState;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.MyAssetManager;
@@ -25,6 +27,8 @@ import java.util.UUID;
 
 
 public class StartScreen extends ScreenAdapter {
+
+    private GameState gameState = GameState.GAME_READY;
 
     private FitViewport viewport;
     private Stage stage;
@@ -48,13 +52,7 @@ public class StartScreen extends ScreenAdapter {
 
         this.container = container;
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
-        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
-        viewport.apply();
-        camera.update();
-
-        stage = new Stage();
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Gdx.input.setInputProcessor(stage);
 
         //font = new BitmapFont(Gdx.files.internal("myFont.fnt"));
@@ -101,7 +99,6 @@ public class StartScreen extends ScreenAdapter {
 
             }
         });
-
     }
 
     @Override
@@ -110,35 +107,8 @@ public class StartScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.getBatch().setProjectionMatrix(camera.combined);
-
         stage.act();
         stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-    }
-
-    @Override
-    public void pause() {
-        super.pause();
-    }
-
-    @Override
-    public void resume() {
-        super.resume();
     }
 
     @Override

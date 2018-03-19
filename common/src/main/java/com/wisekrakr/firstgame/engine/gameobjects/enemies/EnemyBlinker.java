@@ -79,6 +79,7 @@ public class EnemyBlinker extends Enemy {
 
     @Override
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(subject, toDelete, toAdd);
         if (subject instanceof Player) {
 
             if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {

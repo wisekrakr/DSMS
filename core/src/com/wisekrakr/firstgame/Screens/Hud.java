@@ -145,7 +145,6 @@ public class Hud implements Disposable {
             missileCountLabel.setText(Integer.toString((Integer) myself.missileProperties().get("missileCount")));
             healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
             nameSetLabel.setText(String.format("%s", myself.getType()));
-
         }
     }
 

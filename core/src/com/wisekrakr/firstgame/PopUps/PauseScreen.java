@@ -17,12 +17,12 @@ import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 
 
-public class PauseScreen extends ScreenAdapter {
+public class PauseScreen implements Disposable {
 
     private final SpaceGameContainer container;
+    private TextureRegion textureRegion;
     private OrthographicCamera camera;
     private Texture texture;
-    private Sprite sprite;
     public Stage stage;
     private SpriteBatch batch;
 
@@ -32,34 +32,36 @@ public class PauseScreen extends ScreenAdapter {
         this.batch = batch;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
         camera.update();
 
-        texture = new Texture("badlogic.jpg");
-        sprite = new Sprite(texture);
+        texture = new Texture("pausedPic2.png");
+        textureRegion = new TextureRegion(texture,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+        stage = new Stage();
 
         Gdx.input.setInputProcessor(stage);
 
+
     }
 
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    public void update(float delta){
 
-        batch.setProjectionMatrix(camera.combined);
+        camera.update();
+        stage.getBatch().setProjectionMatrix(camera.combined);
 
         batch.begin();
-        sprite.draw(batch);
+        batch.draw(textureRegion, 0,0);
         batch.end();
 
     }
 
-
-
     @Override
     public void dispose() {
+        stage.dispose();
         batch.dispose();
         texture.dispose();
     }

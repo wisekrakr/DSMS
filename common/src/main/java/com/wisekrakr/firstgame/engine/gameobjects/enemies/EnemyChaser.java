@@ -58,29 +58,24 @@ public class EnemyChaser extends Enemy {
     @Override
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
-
             if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
                 float angle = angleBetween(this, subject);
-
-                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
-
                 setOrientation(angle);
-
                 setDirection(angle);
-
             }
         }
     }
 
     @Override
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(subject, toDelete, toAdd);
+
         if (subject instanceof Player) {
-
             if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
-
                 attackState = AttackState.SHOOT;
-            }else{
+            }
+            else{
                 attackState = AttackState.PACIFIST;
             }
         }
@@ -163,5 +158,12 @@ public class EnemyChaser extends Enemy {
         return result;
     }
 
+    @Override
+    public Map<String, Object> getHealthProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
 
+        result.put("health", health);
+
+        return result;
+    }
 }
