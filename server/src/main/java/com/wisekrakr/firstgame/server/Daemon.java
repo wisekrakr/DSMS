@@ -1,12 +1,8 @@
 package com.wisekrakr.firstgame.server;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.GameState;
 import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
-import com.wisekrakr.firstgame.engine.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
@@ -79,6 +75,15 @@ public class Daemon {
                     50,randomGenerator.nextFloat() * 2000 - 1000,
                     22f, engine);
             engine.addGameObject(chaser);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            EnemyPest pest = new EnemyPest("Pest", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    25,randomGenerator.nextFloat() * 2000 - 1000,
+                    15f, engine);
+            engine.addGameObject(pest);
         }
 /*
         for (int i = 0; i < 5; i++) {

@@ -7,18 +7,13 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.GamePadControls;
 import com.wisekrakr.firstgame.GameState;
@@ -26,7 +21,6 @@ import com.wisekrakr.firstgame.PopUps.DamagePopUp;
 import com.wisekrakr.firstgame.PopUps.PauseScreen;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
-import com.wisekrakr.firstgame.engine.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
@@ -38,6 +32,7 @@ import java.util.Random;
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter implements ControllerListener{
 
+    private InfoHud infoHud;
     private Hud hud;
     private SpriteBatch batch;
     private Stage stage;
@@ -140,7 +135,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         pauseScreen = new PauseScreen(batch, container);
 
         damagePopUp = new DamagePopUp(batch, container);
-
 
     }
 
@@ -263,21 +257,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     minimapcamera.update();
 */
                     myself = object;
-/*
-                    FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
-                    BitmapFont font = new BitmapFont(fontStyle);
-                    font.getData().setScale(0.4f);
 
-                    Label label = new Label("Wisekrakr", new Label.LabelStyle(font, Color.WHITE));
-
-                    Table table = new Table();
-                    table.setBounds(object.getPosition().x, object.getPosition().y, 40, 40);
-                    table.setFillParent(true);
-
-                    table.add(label);
-
-                    stage.addActor(table);
-                    */
                 }
 
                 if ("Player".equals(object.getType())) {
@@ -372,7 +352,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                } else if ("EnemyBlinker".equals(object.getType())) {
+                } else if ("EnemyPest".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.FIREBRICK);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+                }else if ("EnemyBlinker".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLDENROD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 

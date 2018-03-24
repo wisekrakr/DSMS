@@ -5,29 +5,35 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
-public class EnemyChaser extends Enemy {
+/**
+ * EnemyPest is an Enemy that will clone a smaller version of itself when it gets hit with a missile. So kill it with something else!
+ */
 
-
+public class EnemyPest extends Enemy {
     private static final float DEFAULT_ENEMY_SPEED = 220;
     private static final float AGRO_DISTANCE = 950;
     private static final float ATTACK_DISTANCE = 750;
-    private static final float CHANGE_DIRECTION_TIME = 5;
+    private static final float CHANGE_DIRECTION_TIME = 10;
     private float direction;
     private float radius;
     private int health;
     private float shotLeftOver;
+    private float clonesLeftOver;
     private int ammoCount;
+    private int cloneCount;
     private float time;
     private AttackState attackState = AttackState.PACIFIST;
 
-    public EnemyChaser(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+    public EnemyPest(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
@@ -35,6 +41,9 @@ public class EnemyChaser extends Enemy {
 
         ammoCount = (int) Double.POSITIVE_INFINITY;;
         shotLeftOver = ammoCount;
+
+        cloneCount = 1000;
+        cloneCount = (int) clonesLeftOver;
 
         setCollisionRadius(radius);
         setHealth(health);
@@ -52,6 +61,10 @@ public class EnemyChaser extends Enemy {
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 15);
         }
+        if(subject instanceof MissilePlayer){
+            Random random = new Random();
+            toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, getOrientation(), 10f, getSpace()));
+        }
 
     }
 
@@ -60,9 +73,10 @@ public class EnemyChaser extends Enemy {
         if (subject instanceof Player) {
             if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
                 float angle = angleBetween(this, subject);
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
+                setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle)));
                 setOrientation(angle);
                 setDirection(angle);
+
             }
         }
     }
@@ -85,6 +99,8 @@ public class EnemyChaser extends Enemy {
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        super.elapseTime(delta, toDelete, toAdd);
 
         time += delta;
 
@@ -120,10 +136,9 @@ public class EnemyChaser extends Enemy {
 
             case PACIFIST:
                 shotLeftOver = 0;
+                clonesLeftOver = 0;
                 break;
         }
-
-
 
     }
 
@@ -134,6 +149,14 @@ public class EnemyChaser extends Enemy {
 
     public void setAmmoCount(int ammoCount) {
         this.ammoCount = ammoCount;
+    }
+
+    public int getCloneCount() {
+        return cloneCount;
+    }
+
+    public void setCloneCount(int cloneCount) {
+        this.cloneCount = cloneCount;
     }
 
     public float getDirection() {
@@ -164,4 +187,5 @@ public class EnemyChaser extends Enemy {
 
         return result;
     }
+
 }

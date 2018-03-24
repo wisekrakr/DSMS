@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyPest;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;

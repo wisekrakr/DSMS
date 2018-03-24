@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -146,6 +147,7 @@ public class Hud implements Disposable {
             healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
             nameSetLabel.setText(String.format("%s", myself.getType()));
         }
+
     }
 
     @Override
