@@ -27,30 +27,17 @@ import java.util.UUID;
 
 
 public class StartScreen extends ScreenAdapter {
-
     private GameState gameState = GameState.GAME_READY;
 
     private FitViewport viewport;
     private Stage stage;
     private Skin skin;
     private BitmapFont font;
-    private SpaceGameContainer container;
     private OrthographicCamera camera;
 
-    public StartScreen(final SpaceGameContainer container) {
-        final ClientConnector connector = new ClientConnector(new InetSocketAddress("localhost", 12345));
-
-        try {
-            connector.start();
-        } catch (Exception e) {
-            System.out.println("Cannot connect: " + e.getMessage());
-
-            return;
-        }
-
+    public StartScreen(final SpaceGameContainer container, final ClientConnector connector) {
         final String unique = UUID.randomUUID().toString();
 
-        this.container = container;
 
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Gdx.input.setInputProcessor(stage);

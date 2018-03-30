@@ -2,27 +2,34 @@ package com.wisekrakr.firstgame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
-import com.wisekrakr.firstgame.PopUps.PauseScreen;
-import com.wisekrakr.firstgame.Screens.PlayerPerspectiveScreen;
 import com.wisekrakr.firstgame.Screens.StartScreen;
 import com.wisekrakr.firstgame.client.ClientConnector;
-import com.wisekrakr.firstgame.engine.MyAssetManager;
 
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.UUID;
 
 
 public class SpaceGameContainer extends Game {
+    private String host;
+    private int port;
+
+    public SpaceGameContainer(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
     @Override
     public void create() {
+        final ClientConnector connector = new ClientConnector(new InetSocketAddress(host, port));
+        try {
+            connector.start();
+        } catch (Exception e) {
+            System.out.println("Unable to set up a connection to the server, will exit");
 
-        setScreen(new StartScreen(this));
+            Gdx.app.exit();
 
+            return;
+        }
+
+        setScreen(new StartScreen(this, connector));
     }
-
 }

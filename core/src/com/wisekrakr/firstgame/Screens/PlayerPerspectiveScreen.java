@@ -46,8 +46,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
     private OrthographicCamera camera;
     private OrthographicCamera minimapcamera;
 
-    private SpaceGameContainer container;
-
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer miniMapShapeRender;
 
@@ -79,8 +77,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         this.connector = connector;
         this.mySelf = mySelf;
         this.players = players;
-
-        container = new SpaceGameContainer();
 
         int i = 0;
         for (String name: players) {
@@ -137,7 +133,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         }
 //Todo: make a pausescreen .... this here does not work ... use the pausescreeen class.
 
-        pauseScreen = new PauseScreen(batch, container);
+// TODO:        pauseScreen = new PauseScreen(batch, container);
 
 
 
@@ -333,7 +329,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
                     weapon = object;
-                    damagePopUp = new DamagePopUp(batch, container);
+                    // TODO: damagePopUp = new DamagePopUp(batch, container);
                     //addDamagePopUp(weapon, delta);
 
                 } else if ("BulletEnemy".equals(object.getType())) {
@@ -510,7 +506,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
                     weapon = object;
-                    damagePopUp = new DamagePopUp(batch, container);
+                    // TODO: damagePopUp = new DamagePopUp(batch, container);
                     //addDamagePopUp(weapon, delta);
 
                 } else if ("PowerUpMissile".equals(object.getType())) {
