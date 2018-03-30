@@ -85,7 +85,7 @@ public class Daemon {
                     15f, engine);
             engine.addGameObject(pest);
         }
-/*
+
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -135,7 +135,7 @@ public class Daemon {
                     30f, engine);
             engine.addGameObject(enemyHomer);
         }
-*/
+
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
