@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
@@ -19,8 +20,8 @@ public class DamagePopUp implements Disposable {
     private Table table;
     private Integer damageCount;
     private Label damageCountLabel;
-
     private SpaceGameContainer container;
+
     private OrthographicCamera camera;
     public Stage stage;
     private SpriteBatch batch;
@@ -48,20 +49,12 @@ public class DamagePopUp implements Disposable {
 
         damageCountLabel = new Label(String.format("%06d", damageCount), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
 
-        stage.addActor(table);
+        stage.addActor(damageCountLabel);
     }
 
     public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){
-
-
-        if ("EnemyChaser".equals(object.getType())) {
-
-            damageCountLabel.setText(Integer.toString((Integer) object.healthProperties().get("health")));
-            damageCountLabel.setPosition(object.getPosition().x + 20, object.getPosition().y = 20);
-
-        }
-
-
+        damageCountLabel.setText(Integer.toString((Integer) object.scoreProperties().get("damage")));
+        damageCountLabel.setPosition(object.getPosition().x, object.getPosition().y, Align.bottomRight);
     }
 
     @Override

@@ -62,7 +62,6 @@ public class EnemyPest extends Enemy {
             subject.setHealth(subject.getHealth() - 15);
         }
         if(subject instanceof MissilePlayer){
-            Random random = new Random();
             toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, getOrientation(), 10f, getSpace()));
         }
 

@@ -178,6 +178,7 @@ public class SpaceEngine {
             /**
              * Scoring system
              */
+
             for (GameObject player : gameObjects) {
                 if (player instanceof Player) {
                     for (GameObject enemy : gameObjects) {

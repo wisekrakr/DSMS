@@ -37,6 +37,7 @@ public class Enemy extends GameObject {
        this.setDirection(direction + (float) Math.PI);
     }
 
+
     public enum AttackState {
         PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
     }

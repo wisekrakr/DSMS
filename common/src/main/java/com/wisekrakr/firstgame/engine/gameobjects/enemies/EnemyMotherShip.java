@@ -157,4 +157,13 @@ public class EnemyMotherShip extends Enemy {
 
         return result;
     }
+
+    @Override
+    public Map<String, Object> getHealthProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("health", health);
+
+        return result;
+    }
 }

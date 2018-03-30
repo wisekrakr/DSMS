@@ -15,7 +15,6 @@ public class BulletEnemy extends Bullet {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
         if(subject instanceof Player){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - randomDamageCountBullet());

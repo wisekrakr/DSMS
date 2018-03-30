@@ -85,6 +85,7 @@ public class EnemyChaser extends Enemy {
 
     @Override
     public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.elapseTime(delta, toDelete, toAdd);
 
         time += delta;
 

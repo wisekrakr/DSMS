@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import com.wisekrakr.firstgame.engine.MyAssetManager;
@@ -15,6 +16,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.VisionCone;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
+import javafx.scene.effect.MotionBlur;
 
 import java.util.*;
 
@@ -27,8 +29,7 @@ public class Spaceship extends GameObject {
     private AimingState aimingState = AimingState.NONE;
 
     private float speed = 0;
-    private float angle = (float) Math.PI / 2;
-    private float rotation = 2 * (float) Math.PI;
+    private float angle = (float) (Math.PI / 2);
     private float distanceTravelled = 0;
     private int ammoCount;
     private int missileAmmoCount;
@@ -37,10 +38,12 @@ public class Spaceship extends GameObject {
     private int health;
     private int score;
 
-    private List <BulletPlayer> bullets;
-    private BulletPlayer currentBulletPlayer;
-    private List<MissilePlayer> missiles;
-    private MissilePlayer currentMissilePlayer;
+    private List<BulletPlayer>bullets;
+    private List<MissilePlayer>missiles;
+    private BulletPlayer currentBullet;
+    private MissilePlayer currentMissile;
+
+    private Vector2 newPosition;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -49,26 +52,17 @@ public class Spaceship extends GameObject {
         missileAmmoCount = 10;
         health = 1000;
         score = 0;
+
         setCollisionRadius(20f);
 
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
 
-
     }
 
-    public Map<String, GameObject> getBullet() {
-        Map<String, GameObject> result = new HashMap<>();
-        for(GameObject bullet: bullets) {
-            for (int i = 0; i < ammoCount; i++) {
-                result.put("shotBullet" + i, bullet);
-            }
-        }
-        return result;
-    }
 
     public enum ThrottleState {
-        REVERSE, STATUSQUO, FORWARDS
+        REVERSE, STATUSQUO, FORWARDS, LEFT_BOOSTER, RIGHT_BOOSTER
     }
 
     public enum SteeringState {
@@ -130,8 +124,7 @@ public class Spaceship extends GameObject {
                                 + ((enemy.getPosition().y) - (subject.getPosition().y))
                                 * ((enemy.getPosition().y) - (subject.getPosition().y)))
                         < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
-                    int damage = subject.randomDamageCountBullet();
-                    this.setScore(this.getScore() + damage);
+                    this.setScore(this.getScore() + ((BulletPlayer) subject).getDamage());
                     if(enemy.getHealth() <= 0){
                         this.setScore(this.getScore() + 50);
                     }
@@ -147,8 +140,7 @@ public class Spaceship extends GameObject {
                                 + ((enemy.getPosition().y) - (subject.getPosition().y))
                                 * ((enemy.getPosition().y) - (subject.getPosition().y)))
                         < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
-                    int damage = subject.randomDamageCountMissile();
-                    this.setScore(this.getScore() + damage);
+                    this.setScore(this.getScore() + ((MissilePlayer) subject).getDamage());
                     if(enemy.getHealth() <= 0){
                         this.setScore(this.getScore() + 100);
                     }
@@ -178,9 +170,13 @@ public class Spaceship extends GameObject {
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;
+                //getPosition().rotateRad(3f * delta);
+                setRotation(getPosition().angle());
                 break;
             case RIGHT:
                 angle = angle - 3f * delta;
+                //getPosition().rotateRad(-3f * delta);
+                setRotation(getPosition().angle());
                 break;
         }
 
@@ -193,6 +189,22 @@ public class Spaceship extends GameObject {
                 break;
             case REVERSE:
                 speed = Math.max(speed - delta * 155f, -230);
+                break;
+            case STATUSQUO:
+                /*
+                setOrientation(angle); // this way i can choose a angle and shoot of that way
+                setPosition(new Vector2(
+                        getPosition().x + delta * speed * angle,
+                        getPosition().y + delta * speed * angle
+                ));
+                */
+
+                break;
+            case RIGHT_BOOSTER:
+
+                break;
+            case LEFT_BOOSTER:
+
                 break;
         }
 
@@ -208,10 +220,9 @@ public class Spaceship extends GameObject {
         }
  //Player movement
         setPosition(new Vector2(
-                getPosition().x + delta * speed * (float) Math.cos(angle),
-                getPosition().y + delta * speed * (float) Math.sin(angle)
+                getPosition().x + delta * speed * (float)Math.cos(angle),
+                getPosition().y + delta * speed * (float)Math.sin(angle)
         ));
-
         setOrientation(angle);
 
         switch (powerState) {
@@ -233,8 +244,7 @@ public class Spaceship extends GameObject {
 
         switch (shootingState) {
             case FIRING:
-
-                bullets.add(currentBulletPlayer);
+                bullets.add(currentBullet);
 
                 float shotCount = delta / 0.2f + shotLeftOver;
 
@@ -248,14 +258,14 @@ public class Spaceship extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    currentBulletPlayer = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f);
-                    toAdd.add(currentBulletPlayer);
+                    currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f);
+                    currentBullet.setDamage(currentBullet.randomDamageCountBullet());
+                    toAdd.add(currentBullet);
 
                 }
                 break;
-
             case MISSILE_FIRING:
-                missiles.add(currentMissilePlayer);
+                missiles.add(currentMissile);
 
                 float missileCount = delta / 0.5f + missileLeftOver;
 
@@ -268,8 +278,9 @@ public class Spaceship extends GameObject {
                     missileLeftOver = 0;
                 }
                 for (int i = 0; i < exactMissileCount; i++) {
-                    currentMissilePlayer = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 200, 5f);
-                    toAdd.add(currentMissilePlayer);
+                    currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 200, 5f);
+                    currentMissile.setDamage(currentMissile.randomDamageCountMissile());
+                    toAdd.add(currentMissile);
                 }
 
                 break;
@@ -348,6 +359,7 @@ public class Spaceship extends GameObject {
     public void setScore(int score) {
         this.score = score;
     }
+
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {

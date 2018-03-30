@@ -7,13 +7,17 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.GamePadControls;
 import com.wisekrakr.firstgame.GameState;
@@ -68,6 +72,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
     private GameState gameState = GameState.RUN;
     private boolean paused = false;
     private SpaceSnapshot.GameObjectSnapshot myself;
+    private SpaceSnapshot.GameObjectSnapshot weapon;
 
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
@@ -134,7 +139,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
         pauseScreen = new PauseScreen(batch, container);
 
-        damagePopUp = new DamagePopUp(batch, container);
+
 
     }
 
@@ -142,7 +147,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
     private void handleInput() {
         applyControl(controller, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.X, first);
-        //applyControl(Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COLON, Input.Keys.COMMA, second);
+        //applyControl(controller, Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COLON, Input.Keys.COMMA, second);
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)){
             camera.zoom += 0.08;
@@ -174,6 +179,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         } else if (Gdx.input.isKeyPressed(reverseKey) || this.controller.getAxis(GamePadControls.AXIS_LEFT_Y )> 0.2f) {
             throttle = Spaceship.ThrottleState.REVERSE;
             backgroundStars.setSpeed(backgroundStars.getSpeed()- 0.0007f);
+        }else if (Gdx.input.isKeyPressed(reverseKey) || this.controller.getAxis(GamePadControls.AXIS_RIGHT_X )> 0.2f) {
+            throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
+
+        }else if (Gdx.input.isKeyPressed(reverseKey) || this.controller.getAxis(GamePadControls.AXIS_RIGHT_X )< -0.2f) {
+            throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
+
         } else {
             throttle = Spaceship.ThrottleState.STATUSQUO;
         }
@@ -232,7 +243,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
     }
 
-    private void renderGameObjects(){
+    private void renderGameObjects(float delta){
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -321,6 +332,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
+                    weapon = object;
+                    damagePopUp = new DamagePopUp(batch, container);
+                    //addDamagePopUp(weapon, delta);
+
                 } else if ("BulletEnemy".equals(object.getType())) {
 
                     shapeRenderer.setColor(Color.YELLOW);
@@ -352,6 +367,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
+
                 } else if ("EnemyPest".equals(object.getType())) {
                     shapeRenderer.setColor(Color.FIREBRICK);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -362,6 +378,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
 
                 }else if ("EnemyBlinker".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLDENROD);
@@ -408,6 +425,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.setColor(Color.ORANGE);
                     shapeRenderer.circle(object.getPosition().x + 6 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius / 2));
+
 
                 } else if ("EnemyDodger".equals(object.getType())) {
                     shapeRenderer.setColor(Color.LIME);
@@ -489,8 +507,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
                     Float radius = (Float) object.extraProperties().get("radius");
-
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+
+                    weapon = object;
+                    damagePopUp = new DamagePopUp(batch, container);
+                    //addDamagePopUp(weapon, delta);
 
                 } else if ("PowerUpMissile".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLD);
@@ -556,8 +577,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         batch.setProjectionMatrix(stage.getCamera().combined);
         hud.update(myself, delta);
         hud.stage.draw();
-
-
+    }
+//TODO: this way is way too complicated and will not work. addDamagePopUp in shaperenderer
+    private void addDamagePopUp(SpaceSnapshot.GameObjectSnapshot weapon, float delta){
+        batch.setProjectionMatrix(stage.getCamera().combined);
+        damagePopUp.update(weapon, delta);
+        damagePopUp.stage.draw();
     }
 
     @Override
@@ -579,7 +604,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
                 addBackground();
 
-                renderGameObjects();
+                renderGameObjects(delta);
 
                 addHud(myself, delta);
 
@@ -679,6 +704,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         if(axisCode == GamePadControls.AXIS_LEFT_Y){
             throttle = Spaceship.ThrottleState.REVERSE;
         }
+        if(axisCode == GamePadControls.AXIS_RIGHT_X){
+            throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
+        }
+        if(axisCode == GamePadControls.AXIS_RIGHT_X){
+            throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
+        }
         if(axisCode == GamePadControls.AXIS_LEFT_X){
             steering = Spaceship.SteeringState.LEFT;
         }
@@ -688,19 +719,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         if(axisCode == GamePadControls.AXIS_RIGHT_TRIGGER){
             shootingState = Spaceship.ShootingState.FIRING;
             System.out.println("pew pew");
-        }
-
-        if(axisCode == GamePadControls.AXIS_RIGHT_Y){
-            aimingState = Spaceship.AimingState.TWELVE;
-        }
-        if(axisCode == GamePadControls.AXIS_RIGHT_Y){
-            aimingState = Spaceship.AimingState.SIX;
-        }
-        if(axisCode == GamePadControls.AXIS_RIGHT_X){
-            aimingState = Spaceship.AimingState.THREE;
-        }
-        if(axisCode == GamePadControls.AXIS_RIGHT_X){
-            aimingState = Spaceship.AimingState.NINE;
         }
 
 

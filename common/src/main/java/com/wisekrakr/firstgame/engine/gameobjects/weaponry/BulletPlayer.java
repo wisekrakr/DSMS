@@ -6,9 +6,14 @@ import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class BulletPlayer extends Bullet {
+
+    private int damage;
+
     public BulletPlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space, direction, speed, radius);
     }
@@ -17,9 +22,25 @@ public class BulletPlayer extends Bullet {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Enemy){
             toDelete.add(this);
-            subject.setHealth(subject.getHealth() - randomDamageCountBullet());
+            subject.setHealth(subject.getHealth() - getDamage());
 
         }
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    @Override
+    public Map<String, Object> getDamageProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("damage", damage);
+
+        return result;
+    }
 }

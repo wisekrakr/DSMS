@@ -63,14 +63,10 @@ public class EnemyBlinker extends Enemy {
 
             if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
                 float angle = angleBetween(this, subject);
-
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
-
                 setOrientation(angle);
-
                 setDirection(angle);
-
                 attackState = AttackState.CHASE;
 
             }

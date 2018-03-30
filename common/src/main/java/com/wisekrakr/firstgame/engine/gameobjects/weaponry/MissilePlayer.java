@@ -15,8 +15,9 @@ public class MissilePlayer extends GameObject {
     private float radius;
     private float time;
     private float speed;
+    private int damage;
 
-    private static final float ATTACK_RANGE = 300;
+    private static final float ATTACK_RANGE = 400;
     private static final float DEFAULT_MISSILE_SPEED = 750;
 
     public MissilePlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
@@ -28,11 +29,12 @@ public class MissilePlayer extends GameObject {
         setCollisionRadius(radius);
     }
 
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Enemy){
-            subject.setHealth(subject.getHealth() - randomDamageCountMissile());
             toDelete.add(this);
+            subject.setHealth(subject.getHealth() - getDamage());
         }
     }
 
@@ -91,6 +93,17 @@ public class MissilePlayer extends GameObject {
         this.direction = direction;
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+    public float getRadius() {
+        return radius;
+    }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -100,7 +113,12 @@ public class MissilePlayer extends GameObject {
         return result;
     }
 
-    public float getRadius() {
-        return radius;
+    @Override
+    public Map<String, Object> getDamageProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("damage", damage);
+
+        return result;
     }
 }
