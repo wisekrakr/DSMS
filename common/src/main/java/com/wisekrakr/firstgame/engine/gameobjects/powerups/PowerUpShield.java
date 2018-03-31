@@ -3,8 +3,6 @@ package com.wisekrakr.firstgame.engine.gameobjects.powerups;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.Set;
 
@@ -24,7 +22,7 @@ public class PowerUpShield extends GameObject {
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         time += delta;
 

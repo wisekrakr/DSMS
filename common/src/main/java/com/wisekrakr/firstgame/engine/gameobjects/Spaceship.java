@@ -1,12 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import com.wisekrakr.firstgame.engine.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
@@ -16,7 +12,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.VisionCone;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
-import javafx.scene.effect.MotionBlur;
 
 import java.util.*;
 
@@ -28,7 +23,8 @@ public class Spaceship extends GameObject {
     private ShootingState shootingState = ShootingState.PACIFIST;
     private AimingState aimingState = AimingState.NONE;
 
-    private float speed = 0;
+    private float speedX = 0;
+    private float speedY = 0;
     private float angle = (float) (Math.PI / 2);
     private float distanceTravelled = 0;
     private int ammoCount;
@@ -38,12 +34,13 @@ public class Spaceship extends GameObject {
     private int health;
     private int score;
 
-    private List<BulletPlayer>bullets;
-    private List<MissilePlayer>missiles;
+    private List<BulletPlayer> bullets;
+    private List<MissilePlayer> missiles;
     private BulletPlayer currentBullet;
     private MissilePlayer currentMissile;
 
     private Vector2 newPosition;
+    private float lastDodge = -100000f;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -57,9 +54,12 @@ public class Spaceship extends GameObject {
 
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
-
     }
 
+    public void modifySpeed(float v) {
+        speedX = speedX * v;
+        speedY = speedY * v;
+    }
 
     public enum ThrottleState {
         REVERSE, STATUSQUO, FORWARDS, LEFT_BOOSTER, RIGHT_BOOSTER
@@ -84,7 +84,7 @@ public class Spaceship extends GameObject {
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-       // angle = angle + (float) Math.PI;
+        // angle = angle + (float) Math.PI;
     }
 
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState) {
@@ -97,66 +97,66 @@ public class Spaceship extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(subject instanceof Enemy){
+        if (subject instanceof Enemy) {
             toDelete.add(subject);
             Random random = new Random();
-            int debrisParts = random.nextInt(10)+1;
-            for(int i = 0; i < debrisParts; i++) {
+            int debrisParts = random.nextInt(10) + 1;
+            for (int i = 0; i < debrisParts; i++) {
                 toAdd.add(new Debris("debris", subject.getPosition(), getSpace(), random.nextFloat() * 10,
                         random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * ((Enemy) subject).getRadius()));
 
             }
         }
-        if(subject instanceof PowerUpShield){
+        if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
-            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), this.getCollisionRadius() *2));
+            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), this.getCollisionRadius() * 2));
         }
 
     }
 
-    public void scoringSystem(GameObject enemy, GameObject subject){
+    public void scoringSystem(GameObject enemy, GameObject subject) {
 
-        if (enemy instanceof Enemy){
-            if(subject instanceof BulletPlayer){
+        if (enemy instanceof Enemy) {
+            if (subject instanceof BulletPlayer) {
                 if (Math.sqrt(
                         (((enemy.getPosition().x) - (subject.getPosition().x)))
                                 * ((enemy.getPosition().x) - (subject.getPosition().x))
                                 + ((enemy.getPosition().y) - (subject.getPosition().y))
                                 * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
                     this.setScore(this.getScore() + ((BulletPlayer) subject).getDamage());
-                    if(enemy.getHealth() <= 0){
+                    if (enemy.getHealth() <= 0) {
                         this.setScore(this.getScore() + 50);
                     }
                 }
             }
         }
 
-        if (enemy instanceof Enemy){
-            if(subject instanceof MissilePlayer){
+        if (enemy instanceof Enemy) {
+            if (subject instanceof MissilePlayer) {
                 if (Math.sqrt(
                         (((enemy.getPosition().x) - (subject.getPosition().x)))
                                 * ((enemy.getPosition().x) - (subject.getPosition().x))
                                 + ((enemy.getPosition().y) - (subject.getPosition().y))
                                 * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
                     this.setScore(this.getScore() + ((MissilePlayer) subject).getDamage());
-                    if(enemy.getHealth() <= 0){
+                    if (enemy.getHealth() <= 0) {
                         this.setScore(this.getScore() + 100);
                     }
                 }
             }
         }
 
-        if (enemy instanceof Enemy){
-            if(subject instanceof Shield){
+        if (enemy instanceof Enemy) {
+            if (subject instanceof Shield) {
                 if (Math.sqrt(
                         (((enemy.getPosition().x) - (subject.getPosition().x)))
                                 * ((enemy.getPosition().x) - (subject.getPosition().x))
                                 + ((enemy.getPosition().y) - (subject.getPosition().y))
                                 * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())){
-                    if(enemy.getHealth() <= 0){
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
+                    if (enemy.getHealth() <= 0) {
                         this.setScore(this.getScore() + 250);
                     }
                 }
@@ -165,8 +165,7 @@ public class Spaceship extends GameObject {
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;
@@ -179,17 +178,24 @@ public class Spaceship extends GameObject {
                 setRotation(getPosition().angle());
                 break;
         }
+        setOrientation(angle);
 
-        float oldSpeed = speed;
 
         switch (throttle) {
             case FORWARDS:
-                speed = Math.min(speed + delta * 280f, 400);
-                toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius()/5));
+                speedX = speedX + delta * 280f * (float) Math.cos(angle);
+                speedY = speedY + delta * 280f * (float) Math.sin(angle);
+
+                toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius() / 5));
                 break;
+
             case REVERSE:
-                speed = Math.max(speed - delta * 155f, -230);
+                speedX = speedX - delta * 280f * (float) Math.cos(angle);
+                speedY = speedY - delta * 280f * (float) Math.sin(angle);
+
+//                speed = Math.max(speed - delta * 155f, -230);
                 break;
+
             case STATUSQUO:
                 /*
                 setOrientation(angle); // this way i can choose a angle and shoot of that way
@@ -200,47 +206,73 @@ public class Spaceship extends GameObject {
                 */
 
                 break;
+
             case RIGHT_BOOSTER:
-
                 break;
+
             case LEFT_BOOSTER:
-
                 break;
         }
 
-        if (Math.signum(oldSpeed) == -Math.signum(speed)) {
-            speed = 0;
-        }
+        float speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
 
-        distanceTravelled = distanceTravelled + Math.abs(delta * speed);
-
- //Player gets deleted when health is 0
-        if (health <= 0) {
-            toDelete.add(this);
+        if (speed > 400) {
+            speedX = speedX * 400 / speed;
+            speedY = speedY * 400 / speed;
         }
- //Player movement
-        setPosition(new Vector2(
-                getPosition().x + delta * speed * (float)Math.cos(angle),
-                getPosition().y + delta * speed * (float)Math.sin(angle)
-        ));
-        setOrientation(angle);
 
         switch (powerState) {
             case BOOSTING:
-                speed = Math.min(speed + delta * 400f, 600);
-                toAdd.add(new Exhaust("exhaust", getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius()/3));
+                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + 400, 600);
+                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + 400, 600);
+
+                speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+                if (speed > 600) {
+                    speedX = speedX * 600 / speed;
+                    speedY = speedY * 600 / speed;
+                }
+
+                toAdd.add(new Exhaust("exhaust", getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius() / 3));
                 break;
+
             case ULTRA_DODGE:
-                Random random = new Random();
-                setPosition(new Vector2(
-                        getPosition().x + delta * speed * (random.nextFloat() * 200 - 100),
-                        getPosition().y + delta * speed * (random.nextFloat() * 200 - 100)
-                ));
-                break;
-            case VISION_CONE:
+                if (clock - lastDodge > 10) {
+                    lastDodge = clock;
+                    Random random = new Random();
+                    setPosition(new Vector2(
+                            getPosition().x + delta * speed * (random.nextFloat() * 200 - 100),
+                            getPosition().y + delta * speed * (random.nextFloat() * 200 - 100)
+                    ));
+                }
 
                 break;
+
+            case VISION_CONE:
+                break;
         }
+
+//        speed = Math.min(speed + delta * 280f, 400);
+
+        /*
+        if (Math.signum(oldSpeed) == -Math.signum(speed)) {
+            speed = 0;
+        }
+        */
+
+        //Player gets deleted when health is 0
+        if (health <= 0) {
+            toDelete.add(this);
+        }
+
+        //Player movement
+        setPosition(new Vector2(
+                getPosition().x + delta * speedX,
+                getPosition().y + delta * speedY
+        ));
+
+
+        distanceTravelled = distanceTravelled + Math.abs(delta * speed);
+
 
         switch (shootingState) {
             case FIRING:
@@ -290,18 +322,18 @@ public class Spaceship extends GameObject {
                 break;
         }
 
-        switch (aimingState){
+        switch (aimingState) {
             case TWELVE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), getAngle(), getCollisionRadius()/4));
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), getAngle(), getCollisionRadius() / 4));
                 break;
             case SIX:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), -getAngle(), getCollisionRadius()/4));
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), -getAngle(), getCollisionRadius() / 4));
                 break;
             case THREE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (-getAngle() + Math.PI/2), getCollisionRadius()/4));
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (-getAngle() + Math.PI / 2), getCollisionRadius() / 4));
                 break;
             case NINE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (getAngle() + Math.PI/2), getCollisionRadius()/4));
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (getAngle() + Math.PI / 2), getCollisionRadius() / 4));
                 break;
             case NONE:
 
@@ -330,14 +362,6 @@ public class Spaceship extends GameObject {
 
     public ShootingState getShootingState() {
         return shootingState;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
     }
 
     public float getAngle() {

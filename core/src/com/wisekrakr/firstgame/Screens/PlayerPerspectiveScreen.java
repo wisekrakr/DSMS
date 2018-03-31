@@ -4,26 +4,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
-import com.wisekrakr.firstgame.Constants;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.GamePadControls;
 import com.wisekrakr.firstgame.GameState;
 import com.wisekrakr.firstgame.PopUps.DamagePopUp;
 import com.wisekrakr.firstgame.PopUps.PauseScreen;
-import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
@@ -34,8 +35,9 @@ import java.util.Random;
 /**
  * Created by David on 11/23/2017.
  */
-public class PlayerPerspectiveScreen extends ScreenAdapter implements ControllerListener{
+public class PlayerPerspectiveScreen extends ScreenAdapter {
 
+    private final Label myselfLabel;
     private InfoHud infoHud;
     private Hud hud;
     private SpriteBatch batch;
@@ -58,7 +60,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
     private String first = null;
     private String second = null;
 
-    private boolean hasController = true;
     private Controller controller;
 
     private Spaceship.SteeringState steering;
@@ -72,6 +73,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
     private SpaceSnapshot.GameObjectSnapshot myself;
     private SpaceSnapshot.GameObjectSnapshot weapon;
 
+    /**
+     * Stage for labels etc overlayed on the perspective screen, but using a hud-like orientation
+     */
+    private Stage overlayStage;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -79,22 +84,20 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
         this.players = players;
 
         int i = 0;
-        for (String name: players) {
+        for (String name : players) {
             if (first == null) {
                 first = name;
-            }
-            else if (second == null) {
+            } else if (second == null) {
                 second = name;
             }
             connector.createSpaceship(name, 100 + i * 50, 0);
-             i = i +1;
+            i = i + 1;
         }
-
-        stage = new Stage();
+        batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
-        camera.update();
+        stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), batch);
+        camera.zoom = 1.2f;
 
 // TODO: how to create a minimap?
 
@@ -118,37 +121,143 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 //        miniMapShapeRender = new ShapeRenderer();
 //        miniMapShapeRender.setAutoShapeType(true);
 
-        batch = new SpriteBatch();
+        hud = new Hud();
 
-        hud = new Hud(batch);
+        Controllers.addListener(new ControllerAdapter() {
+            @Override
+            public void connected(Controller controller) {
+                if (PlayerPerspectiveScreen.this.controller == null) {
+                    PlayerPerspectiveScreen.this.controller = controller;
+                }
+            }
 
-        Controllers.addListener(this);
+            @Override
+            public void disconnected(Controller controller) {
+                if (PlayerPerspectiveScreen.this.controller == controller) {
+                    PlayerPerspectiveScreen.this.controller = null;
 
-        if(Controllers.getControllers().size == 0)
-        {
-            hasController = false;
-            System.out.println("no controller detected");
-        }else {
+                    if (Controllers.getControllers().size > 0) {
+                        PlayerPerspectiveScreen.this.controller = Controllers.getControllers().first();
+                    }
+                }
+            }
+
+            @Override
+            public boolean buttonDown(Controller controller, int buttonCode) {
+                if (controller == PlayerPerspectiveScreen.this.controller) {
+                    if (buttonCode == GamePadControls.BUTTON_B) {
+                        powerState = Spaceship.SpecialPowerState.BOOSTING;
+                        System.out.println("boooooost!");
+                    }
+                    if (buttonCode == GamePadControls.BUTTON_RB) {
+                        shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+                        System.out.println("firing missile");
+                    }
+                    if (buttonCode == GamePadControls.BUTTON_X) {
+                        powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
+                        System.out.println("the jukes!");
+                    }
+                    if (buttonCode == GamePadControls.BUTTON_Y) {
+                        aimingState = Spaceship.AimingState.TWELVE;
+                        System.out.println("buzz");
+                    }
+
+                    if (buttonCode == GamePadControls.BUTTON_START) {
+                        if (paused) {
+                            gameState = GameState.RESUME;
+                        } else {
+                            gameState = GameState.PAUSE;
+                        }
+                        System.out.println("start button pushed");
+                    }
+                    if (buttonCode == GamePadControls.BUTTON_BACK) {
+                        gameState = GameState.STOPPED;
+                        System.out.println("back button pushed");
+                    }
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean buttonUp(Controller controller, int buttonCode) {
+                return false;
+            }
+
+            @Override
+            public boolean axisMoved(Controller controller, int axisCode, float value) {
+                if (axisCode == GamePadControls.AXIS_LEFT_Y) {
+                    throttle = Spaceship.ThrottleState.FORWARDS;
+                }
+                if (axisCode == GamePadControls.AXIS_LEFT_Y) {
+                    throttle = Spaceship.ThrottleState.REVERSE;
+                }
+                if (axisCode == GamePadControls.AXIS_RIGHT_X) {
+                    throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
+                }
+                if (axisCode == GamePadControls.AXIS_RIGHT_X) {
+                    throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
+                }
+                if (axisCode == GamePadControls.AXIS_LEFT_X) {
+                    steering = Spaceship.SteeringState.LEFT;
+                }
+                if (axisCode == GamePadControls.AXIS_LEFT_X) {
+                    steering = Spaceship.SteeringState.RIGHT;
+                }
+                if (axisCode == GamePadControls.AXIS_RIGHT_TRIGGER) {
+                    shootingState = Spaceship.ShootingState.FIRING;
+                    System.out.println("pew pew");
+                }
+
+
+                return false;
+            }
+
+            @Override
+            public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+
+                if (value == GamePadControls.BUTTON_DPAD_UP) {
+                    camera.zoom += 0.08;
+                }
+                if (value == GamePadControls.BUTTON_DPAD_DOWN) {
+                    camera.zoom -= 0.08;
+                }
+
+                return false;
+            }
+
+        });
+
+        if (Controllers.getControllers().size > 0) {
             controller = Controllers.getControllers().first();
         }
+
 //Todo: make a pausescreen .... this here does not work ... use the pausescreeen class.
 
 // TODO:        pauseScreen = new PauseScreen(batch, container);
 
+        FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
+        BitmapFont font = new BitmapFont(fontStyle);
+        font.getData().setScale(0.4f);
 
+        overlayStage = new Stage();
 
+        myselfLabel = new Label("Myself", new Label.LabelStyle(font, Color.WHITE));
+        myselfLabel.setVisible(false);
+        overlayStage.addActor(myselfLabel);
     }
 
 
-
     private void handleInput() {
-        applyControl(controller, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.X, first);
+        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.X, first);
         //applyControl(controller, Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COLON, Input.Keys.COMMA, second);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.zoom += 0.08;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             camera.zoom -= 0.08;
         }
 /*
@@ -159,7 +268,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
     }
 
-    private void applyControl(Controller controller, int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
+    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
                               int shootKey, int altShootKey, int resetKey, final String target) {
         /*
         if (Gdx.input.isKeyPressed(resetKey)) {
@@ -167,104 +276,159 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
             target.resetControl();
         }
         */
-        this.controller = controller;
         //final Spaceship.ThrottleState throttle;
-        if (Gdx.input.isKeyPressed(forwardsKey) || this.controller.getAxis(GamePadControls.AXIS_LEFT_Y) < -0.2f ) {
-            throttle = Spaceship.ThrottleState.FORWARDS;
-            backgroundStars.setSpeed(backgroundStars.getSpeed() + 0.0007f);
-        } else if (Gdx.input.isKeyPressed(reverseKey) || this.controller.getAxis(GamePadControls.AXIS_LEFT_Y )> 0.2f) {
-            throttle = Spaceship.ThrottleState.REVERSE;
-            backgroundStars.setSpeed(backgroundStars.getSpeed()- 0.0007f);
-        }else if (Gdx.input.isKeyPressed(reverseKey) || this.controller.getAxis(GamePadControls.AXIS_RIGHT_X )> 0.2f) {
-            throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
 
-        }else if (Gdx.input.isKeyPressed(reverseKey) || this.controller.getAxis(GamePadControls.AXIS_RIGHT_X )< -0.2f) {
-            throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
+        throttle = Spaceship.ThrottleState.STATUSQUO;
 
-        } else {
-            throttle = Spaceship.ThrottleState.STATUSQUO;
+        if (controller != null) {
+            if (controller.getAxis(GamePadControls.AXIS_LEFT_Y) < -0.2f) {
+                throttle = Spaceship.ThrottleState.FORWARDS;
+                backgroundStars.setSpeed(backgroundStars.getSpeed() + 0.0007f);
+            } else if (controller.getAxis(GamePadControls.AXIS_LEFT_Y) > 0.2f) {
+                throttle = Spaceship.ThrottleState.REVERSE;
+                backgroundStars.setSpeed(backgroundStars.getSpeed() - 0.0007f);
+            } else if (controller.getAxis(GamePadControls.AXIS_RIGHT_X) > 0.2f) {
+                throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
+            } else if (controller.getAxis(GamePadControls.AXIS_RIGHT_X) < -0.2f) {
+                throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
+            }
         }
 
-        //final Spaceship.SteeringState steering;
-        if (Gdx.input.isKeyPressed(leftKey) || this.controller.getAxis(GamePadControls.AXIS_LEFT_X) > 0.2f) {
-            steering = Spaceship.SteeringState.LEFT;
-        } else if (Gdx.input.isKeyPressed(rightKey) || this.controller.getAxis(GamePadControls.AXIS_LEFT_X) < -0.2f) {
-            steering = Spaceship.SteeringState.RIGHT;
-        } else {
-            steering = Spaceship.SteeringState.CENTER;
+        if (throttle == Spaceship.ThrottleState.STATUSQUO) {
+            if (Gdx.input.isKeyPressed(forwardsKey)) {
+                throttle = Spaceship.ThrottleState.FORWARDS;
+                backgroundStars.setSpeed(backgroundStars.getSpeed() + 0.0007f);
+            } else if (Gdx.input.isKeyPressed(reverseKey)) {
+                throttle = Spaceship.ThrottleState.REVERSE;
+                backgroundStars.setSpeed(backgroundStars.getSpeed() - 0.0007f);
+            } else if (Gdx.input.isKeyPressed(reverseKey)) {
+                throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
+            } else if (Gdx.input.isKeyPressed(reverseKey)) {
+                throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
+            }
         }
 
-        //Spaceship.SpecialPowerState powerState;
-        if(Gdx.input.isKeyPressed(boostKey) || this.controller.getButton(GamePadControls.BUTTON_B )) {
-            powerState = Spaceship.SpecialPowerState.BOOSTING;
-        } else if(Gdx.input.isKeyPressed(dodgeKey) || this.controller.getButton(GamePadControls.BUTTON_X )){
-            powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
-        }else {
-            powerState = Spaceship.SpecialPowerState.NO_POWER;
+        steering = Spaceship.SteeringState.CENTER;
+
+        if (controller != null) {
+            if (controller.getAxis(GamePadControls.AXIS_LEFT_X) > 0.2f) {
+                steering = Spaceship.SteeringState.LEFT;
+            } else if (controller.getAxis(GamePadControls.AXIS_LEFT_X) < -0.2f) {
+                steering = Spaceship.SteeringState.RIGHT;
+            }
+        }
+
+        if (steering == Spaceship.SteeringState.CENTER) {
+            //final Spaceship.SteeringState steering;
+            if (Gdx.input.isKeyPressed(leftKey)) {
+                steering = Spaceship.SteeringState.LEFT;
+            } else if (Gdx.input.isKeyPressed(rightKey)) {
+                steering = Spaceship.SteeringState.RIGHT;
+            }
+        }
+
+        powerState = Spaceship.SpecialPowerState.NO_POWER;
+
+        if (controller != null) {
+            if (controller.getButton(GamePadControls.BUTTON_B)) {
+                powerState = Spaceship.SpecialPowerState.BOOSTING;
+            } else if (controller.getButton(GamePadControls.BUTTON_X)) {
+                powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
+            }
+        }
+
+        if (powerState == Spaceship.SpecialPowerState.NO_POWER) {
+            //Spaceship.SpecialPowerState powerState;
+            if (Gdx.input.isKeyPressed(boostKey)) {
+                powerState = Spaceship.SpecialPowerState.BOOSTING;
+            } else if (Gdx.input.isKeyPressed(dodgeKey)) {
+                powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
+            }
+        }
+
+        shootingState = Spaceship.ShootingState.PACIFIST;
+
+        if (controller != null) {
+            if (this.controller.getAxis(GamePadControls.AXIS_RIGHT_TRIGGER) < -0.2f) {
+                shootingState = Spaceship.ShootingState.FIRING;
+            } else if (this.controller.getButton(GamePadControls.BUTTON_RB)) {
+                shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+            }
         }
 
         //final Spaceship.ShootingState shootingState;
-        if(Gdx.input.isKeyPressed(shootKey) || this.controller.getAxis(GamePadControls.AXIS_RIGHT_TRIGGER ) < -0.2f){
-            shootingState = Spaceship.ShootingState.FIRING;
-        }else if(Gdx.input.isKeyPressed(altShootKey) || this.controller.getButton(GamePadControls.BUTTON_RB )){
-            shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-        }else {
-            shootingState = Spaceship.ShootingState.PACIFIST;
+        if (shootingState == Spaceship.ShootingState.PACIFIST) {
+            if (Gdx.input.isKeyPressed(shootKey)) {
+                shootingState = Spaceship.ShootingState.FIRING;
+            } else if (Gdx.input.isKeyPressed(altShootKey)) {
+                shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+            }
         }
 
-        if(this.controller.getAxis(GamePadControls.AXIS_RIGHT_Y) < -0.2f){
-            aimingState = Spaceship.AimingState.TWELVE;
-        }else if (this.controller.getAxis(GamePadControls.AXIS_RIGHT_Y) > 0.2f){
-            aimingState = Spaceship.AimingState.SIX;
-        }else if (this.controller.getAxis(GamePadControls.AXIS_RIGHT_X) > 0.2f){
-            aimingState = Spaceship.AimingState.THREE;
-        }else if (this.controller.getAxis(GamePadControls.AXIS_RIGHT_X) < -0.2f){
-            aimingState = Spaceship.AimingState.NINE;
-        }else {
-            aimingState = Spaceship.AimingState.NONE;
+        if (controller != null) {
+            if (controller.getAxis(GamePadControls.AXIS_RIGHT_Y) < -0.2f) {
+                aimingState = Spaceship.AimingState.TWELVE;
+            } else if (controller.getAxis(GamePadControls.AXIS_RIGHT_Y) > 0.2f) {
+                aimingState = Spaceship.AimingState.SIX;
+            } else if (controller.getAxis(GamePadControls.AXIS_RIGHT_X) > 0.2f) {
+                aimingState = Spaceship.AimingState.THREE;
+            } else if (controller.getAxis(GamePadControls.AXIS_RIGHT_X) < -0.2f) {
+                aimingState = Spaceship.AimingState.NINE;
+            } else {
+                aimingState = Spaceship.AimingState.NONE;
+            }
         }
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState);
     }
 
-    private void addBackground(){
+    private void addBackground() {
         batch.begin();
         backgroundStars.draw(batch, 10);
         batch.end();
     }
 
-    private void setPauseScreen(float delta){
+    private void setPauseScreen(float delta) {
         pauseScreen.update(delta);
         pauseScreen.setCamera(camera);
 
     }
 
-    private void renderGameObjects(float delta){
+    private void renderGameObjects() {
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-//        miniMapShapeRender.setProjectionMatrix(minimapcamera.combined);
+        boolean foundMySelf = false;
+        for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
+            if (mySelf.equals(object.getName())) {
+                camera.position.set(object.getPosition().x, object.getPosition().y, 100);
+                camera.up.set(1, 0, 0);
+                camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
 
+                camera.update();
+                foundMySelf = true;
+                break;
+            }
+        }
+
+        if (!foundMySelf) {
+            myselfLabel.setText("My corpse");
+        }
+        else {
+            myselfLabel.setText("My ship");
+        }
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        miniMapShapeRender.begin(ShapeRenderer.ShapeType.Filled);
 
         myself = null;
-
         if (snapshot != null) {
             for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
                 if (mySelf.equals(object.getName())) {
-                    camera.position.set(object.getPosition().x, object.getPosition().y, 100);
-                    camera.up.set(1, 0, 0);
-                    camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
-                    camera.update();
-/*
-                    minimapcamera.position.set(object.getPosition().x, object.getPosition().y, 100);
-                    minimapcamera.up.set(1, 0, 0);
-                    minimapcamera.translate(-1000,-1000);
-                    minimapcamera.update();
-*/
                     myself = object;
 
+                    Vector3 projection = camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
+                    myselfLabel.setVisible(true);
+                    myselfLabel.setPosition(projection.x, projection.y + 30, Align.center);
                 }
 
                 if ("Player".equals(object.getType())) {
@@ -276,16 +440,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (20f / 2));
-
-/*
-                    miniMapShapeRender.setColor(Color.GOLD);
-                    miniMapShapeRender.set(ShapeRenderer.ShapeType.Filled);
-                    miniMapShapeRender.circle(object.getPosition().x, object.getPosition().y, 10);
-                    miniMapShapeRender.setColor(Color.BLUE);
-                    miniMapShapeRender.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
-                            object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
-                            (10/2));
-*/
                 } else if ("VisionCone".equals(object.getType())) {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -293,8 +447,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     Float radius = (Float) object.extraProperties().get("radius");
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
-
-
                 } else if ("Exhaust".equals(object.getType())) {
                     Random random = new Random();
                     int randomNumber = random.nextInt(4) + 1;
@@ -318,9 +470,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                     Float radius = (Float) object.extraProperties().get("radius");
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
-
-
-                }else if ("BulletPlayer".equals(object.getType())) {
+                } else if ("BulletPlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -376,7 +526,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
 
-                }else if ("EnemyBlinker".equals(object.getType())) {
+                } else if ("EnemyBlinker".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLDENROD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -560,22 +710,24 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
                 }
-
-
             }
         }
 
         shapeRenderer.end();
-//        miniMapShapeRender.end();
     }
 
-    private void addHud(SpaceSnapshot.GameObjectSnapshot myself, float delta){
-        batch.setProjectionMatrix(stage.getCamera().combined);
+    private void updateOverlay() {
+        overlayStage.draw();
+    }
+//        batch.setProjectionMatrix(stage.getCamera().combined);
+
+    private void updateHud(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
         hud.update(myself, delta);
         hud.stage.draw();
     }
-//TODO: this way is way too complicated and will not work. addDamagePopUp in shaperenderer
-    private void addDamagePopUp(SpaceSnapshot.GameObjectSnapshot weapon, float delta){
+
+    //TODO: this way is way too complicated and will not work. addDamagePopUp in shaperenderer
+    private void addDamagePopUp(SpaceSnapshot.GameObjectSnapshot weapon, float delta) {
         batch.setProjectionMatrix(stage.getCamera().combined);
         damagePopUp.update(weapon, delta);
         damagePopUp.stage.draw();
@@ -583,10 +735,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
     @Override
     public void render(float delta) {
-
         switch (gameState) {
             case GAME_READY:
-
                 break;
 
             case RUN:
@@ -600,9 +750,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
                 addBackground();
 
-                renderGameObjects(delta);
+                renderGameObjects();
 
-                addHud(myself, delta);
+                updateHud(myself, delta);
+                updateOverlay();
 
                 break;
 
@@ -611,11 +762,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
                 pause();
                 setPauseScreen(delta);
                 break;
+
             case RESUME:
                 paused = false;
                 resume();
                 setGameState(GameState.RUN);
                 break;
+
             case STOPPED:
                 Gdx.app.exit();
                 break;
@@ -634,118 +787,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter implements Controller
 
         stage.dispose();
         shapeRenderer.dispose();
- //       miniMapShapeRender.dispose();
+        //       miniMapShapeRender.dispose();
         batch.dispose();
 
     }
 
-//Todo: Fix how the controller connects to the game.
-    @Override
-    public void connected(Controller controller) {
-        hasController = true;
-    }
-
-    @Override
-    public void disconnected(Controller controller) {
-        hasController = false;
-    }
-
-    @Override
-    public boolean buttonDown(Controller controller, int buttonCode) {
-
-        if(buttonCode == GamePadControls.BUTTON_B){
-            powerState = Spaceship.SpecialPowerState.BOOSTING;
-            System.out.println("boooooost!");
-        }
-        if(buttonCode == GamePadControls.BUTTON_RB){
-            shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-            System.out.println("firing missile");
-        }
-        if(buttonCode == GamePadControls.BUTTON_X){
-            powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
-            System.out.println("the jukes!");
-        }
-        if(buttonCode == GamePadControls.BUTTON_Y){
-            aimingState = Spaceship.AimingState.TWELVE;
-            System.out.println("buzz");
-        }
-
-        if(buttonCode == GamePadControls.BUTTON_START){
-            if(paused){
-                gameState = GameState.RESUME;
-            }else {
-                gameState = GameState.PAUSE;
-            }
-            System.out.println("start button pushed");
-        }
-        if(buttonCode == GamePadControls.BUTTON_BACK){
-            gameState = GameState.STOPPED;
-            System.out.println("back button pushed");
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean buttonUp(Controller controller, int buttonCode) {
-        return false;
-    }
-
-    @Override
-    public boolean axisMoved(Controller controller, int axisCode, float value) {
-
-        if(axisCode == GamePadControls.AXIS_LEFT_Y){
-            throttle = Spaceship.ThrottleState.FORWARDS;
-        }
-        if(axisCode == GamePadControls.AXIS_LEFT_Y){
-            throttle = Spaceship.ThrottleState.REVERSE;
-        }
-        if(axisCode == GamePadControls.AXIS_RIGHT_X){
-            throttle = Spaceship.ThrottleState.LEFT_BOOSTER;
-        }
-        if(axisCode == GamePadControls.AXIS_RIGHT_X){
-            throttle = Spaceship.ThrottleState.RIGHT_BOOSTER;
-        }
-        if(axisCode == GamePadControls.AXIS_LEFT_X){
-            steering = Spaceship.SteeringState.LEFT;
-        }
-        if(axisCode == GamePadControls.AXIS_LEFT_X){
-            steering = Spaceship.SteeringState.RIGHT;
-        }
-        if(axisCode == GamePadControls.AXIS_RIGHT_TRIGGER){
-            shootingState = Spaceship.ShootingState.FIRING;
-            System.out.println("pew pew");
-        }
-
-
-        return false;
-    }
-
-    @Override
-    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-
-        if(value == GamePadControls.BUTTON_DPAD_UP){
-            camera.zoom += 0.08;
-        }
-        if(value == GamePadControls.BUTTON_DPAD_DOWN){
-            camera.zoom -= 0.08;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
-        return false;
-    }
-
-    @Override
-    public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
-        return false;
-    }
-
-    @Override
-    public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
-        return false;
-    }
 }

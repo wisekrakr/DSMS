@@ -5,7 +5,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -31,7 +30,7 @@ public class PowerUpMissile extends GameObject{
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         time += delta;
 
         if(time >= SPAWN_TIME){

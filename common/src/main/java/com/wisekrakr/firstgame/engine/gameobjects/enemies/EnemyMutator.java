@@ -62,8 +62,8 @@ public class EnemyMutator extends Enemy {
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.elapseTime(delta, toDelete, toAdd);
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.elapseTime(clock, delta, toDelete, toAdd);
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );

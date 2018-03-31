@@ -15,7 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
@@ -53,7 +55,7 @@ public class Hud implements Disposable {
     private Label healthLabel;
     private Label healthCountLabel;
 
-    public Hud(SpriteBatch batch) {
+    public Hud() {
         worldTimer = 0;
         timeCounter = 0;
         distanceCounter = 1;
@@ -63,8 +65,8 @@ public class Hud implements Disposable {
         healthCounter = 1000;
         name = "Wisekrakr";
 
-        viewport = new FitViewport(Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, batch);
+        viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport);
 
         Table table = new Table();
         table.top();
@@ -130,24 +132,30 @@ public class Hud implements Disposable {
         return nameSetLabel;
     }
 
-
-
     public void update(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
-
         timeCounter += delta;
         if (timeCounter >= 1) {
             timeCounter = 0;
             worldTimer++;
 
             timeCountLabel.setText(String.format("%s",worldTimer));
-            distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
-            scoreCountLabel.setText(Integer.toString((Integer) myself.scoreProperties().get("score")));
-            ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
-            missileCountLabel.setText(Integer.toString((Integer) myself.missileProperties().get("missileCount")));
-            healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
-            nameSetLabel.setText(String.format("%s", myself.getType()));
+            if (myself != null) {
+                distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
+                scoreCountLabel.setText(Integer.toString((Integer) myself.scoreProperties().get("score")));
+                ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
+                missileCountLabel.setText(Integer.toString((Integer) myself.missileProperties().get("missileCount")));
+                healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
+                nameSetLabel.setText(String.format("%s", myself.getType()));
+            }
+            else {
+                distanceCountLabel.setText("N/A");
+                scoreCountLabel.setText("N/A");
+                ammoCountLabel.setText("N/A");
+                missileCountLabel.setText("N/A");
+                healthCountLabel.setText("N/A");
+                nameSetLabel.setText("N/A");
+            }
         }
-
     }
 
     @Override

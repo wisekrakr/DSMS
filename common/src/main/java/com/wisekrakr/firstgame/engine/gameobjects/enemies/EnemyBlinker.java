@@ -5,7 +5,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.LaserBeam;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.LaserBeamEnemy;
 
 import java.util.HashMap;
@@ -90,9 +89,9 @@ public class EnemyBlinker extends Enemy {
 
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        super.elapseTime(delta, toDelete, toAdd);
+        super.elapseTime(clock, delta, toDelete, toAdd);
 
         time += delta;
 

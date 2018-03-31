@@ -31,12 +31,12 @@ public class Spores extends HomingWeaponsEnemy {
         if(subject instanceof Player){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - randomDamageCountBullet());
-            ((Player) subject).setSpeed(((Player) subject).getSpeed() /2);
+            ((Player) subject).modifySpeed(0.5f);
         }
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_TENTACLE_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_TENTACLE_SPEED * delta)
         );

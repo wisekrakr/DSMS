@@ -1,10 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
@@ -33,7 +31,7 @@ public abstract class GameObject extends Actor{
     /**
      * update the state taking into account an elapsed time of delta seconds
      */
-    public abstract void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd);
+    public abstract void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd);
     public final float getOrientation() {
         return orientation;
     }

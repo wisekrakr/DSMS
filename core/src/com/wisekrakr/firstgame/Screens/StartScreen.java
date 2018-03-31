@@ -75,7 +75,7 @@ public class StartScreen extends ScreenAdapter {
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                container.setScreen(new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A", unique + "-B"), unique + "-A"));
+                container.setScreen(new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A"), unique + "-A"));
 
             }
         });

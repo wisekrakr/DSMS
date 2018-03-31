@@ -5,13 +5,11 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -97,9 +95,9 @@ public class EnemyPest extends Enemy {
 
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        super.elapseTime(delta, toDelete, toAdd);
+        super.elapseTime(clock, delta, toDelete, toAdd);
 
         time += delta;
 

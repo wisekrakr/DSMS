@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyPest;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
@@ -19,6 +18,7 @@ public class SpaceEngine {
     private final float width;
     private final float height;
     private Set<GameObject> gameObjects = new HashSet<GameObject>();
+    private float clock = 0f;
 
 
     public SpaceEngine(float minX, float minY, float width, float height) {
@@ -93,11 +93,12 @@ public class SpaceEngine {
 
     public void elapseTime(final float delta) {
         synchronized (monitor) {
+            clock = clock + delta;
             Set<GameObject> toDelete = new HashSet<GameObject>();
             Set<GameObject> toAdd = new HashSet<GameObject>();
 
             for (GameObject target : gameObjects) {
-                target.elapseTime(delta, toDelete, toAdd);
+                target.elapseTime(clock, delta, toDelete, toAdd);
             }
 
             for (GameObject target : gameObjects) {

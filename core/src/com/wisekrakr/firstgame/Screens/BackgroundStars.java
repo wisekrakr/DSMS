@@ -88,6 +88,5 @@ public class BackgroundStars extends Actor{
 
         srcX = scroll + this.LAYER_SPEED_DIFFERENCE *scroll;
         batch.draw(texture, x, y, originX, originY, width, heigth,scaleX,scaleY,rotation,(int)srcX,(int)srcY,texture.getWidth(),texture.getHeight(),flipX,flipY);
-
     }
 }

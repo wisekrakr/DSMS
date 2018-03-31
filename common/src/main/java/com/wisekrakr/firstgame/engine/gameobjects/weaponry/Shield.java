@@ -56,7 +56,7 @@ public class Shield extends HomingWeaponsEnemy {
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         time += delta;
 

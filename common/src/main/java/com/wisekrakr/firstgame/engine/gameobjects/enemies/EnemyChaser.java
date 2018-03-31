@@ -5,10 +5,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.*;
 
@@ -84,8 +81,8 @@ public class EnemyChaser extends Enemy {
 
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.elapseTime(delta, toDelete, toAdd);
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.elapseTime(clock, delta, toDelete, toAdd);
 
         time += delta;
 

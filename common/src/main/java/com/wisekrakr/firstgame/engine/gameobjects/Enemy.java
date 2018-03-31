@@ -2,11 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +59,7 @@ public class Enemy extends GameObject {
 
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (health <= 0) {
             toDelete.add(this);
             Random random = new Random();

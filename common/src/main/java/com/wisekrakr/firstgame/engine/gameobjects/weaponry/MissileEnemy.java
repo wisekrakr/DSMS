@@ -53,7 +53,7 @@ public class MissileEnemy extends HomingWeaponsEnemy {
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_MISSILE_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_MISSILE_SPEED * delta)

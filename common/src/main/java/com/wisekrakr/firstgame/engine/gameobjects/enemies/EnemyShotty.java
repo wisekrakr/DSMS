@@ -81,8 +81,8 @@ public class EnemyShotty extends Enemy {
 
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.elapseTime(delta, toDelete, toAdd);
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.elapseTime(clock, delta, toDelete, toAdd);
         time += delta;
         if(time >= CHANGE_DIRECTION_TIME){
             float randomDirection = setRandomDirection();

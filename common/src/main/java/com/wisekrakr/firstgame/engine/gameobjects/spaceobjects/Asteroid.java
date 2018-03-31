@@ -5,7 +5,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class Asteroid extends GameObject {
     }
 
     @Override
-    public void elapseTime(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         setOrientation(getOrientation() + rotationSpeed * delta);
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * speed * delta,
                 getPosition().y + (float) Math.sin(direction) * speed * delta)
