@@ -37,19 +37,16 @@ import java.util.Random;
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter {
 
-    private final Label myselfLabel;
-    private InfoHud infoHud;
+    private Label myselfLabel;
+
     private Hud hud;
     private SpriteBatch batch;
     private Stage stage;
     private PauseScreen pauseScreen;
-    private DamagePopUp damagePopUp;
 
     private OrthographicCamera camera;
-    private OrthographicCamera minimapcamera;
 
     private ShapeRenderer shapeRenderer;
-    private ShapeRenderer miniMapShapeRender;
 
     private BackgroundStars backgroundStars;
     private Texture backgroundTexture;
@@ -71,7 +68,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private GameState gameState = GameState.RUN;
     private boolean paused = false;
     private SpaceSnapshot.GameObjectSnapshot myself;
-    private SpaceSnapshot.GameObjectSnapshot weapon;
 
     /**
      * Stage for labels etc overlayed on the perspective screen, but using a hud-like orientation
@@ -99,30 +95,23 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), batch);
         camera.zoom = 1.2f;
 
-// TODO: how to create a minimap?
-
-//        minimapcamera = new OrthographicCamera();
-//        minimapcamera.setToOrtho(false, 3000, 3000);
-//        minimapcamera.update();
-
-
         backgroundTexture = new Texture(Gdx.files.internal("stars.jpg"));
         backgroundTexture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
-
         backgroundStars = new BackgroundStars(backgroundTexture);
-
         stage.addActor(backgroundStars);
 
         Gdx.input.setInputProcessor(stage);
+        controllerInput();
 
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-//        miniMapShapeRender = new ShapeRenderer();
-//        miniMapShapeRender.setAutoShapeType(true);
-
         hud = new Hud();
 
+        createOverlayHud();
+    }
+
+    private void controllerInput(){
         Controllers.addListener(new ControllerAdapter() {
             @Override
             public void connected(Controller controller) {
@@ -233,20 +222,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (Controllers.getControllers().size > 0) {
             controller = Controllers.getControllers().first();
         }
-
-//Todo: make a pausescreen .... this here does not work ... use the pausescreeen class.
-
-// TODO:        pauseScreen = new PauseScreen(batch, container);
-
-        FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
-        BitmapFont font = new BitmapFont(fontStyle);
-        font.getData().setScale(0.4f);
-
-        overlayStage = new Stage();
-
-        myselfLabel = new Label("Myself", new Label.LabelStyle(font, Color.WHITE));
-        myselfLabel.setVisible(false);
-        overlayStage.addActor(myselfLabel);
     }
 
 
@@ -394,6 +369,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     }
 
+    private void createOverlayHud(){
+        FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
+        BitmapFont font = new BitmapFont(fontStyle);
+        font.getData().setScale(0.4f);
+
+        overlayStage = new Stage();
+
+        myselfLabel = new Label("Myself", new Label.LabelStyle(font, Color.WHITE));
+        myselfLabel.setVisible(false);
+
+        overlayStage.addActor(myselfLabel);
+    }
+
     private void renderGameObjects() {
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
@@ -478,9 +466,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
-                    weapon = object;
-                    // TODO: damagePopUp = new DamagePopUp(batch, container);
-                    //addDamagePopUp(weapon, delta);
 
                 } else if ("BulletEnemy".equals(object.getType())) {
 
@@ -655,10 +640,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     Float radius = (Float) object.extraProperties().get("radius");
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
-                    weapon = object;
-                    // TODO: damagePopUp = new DamagePopUp(batch, container);
-                    //addDamagePopUp(weapon, delta);
-
                 } else if ("PowerUpMissile".equals(object.getType())) {
                     shapeRenderer.setColor(Color.GOLD);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -676,6 +657,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20 / 2);
                 } else if ("Shield".equals(object.getType())) {
+                    String lightBlue = "8EE2EC";
+                    shapeRenderer.setColor(Color.valueOf(lightBlue));
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                }else if ("Shield".equals(object.getType())) {
                     String lightBlue = "8EE2EC";
                     shapeRenderer.setColor(Color.valueOf(lightBlue));
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -718,19 +707,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private void updateOverlay() {
         overlayStage.draw();
+
     }
-//        batch.setProjectionMatrix(stage.getCamera().combined);
+
 
     private void updateHud(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
         hud.update(myself, delta);
         hud.stage.draw();
-    }
-
-    //TODO: this way is way too complicated and will not work. addDamagePopUp in shaperenderer
-    private void addDamagePopUp(SpaceSnapshot.GameObjectSnapshot weapon, float delta) {
-        batch.setProjectionMatrix(stage.getCamera().combined);
-        damagePopUp.update(weapon, delta);
-        damagePopUp.stage.draw();
     }
 
     @Override

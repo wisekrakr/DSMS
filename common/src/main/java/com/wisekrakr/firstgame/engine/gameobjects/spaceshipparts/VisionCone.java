@@ -38,7 +38,7 @@ public class VisionCone extends GameObject {
         if(time >= destructTime){
             toDelete.add(this);
         }
-/*
+
         switch (aimingState){
             case NONE:
                 break;
@@ -68,7 +68,7 @@ public class VisionCone extends GameObject {
                 break;
 
         }
-        */
+
 
     }
 

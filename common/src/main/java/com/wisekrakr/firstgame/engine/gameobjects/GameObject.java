@@ -88,6 +88,10 @@ public abstract class GameObject extends Actor{
         return angle;
     }
 
+    public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
+
+    }
+
 
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}

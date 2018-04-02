@@ -6,12 +6,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.client.ClientConnector;
@@ -19,9 +22,9 @@ import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
-public class InfoHud implements Disposable {
+public class OverlayHud implements Disposable {
 
-    private final ClientConnector connector;
+
     public Stage stage;
     private Viewport viewport;
 
@@ -37,7 +40,7 @@ public class InfoHud implements Disposable {
 
     private Label timeLabel;
     private Label nameLabel;
-    private Label nameSetLabel;
+    private Label chaserNameLabel;
     private Label timeCountLabel;
     private Label distanceLabel;
     private Label distanceCountLabel;
@@ -50,35 +53,31 @@ public class InfoHud implements Disposable {
     private Label healthLabel;
     private Label healthCountLabel;
 
-    public InfoHud(SpriteBatch spriteBatch, ClientConnector connector) {
-        this.connector = connector;
+    public OverlayHud(SpaceSnapshot.GameObjectSnapshot object) {
 
-        viewport = new FitViewport(Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, spriteBatch);
+        viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
+        stage = new Stage(viewport);
 
         FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
         BitmapFont font = new BitmapFont(fontStyle);
         font.getData().setScale(0.4f);
 
-        SpaceSnapshot snapshot = connector.latestSnapshot();
-        if (snapshot != null) {
-            for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
-                if("Player".equals(object.getType())) {
-                    nameLabel = new Label(object.getName(), new Label.LabelStyle(new BitmapFont(), Color.GREEN));
-                    nameLabel.setPosition(object.getPosition().x, object.getPosition().y , Align.center);
-                }
-                if("EnemyChaser".equals(object.getType())){
-                    nameLabel = new Label(object.getName(), new Label.LabelStyle(new BitmapFont(), Color.GREEN));
-                    nameLabel.setPosition(object.getPosition().x, object.getPosition().y , Align.center);
-                }
-            }
+        if("Player".equals(object.getType())) {
+            nameLabel.setVisible(true);
+            nameLabel = new Label("wisekrakr", new Label.LabelStyle(new BitmapFont(), Color.GREEN));
+            nameLabel.setPosition(object.getPosition().x, object.getPosition().y , Align.center);
+
         }
+        if("EnemyChaser".equals(object.getType())){
+            nameLabel.setVisible(true);
+            nameLabel = new Label(object.getName(), new Label.LabelStyle(new BitmapFont(), Color.GREEN));
+            nameLabel.setPosition(object.getPosition().x, object.getPosition().y , Align.center);
 
-
-
+        }
 
         stage.addActor(nameLabel);
     }
+
 
     @Override
     public void dispose() { stage.dispose(); }

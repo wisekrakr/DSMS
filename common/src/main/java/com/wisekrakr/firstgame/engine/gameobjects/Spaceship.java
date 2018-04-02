@@ -324,17 +324,9 @@ public class Spaceship extends GameObject {
 
         switch (aimingState) {
             case TWELVE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), getAngle(), getCollisionRadius() / 4));
+                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), getOrientation(), 10 / 4));
                 break;
-            case SIX:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), -getAngle(), getCollisionRadius() / 4));
-                break;
-            case THREE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (-getAngle() + Math.PI / 2), getCollisionRadius() / 4));
-                break;
-            case NINE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), (float) (getAngle() + Math.PI / 2), getCollisionRadius() / 4));
-                break;
+
             case NONE:
 
                 break;

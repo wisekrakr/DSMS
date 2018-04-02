@@ -119,7 +119,7 @@ public class SpaceEngine {
                             if (target != subject) {
                                 if (collision(target, subject)) {
                                     target.collide(subject, toDelete, toAdd);
-
+                                    target.overlappingObjects(subject, toDelete, toAdd);
                                 }
                             }
                         }

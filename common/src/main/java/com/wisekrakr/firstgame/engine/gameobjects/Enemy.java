@@ -33,6 +33,19 @@ public class Enemy extends GameObject {
        this.setDirection(direction + (float) Math.PI);
     }
 
+    @Override
+    public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        Random random = new Random();
+        if(subject instanceof Enemy){
+            float angle = angleBetween(this, subject);
+            if(distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius())
+            setPosition(new Vector2(getPosition().x -=  Math.cos(angle) * random.nextFloat() * 1.5 ,
+                    getPosition().y -=  Math.sin(angle) * random.nextFloat() * 1.5 ));
+            setOrientation(angle);
+            setDirection(angle);
+        }
+    }
 
     public enum AttackState {
         PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
@@ -40,9 +53,12 @@ public class Enemy extends GameObject {
 
     @Override
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        Random random = new Random();
         if(distanceBetween(this, subject) <= 300){
             float angle = angleBetween(this, subject);
-            setPosition(new Vector2(getPosition().x -=  Math.cos(angle)  , getPosition().y -=  Math.sin(angle) ));
+            setPosition(new Vector2(getPosition().x -=  Math.cos(angle) * random.nextFloat() * 3 ,
+                    getPosition().y -=  Math.sin(angle) * random.nextFloat() * 3 ));
             setOrientation(angle);
             setDirection(angle);
         }
