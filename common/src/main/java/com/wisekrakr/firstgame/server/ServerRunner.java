@@ -227,7 +227,7 @@ public class ServerRunner {
                                         @Override
                                         public void doIt(GameObject target) {
                                             ship.control(request.getThrottleState(), request.getSteeringState(),
-                                                    request.getSpecialPowerState(), request.getShootingState());
+                                                    request.getSpecialPowerState(), request.getShootingState(), request.getAimingState());
                                         }
                                     });
                                 }

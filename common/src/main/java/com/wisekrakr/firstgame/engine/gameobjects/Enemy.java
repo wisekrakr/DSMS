@@ -16,6 +16,7 @@ public class Enemy extends GameObject {
     private int health;
 
     private static final float CLOSEST_TARGET = 100;
+    private AttackState attackstate = AttackState.PACIFIST;
 
 
     public Enemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {

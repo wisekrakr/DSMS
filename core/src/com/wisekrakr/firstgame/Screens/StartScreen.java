@@ -27,17 +27,12 @@ import java.util.UUID;
 
 
 public class StartScreen extends ScreenAdapter {
-    private GameState gameState = GameState.GAME_READY;
 
-    private FitViewport viewport;
     private Stage stage;
     private Skin skin;
-    private BitmapFont font;
-    private OrthographicCamera camera;
 
     public StartScreen(final SpaceGameContainer container, final ClientConnector connector) {
         final String unique = UUID.randomUUID().toString();
-
 
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Gdx.input.setInputProcessor(stage);

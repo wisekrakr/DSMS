@@ -14,54 +14,43 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
+import com.wisekrakr.firstgame.GameState;
+import com.wisekrakr.firstgame.Screens.PlayerPerspectiveScreen;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 
 
 public class PauseScreen implements Disposable {
 
-    private final SpaceGameContainer container;
     private TextureRegion textureRegion;
     private OrthographicCamera camera;
     private Texture texture;
     public Stage stage;
     private SpriteBatch batch;
 
-    public PauseScreen(SpriteBatch batch, SpaceGameContainer container) {
+    private GameState gameState = GameState.RUN;
 
-        this.container = container;
+    public PauseScreen(SpriteBatch batch) {
+
         this.batch = batch;
 
         camera = new OrthographicCamera();
-        camera.update();
 
         texture = new Texture("pausedPic2.png");
         textureRegion = new TextureRegion(texture,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-        stage = new Stage();
-
-        Gdx.input.setInputProcessor(stage);
-
 
     }
 
-    public void setCamera(OrthographicCamera camera) {
-        this.camera = camera;
-    }
-
-    public void update(float delta){
-
-        camera.update();
-        stage.getBatch().setProjectionMatrix(camera.combined);
+    public void update(){
 
         batch.begin();
-        batch.draw(textureRegion, 0,0);
+        batch.draw(textureRegion, 0 - Gdx.graphics.getWidth()/2,0 - Gdx.graphics.getHeight()/2);
         batch.end();
 
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
         batch.dispose();
         texture.dispose();
     }

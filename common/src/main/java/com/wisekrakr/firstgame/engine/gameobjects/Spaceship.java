@@ -8,7 +8,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.VisionCone;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BeamCannon;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
@@ -19,7 +19,7 @@ public class Spaceship extends GameObject {
 
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
-    private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
+    public SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
     private AimingState aimingState = AimingState.NONE;
 
@@ -39,7 +39,8 @@ public class Spaceship extends GameObject {
     private BulletPlayer currentBullet;
     private MissilePlayer currentMissile;
 
-    private Vector2 newPosition;
+    private BeamCannon beamCannon;
+
     private float lastDodge = -100000f;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
@@ -62,7 +63,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum ThrottleState {
-        REVERSE, STATUSQUO, FORWARDS, LEFT_BOOSTER, RIGHT_BOOSTER
+        REVERSE, STATUSQUO, FORWARDS, FULL_STOP
     }
 
     public enum SteeringState {
@@ -70,7 +71,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum SpecialPowerState {
-        NO_POWER, BOOSTING, ULTRA_DODGE, VISION_CONE
+        NO_POWER, BOOSTING, ULTRA_DODGE, BEAM
     }
 
     public enum ShootingState {
@@ -78,7 +79,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum AimingState {
-        TWELVE, SIX, THREE, NINE, NONE
+        LEFT_BEAM_ANGLE, RIGHT_BEAM_ANGLE, NONE
     }
 
     @Override
@@ -87,11 +88,12 @@ public class Spaceship extends GameObject {
         // angle = angle + (float) Math.PI;
     }
 
-    public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState) {
+    public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState, AimingState aimingState) {
         this.throttle = throttle;
         this.steering = steering;
         this.powerState = powerState;
         this.shootingState = shootingState;
+        this.aimingState = aimingState;
     }
 
     @Override
@@ -169,13 +171,9 @@ public class Spaceship extends GameObject {
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;
-                //getPosition().rotateRad(3f * delta);
-                setRotation(getPosition().angle());
                 break;
             case RIGHT:
                 angle = angle - 3f * delta;
-                //getPosition().rotateRad(-3f * delta);
-                setRotation(getPosition().angle());
                 break;
         }
         setOrientation(angle);
@@ -206,12 +204,11 @@ public class Spaceship extends GameObject {
                 */
 
                 break;
-
-            case RIGHT_BOOSTER:
+            case FULL_STOP:
+                speedX = 0;
+                speedY = 0;
                 break;
 
-            case LEFT_BOOSTER:
-                break;
         }
 
         float speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
@@ -220,6 +217,7 @@ public class Spaceship extends GameObject {
             speedX = speedX * 400 / speed;
             speedY = speedY * 400 / speed;
         }
+
 
         switch (powerState) {
             case BOOSTING:
@@ -247,7 +245,9 @@ public class Spaceship extends GameObject {
 
                 break;
 
-            case VISION_CONE:
+            case BEAM:
+                beamCannon = new BeamCannon("beam", getPosition(), getSpace(), getAngle(), getCollisionRadius()/4);
+                toAdd.add(beamCannon);
                 break;
         }
 
@@ -323,14 +323,9 @@ public class Spaceship extends GameObject {
         }
 
         switch (aimingState) {
-            case TWELVE:
-                toAdd.add(new VisionCone("cone", getPosition(), getSpace(), getOrientation(), 10 / 4));
-                break;
 
-            case NONE:
-
-                break;
         }
+
 
     }
 

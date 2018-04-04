@@ -20,7 +20,7 @@ public class GamePadControls  {
     public static final int AXIS_LEFT_X = 1; //-1 is left | +1 is right
     public static final int AXIS_LEFT_Y = 0; //-1 is up | +1 is down
     public static final int AXIS_LEFT_TRIGGER = 4; //value 0 to 1f
-    public static final int AXIS_RIGHT_X = 0; //-1 is left | +1 is right
-    public static final int AXIS_RIGHT_Y = 1; //-1 is up | +1 is down
+    public static final int AXIS_RIGHT_X = 3; //-1 is left | +1 is right
+    public static final int AXIS_RIGHT_Y = 2; //-1 is up | +1 is down
     public static final int AXIS_RIGHT_TRIGGER = 4; //value 0 to -1f
 }
