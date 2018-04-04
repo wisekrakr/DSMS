@@ -7,4 +7,5 @@ public class Player extends Spaceship  {
     public Player(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
     }
+
 }

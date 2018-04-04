@@ -17,8 +17,8 @@ public class MissilePlayer extends GameObject {
     private float speed;
     private int damage;
 
-    private static final float ATTACK_RANGE = 400;
-    private static final float DEFAULT_MISSILE_SPEED = 750;
+    private static final float ATTACK_RANGE = 300;
+    private static final float DEFAULT_MISSILE_SPEED = 300;
 
     public MissilePlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space);

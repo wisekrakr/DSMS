@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by David on 11/6/2017.
  */
-public abstract class GameObject extends Actor{
+public abstract class GameObject{
     private String name;
     private Vector2 position;
     private float orientation;
@@ -64,6 +64,10 @@ public abstract class GameObject extends Actor{
     public int randomDamageCountMissile(){
         Random random = new Random();
         return random.nextInt(20 - 10 + 1) + 10;
+    }
+    public int randomDamageCountMine(){
+        Random random = new Random();
+        return random.nextInt(50 - 10 + 1) + 10;
     }
 
     public float setRandomDirection(){

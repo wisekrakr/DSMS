@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissileEnemy;
 
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class EnemyHomer extends Enemy {
         switch (attackState) {
             case SHOOT:
                 ammoCount = getAmmoCount();
-                float shotCount = delta / 0.8f + shotLeftOver;
+                float shotCount = delta / 1.5f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -75,8 +76,8 @@ public class EnemyHomer extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissileEnemy("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getSpace(), getOrientation(), 2.5f));
+                    toAdd.add(new MissileEnemy("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
+                            getSpace(), getOrientation(), 5f));
                 }
                 break;
 

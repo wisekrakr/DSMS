@@ -105,7 +105,7 @@ public class ServerRunner {
                     22f, engine);
             engine.addGameObject(chaser);
         }
-
+/*
         for (int i = 0; i < 5; i++) {
             EnemyPest pest = new EnemyPest("Pest", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -114,7 +114,7 @@ public class ServerRunner {
                     15f, engine);
             engine.addGameObject(pest);
         }
-/*
+
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -155,7 +155,7 @@ public class ServerRunner {
                     12f, engine);
             engine.addGameObject(enemyShotty);
         }
-
+*/
         for(int i = 0; i < 3; i++){
             EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -164,7 +164,7 @@ public class ServerRunner {
                     30f, engine);
             engine.addGameObject(enemyHomer);
         }
-*/
+
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,

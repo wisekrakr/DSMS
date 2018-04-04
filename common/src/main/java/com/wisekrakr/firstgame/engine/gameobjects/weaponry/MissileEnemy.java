@@ -16,15 +16,15 @@ public class MissileEnemy extends HomingWeaponsEnemy {
     private float radius;
     private float time;
 
-
-    private static final float DEFAULT_MISSILE_SPEED = 300;
+    private static final float ATTACK_DISTANCE = 500;
+    private static final float DEFAULT_MISSILE_SPEED = 200;
 
     public MissileEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);
         this.direction = direction;
         this.radius = radius;
 
-        setCollisionRadius(4);
+        setCollisionRadius(radius);
     }
 
     @Override
@@ -39,16 +39,17 @@ public class MissileEnemy extends HomingWeaponsEnemy {
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (subject instanceof Player) {
+            if (distanceBetween(this, subject) <= ATTACK_DISTANCE) {
 
                 float angle = angleBetween(this, subject);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) , getPosition().y +=  Math.sin(angle) ));
+                setPosition(new Vector2(getPosition().x += Math.cos(angle), getPosition().y += Math.sin(angle)));
 
                 setOrientation(angle);
 
                 setDirection(angle);
-
+            }
         }
     }
 

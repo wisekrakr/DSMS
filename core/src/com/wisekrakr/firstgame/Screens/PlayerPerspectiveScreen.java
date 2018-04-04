@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.GamePadControls;
 import com.wisekrakr.firstgame.GameState;
 import com.wisekrakr.firstgame.PopUps.DamagePopUp;
@@ -76,6 +77,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
      */
     private Stage overlayStage;
 
+    /**
+     * Stage for background on the perspective screen, using methods of an Actor
+     */
+    private Stage backgroundStage;
+
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
         this.mySelf = mySelf;
@@ -99,7 +105,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         backgroundTexture = new Texture(Gdx.files.internal("stars.jpg"));
         backgroundStars = new BackgroundStars(backgroundTexture);
-        stage.addActor(backgroundStars);
+        backgroundTexture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
 
         Gdx.input.setInputProcessor(stage);
         controllerInput();
@@ -143,21 +149,25 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         powerState = Spaceship.SpecialPowerState.BOOSTING;
                         System.out.println("boooooost!");
                     }
-                    if (buttonCode == GamePadControls.BUTTON_A) {
-                        powerState = Spaceship.SpecialPowerState.BEAM;
-                        System.out.println("beam!");
+                    if (buttonCode == GamePadControls.BUTTON_Y) {
+                        shootingState = Spaceship.ShootingState.PLACE_MINE;
+                        System.out.println("mine!");
                     }
-                    if (buttonCode == GamePadControls.BUTTON_RB) {
+                    if (buttonCode == GamePadControls.BUTTON_X) {
+                        shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+                        System.out.println("firing missile");
+                    }
+                    if (buttonCode == GamePadControls.BUTTON_A) {
                         shootingState = Spaceship.ShootingState.FIRING;
                         System.out.println("pew");
                     }
-                    if (buttonCode == GamePadControls.BUTTON_X) {
-                        powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
-                        System.out.println("the jukes!");
+                    if (buttonCode == GamePadControls.BUTTON_RB) {
+                        throttle = Spaceship.ThrottleState.FULL_STOP;
+                        System.out.println("FULL STOP!");
                     }
                     if (buttonCode == GamePadControls.BUTTON_LB) {
-                        shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-                        System.out.println("firing missile");
+                        powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
+                        System.out.println("the jukes!");
                     }
 
                     if (buttonCode == GamePadControls.BUTTON_START) {
@@ -243,7 +253,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     private void handleInput() {
-        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.X, first);
+        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.R, Input.Keys.X, first);
         //applyControl(controller, Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COLON, Input.Keys.COMMA, second);
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
@@ -261,7 +271,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
     private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
-                              int shootKey, int altShootKey, int resetKey, final String target) {
+                              int shootKey, int altShootKey, int thirdShootKey, int resetKey, final String target) {
         /*
         if (Gdx.input.isKeyPressed(resetKey)) {
             target.setPosition(new Vector2(0, 0));
@@ -271,7 +281,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         //final Spaceship.ThrottleState throttle;
 
         throttle = Spaceship.ThrottleState.STATUSQUO;
-        steering = Spaceship.SteeringState.CENTER;
 
         if (controller != null) {
             if (this.controller.getAxis(GamePadControls.AXIS_LEFT_TRIGGER) > 0.2f){
@@ -280,6 +289,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             } else if (this.controller.getAxis(GamePadControls.AXIS_RIGHT_TRIGGER) < -0.2f){
                 throttle = Spaceship.ThrottleState.FORWARDS;
                 backgroundStars.setSpeed(backgroundStars.getSpeed() + 0.0007f);
+            } else if (controller.getButton(GamePadControls.BUTTON_RB)) {
+                throttle = Spaceship.ThrottleState.FULL_STOP;
+                backgroundStars.setSpeed(0);
             }
         }
 
@@ -317,10 +329,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (controller != null) {
             if (controller.getButton(GamePadControls.BUTTON_B)) {
                 powerState = Spaceship.SpecialPowerState.BOOSTING;
-            } else if (controller.getButton(GamePadControls.BUTTON_X)) {
+            } else if (controller.getButton(GamePadControls.BUTTON_LB)) {
                 powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
-            } else if (controller.getButton(GamePadControls.BUTTON_A)) {
-                powerState = Spaceship.SpecialPowerState.BEAM;
             }
         }
 
@@ -336,10 +346,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shootingState = Spaceship.ShootingState.PACIFIST;
 
         if (controller != null) {
-            if (this.controller.getButton(GamePadControls.BUTTON_RB)) {
+            if (this.controller.getButton(GamePadControls.BUTTON_A)) {
                 shootingState = Spaceship.ShootingState.FIRING;
-            }else if (this.controller.getButton(GamePadControls.BUTTON_LB)) {
+            }else if (this.controller.getButton(GamePadControls.BUTTON_X)) {
                 shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+            }else if (controller.getButton(GamePadControls.BUTTON_Y)) {
+                shootingState = Spaceship.ShootingState.PLACE_MINE;
             }
         }
 
@@ -349,6 +361,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 shootingState = Spaceship.ShootingState.FIRING;
             } else if (Gdx.input.isKeyPressed(altShootKey)) {
                 shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+            } else if (Gdx.input.isKeyPressed(thirdShootKey)) {
+                shootingState = Spaceship.ShootingState.PLACE_MINE;
             }
         }
 
@@ -360,9 +374,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
     private void addBackground() {
+
+        backgroundStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+
         batch.begin();
         backgroundStars.draw(batch, 10);
         batch.end();
+
+        backgroundStage.addActor(backgroundStars);
+
     }
 
     private void setPauseScreen() {
@@ -430,13 +450,33 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (20f / 2));
-                } else if ("BeamCannon".equals(object.getType())) {
+                } else if ("SpaceMinePlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
                     Float radius = (Float) object.extraProperties().get("radius");
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(4) + 1;
+                    Color blinkingColor = new Color();
+
+                    if (randomNumber == 1) {
+                        blinkingColor.set(Color.RED);
+                    }
+                    if (randomNumber == 2) {
+                        blinkingColor.set(Color.WHITE);
+                    }
+                    if (randomNumber == 3) {
+                        blinkingColor.set(Color.WHITE);
+                    }
+                    if (randomNumber == 4) {
+                        blinkingColor.set(Color.RED);
+                    }
+                    shapeRenderer.setColor(blinkingColor);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius/2);
+
                 } else if ("Exhaust".equals(object.getType())) {
                     Random random = new Random();
                     int randomNumber = random.nextInt(4) + 1;
@@ -636,7 +676,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             object.getPosition().y + 2 * (float) Math.sin(object.getOrientation()), (radius / 2));
 
                 } else if ("MissilePlayer".equals(object.getType())) {
-                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
                     Float radius = (Float) object.extraProperties().get("radius");

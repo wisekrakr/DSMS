@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.wisekrakr.firstgame.Constants;
@@ -82,11 +83,17 @@ public class BackgroundStars extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * parentAlpha);
 
+        /*
+        batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * parentAlpha);
+*/
         scroll+=speed;
 
         srcX = scroll + this.LAYER_SPEED_DIFFERENCE *scroll;
+
         batch.draw(texture, x, y, originX, originY, width, heigth,scaleX,scaleY,rotation,(int)srcX,(int)srcY,texture.getWidth(),texture.getHeight(),flipX,flipY);
+
+
     }
+
 }

@@ -8,10 +8,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BeamCannon;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.*;
 
@@ -38,16 +35,20 @@ public class Spaceship extends GameObject {
     private List<MissilePlayer> missiles;
     private BulletPlayer currentBullet;
     private MissilePlayer currentMissile;
-
-    private BeamCannon beamCannon;
+    private List<SpaceMinePlayer> spaceMines;
+    private SpaceMinePlayer currentSpaceMine;
 
     private float lastDodge = -100000f;
+    private float time;
+    private int mineAmmoCount;
+    private float minesLeftOver;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
 
         ammoCount = 10000;
-        missileAmmoCount = 10;
+        missileAmmoCount = 50;
+        mineAmmoCount = 20;
         health = 1000;
         score = 0;
 
@@ -55,6 +56,7 @@ public class Spaceship extends GameObject {
 
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
+        spaceMines = new ArrayList<>();
     }
 
     public void modifySpeed(float v) {
@@ -71,11 +73,11 @@ public class Spaceship extends GameObject {
     }
 
     public enum SpecialPowerState {
-        NO_POWER, BOOSTING, ULTRA_DODGE, BEAM
+        NO_POWER, BOOSTING, ULTRA_DODGE
     }
 
     public enum ShootingState {
-        PACIFIST, FIRING, MISSILE_FIRING
+        PACIFIST, FIRING, MISSILE_FIRING, PLACE_MINE
     }
 
     public enum AimingState {
@@ -151,6 +153,22 @@ public class Spaceship extends GameObject {
         }
 
         if (enemy instanceof Enemy) {
+            if (subject instanceof SpaceMinePlayer) {
+                if (Math.sqrt(
+                        (((enemy.getPosition().x) - (subject.getPosition().x)))
+                                * ((enemy.getPosition().x) - (subject.getPosition().x))
+                                + ((enemy.getPosition().y) - (subject.getPosition().y))
+                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
+                    this.setScore(this.getScore() + ((SpaceMinePlayer) subject).getDamage());
+                    if (enemy.getHealth() <= 0) {
+                        this.setScore(this.getScore() + 250);
+                    }
+                }
+            }
+        }
+
+        if (enemy instanceof Enemy) {
             if (subject instanceof Shield) {
                 if (Math.sqrt(
                         (((enemy.getPosition().x) - (subject.getPosition().x)))
@@ -181,15 +199,15 @@ public class Spaceship extends GameObject {
 
         switch (throttle) {
             case FORWARDS:
-                speedX = speedX + delta * 280f * (float) Math.cos(angle);
-                speedY = speedY + delta * 280f * (float) Math.sin(angle);
+                speedX = speedX + delta * 240f * (float) Math.cos(angle);
+                speedY = speedY + delta * 240f * (float) Math.sin(angle);
 
                 toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius() / 5));
                 break;
 
             case REVERSE:
-                speedX = speedX - delta * 280f * (float) Math.cos(angle);
-                speedY = speedY - delta * 280f * (float) Math.sin(angle);
+                speedX = speedX - delta * 240f * (float) Math.cos(angle);
+                speedY = speedY - delta * 240f * (float) Math.sin(angle);
 
 //                speed = Math.max(speed - delta * 155f, -230);
                 break;
@@ -213,21 +231,21 @@ public class Spaceship extends GameObject {
 
         float speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
 
-        if (speed > 400) {
-            speedX = speedX * 400 / speed;
-            speedY = speedY * 400 / speed;
+        if (speed > 320) {
+            speedX = speedX * 320 / speed;
+            speedY = speedY * 320 / speed;
         }
 
 
         switch (powerState) {
             case BOOSTING:
-                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + 400, 600);
-                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + 400, 600);
+                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + 320, 400);
+                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + 320, 400);
 
                 speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
-                if (speed > 600) {
-                    speedX = speedX * 600 / speed;
-                    speedY = speedY * 600 / speed;
+                if (speed > 400) {
+                    speedX = speedX * 400 / speed;
+                    speedY = speedY * 400 / speed;
                 }
 
                 toAdd.add(new Exhaust("exhaust", getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius() / 3));
@@ -243,11 +261,6 @@ public class Spaceship extends GameObject {
                     ));
                 }
 
-                break;
-
-            case BEAM:
-                beamCannon = new BeamCannon("beam", getPosition(), getSpace(), getAngle(), getCollisionRadius()/4);
-                toAdd.add(beamCannon);
                 break;
         }
 
@@ -317,6 +330,28 @@ public class Spaceship extends GameObject {
 
                 break;
 
+            case PLACE_MINE:
+                spaceMines.add(currentSpaceMine);
+
+                float minesCount = delta / 2.0f + minesLeftOver;
+
+                int exactMineCount = Math.min(Math.round(minesCount), mineAmmoCount);
+
+                mineAmmoCount = mineAmmoCount - exactMineCount;
+                if (ammoCount > 0) {
+                    minesLeftOver = minesCount - exactMineCount;
+                } else {
+                    minesLeftOver = 0;
+                }
+
+                for (int i = 0; i < exactMineCount; i++) {
+                    currentSpaceMine = new SpaceMinePlayer("mine", getPosition(), getSpace(), getAngle(), 300, 8f);
+                    currentSpaceMine.setDamage(currentSpaceMine.randomDamageCountMine());
+                    toAdd.add(currentSpaceMine);
+                }
+
+                break;
+
             case PACIFIST:
                 shotLeftOver = 0;
                 break;
@@ -370,6 +405,7 @@ public class Spaceship extends GameObject {
     public void setScore(int score) {
         this.score = score;
     }
+
 
 
     @Override
