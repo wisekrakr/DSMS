@@ -27,13 +27,9 @@ public class PauseScreen implements Disposable {
     public Stage stage;
     private SpriteBatch batch;
 
-    private GameState gameState = GameState.RUN;
-
     public PauseScreen(SpriteBatch batch) {
 
         this.batch = batch;
-
-        camera = new OrthographicCamera();
 
         texture = new Texture("pausedPic2.png");
         textureRegion = new TextureRegion(texture,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
@@ -44,7 +40,7 @@ public class PauseScreen implements Disposable {
     public void update(){
 
         batch.begin();
-        batch.draw(textureRegion, 0 - Gdx.graphics.getWidth()/2,0 - Gdx.graphics.getHeight()/2);
+        batch.draw(textureRegion, 0,0);
         batch.end();
 
     }

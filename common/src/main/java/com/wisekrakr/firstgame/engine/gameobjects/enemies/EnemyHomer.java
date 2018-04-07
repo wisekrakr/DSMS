@@ -13,9 +13,9 @@ import java.util.Set;
 public class EnemyHomer extends Enemy {
 
     private static final float DEFAULT_ENEMY_SPEED = 205;
-    private static final float AGRO_DISTANCE = 750;
+    private static final float AGRO_DISTANCE = 850;
     private static final float ATTACK_DISTANCE = 500;
-    private static final float CHANGE_DIRECTION_TIME = 30;
+    private static final float CHANGE_DIRECTION_TIME = 12;
 
     private float direction;
     private float radius;

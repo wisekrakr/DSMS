@@ -15,11 +15,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.GamePadControls;
@@ -51,7 +54,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
 
     private BackgroundStars backgroundStars;
-    private Texture backgroundTexture;
 
     private ClientConnector connector;
 
@@ -78,9 +80,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Stage overlayStage;
 
     /**
-     * Stage for background on the perspective screen, using methods of an Actor
+     * Stage for background on the perspective screen, extending Actor class
      */
     private Stage backgroundStage;
+
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -100,12 +103,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
-        stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), batch);
+        //stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), batch);
+        stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         camera.zoom = 1.2f;
 
-        backgroundTexture = new Texture(Gdx.files.internal("stars.jpg"));
+        backgroundStage = new Stage();
+        Texture backgroundTexture = new Texture(Gdx.files.internal("background/bg1.png"));
         backgroundStars = new BackgroundStars(backgroundTexture);
         backgroundTexture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+        backgroundStars.setSpeed(0.05f);
 
         Gdx.input.setInputProcessor(stage);
         controllerInput();
@@ -285,23 +291,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (controller != null) {
             if (this.controller.getAxis(GamePadControls.AXIS_LEFT_TRIGGER) > 0.2f){
                 throttle = Spaceship.ThrottleState.REVERSE;
-                backgroundStars.setSpeed(backgroundStars.getSpeed() - 0.0007f);
             } else if (this.controller.getAxis(GamePadControls.AXIS_RIGHT_TRIGGER) < -0.2f){
                 throttle = Spaceship.ThrottleState.FORWARDS;
-                backgroundStars.setSpeed(backgroundStars.getSpeed() + 0.0007f);
             } else if (controller.getButton(GamePadControls.BUTTON_RB)) {
                 throttle = Spaceship.ThrottleState.FULL_STOP;
-                backgroundStars.setSpeed(0);
             }
         }
 
         if (throttle == Spaceship.ThrottleState.STATUSQUO) {
             if (Gdx.input.isKeyPressed(forwardsKey)) {
                 throttle = Spaceship.ThrottleState.FORWARDS;
-                backgroundStars.setSpeed(backgroundStars.getSpeed() + 0.0007f);
             } else if (Gdx.input.isKeyPressed(reverseKey)) {
                 throttle = Spaceship.ThrottleState.REVERSE;
-                backgroundStars.setSpeed(backgroundStars.getSpeed() - 0.0007f);
             }
         }
 
@@ -368,18 +369,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         aimingState = Spaceship.AimingState.NONE;
 
-
-
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState);
     }
 
     private void addBackground() {
 
-        backgroundStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
-
-        batch.begin();
-        backgroundStars.draw(batch, 10);
-        batch.end();
+        //backgroundStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+        backgroundStage.getBatch().begin();
+        backgroundStars.draw(backgroundStage.getBatch(), 10);
+        backgroundStage.getBatch().end();
 
         backgroundStage.addActor(backgroundStars);
 
@@ -387,8 +385,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private void setPauseScreen() {
         pauseScreen.update();
-
-
     }
 
     private void createOverlayHud(){
@@ -439,6 +435,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     Vector3 projection = camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
                     myselfLabel.setVisible(true);
                     myselfLabel.setPosition(projection.x, projection.y + 30, Align.center);
+
                 }
 
                 if ("Player".equals(object.getType())) {
@@ -450,6 +447,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (20f / 2));
+
                 } else if ("SpaceMinePlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -785,6 +783,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
             case PAUSE:
                 paused = true;
+
                 setPauseScreen();
                 break;
 
@@ -806,12 +805,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         this.gameState = gameState;
     }
 
+
+
     @Override
     public void dispose() {
 
+        backgroundStage.dispose();
         stage.dispose();
         shapeRenderer.dispose();
-        //       miniMapShapeRender.dispose();
         batch.dispose();
 
     }

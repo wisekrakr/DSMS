@@ -31,14 +31,14 @@ public class BackgroundStars extends Actor{
     public BackgroundStars(Texture texture) {
 
         this.texture = texture;
-        texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
+        //texture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         scroll = 0;
         speed = 0;
 
         x = y = originX = originY= rotation = srcY = srcX = 0;
         width = Constants.WORLD_WIDTH;
         heigth = Constants.WORLD_HEIGHT;
-        scaleX = scaleY = 0.7f;
+        scaleX = scaleY = 1f;
         flipX = flipY = false;
 
     }
@@ -84,9 +84,8 @@ public class BackgroundStars extends Actor{
     @Override
     public void draw(Batch batch, float parentAlpha) {
 
-        /*
         batch.setColor(getColor().r, getColor().g, getColor().b, getColor().a * parentAlpha);
-*/
+
         scroll+=speed;
 
         srcX = scroll + this.LAYER_SPEED_DIFFERENCE *scroll;
@@ -95,5 +94,7 @@ public class BackgroundStars extends Actor{
 
 
     }
+
+
 
 }
