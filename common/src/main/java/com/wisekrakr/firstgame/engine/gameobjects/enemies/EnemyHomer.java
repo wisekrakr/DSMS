@@ -7,6 +7,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissileEnemy;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -103,10 +104,7 @@ public class EnemyHomer extends Enemy {
     }
 
 
-    @Override
-    public Map<String, Object> getExtraSnapshotProperties() {
-        return super.getExtraSnapshotProperties();
-    }
+
 
 
 
@@ -141,4 +139,14 @@ public class EnemyHomer extends Enemy {
             }
         }
     }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
+    }
+
 }

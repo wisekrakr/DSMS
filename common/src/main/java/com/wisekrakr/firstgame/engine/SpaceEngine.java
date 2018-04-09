@@ -146,7 +146,7 @@ public class SpaceEngine {
                 }
             }
 /**
- * In this section gameobjects( weaponry package) calculate how far they are of each other and they attack in their different ways
+ * In this section gameobjects( weaponry package) are Enemy weapons that follow the player(homing weapons).
  */
 
             for (GameObject subject : gameObjects) {

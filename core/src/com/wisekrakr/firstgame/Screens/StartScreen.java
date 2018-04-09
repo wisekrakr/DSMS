@@ -2,8 +2,8 @@ package com.wisekrakr.firstgame.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,25 +11,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.wisekrakr.firstgame.Constants;
-import com.wisekrakr.firstgame.GameState;
+import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
-import com.wisekrakr.firstgame.engine.MyAssetManager;
 
-import java.net.InetSocketAddress;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 
 public class StartScreen extends ScreenAdapter {
 
+    private MyAssetManager myAssetManager;
     private Stage stage;
-    private Skin skin;
 
     public StartScreen(final SpaceGameContainer container, final ClientConnector connector) {
         final String unique = UUID.randomUUID().toString();
@@ -37,10 +31,15 @@ public class StartScreen extends ScreenAdapter {
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        //font = new BitmapFont(Gdx.files.internal("myFont.fnt"));
-        //font.getData().setScale(0.5f);
+        myAssetManager = new MyAssetManager();
+        myAssetManager.loadSkins();
+        myAssetManager.loadMusic();
+        final Music music = myAssetManager.assetManager.get("music/space_explorers.mp3", Music.class);
+        music.play();
+        music.setLooping(true);
+        music.setVolume(0.5f);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        Skin skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/uiskin.json")));
         TextureAtlas textureAtlas = new TextureAtlas();
 
         Table table = new Table();
@@ -63,6 +62,7 @@ public class StartScreen extends ScreenAdapter {
             public void changed(ChangeEvent event, Actor actor) {
 
                 Gdx.app.exit();
+                music.stop();
 
             }
         });
@@ -71,7 +71,7 @@ public class StartScreen extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 container.setScreen(new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A"), unique + "-A"));
-
+                music.stop();
             }
         });
 

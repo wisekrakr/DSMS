@@ -14,6 +14,8 @@ public class SpaceMine extends GameObject {
     private float speed;
     private float direction;
     private float radius;
+    private float time;
+    private float destructTime;
 
 
     public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
@@ -27,14 +29,21 @@ public class SpaceMine extends GameObject {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-/*
-        float destructTime = 5f;
+
+        destructTime = getDestructTime();
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);
         }
-        */
 
+    }
+
+    public float getDestructTime() {
+        return destructTime;
+    }
+
+    public void setDestructTime(float destructTime) {
+        this.destructTime = destructTime;
     }
 
     @Override

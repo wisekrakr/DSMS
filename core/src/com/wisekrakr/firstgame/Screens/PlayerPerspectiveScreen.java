@@ -3,11 +3,11 @@ package com.wisekrakr.firstgame.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,21 +15,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.wisekrakr.firstgame.Constants;
-import com.wisekrakr.firstgame.GamePadControls;
-import com.wisekrakr.firstgame.GameState;
-import com.wisekrakr.firstgame.PopUps.DamagePopUp;
+import com.wisekrakr.firstgame.*;
 import com.wisekrakr.firstgame.PopUps.PauseScreen;
-import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
@@ -48,6 +41,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private PauseScreen pauseScreen;
     private SpriteBatch batch;
     private Stage stage;
+
+    private MyAssetManager myAssetManager;
 
     private OrthographicCamera camera;
 
@@ -85,6 +80,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Stage backgroundStage;
 
 
+
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
         this.mySelf = mySelf;
@@ -100,6 +96,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             connector.createSpaceship(name, 100 + i * 50, 0);
             i = i + 1;
         }
+        myAssetManager = new MyAssetManager();
+        myAssetManager.loadFonts();
+        myAssetManager.loadSounds();
+        myAssetManager.loadTextures();
+        myAssetManager.loadSkins();
+
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
@@ -108,7 +110,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         camera.zoom = 1.2f;
 
         backgroundStage = new Stage();
-        Texture backgroundTexture = new Texture(Gdx.files.internal("background/bg1.png"));
+        Texture backgroundTexture = myAssetManager.assetManager.get("background/bg1.png", Texture.class);
         backgroundStars = new BackgroundStars(backgroundTexture);
         backgroundTexture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         backgroundStars.setSpeed(0.05f);
@@ -119,11 +121,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-        hud = new Hud();
+        hud = new Hud(myAssetManager);
 
         createOverlayHud();
 
-        pauseScreen = new PauseScreen(batch);
+        pauseScreen = new PauseScreen(myAssetManager, batch);
+
 
 
     }
@@ -166,6 +169,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     if (buttonCode == GamePadControls.BUTTON_A) {
                         shootingState = Spaceship.ShootingState.FIRING;
                         System.out.println("pew");
+
                     }
                     if (buttonCode == GamePadControls.BUTTON_RB) {
                         throttle = Spaceship.ThrottleState.FULL_STOP;
@@ -372,6 +376,21 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState);
     }
 
+    private void addSoundEffects(){
+        if(shootingState == Spaceship.ShootingState.FIRING){
+            Sound pew = myAssetManager.assetManager.get("sound/photon1.wav", Sound.class);
+            pew.play(0.1f);
+        }
+        if(shootingState == Spaceship.ShootingState.MISSILE_FIRING){
+            Sound pew = myAssetManager.assetManager.get("sound/photon2.wav", Sound.class);
+            pew.play(0.1f);
+        }
+        if(throttle == Spaceship.ThrottleState.FORWARDS){
+            Sound acc = myAssetManager.assetManager.get("sound/acc1.mp3", Sound.class);
+            acc.play(0.1f);
+        }
+    }
+
     private void addBackground() {
 
         //backgroundStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
@@ -388,8 +407,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
     private void createOverlayHud(){
-        FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
-        BitmapFont font = new BitmapFont(fontStyle);
+        BitmapFont font = myAssetManager.assetManager.get("font/myFont.fnt");
         font.getData().setScale(0.4f);
 
         overlayStage = new Stage();
@@ -475,6 +493,33 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.setColor(blinkingColor);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius/2);
 
+                }else if ("SpaceMineEnemy".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(4) + 1;
+                    Color blinkingColor = new Color();
+
+                    if (randomNumber == 1) {
+                        blinkingColor.set(Color.RED);
+                    }
+                    if (randomNumber == 2) {
+                        blinkingColor.set(Color.WHITE);
+                    }
+                    if (randomNumber == 3) {
+                        blinkingColor.set(Color.WHITE);
+                    }
+                    if (randomNumber == 4) {
+                        blinkingColor.set(Color.RED);
+                    }
+                    shapeRenderer.setColor(blinkingColor);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius/2);
+
                 } else if ("Exhaust".equals(object.getType())) {
                     Random random = new Random();
                     int randomNumber = random.nextInt(4) + 1;
@@ -535,6 +580,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
                     shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+
+                }else if ("EnemyShitter".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.LIGHT_GRAY);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.SLATE);
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
@@ -766,6 +823,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                 handleInput();
 
+                addSoundEffects();
+
                 stage.act();
                 stage.draw();
 
@@ -814,6 +873,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         stage.dispose();
         shapeRenderer.dispose();
         batch.dispose();
+        myAssetManager.dispose();
 
     }
 

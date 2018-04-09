@@ -1,25 +1,18 @@
 package com.wisekrakr.firstgame.Screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
+import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
 /**
@@ -27,6 +20,7 @@ import com.wisekrakr.firstgame.engine.SpaceSnapshot;
  */
 public class Hud implements Disposable {
 
+    private final MyAssetManager myAssetManager;
     public Stage stage;
     private Viewport viewport;
 
@@ -55,7 +49,8 @@ public class Hud implements Disposable {
     private Label healthLabel;
     private Label healthCountLabel;
 
-    public Hud() {
+    public Hud(MyAssetManager myAssetManager) {
+        this.myAssetManager = myAssetManager;
         worldTimer = 0;
         timeCounter = 0;
         distanceCounter = 1;
@@ -68,12 +63,14 @@ public class Hud implements Disposable {
         viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
 
+        myAssetManager = new MyAssetManager();
+        myAssetManager.loadFonts();
+
         Table table = new Table();
         table.top();
         table.setFillParent(true);
 
-        FileHandle fontStyle = Gdx.files.internal("myFont.fnt");
-        BitmapFont font = new BitmapFont(fontStyle);
+        BitmapFont font = myAssetManager.assetManager.get("font/myFont.fnt");
         font.getData().setScale(0.4f);
 
         timeLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
@@ -149,7 +146,7 @@ public class Hud implements Disposable {
             }
             else {
                 distanceCountLabel.setText("N/A");
-                scoreCountLabel.setText("N/A");
+               // scoreCountLabel.setText("N/A");
                 ammoCountLabel.setText("N/A");
                 missileCountLabel.setText("N/A");
                 healthCountLabel.setText("N/A");
