@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by David on 11/6/2017.
  */
-public abstract class GameObject{
+public abstract class GameObject {
     private String name;
     private Vector2 position;
     private float orientation;

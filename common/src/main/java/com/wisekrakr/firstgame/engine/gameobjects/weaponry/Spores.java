@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.HomingWeaponsEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.AutonomousWeaponsEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Spores extends HomingWeaponsEnemy {
+public class Spores extends AutonomousWeaponsEnemy {
 
     private float direction;
     private float radius;

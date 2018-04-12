@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.AutonomousWeaponsPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class MissilePlayer extends GameObject {
+public class MissilePlayer extends AutonomousWeaponsPlayer {
 
     private float direction;
     private float radius;
@@ -18,10 +19,10 @@ public class MissilePlayer extends GameObject {
     private int damage;
 
     private static final float ATTACK_RANGE = 300;
-    private static final float DEFAULT_MISSILE_SPEED = 300;
+    private static final float DEFAULT_MISSILE_SPEED = 450;
 
     public MissilePlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
-        super(name, initialPosition, space);
+        super(name, initialPosition, space, direction, radius);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
@@ -32,6 +33,7 @@ public class MissilePlayer extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.collide(subject, toDelete, toAdd);
         if(subject instanceof Enemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());

@@ -8,8 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
+import com.wisekrakr.firstgame.engine.gameobjects.PowerUp;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
@@ -84,7 +83,7 @@ public class ServerRunner {
         timeThread.setDaemon(true);
 
         Random randomGenerator = new Random();
-
+/*
         PowerUpMissile powerUpMissile = new PowerUpMissile("MissilePowerUp", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
@@ -97,7 +96,14 @@ public class ServerRunner {
                 engine);
         engine.addGameObject(powerUpShield);
 
-        for (int i = 0; i < 1; i++) {
+*/
+        PowerUp powerUp = new PowerUp("power up", new Vector2(
+                randomGenerator.nextFloat() * width - plusOfXY,
+                randomGenerator.nextFloat() * height - plusOfXY),
+                engine);
+        engine.addGameObject(powerUp);
+
+        for (int i = 0; i < 5; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
@@ -105,9 +111,9 @@ public class ServerRunner {
                     22f, engine);
             engine.addGameObject(chaser);
         }
-
+/*
         for (int i = 0; i < 5; i++) {
-            EnemyShitter shitter = new EnemyShitter("Chaser", new Vector2(
+            EnemyShitter shitter = new EnemyShitter("Shitter", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     80,randomGenerator.nextFloat() * 2000 - 1000,
@@ -139,7 +145,7 @@ public class ServerRunner {
                 200, randomGenerator.nextFloat(),
                 150f, engine);
         engine.addGameObject(enemyMotherShip);
-/*
+
         EnemyMutator enemyMutator = new EnemyMutator("SporeShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
@@ -164,7 +170,7 @@ public class ServerRunner {
                     12f, engine);
             engine.addGameObject(enemyShotty);
         }
-*/
+
         for(int i = 0; i < 3; i++){
             EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -173,7 +179,7 @@ public class ServerRunner {
                     30f, engine);
             engine.addGameObject(enemyHomer);
         }
-
+*/
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,

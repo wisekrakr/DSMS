@@ -552,7 +552,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
 
 
-                } else if ("BulletEnemy".equals(object.getType())) {
+                } else if ("BulletMisc".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+
+
+                }else if ("BulletEnemy".equals(object.getType())) {
 
                     shapeRenderer.setColor(Color.YELLOW);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -572,7 +581,31 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                } else if ("EnemyChaser".equals(object.getType())) {
+                } else if ("MinionShooter".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.YELLOW);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.SKY);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+
+                } else if ("MinionFighter".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.SKY);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.YELLOW);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+
+                }else if ("EnemyChaser".equals(object.getType())) {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
 
@@ -742,17 +775,33 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 28);
                     shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 22);
                     shapeRenderer.setColor(Color.GOLD);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20 / 2);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 15 / 2);
                 } else if ("PowerUpShield".equals(object.getType())) {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 40);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 30);
                     shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 25);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 22);
                     shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 20 / 2);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 15 / 2);
+                } else if ("PowerUpMinion".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.SKY);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 30);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 22);
+                    shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 15 / 2);
+                } else if ("PowerUpHealth".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 30);
+                    shapeRenderer.setColor(Color.GREEN);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 22);
+                    shapeRenderer.setColor(Color.WHITE);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 15 / 2);
                 } else if ("Shield".equals(object.getType())) {
                     String lightBlue = "8EE2EC";
                     shapeRenderer.setColor(Color.valueOf(lightBlue));

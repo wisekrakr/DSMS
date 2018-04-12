@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
+package com.wisekrakr.firstgame.engine.gameobjects;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;

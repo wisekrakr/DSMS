@@ -1,12 +1,15 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
@@ -19,6 +22,7 @@ public class Spaceship extends GameObject {
     public SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
     private AimingState aimingState = AimingState.NONE;
+    private PowerUpState powerUpState = PowerUpState.NONE;
 
     private float speedX = 0;
     private float speedY = 0;
@@ -37,11 +41,16 @@ public class Spaceship extends GameObject {
     private MissilePlayer currentMissile;
     private List<SpaceMinePlayer> spaceMines;
     private SpaceMinePlayer currentSpaceMine;
+    private MinionShooter minionShooter;
+    private MinionFighter minionFighter;
 
     private float lastDodge = -100000f;
     private float time;
     private int mineAmmoCount;
     private float minesLeftOver;
+    private int randomMinion;
+
+
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -84,6 +93,10 @@ public class Spaceship extends GameObject {
         LEFT_BEAM_ANGLE, RIGHT_BEAM_ANGLE, NONE
     }
 
+    public enum PowerUpState {
+        SHIELD, MINION, NONE
+    }
+
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
@@ -102,7 +115,9 @@ public class Spaceship extends GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (subject instanceof Enemy) {
-            toDelete.add(subject);
+            subject.setHealth(subject.getHealth() - 20);
+            setHealth(getHealth() - 20);
+            /*
             Random random = new Random();
             int debrisParts = random.nextInt(10) + 1;
             for (int i = 0; i < debrisParts; i++) {
@@ -110,10 +125,44 @@ public class Spaceship extends GameObject {
                         random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * ((Enemy) subject).getRadius()));
 
             }
+            */
         }
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
             toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), this.getCollisionRadius() * 2));
+        }
+        if (subject instanceof PowerUpMissile) {
+            toDelete.add(subject);
+            this.setMissileAmmoCount(this.getMissileAmmoCount() + 20);
+        }
+        if (subject instanceof PowerUpHealth) {
+            toDelete.add(subject);
+            this.setHealth(this.getHealth() + 100);
+        }
+        if (subject instanceof PowerUpMinion) {
+            toDelete.add(subject);
+
+            randomMinion = MathUtils.random(2, 2);
+            switch (randomMinion) {
+                case 1:
+                    minionShooter = new MinionShooter("minion_shooter", new Vector2(
+                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            50,
+                            (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                    toAdd.add(minionShooter);
+                    powerUpState = PowerUpState.MINION;
+                    break;
+                case 2:
+                    minionFighter = new MinionFighter("minion_fighter", new Vector2(
+                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            50,
+                            (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                    toAdd.add(minionFighter);
+                    powerUpState = PowerUpState.MINION;
+                    break;
+            }
         }
 
     }
@@ -178,6 +227,21 @@ public class Spaceship extends GameObject {
                         < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
                     if (enemy.getHealth() <= 0) {
                         this.setScore(this.getScore() + 250);
+                    }
+                }
+            }
+        }
+
+        if (enemy instanceof Enemy) {
+            if (subject instanceof BulletMisc) {
+                if (Math.sqrt(
+                        (((enemy.getPosition().x) - (subject.getPosition().x)))
+                                * ((enemy.getPosition().x) - (subject.getPosition().x))
+                                + ((enemy.getPosition().y) - (subject.getPosition().y))
+                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
+                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
+                    if (enemy.getHealth() <= 0) {
+                        this.setScore(this.getScore() + 100);
                     }
                 }
             }
@@ -323,7 +387,7 @@ public class Spaceship extends GameObject {
                     missileLeftOver = 0;
                 }
                 for (int i = 0; i < exactMissileCount; i++) {
-                    currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 300, 5f);
+                    currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 400, 5f);
                     currentMissile.setDamage(currentMissile.randomDamageCountMissile());
                     toAdd.add(currentMissile);
                 }
@@ -357,7 +421,25 @@ public class Spaceship extends GameObject {
                 break;
         }
 
-        switch (aimingState) {
+        switch (powerUpState) {
+            case MINION:
+                if (randomMinion == 1) {
+                    minionShooter.setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 300 * delta),
+                            (float) (getPosition().y + Math.PI * 3 * 300 * delta))
+                    );
+                }
+                if (randomMinion == 2) {
+                    if(!(minionFighter.isFightIsOn())) {
+                        minionFighter.setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 300 * delta),
+                                (float) (getPosition().y + Math.PI * 3 * 300 * delta))
+                        );
+                    }
+                }
+
+                break;
+
+            case NONE:
+                break;
 
         }
 

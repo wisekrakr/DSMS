@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
@@ -150,7 +151,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof HomingWeaponsEnemy) {
+                if (subject instanceof AutonomousWeaponsEnemy) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
                             if (target != subject ) {
@@ -161,24 +162,27 @@ public class SpaceEngine {
                 }
             }
 
-            /**
-             * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
-             */
+/**
+ * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
+ */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof MissilePlayer) { //change this to PlayerWeapons when we make a PlayerWeapons Parent Class
+                if (subject instanceof AutonomousWeaponsPlayer) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
                             //nearestTarget(subject, gameObjects, toDelete, toAdd);
-                            subject.getClosestTarget(target, toDelete, toAdd);
+                            if (target != subject) {
+                                subject.getClosestTarget(target, toDelete, toAdd);
+
+                            }
                         }
                     }
                 }
             }
 
-            /**
-             * Scoring system
-             */
+/**
+ * Scoring system
+ */
 
             for (GameObject player : gameObjects) {
                 if (player instanceof Player) {
@@ -192,6 +196,9 @@ public class SpaceEngine {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                                 if(subject instanceof Shield){
+                                    ((Player) player).scoringSystem(enemy, subject);
+                                }
+                                if(subject instanceof BulletMisc){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                             }

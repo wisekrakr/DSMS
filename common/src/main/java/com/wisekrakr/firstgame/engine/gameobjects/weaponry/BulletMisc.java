@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class BulletPlayer extends Bullet {
+public class BulletMisc extends Bullet {
 
     private int damage;
 
-    public BulletPlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
+    public BulletMisc(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
         super(name, initialPosition, space, direction, speed, radius);
     }
 
@@ -44,3 +44,4 @@ public class BulletPlayer extends Bullet {
         return result;
     }
 }
+

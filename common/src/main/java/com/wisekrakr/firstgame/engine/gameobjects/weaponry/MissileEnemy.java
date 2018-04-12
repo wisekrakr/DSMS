@@ -4,20 +4,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.HomingWeaponsEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.AutonomousWeaponsEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class MissileEnemy extends HomingWeaponsEnemy {
+public class MissileEnemy extends AutonomousWeaponsEnemy {
     private float rotationSpeed;
     private float direction;
     private float radius;
     private float time;
 
     private static final float ATTACK_DISTANCE = 500;
-    private static final float DEFAULT_MISSILE_SPEED = 200;
+    private static final float DEFAULT_MISSILE_SPEED = 300;
 
     public MissileEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space, direction, radius);

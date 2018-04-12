@@ -40,11 +40,12 @@ public class Enemy extends GameObject {
         Random random = new Random();
         if(subject instanceof Enemy){
             float angle = angleBetween(this, subject);
-            if(distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius())
-            setPosition(new Vector2(getPosition().x -=  Math.cos(angle) * random.nextFloat() * 1.5 ,
-                    getPosition().y -=  Math.sin(angle) * random.nextFloat() * 1.5 ));
-            setOrientation(angle);
-            setDirection(angle);
+            if(distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
+                setPosition(new Vector2(getPosition().x -= Math.cos(angle) * random.nextFloat() * 1.5,
+                        getPosition().y -= Math.sin(angle) * random.nextFloat() * 1.5));
+                setOrientation(angle);
+                setDirection(angle);
+            }
         }
     }
 

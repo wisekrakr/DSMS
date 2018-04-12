@@ -6,12 +6,12 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.Set;
 
-public class HomingWeaponsEnemy extends GameObject {
+public class AutonomousWeaponsEnemy extends GameObject {
 
     private float direction;
     private float radius;
 
-    public HomingWeaponsEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
+    public AutonomousWeaponsEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
         super(name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;

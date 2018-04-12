@@ -5,13 +5,13 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.HomingWeaponsEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.AutonomousWeaponsEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Shield extends HomingWeaponsEnemy {
+public class Shield extends AutonomousWeaponsEnemy {
 
     private float radius;
     private float direction;
@@ -36,7 +36,7 @@ public class Shield extends HomingWeaponsEnemy {
         if(subject instanceof BulletEnemy){
             toDelete.add(subject);
         }
-        if(subject instanceof HomingWeaponsEnemy){
+        if(subject instanceof AutonomousWeaponsEnemy){
             toDelete.add(subject);
         }
         if(subject instanceof LaserBeamEnemy){
