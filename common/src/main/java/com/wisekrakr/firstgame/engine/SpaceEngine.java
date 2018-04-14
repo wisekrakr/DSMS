@@ -1,11 +1,13 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
-import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.Shield;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -147,7 +149,7 @@ public class SpaceEngine {
                 }
             }
 /**
- * In this section gameobjects( weaponry package) are Enemy weapons that follow the player(homing weapons).
+ * In this section gameobjects(enemy weaponry package) are Enemy weapons that follow the player(homing weapons).
  */
 
             for (GameObject subject : gameObjects) {
@@ -173,7 +175,23 @@ public class SpaceEngine {
                             //nearestTarget(subject, gameObjects, toDelete, toAdd);
                             if (target != subject) {
                                 subject.getClosestTarget(target, toDelete, toAdd);
+                            }
+                        }
+                    }
+                }
+            }
 
+/**
+ * In this section gameobjects( minions ) calculate how far they are of each other and they attack in their different ways
+ */
+            for (GameObject subject : gameObjects) {
+                if (subject instanceof Minion) {
+                    for (GameObject target : gameObjects) {
+                        if (target instanceof Enemy) {
+                            //nearestTarget(subject, gameObjects, toDelete, toAdd);
+                            if (target != subject) {
+                                subject.getClosestTarget(target, toDelete, toAdd);
+                                subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
                     }

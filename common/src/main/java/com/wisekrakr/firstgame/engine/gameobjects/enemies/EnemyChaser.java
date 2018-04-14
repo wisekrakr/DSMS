@@ -2,10 +2,9 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
 
 import java.util.*;
 
@@ -35,7 +34,6 @@ public class EnemyChaser extends Enemy {
 
         setCollisionRadius(radius);
         setHealth(health);
-
     }
 
     @Override
@@ -60,6 +58,16 @@ public class EnemyChaser extends Enemy {
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
                 setOrientation(angle);
                 setDirection(angle);
+                /*
+                for (int i = 0; i < 1 ; i++){
+                    toAdd.add(new MinionShooterEnemy("minion_shooter", new Vector2(
+                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            50,
+                            (float) (getOrientation() + Math.PI / 5), 10,  getSpace()));
+                }
+                */
+
             }
         }
     }
@@ -91,6 +99,7 @@ public class EnemyChaser extends Enemy {
             setDirection(randomDirection);
             time=0;
         }
+
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
                 getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
         );
@@ -111,7 +120,7 @@ public class EnemyChaser extends Enemy {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, randomDamageCountBullet()));
                 }
 
                 break;
@@ -120,6 +129,8 @@ public class EnemyChaser extends Enemy {
                 shotLeftOver = 0;
                 break;
         }
+
+
 
 
 

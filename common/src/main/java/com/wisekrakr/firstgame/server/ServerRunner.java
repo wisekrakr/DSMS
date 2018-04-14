@@ -8,7 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
-import com.wisekrakr.firstgame.engine.gameobjects.PowerUp;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUp;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.io.IOException;
@@ -83,20 +83,7 @@ public class ServerRunner {
         timeThread.setDaemon(true);
 
         Random randomGenerator = new Random();
-/*
-        PowerUpMissile powerUpMissile = new PowerUpMissile("MissilePowerUp", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                engine);
-        engine.addGameObject(powerUpMissile);
 
-        PowerUpShield powerUpShield = new PowerUpShield("ShieldPowerUp", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                engine);
-        engine.addGameObject(powerUpShield);
-
-*/
         PowerUp powerUp = new PowerUp("power up", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
@@ -111,7 +98,7 @@ public class ServerRunner {
                     22f, engine);
             engine.addGameObject(chaser);
         }
-/*
+
         for (int i = 0; i < 5; i++) {
             EnemyShitter shitter = new EnemyShitter("Shitter", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -138,7 +125,7 @@ public class ServerRunner {
                     25f, engine);
             engine.addGameObject(enemyBlinker);
         }
-
+/*
         EnemyMotherShip enemyMotherShip = new EnemyMotherShip("MotherShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),

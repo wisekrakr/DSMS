@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.AutonomousWeaponsEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,13 +13,15 @@ public class Spores extends AutonomousWeaponsEnemy {
 
     private float direction;
     private float radius;
+    private int damage;
     private float time;
     private static final float DEFAULT_TENTACLE_SPEED = 400;
 
-    public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
-        super(name, initialPosition, space, direction, radius);
+    public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage) {
+        super(name, initialPosition, space, direction, radius, damage);
         this.direction = direction;
         this.radius = radius;
+        this.damage = damage;
 
         setCollisionRadius(radius);
     }
@@ -30,7 +31,7 @@ public class Spores extends AutonomousWeaponsEnemy {
 
         if(subject instanceof Player){
             toDelete.add(this);
-            subject.setHealth(subject.getHealth() - randomDamageCountBullet());
+            subject.setHealth(subject.getHealth() - getDamage());
             ((Player) subject).modifySpeed(0.5f);
         }
     }

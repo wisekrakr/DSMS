@@ -2,10 +2,9 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissileEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MissileEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class EnemyHomer extends Enemy {
 
                 for (int i = 0; i < exactShotCount; i++) {
                     toAdd.add(new MissileEnemy("missile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getSpace(), getOrientation(), 5f));
+                            getSpace(), getOrientation(), 5f, randomDamageCountMissile()));
                 }
                 break;
 

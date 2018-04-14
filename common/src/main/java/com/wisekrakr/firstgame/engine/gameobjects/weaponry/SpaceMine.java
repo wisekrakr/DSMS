@@ -16,13 +16,15 @@ public class SpaceMine extends GameObject {
     private float radius;
     private float time;
     private float destructTime;
+    private int damage;
 
 
-    public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius) {
+    public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
         super(name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
+        this.damage = damage;
 
         setCollisionRadius(radius);
     }
@@ -44,6 +46,27 @@ public class SpaceMine extends GameObject {
 
     public void setDestructTime(float destructTime) {
         this.destructTime = destructTime;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    @Override
+    public Map<String, Object> getDamageProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("damage", damage);
+
+        return result;
     }
 
     @Override

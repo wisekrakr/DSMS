@@ -2,11 +2,10 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
 
 import java.util.Map;
@@ -88,7 +87,7 @@ public class EnemyMutator extends Enemy {
                     Random randomGenerator = new Random();
                     toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            getSpace(), getOrientation(), 1f));
+                            getSpace(), getOrientation(), 1f, randomDamageCountBullet() / 2));
 
                 }
 

@@ -2,12 +2,9 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.MissilePlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.SpaceMineEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.SpaceMineEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -123,7 +120,7 @@ public class EnemyShitter extends Enemy {
                 }
 
                 for (int i = 0; i < exactMinesShotCount; i++) {
-                    toAdd.add(new SpaceMineEnemy("enemy_mine", getPosition(), getSpace(), getOrientation(), 300, 8f));
+                    toAdd.add(new SpaceMineEnemy("enemy_mine", getPosition(), getSpace(), getOrientation(), 300, 8f, randomDamageCountMine()));
                 }
 
                 break;
