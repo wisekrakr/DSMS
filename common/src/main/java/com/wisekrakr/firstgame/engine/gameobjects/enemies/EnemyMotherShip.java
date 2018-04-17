@@ -8,13 +8,12 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import java.util.*;
 
 public class EnemyMotherShip extends Enemy {
-    private static final float DEFAULT_ENEMY_SPEED = 30;
-    private static final float AGRO_DISTANCE = 1250;
-    private static final float ATTACK_DISTANCE = 850;
+
     private static final int CHANGE_DIRECTION_TIME = 3000;
     private float direction;
     private float radius;
     private int health;
+    private float speed;
     private int ammoCount;
 
     private AttackState attackState = AttackState.PACIFIST;
@@ -22,15 +21,21 @@ public class EnemyMotherShip extends Enemy {
     private float time;
 
 
-    public EnemyMotherShip(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+    public EnemyMotherShip(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
+
         ammoCount = 6;
         shotLeftOver = ammoCount;
+
         setCollisionRadius(radius);
         setHealth(health);
+        setAggroDistance(1250);
+        setAttackDistance(850);
+        setSpeed(speed);
     }
 
     @Override
@@ -48,7 +53,7 @@ public class EnemyMotherShip extends Enemy {
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAggroDistance() ) {
                 float angle = angleBetween(this, subject);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
@@ -68,7 +73,7 @@ public class EnemyMotherShip extends Enemy {
         super.attackTarget(subject, toDelete, toAdd);
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAttackDistance() ) {
                 attackState = AttackState.SHOOT;
             }else{
                 attackState = AttackState.PACIFIST;
@@ -82,8 +87,8 @@ public class EnemyMotherShip extends Enemy {
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(clock, delta, toDelete, toAdd);
 
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * DEFAULT_ENEMY_SPEED * delta,
-                getPosition().y + (float) Math.sin(getDirection()) * DEFAULT_ENEMY_SPEED * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(getDirection()) * getSpeed() * delta)
         );
 
         setOrientation(getDirection());
@@ -107,7 +112,7 @@ public class EnemyMotherShip extends Enemy {
                     EnemyChaser enemyChaser = new EnemyChaser("ChaserMinion1", new Vector2(
                             getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            8, getDirection(), 10f, getSpace());
+                            8, getDirection(), 220,10f, getSpace());
                     toAdd.add(enemyChaser);
 
                     float destructTime = 8.0f;
@@ -139,8 +144,14 @@ public class EnemyMotherShip extends Enemy {
         return ammoCount;
     }
 
+    @Override
     public float getDirection() {
         return direction;
+    }
+
+    @Override
+    public void setDirection(float direction) {
+        this.direction = direction;
     }
 
     public float getRadius() {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
@@ -24,13 +25,14 @@ public class PowerUp extends GameObject {
         super(name, initialPosition, space);
     }
 
+
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         time += delta;
         if (time >= SPAWN_TIME) {
 
-            randomPowerUp = MathUtils.random(1, 3);
+            randomPowerUp = MathUtils.random(3, 3);
 
             Random random = new Random();
                 switch (randomPowerUp) {

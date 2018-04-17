@@ -13,30 +13,32 @@ import java.util.Set;
 
 public class EnemyBlinker extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 220;
-    private static final float AGRO_DISTANCE = 950;
-    private static final float ATTACK_DISTANCE = 750;
     private static final float CHANGE_DIRECTION_TIME = 20;
     private static final float BLINK_TIME = 5;
     private float direction;
     private float radius;
     private int health;
+    private float speed;
     private float shotLeftOver;
     private int ammoCount;
     private float time;
     private AttackState attackState = AttackState.PACIFIST;
 
-    public EnemyBlinker(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+    public EnemyBlinker(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
 
         ammoCount = (int) Double.POSITIVE_INFINITY;;
         shotLeftOver = ammoCount;
 
         setCollisionRadius(radius);
         setHealth(health);
+        setAggroDistance(950);
+        setAttackDistance(750);
+        setSpeed(speed);
 
     }
 
@@ -59,7 +61,7 @@ public class EnemyBlinker extends Enemy {
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAggroDistance() ) {
                 float angle = angleBetween(this, subject);
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
@@ -76,7 +78,7 @@ public class EnemyBlinker extends Enemy {
         super.attackTarget(subject, toDelete, toAdd);
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAttackDistance() ) {
 
                 attackState = AttackState.SHOOT;
             }else{
@@ -97,16 +99,16 @@ public class EnemyBlinker extends Enemy {
         if(time >= CHANGE_DIRECTION_TIME){
             Random random = new Random();
             setPosition(new Vector2(
-                    getPosition().x + delta * DEFAULT_ENEMY_SPEED * (random.nextFloat() * 300 - 100),
-                    getPosition().y + delta * DEFAULT_ENEMY_SPEED * (random.nextFloat() * 300 - 100)
+                    getPosition().x + delta * getSpeed() * (random.nextFloat() * 300 - 100),
+                    getPosition().y + delta * getSpeed() * (random.nextFloat() * 300 - 100)
             ));
             float randomDirection = setRandomDirection();
             setDirection(randomDirection);
 
             time=0;
         }
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );
         setOrientation(direction);
 
@@ -136,8 +138,8 @@ public class EnemyBlinker extends Enemy {
 
                     Random random = new Random();
                     setPosition(new Vector2(
-                            getPosition().x + delta * DEFAULT_ENEMY_SPEED * (random.nextFloat() * 200 - 100),
-                            getPosition().y + delta * DEFAULT_ENEMY_SPEED * (random.nextFloat() * 200 - 100)
+                            getPosition().x + delta * getSpeed() * (random.nextFloat() * 200 - 100),
+                            getPosition().y + delta * getSpeed() * (random.nextFloat() * 200 - 100)
                     ));
                     time = 0;
                 }
@@ -150,8 +152,6 @@ public class EnemyBlinker extends Enemy {
 
     }
 
-
-
     public int getAmmoCount() {
         return ammoCount;
     }
@@ -160,10 +160,12 @@ public class EnemyBlinker extends Enemy {
         this.ammoCount = ammoCount;
     }
 
+    @Override
     public float getDirection() {
         return direction;
     }
 
+    @Override
     public void setDirection(float direction) {
         this.direction = direction;
     }

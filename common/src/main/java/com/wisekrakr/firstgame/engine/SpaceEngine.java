@@ -139,7 +139,7 @@ public class SpaceEngine {
                 if (subject instanceof Enemy) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
-                            subject.getClosestTarget(target, toDelete, toAdd);
+                            //subject.getClosestTarget(target, toDelete, toAdd);
                             if (target != subject) {
                                 subject.targetSpotted(target, toDelete, toAdd);
                                 subject.attackTarget(target, toDelete, toAdd);
@@ -172,9 +172,9 @@ public class SpaceEngine {
                 if (subject instanceof AutonomousWeaponsPlayer) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
-                            //nearestTarget(subject, gameObjects, toDelete, toAdd);
                             if (target != subject) {
                                 subject.getClosestTarget(target, toDelete, toAdd);
+                                //subject.attackTarget(target,toDelete,toAdd);
                             }
                         }
                     }
@@ -188,10 +188,9 @@ public class SpaceEngine {
                 if (subject instanceof Minion) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
-                            //nearestTarget(subject, gameObjects, toDelete, toAdd);
                             if (target != subject) {
                                 subject.getClosestTarget(target, toDelete, toAdd);
-                                subject.attackTarget(target, toDelete, toAdd);
+                                //subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
                     }

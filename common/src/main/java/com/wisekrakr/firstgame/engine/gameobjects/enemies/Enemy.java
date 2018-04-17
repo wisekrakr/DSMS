@@ -16,19 +16,24 @@ public class Enemy extends GameObject {
     private float direction;
     private float radius;
     private int health;
+    private float speed;
+    private float attackDistance;
+    private float aggroDistance;
 
     private static final float CLOSEST_TARGET = 100;
     private AttackState attackstate = AttackState.PACIFIST;
 
 
-    public Enemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+    public Enemy(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(name, position, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
 
         setHealth(health);
         setCollisionRadius(radius);
+        setSpeed(speed);
     }
 
     @Override
@@ -45,8 +50,8 @@ public class Enemy extends GameObject {
             if(distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
                 setPosition(new Vector2(getPosition().x -= Math.cos(angle) * random.nextFloat() * 1.5,
                         getPosition().y -= Math.sin(angle) * random.nextFloat() * 1.5));
-                setOrientation(angle);
-                setDirection(angle);
+                setOrientation(-angle);
+                setDirection(direction + (float) Math.PI);
             }
         }
     }
@@ -92,6 +97,29 @@ public class Enemy extends GameObject {
         }
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public float getAttackDistance() {
+        return attackDistance;
+    }
+
+    public void setAttackDistance(float attackDistance) {
+        this.attackDistance = attackDistance;
+    }
+
+    public float getAggroDistance() {
+        return aggroDistance;
+    }
+
+    public void setAggroDistance(float aggroDistance) {
+        this.aggroDistance = aggroDistance;
+    }
 
     public float getDirection() {
         return direction;

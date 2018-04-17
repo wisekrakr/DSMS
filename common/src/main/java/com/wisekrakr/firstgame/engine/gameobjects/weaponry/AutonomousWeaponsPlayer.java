@@ -14,9 +14,6 @@ public class AutonomousWeaponsPlayer extends GameObject {
     private float direction;
     private float radius;
     private int damage;
-    private float time;
-
-    private static final float DEFAULT_MISSILE_SPEED = 550;
 
     public AutonomousWeaponsPlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage) {
         super(name, initialPosition, space);

@@ -12,27 +12,31 @@ import java.util.Set;
 
 public class EnemyDodger extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 130;
     private static final float CHANGE_DIRECTION_TIME = 20;
-    private static final float AGRO_DISTANCE = 220;
-    private static final float ATTACK_DISTANCE = 400;
     private AttackState attackState = AttackState.PACIFIST;
 
     private float direction;
     private float radius;
     private int health;
+    private float speed;
     private int ammoCount;
     private float shotLeftOver;
     private float time;
 
-    public EnemyDodger(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+    public EnemyDodger(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
+
         ammoCount = (int) Double.POSITIVE_INFINITY;
+
         setCollisionRadius(radius);
         setHealth(health);
+        setAggroDistance(320);
+        setAttackDistance(500);
+        setSpeed(speed);
     }
 
     @Override
@@ -54,11 +58,11 @@ public class EnemyDodger extends Enemy {
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAggroDistance() ) {
 
                 float angle = angleBetween(this, subject);
 
-                setPosition(new Vector2(getPosition().x -=  Math.cos(angle)  , getPosition().y -=  Math.sin(angle)  ));
+                setPosition(new Vector2(getPosition().x -=  Math.cos(angle), getPosition().y -=  Math.sin(angle)));
 
                 setOrientation(angle);
 
@@ -76,7 +80,7 @@ public class EnemyDodger extends Enemy {
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAttackDistance() ) {
 
                 attackState = AttackState.SHOOT;
             }else{
@@ -99,8 +103,8 @@ public class EnemyDodger extends Enemy {
             time=0;
         }
 
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );
         setOrientation(direction);
 
@@ -132,18 +136,14 @@ public class EnemyDodger extends Enemy {
         }
     }
 
-
-
+    @Override
     public float getDirection() {
         return direction;
     }
 
+    @Override
     public void setDirection(float direction) {
         this.direction = direction;
-    }
-
-    public float getRadius() {
-        return radius;
     }
 
     public int getAmmoCount() {

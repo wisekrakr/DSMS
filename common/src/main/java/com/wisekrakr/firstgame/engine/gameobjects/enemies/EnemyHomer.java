@@ -12,30 +12,32 @@ import java.util.Set;
 
 public class EnemyHomer extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 205;
-    private static final float AGRO_DISTANCE = 850;
-    private static final float ATTACK_DISTANCE = 500;
     private static final float CHANGE_DIRECTION_TIME = 12;
 
     private float direction;
     private float radius;
     private int health;
+    private float speed;
     private float shotLeftOver;
     private int ammoCount;
     private AttackState attackState = AttackState.PACIFIST;
     private float time;
 
 
-    public EnemyHomer(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+    public EnemyHomer(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
 
         ammoCount = (int) Double.POSITIVE_INFINITY;;
         shotLeftOver = ammoCount;
         setCollisionRadius(radius);
         setHealth(health);
+        setAggroDistance(850);
+        setAttackDistance(500);
+        setSpeed(speed);
     }
 
     @Override
@@ -43,6 +45,38 @@ public class EnemyHomer extends Enemy {
 
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 15);
+        }
+    }
+
+    @Override
+    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (subject instanceof Player) {
+
+            if (distanceBetween(this, subject) <= getAggroDistance() ) {
+                float angle = angleBetween(this, subject);
+
+                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
+                setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle) ));
+
+                setOrientation(angle);
+
+                setDirection(angle);
+
+            }
+        }
+    }
+
+    @Override
+    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(subject, toDelete, toAdd);
+        if (subject instanceof Player) {
+
+            if (distanceBetween(this, subject) <= getAttackDistance() ) {
+
+                attackState = AttackState.SHOOT;
+            }else{
+                attackState = AttackState.PACIFIST;
+            }
         }
     }
 
@@ -56,8 +90,8 @@ public class EnemyHomer extends Enemy {
             time=0;
         }
 
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );
         setOrientation(direction);
 
@@ -93,50 +127,12 @@ public class EnemyHomer extends Enemy {
 
     @Override
     public float getDirection() {
-        return super.getDirection();
-    }
-
-
-    @Override
-    public float getRadius() {
-        return super.getRadius();
-    }
-
-
-
-
-
-
-    @Override
-    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player) {
-
-            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
-                float angle = angleBetween(this, subject);
-
-                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle) ));
-
-                setOrientation(angle);
-
-                setDirection(angle);
-
-            }
-        }
+        return direction;
     }
 
     @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.attackTarget(subject, toDelete, toAdd);
-        if (subject instanceof Player) {
-
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
-
-                attackState = AttackState.SHOOT;
-            }else{
-                attackState = AttackState.PACIFIST;
-            }
-        }
+    public void setDirection(float direction) {
+        this.direction = direction;
     }
 
     @Override

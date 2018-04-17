@@ -77,27 +77,17 @@ public class MinionFighterPlayer extends Minion {
 
                 setOrientation(angle);
                 setDirection(angle);
-            }
-        }
-
-    }
-    // attackTarget not used for now.
-    @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if (subject instanceof Enemy) {
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
                 minionState = MinionState.SHOOT;
-            }else {
-                minionState = MinionState.PACIFIST;
             }
+
         }
+
     }
+    
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(clock, delta, toDelete, toAdd);
-
 
         switch (minionState){
             case SHOOT:

@@ -29,7 +29,6 @@ public class MinionShooterPlayer extends Minion {
     private int ammoCount;
     private float time;
     private int damage;
-    private BulletMisc bulletMisc;
 
     public MinionShooterPlayer(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
@@ -80,29 +79,24 @@ public class MinionShooterPlayer extends Minion {
                     */
                 setOrientation(angle);
                 setDirection(angle);
-
-            }
-
-        }
-    }
-// attackTarget not used for now.
-    @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if (subject instanceof Enemy) {
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
                 minionState = Minion.MinionState.SHOOT;
-            }else {
-                minionState = Minion.MinionState.PACIFIST;
             }
+
         }
     }
+
+
     
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         super.elapseTime(clock, delta, toDelete, toAdd);
-
+/*
+        setPosition(new Vector2((float) (getPosition().x + Math.cos(direction) * 300 * delta),
+                (float) (getPosition().y + Math.sin(direction) * 300 * delta))
+        );
+        setOrientation(direction);
+*/
         switch (minionState){
             case SHOOT:
                 ammoCount = getAmmoCount();
@@ -119,15 +113,16 @@ public class MinionShooterPlayer extends Minion {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    bulletMisc = new BulletMisc("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, randomDamageCountBullet());
-                    toAdd.add(bulletMisc);
-                    bulletMisc.setDamage(bulletMisc.randomDamageCountBullet());
+                    toAdd.add(new BulletMisc("bullito", getPosition(), getSpace(), getDirection(), 400, 2f, randomDamageCountBullet()));
                 }
 
                 break;
 
             case PACIFIST:
                 shotLeftOver = 0;
+                break;
+            case RETURN:
+
                 break;
         }
     }

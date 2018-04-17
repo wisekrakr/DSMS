@@ -13,12 +13,11 @@ import java.util.Set;
 public class EnemyShitter extends Enemy {
 
     private static final float DEFAULT_ENEMY_SPEED = 150;
-    private static final float AGRO_DISTANCE = 450;
-    private static final float ATTACK_DISTANCE = 800;
     private static final float CHANGE_DIRECTION_TIME = 16;
     private float direction;
     private float radius;
     private int health;
+    private float speed;
     private float shotLeftOver;
     private float minesLeft;
     private int ammoCount;
@@ -26,11 +25,12 @@ public class EnemyShitter extends Enemy {
     private float time;
     private AttackState attackState = AttackState.PACIFIST;
 
-    public EnemyShitter(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+    public EnemyShitter(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
 
         ammoCount = (int) Double.POSITIVE_INFINITY;
         shotLeftOver = ammoCount;
@@ -40,7 +40,9 @@ public class EnemyShitter extends Enemy {
 
         setCollisionRadius(radius);
         setHealth(health);
-
+        setAggroDistance(450);
+        setAttackDistance(800);
+        setSpeed(speed);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class EnemyShitter extends Enemy {
     @Override
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
-            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAggroDistance() ) {
                 float angle = angleBetween(this, subject);
                 setPosition(new Vector2(getPosition().x -=  Math.cos(angle), getPosition().y -=  Math.sin(angle)));
                 setOrientation(-angle);
@@ -76,7 +78,7 @@ public class EnemyShitter extends Enemy {
     public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (subject instanceof Player) {
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAttackDistance() ) {
 
                 attackState = AttackState.SHOOT;
             }

@@ -11,29 +11,29 @@ import java.util.Set;
 
 public class EnemyShotty extends Enemy {
 
-    private static final float DEFAULT_ENEMY_SPEED = 230;
-    private static final float AGRO_DISTANCE = 1350;
-    private static final float ATTACK_DISTANCE = 850;
     private static final int CHANGE_DIRECTION_TIME = 12;
     private float direction;
     private float radius;
     private int health;
+    private float speed;
     private AttackState attackState = AttackState.PACIFIST;
     private int ammoCount;
     private float shotLeftOver;
     private float time;
 
 
-    public EnemyShotty(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+    public EnemyShotty(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
+        this.speed = speed;
 
         ammoCount = (int) Double.POSITIVE_INFINITY;
         setCollisionRadius(radius);
         setHealth(health);
-
+        setAggroDistance(1350);
+        setAttackDistance(speed);
     }
 
 
@@ -49,7 +49,7 @@ public class EnemyShotty extends Enemy {
     public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= AGRO_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAggroDistance() ) {
 
                 float angle = angleBetween(this, subject);
 
@@ -69,7 +69,7 @@ public class EnemyShotty extends Enemy {
         super.attackTarget(subject, toDelete, toAdd);
         if (subject instanceof Player) {
 
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
+            if (distanceBetween(this, subject) <= getAttackDistance() ) {
 
                 attackState = AttackState.SHOOT;
             }else{
@@ -89,8 +89,8 @@ public class EnemyShotty extends Enemy {
             time=0;
         }
 
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_ENEMY_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_ENEMY_SPEED * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );
         setOrientation(direction);
 

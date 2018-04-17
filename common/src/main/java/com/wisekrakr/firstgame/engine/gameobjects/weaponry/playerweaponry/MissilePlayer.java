@@ -16,7 +16,7 @@ public class MissilePlayer extends AutonomousWeaponsPlayer {
     private int damage;
     private float time;
 
-    private static final float ATTACK_RANGE = 300;
+    private static final float ATTACK_RANGE = 200;
     private static final float DEFAULT_MISSILE_SPEED = 550;
 
 

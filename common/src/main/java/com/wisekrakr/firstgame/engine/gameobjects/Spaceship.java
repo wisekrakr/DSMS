@@ -64,6 +64,7 @@ public class Spaceship extends GameObject {
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
+
     }
 
     public void modifySpeed(float v) {
@@ -140,7 +141,7 @@ public class Spaceship extends GameObject {
         if (subject instanceof PowerUpMinion) {
             toDelete.add(subject);
 
-            randomMinion = MathUtils.random(1, 2);
+            randomMinion = MathUtils.random(1, 1);
             switch (randomMinion) {
                 case 1:
                     minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(

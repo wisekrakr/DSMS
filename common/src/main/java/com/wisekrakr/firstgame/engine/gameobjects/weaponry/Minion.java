@@ -34,21 +34,12 @@ public class Minion extends GameObject {
 
     }
 
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-
-    }
-
     public enum MinionState {
-        PACIFIST, SHOOT
+        PACIFIST, SHOOT, RETURN
     }
-
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-
 
         if (health <= 0){
             toDelete.add(this);
