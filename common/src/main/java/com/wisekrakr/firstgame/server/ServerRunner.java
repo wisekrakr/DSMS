@@ -90,13 +90,21 @@ public class ServerRunner {
                 engine);
         engine.addGameObject(powerUp);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 3; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     50,randomGenerator.nextFloat() * 2000 - 1000,
                     200f,22f, engine);
             engine.addGameObject(chaser);
+        }
+        for (int i = 0; i < 5; i++) {
+            EnemyGang enemyGang = new EnemyGang("Gang!", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    50,randomGenerator.nextFloat() * 2000 - 1000,
+                    120f,10f, engine);
+            engine.addGameObject(enemyGang);
         }
 /*
         for (int i = 0; i < 5; i++) {
@@ -157,7 +165,7 @@ public class ServerRunner {
                     200f,12f, engine);
             engine.addGameObject(enemyShotty);
         }
-*/
+
         for(int i = 0; i < 3; i++){
             EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -166,7 +174,7 @@ public class ServerRunner {
                     175f,30f, engine);
             engine.addGameObject(enemyHomer);
         }
-
+*/
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,

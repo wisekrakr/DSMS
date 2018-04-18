@@ -596,6 +596,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
 
+                }else if ("EnemyGang".equals(object.getType())) {
+                    shapeRenderer.setColor(Color.GOLD);
+                    shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+
+                    Float radius = (Float) object.extraProperties().get("radius");
+
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius);
+                    shapeRenderer.setColor(Color.PURPLE);
+                    shapeRenderer.circle(object.getPosition().x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                            object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+
                 }else if ("EnemyShitter".equals(object.getType())) {
                     shapeRenderer.setColor(Color.LIGHT_GRAY);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);

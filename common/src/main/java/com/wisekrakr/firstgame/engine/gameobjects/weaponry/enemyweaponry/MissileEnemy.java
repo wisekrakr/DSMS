@@ -36,12 +36,12 @@ public class MissileEnemy extends AutonomousWeaponsEnemy {
     }
 
     @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Player) {
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE) {
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= ATTACK_DISTANCE) {
 
-                float angle = angleBetween(this, subject);
+                float angle = angleBetween(this, target);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x += Math.cos(angle), getPosition().y += Math.sin(angle)));

@@ -48,7 +48,7 @@ public class Spaceship extends GameObject {
     private int mineAmmoCount;
     private float minesLeftOver;
     private int randomMinion;
-
+    private boolean minionActivated;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -64,6 +64,7 @@ public class Spaceship extends GameObject {
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
+        minionActivated = false;
 
     }
 
@@ -140,30 +141,32 @@ public class Spaceship extends GameObject {
         }
         if (subject instanceof PowerUpMinion) {
             toDelete.add(subject);
-
-            randomMinion = MathUtils.random(1, 1);
-            switch (randomMinion) {
-                case 1:
-                    minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(
-                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                            50,
-                            (float) (getAngle() + Math.PI / 5), 10,  getSpace());
-                    toAdd.add(minionShooterPlayer);
-                    powerUpState = PowerUpState.MINION;
-                    break;
-                case 2:
-                    minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
-                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                            50,
-                            (float) (getAngle() + Math.PI / 5), 10,  getSpace());
-                    toAdd.add(minionFighterPlayer);
-                    powerUpState = PowerUpState.MINION;
-                    break;
+            if (!(minionActivated)) {
+                randomMinion = MathUtils.random(1, 2);
+                switch (randomMinion) {
+                    case 1:
+                        minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(
+                                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                                50,
+                                (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                        toAdd.add(minionShooterPlayer);
+                        powerUpState = PowerUpState.MINION;
+                        minionActivated = true;
+                        break;
+                    case 2:
+                        minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
+                                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                                50,
+                                (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                        toAdd.add(minionFighterPlayer);
+                        powerUpState = PowerUpState.MINION;
+                        minionActivated = true;
+                        break;
+                }
             }
         }
-
     }
 
     public void scoringSystem(GameObject enemy, GameObject subject) {

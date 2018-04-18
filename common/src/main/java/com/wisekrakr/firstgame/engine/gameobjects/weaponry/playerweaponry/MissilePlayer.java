@@ -52,10 +52,10 @@ public class MissilePlayer extends AutonomousWeaponsPlayer {
     }
 
     @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Enemy) {
-            float angle = angleBetween(this, subject);
+        if (target instanceof Enemy) {
+            float angle = angleBetween(this, target);
             setPosition(new Vector2(getPosition().x += Math.cos(angle), getPosition().y += Math.sin(angle)));
             setOrientation(angle);
             setDirection(angle);

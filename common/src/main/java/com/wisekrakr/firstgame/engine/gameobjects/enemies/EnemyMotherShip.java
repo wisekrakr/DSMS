@@ -50,11 +50,11 @@ public class EnemyMotherShip extends Enemy {
     }
 
     @Override
-    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player) {
+    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (target instanceof Player) {
 
-            if (distanceBetween(this, subject) <= getAggroDistance() ) {
-                float angle = angleBetween(this, subject);
+            if (distanceBetween(this, target) <= getAggroDistance() ) {
+                float angle = angleBetween(this, target);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
@@ -69,11 +69,11 @@ public class EnemyMotherShip extends Enemy {
     }
 
     @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.attackTarget(subject, toDelete, toAdd);
-        if (subject instanceof Player) {
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(target, toDelete, toAdd);
+        if (target instanceof Player) {
 
-            if (distanceBetween(this, subject) <= getAttackDistance() ) {
+            if (distanceBetween(this, target) <= getAttackDistance() ) {
                 attackState = AttackState.SHOOT;
             }else{
                 attackState = AttackState.PACIFIST;

@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
@@ -98,8 +97,8 @@ public abstract class GameObject {
 
 
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
-    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){}
+    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public float getCollisionRadius() {
         return collisionRadius;
     }

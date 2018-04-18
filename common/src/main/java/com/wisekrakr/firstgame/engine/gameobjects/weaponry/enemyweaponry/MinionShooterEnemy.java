@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
@@ -63,32 +64,26 @@ public class MinionShooterEnemy extends Minion {
         }
     }
 
-    //TODO: Minion either keeps shooting or only shoots one random enemy
     @Override
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(target instanceof Player) {
             if(distanceBetween(this, target)<= SPOTTED_DISTANCE) {
                 float angle = angleBetween(this, target);
-            /*
-            setPosition(new Vector2(getPosition().x += (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                    getPosition().y += (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())));
-                    */
                 setOrientation(angle);
                 setDirection(angle);
-
             }
-
         }
     }
-    // attackTarget not used for now.
-    @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Player) {
-            if (distanceBetween(this, subject) <= ATTACK_DISTANCE ) {
-                minionState = Minion.MinionState.SHOOT;
-            }else {
-                minionState = Minion.MinionState.PACIFIST;
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (target instanceof Player){
+            if (distanceBetween(this, target)<= ATTACK_DISTANCE){
+                if (!toDelete.contains(target)) {
+                    minionState = MinionState.SHOOT;
+                }else {
+                    minionState = MinionState.PACIFIST;
+                }
             }
         }
     }
@@ -98,11 +93,15 @@ public class MinionShooterEnemy extends Minion {
 
         super.elapseTime(clock, delta, toDelete, toAdd);
 
+        setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 120 * delta),
+                (float) (getPosition().y + Math.PI * 3 * 120 * delta))
+        );
+
         switch (minionState){
             case SHOOT:
                 ammoCount = getAmmoCount();
 
-                float shotCount = delta / 0.5f + shotLeftOver;
+                float shotCount = delta / 0.8f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -116,7 +115,6 @@ public class MinionShooterEnemy extends Minion {
                 for (int i = 0; i < exactShotCount; i++) {
                     bulletMisc = new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, randomDamageCountBullet());
                     toAdd.add(bulletMisc);
-
                 }
 
                 break;

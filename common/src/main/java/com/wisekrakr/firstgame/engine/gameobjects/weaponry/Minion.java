@@ -19,6 +19,7 @@ public class Minion extends GameObject {
 
     private float time;
     private int damage;
+    private float destructTime;
 
     public Minion(String name, Vector2 position, int health, float direction, float radius,  SpaceEngine space) {
         super(name, position, space);
@@ -38,6 +39,10 @@ public class Minion extends GameObject {
         PACIFIST, SHOOT, RETURN
     }
 
+    public void minionBounds(GameObject object, Set<GameObject> toDelete, Set<GameObject> toAdd){
+
+    }
+
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
@@ -45,7 +50,7 @@ public class Minion extends GameObject {
             toDelete.add(this);
         }
 
-        float destructTime = 30f;
+        destructTime = 30f;
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);

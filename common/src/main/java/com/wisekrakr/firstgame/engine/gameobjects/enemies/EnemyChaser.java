@@ -53,11 +53,11 @@ public class EnemyChaser extends Enemy {
     }
 
     @Override
-    public void targetSpotted(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player) {
-            if (distanceBetween(this, subject) <= getAggroDistance() ) {
-                float angle = angleBetween(this, subject);
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle)  , getPosition().y +=  Math.sin(angle) ));
+    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= getAggroDistance() ) {
+                float angle = angleBetween(this, target);
+                setPosition(new Vector2(getPosition().x  +=  Math.cos(angle)  , getPosition().y += Math.sin(angle) ));
                 setOrientation(angle);
                 setDirection(angle);
                 /*
@@ -75,11 +75,11 @@ public class EnemyChaser extends Enemy {
     }
 
     @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.attackTarget(subject, toDelete, toAdd);
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(target, toDelete, toAdd);
 
-        if (subject instanceof Player) {
-            if (distanceBetween(this, subject) <= getAttackDistance() ) {
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= getAttackDistance() ) {
                 attackState = AttackState.SHOOT;
             }
             else{

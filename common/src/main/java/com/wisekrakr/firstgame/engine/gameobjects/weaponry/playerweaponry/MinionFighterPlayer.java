@@ -20,7 +20,7 @@ public class MinionFighterPlayer extends Minion {
 
     private static final float ATTACK_DISTANCE = 700;
     private static final float SPOTTED_DISTANCE = 900;
-    private static final float SPEED = 100;
+    private static final float SPEED = 300;
     private float direction;
     private float radius;
     private int health;
@@ -67,23 +67,26 @@ public class MinionFighterPlayer extends Minion {
     @Override
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(target instanceof Enemy) {
-            if(distanceBetween(this, target)<= ATTACK_DISTANCE) {
+            if(distanceBetween(this, target)<= SPOTTED_DISTANCE) {
                 float angle = angleBetween(this, target);
-            /*
-                setPosition(new Vector2(getPosition().x += (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                    getPosition().y += (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())));
-             */
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle) *3 , getPosition().y +=  Math.sin(angle)*3 ));
-
                 setOrientation(angle);
                 setDirection(angle);
-                minionState = MinionState.SHOOT;
             }
-
         }
-
     }
-    
+
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (target instanceof Enemy){
+            if (distanceBetween(this, target)<= ATTACK_DISTANCE){
+                if (!toDelete.contains(target)) {
+                    minionState = MinionState.SHOOT;
+                }else {
+                    minionState = MinionState.PACIFIST;
+                }
+            }
+        }
+    }
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -91,6 +94,11 @@ public class MinionFighterPlayer extends Minion {
 
         switch (minionState){
             case SHOOT:
+
+                setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * SPEED * delta,
+                        getPosition().y + (float) Math.sin(direction) * SPEED * delta)
+                );
+                setOrientation(direction);
 
                 break;
 

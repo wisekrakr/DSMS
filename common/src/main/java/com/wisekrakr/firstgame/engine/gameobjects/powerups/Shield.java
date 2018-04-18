@@ -11,6 +11,10 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBe
 
 import java.util.Set;
 
+/**
+ * extends AutonomousWeaponsEnemy so shield will attach itself to Player, just like enemy weaponry will seek out the Player
+ * This is used in SpaceEngine
+ */
 public class Shield extends AutonomousWeaponsEnemy {
 
     private float radius;
@@ -47,9 +51,9 @@ public class Shield extends AutonomousWeaponsEnemy {
     }
 
     @Override
-    public void attackTarget(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(subject instanceof Player){
-            setPosition(new Vector2(subject.getPosition().x , subject.getPosition().y ));
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if(target instanceof Player){
+            setPosition(new Vector2(target.getPosition().x , target.getPosition().y ));
         }
     }
 

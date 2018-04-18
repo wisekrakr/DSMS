@@ -190,7 +190,7 @@ public class SpaceEngine {
                         if (target instanceof Enemy) {
                             if (target != subject) {
                                 subject.getClosestTarget(target, toDelete, toAdd);
-                                //subject.attackTarget(target, toDelete, toAdd);
+                                subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
                     }

@@ -61,13 +61,16 @@ public class MinionShooterPlayer extends Minion {
         if (subject instanceof SpaceMineEnemy){
             setHealth(getHealth() - subject.randomDamageCountMine());
         }
-
-
-
     }
 
+    @Override
+    public void minionBounds(GameObject object, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if(object instanceof Player){
 
-//TODO: Minion either keeps shooting or only shoots one random enemy
+        }
+    }
+
+    //TODO: Minion either keeps shooting or only shoots one random enemy
     @Override
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(target instanceof Enemy) {
@@ -79,14 +82,23 @@ public class MinionShooterPlayer extends Minion {
                     */
                 setOrientation(angle);
                 setDirection(angle);
-                minionState = Minion.MinionState.SHOOT;
             }
-
         }
     }
 
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (target instanceof Enemy){
+            if (distanceBetween(this, target)<= ATTACK_DISTANCE){
+                if (!toDelete.contains(target)) {
+                    minionState = MinionState.SHOOT;
+                }else {
+                    minionState = MinionState.PACIFIST;
+                }
+            }
+        }
+    }
 
-    
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
@@ -122,6 +134,7 @@ public class MinionShooterPlayer extends Minion {
                 shotLeftOver = 0;
                 break;
             case RETURN:
+
 
                 break;
         }
