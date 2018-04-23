@@ -67,7 +67,6 @@ public class EnemyShitter extends Enemy {
                 setPosition(new Vector2(getPosition().x -=  Math.cos(angle), getPosition().y -=  Math.sin(angle)));
                 setOrientation(-angle);
                 setDirection(-angle);
-
             }else{
                 attackState = AttackState.PACIFIST;
             }

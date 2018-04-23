@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
+import javafx.scene.media.VideoTrack;
 
 public class MyAssetManager implements Disposable{
 
@@ -29,6 +30,7 @@ public class MyAssetManager implements Disposable{
         assetManager.load("sound/photon1.wav", Sound.class);
         assetManager.load("sound/photon2.wav", Sound.class);
         assetManager.load("sound/acc1.mp3", Sound.class);
+        assetManager.load("sound/mine_blowup.mp3", Sound.class);
 
 
         assetManager.finishLoading();
@@ -39,6 +41,13 @@ public class MyAssetManager implements Disposable{
     public void loadFonts() {
         assetManager.load("font/myFont.fnt", BitmapFont.class);
         assetManager.load("font/myFontBlack.fnt", BitmapFont.class);
+        assetManager.finishLoading();
+    }
+    /*
+     * All the Videos loaded in the the AssetManager
+     */
+    public void loadVideos() {
+        assetManager.load("video/test.avi", VideoTrack.class);
         assetManager.finishLoading();
     }
     /*

@@ -22,6 +22,7 @@ public class Spaceship extends GameObject {
     private ShootingState shootingState = ShootingState.PACIFIST;
     private AimingState aimingState = AimingState.NONE;
     private PowerUpState powerUpState = PowerUpState.NONE;
+    private SwitchWeaponState switchWeaponState = SwitchWeaponState.NONE;
 
     private float speedX = 0;
     private float speedY = 0;
@@ -48,7 +49,7 @@ public class Spaceship extends GameObject {
     private int mineAmmoCount;
     private float minesLeftOver;
     private int randomMinion;
-    private boolean minionActivated;
+    private boolean minionActivated = false;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -64,7 +65,6 @@ public class Spaceship extends GameObject {
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
-        minionActivated = false;
 
     }
 
@@ -96,6 +96,9 @@ public class Spaceship extends GameObject {
     public enum PowerUpState {
         SHIELD, MINION, NONE
     }
+    public enum SwitchWeaponState {
+        NONE, BULLETS, MISSILES, SPACE_MINES
+    }
 
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -103,12 +106,14 @@ public class Spaceship extends GameObject {
         // angle = angle + (float) Math.PI;
     }
 
-    public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState, AimingState aimingState) {
+    public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
+                        AimingState aimingState, SwitchWeaponState switchWeaponState) {
         this.throttle = throttle;
         this.steering = steering;
         this.powerState = powerState;
         this.shootingState = shootingState;
         this.aimingState = aimingState;
+        this.switchWeaponState = switchWeaponState;
     }
 
     @Override
@@ -141,30 +146,30 @@ public class Spaceship extends GameObject {
         }
         if (subject instanceof PowerUpMinion) {
             toDelete.add(subject);
-            if (!(minionActivated)) {
-                randomMinion = MathUtils.random(1, 2);
-                switch (randomMinion) {
-                    case 1:
-                        minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(
-                                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                                50,
-                                (float) (getAngle() + Math.PI / 5), 10, getSpace());
-                        toAdd.add(minionShooterPlayer);
-                        powerUpState = PowerUpState.MINION;
-                        minionActivated = true;
-                        break;
-                    case 2:
-                        minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
-                                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                                50,
-                                (float) (getAngle() + Math.PI / 5), 10, getSpace());
-                        toAdd.add(minionFighterPlayer);
-                        powerUpState = PowerUpState.MINION;
-                        minionActivated = true;
-                        break;
-                }
+
+            randomMinion = MathUtils.random(1, 2);
+            switch (randomMinion) {
+                case 1:
+                    minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(
+                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            50,
+                            (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                    toAdd.add(minionShooterPlayer);
+                    powerUpState = PowerUpState.MINION;
+                    minionActivated = true;
+                    break;
+                case 2:
+                    minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
+                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
+                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            50,
+                            (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                    toAdd.add(minionFighterPlayer);
+                    powerUpState = PowerUpState.MINION;
+                    minionActivated = true;
+                    break;
+
             }
         }
     }
@@ -353,70 +358,38 @@ public class Spaceship extends GameObject {
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
 
+        switch (switchWeaponState){
+            case NONE:
+                setShootingState(ShootingState.PACIFIST);
+                break;
+            case BULLETS:
+                //now able to fire bullets
+                setShootingState(ShootingState.FIRING);
+                break;
+            case MISSILES:
+                //now able to fire missiles
+                setShootingState(ShootingState.MISSILE_FIRING);
+                break;
+            case SPACE_MINES:
+                //now able to place mines
+                setShootingState(ShootingState.PLACE_MINE);
+                break;
+        }
+
         switch (shootingState) {
             case FIRING:
-                bullets.add(currentBullet);
-
-                float shotCount = delta / 0.2f + shotLeftOver;
-
-                int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
-
-                ammoCount = ammoCount - exactShotCount;
-                if (ammoCount > 0) {
-                    shotLeftOver = shotCount - exactShotCount;
-                } else {
-                    shotLeftOver = 0;
-                }
-
-                for (int i = 0; i < exactShotCount; i++) {
-                    currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f, randomDamageCountBullet());
-                    toAdd.add(currentBullet);
-
-                }
+                activateBullets(delta, toDelete, toAdd);
                 break;
             case MISSILE_FIRING:
-                missiles.add(currentMissile);
-
-                float missileCount = delta / 0.5f + missileLeftOver;
-
-                int exactMissileCount = Math.min(Math.round(missileCount), missileAmmoCount);
-
-                missileAmmoCount = missileAmmoCount - exactMissileCount;
-                if (missileAmmoCount > 0) {
-                    missileLeftOver = missileCount - exactMissileCount;
-                } else {
-                    missileLeftOver = 0;
-                }
-                for (int i = 0; i < exactMissileCount; i++) {
-                    currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 400, 5f, randomDamageCountMissile());
-                    toAdd.add(currentMissile);
-                }
-
+                activateMissiles(delta, toDelete, toAdd);
                 break;
-
             case PLACE_MINE:
-                spaceMines.add(currentSpaceMine);
-
-                float minesCount = delta / 2.0f + minesLeftOver;
-
-                int exactMineCount = Math.min(Math.round(minesCount), mineAmmoCount);
-
-                mineAmmoCount = mineAmmoCount - exactMineCount;
-                if (ammoCount > 0) {
-                    minesLeftOver = minesCount - exactMineCount;
-                } else {
-                    minesLeftOver = 0;
-                }
-
-                for (int i = 0; i < exactMineCount; i++) {
-                    currentSpaceMine = new SpaceMinePlayer("mine", getPosition(), getSpace(), getAngle(), 300, 8f, randomDamageCountMine());
-                    toAdd.add(currentSpaceMine);
-                }
-
+                activateSpaceMines(delta, toDelete, toAdd);
                 break;
-
             case PACIFIST:
                 shotLeftOver = 0;
+                missileLeftOver = 0;
+                minesLeftOver = 0;
                 break;
         }
 
@@ -447,6 +420,68 @@ public class Spaceship extends GameObject {
 
     }
 
+    private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd){
+
+        bullets.add(currentBullet);
+
+        float shotCount = delta / 0.2f + shotLeftOver;
+
+        int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
+
+        ammoCount = ammoCount - exactShotCount;
+        if (ammoCount > 0) {
+            shotLeftOver = shotCount - exactShotCount;
+        } else {
+            shotLeftOver = 0;
+        }
+
+        for (int i = 0; i < exactShotCount; i++) {
+            currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f, randomDamageCountBullet());
+            toAdd.add(currentBullet);
+
+        }
+    }
+
+    private void activateMissiles(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd){
+        missiles.add(currentMissile);
+
+        float missileCount = delta / 0.5f + missileLeftOver;
+
+        int exactMissileCount = Math.min(Math.round(missileCount), missileAmmoCount);
+
+        missileAmmoCount = missileAmmoCount - exactMissileCount;
+        if (missileAmmoCount > 0) {
+            missileLeftOver = missileCount - exactMissileCount;
+        } else {
+            missileLeftOver = 0;
+        }
+        for (int i = 0; i < exactMissileCount; i++) {
+            currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 400, 5f, randomDamageCountMissile());
+            toAdd.add(currentMissile);
+        }
+
+    }
+
+    private void activateSpaceMines(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd){
+        spaceMines.add(currentSpaceMine);
+
+        float minesCount = delta / 2.0f + minesLeftOver;
+
+        int exactMineCount = Math.min(Math.round(minesCount), mineAmmoCount);
+
+        mineAmmoCount = mineAmmoCount - exactMineCount;
+        if (mineAmmoCount > 0) {
+            minesLeftOver = minesCount - exactMineCount;
+        } else {
+            minesLeftOver = 0;
+        }
+
+        for (int i = 0; i < exactMineCount; i++) {
+            currentSpaceMine = new SpaceMinePlayer("mine", getPosition(), getSpace(), getAngle(), 300, 8f, randomDamageCountMine());
+            toAdd.add(currentSpaceMine);
+        }
+    }
+
     @Override
     public int getHealth() {
         return health;
@@ -467,6 +502,10 @@ public class Spaceship extends GameObject {
 
     public ShootingState getShootingState() {
         return shootingState;
+    }
+
+    public void setShootingState(ShootingState shootingState) {
+        this.shootingState = shootingState;
     }
 
     public float getAngle() {
@@ -490,6 +529,9 @@ public class Spaceship extends GameObject {
     }
 
 
+    public int getMineAmmoCount() {
+        return mineAmmoCount;
+    }
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
@@ -504,7 +546,15 @@ public class Spaceship extends GameObject {
     public Map<String, Object> getAmmoProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        result.put("ammoCount", ammoCount);
+        if (switchWeaponState == SwitchWeaponState.BULLETS) {
+            result.put("ammoCount", getAmmoCount());
+        }else if (switchWeaponState == SwitchWeaponState.MISSILES){
+            result.put("ammoCount", getMissileAmmoCount());
+        }else if (switchWeaponState == SwitchWeaponState.SPACE_MINES){
+            result.put("ammoCount", getMineAmmoCount());
+        }else {
+            result.put("ammoCount", 0);
+        }
 
         return result;
     }
@@ -532,6 +582,15 @@ public class Spaceship extends GameObject {
         Map<String, Object> result = new HashMap<>();
 
         result.put("missileCount", missileAmmoCount);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getRandomProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("switchWeaponState", switchWeaponState);
 
         return result;
     }

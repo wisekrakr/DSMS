@@ -68,12 +68,8 @@ public class EnemyMutator extends Enemy {
 
             if (distanceBetween(this, target) <= getAggroDistance() ) {
                 float angle = angleBetween(this, target);
-
-                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle) /2 , getPosition().y +=  Math.sin(angle)/2 ));
-
                 setOrientation(angle);
-
                 setDirection(angle);
 
             }

@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
@@ -12,6 +13,8 @@ import java.util.*;
  * Created by David on 11/6/2017.
  */
 public abstract class GameObject {
+
+    private float enemyMarginOfError;
     private String name;
     private Vector2 position;
     private float orientation;
@@ -40,12 +43,17 @@ public abstract class GameObject {
     public void setPosition(Vector2 position) {
         this.position = position;
     }
-
     public void setCollisionRadius(float radius) {
         this.collisionRadius = radius;
     }
     public void setOrientation(float newOrientation) {
         this.orientation = newOrientation;
+    }
+    public float getEnemyMarginOfError() {
+        return enemyMarginOfError;
+    }
+    public void setEnemyMarginOfError(float enemyMarginOfError) {
+        this.enemyMarginOfError = enemyMarginOfError;
     }
     public SpaceEngine getSpace() {
         return space;
@@ -74,21 +82,35 @@ public abstract class GameObject {
         return random.nextFloat() * 2000 - 1000;
     }
 
-    public static float distanceBetween(GameObject subject, GameObject target) {
+    public float setRandomDirectionStartScreen(){
+        Random random = new Random();
+        return random.nextFloat() * 1200;
+    }
+
+    public float distanceBetween(GameObject subject, GameObject target) {
+
         float attackDistanceX = target.getPosition().x - subject.getPosition().x;
         float attackDistanceY = target.getPosition().y - subject.getPosition().y;
 
         return (float) Math.hypot(attackDistanceX, attackDistanceY);
     }
 
-    public static float angleBetween(GameObject subject, GameObject target) {
+    public float angleBetween(GameObject subject, GameObject target) {
 
         float attackDistanceX = target.getPosition().x - subject.getPosition().x;
         float attackDistanceY = target.getPosition().y - subject.getPosition().y;
 
-        float angle = (float) Math.atan2(attackDistanceY, attackDistanceX);
+        return (float) Math.atan2(attackDistanceY, attackDistanceX);
+    }
+    public float angleBetweenNoAim(GameObject subject, GameObject target) {
+        Random random = new Random();
+        setEnemyMarginOfError(60f);
+        float number = random.nextFloat() * enemyMarginOfError;
 
-        return angle;
+        float attackDistanceX = (target.getPosition().x + number) - subject.getPosition().x;
+        float attackDistanceY = (target.getPosition().y + number) - subject.getPosition().y;
+
+        return (float) Math.atan2(attackDistanceY, attackDistanceX);
     }
 
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
@@ -105,7 +127,8 @@ public abstract class GameObject {
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
-                getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(), getMissileProperties(), getDamageProperties());
+                getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(), getMissileProperties(),
+                getDamageProperties(), getRandomProperties());
     }
 
     public int getHealth() {
@@ -135,4 +158,8 @@ public abstract class GameObject {
         return new HashMap<>();
     }
 
+
+    public Map<String, Object> getRandomProperties() {
+        return new HashMap<>();
+    }
 }

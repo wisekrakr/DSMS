@@ -32,4 +32,5 @@ public class SpaceGameContainer extends Game {
 
         setScreen(new StartScreen(this, connector));
     }
+
 }

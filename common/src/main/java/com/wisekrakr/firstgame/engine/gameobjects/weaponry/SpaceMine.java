@@ -17,6 +17,7 @@ public class SpaceMine extends GameObject {
     private float time;
     private float destructTime;
     private int damage;
+    private boolean isDestruct;
 
 
     public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
@@ -27,6 +28,7 @@ public class SpaceMine extends GameObject {
         this.damage = damage;
 
         setCollisionRadius(radius);
+        setDestruct(false);
     }
 
     @Override
@@ -35,7 +37,12 @@ public class SpaceMine extends GameObject {
         destructTime = getDestructTime();
         time += delta;
         if(time >= destructTime){
-            toDelete.add(this);
+            if(!(isDestruct)) {
+                toDelete.add(this);
+                setDestruct(true);
+            }else {
+                setDestruct(false);
+            }
         }
 
     }
@@ -60,6 +67,14 @@ public class SpaceMine extends GameObject {
         return radius;
     }
 
+    public boolean isDestruct() {
+        return isDestruct;
+    }
+
+    public void setDestruct(boolean destruct) {
+        isDestruct = destruct;
+    }
+
     @Override
     public Map<String, Object> getDamageProperties() {
         Map<String, Object> result = new HashMap<>();
@@ -74,6 +89,15 @@ public class SpaceMine extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getRandomProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("isDestruct", isDestruct);
 
         return result;
     }

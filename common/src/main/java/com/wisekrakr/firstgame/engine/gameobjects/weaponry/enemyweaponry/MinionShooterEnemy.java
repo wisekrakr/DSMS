@@ -69,6 +69,7 @@ public class MinionShooterEnemy extends Minion {
         if(target instanceof Player) {
             if(distanceBetween(this, target)<= SPOTTED_DISTANCE) {
                 float angle = angleBetween(this, target);
+
                 setOrientation(angle);
                 setDirection(angle);
             }
@@ -87,16 +88,15 @@ public class MinionShooterEnemy extends Minion {
             }
         }
     }
-
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         super.elapseTime(clock, delta, toDelete, toAdd);
-
+/*
         setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 120 * delta),
                 (float) (getPosition().y + Math.PI * 3 * 120 * delta))
         );
-
+*/
         switch (minionState){
             case SHOOT:
                 ammoCount = getAmmoCount();

@@ -16,7 +16,7 @@ import java.util.Set;
 public class PowerUp extends GameObject {
 
     private float time;
-    private static final float SPAWN_TIME = 5;
+    private static final float SPAWN_TIME = 22;
 
     private SpaceEngine space;
     private int randomPowerUp;
@@ -32,7 +32,7 @@ public class PowerUp extends GameObject {
         time += delta;
         if (time >= SPAWN_TIME) {
 
-            randomPowerUp = MathUtils.random(3, 3);
+            randomPowerUp = MathUtils.random(1, 4);
 
             Random random = new Random();
                 switch (randomPowerUp) {

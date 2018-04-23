@@ -9,11 +9,14 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionS
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public class EnemyGang extends Enemy {
 
+    private MinionState minionState = MinionState.PACIFIST;
     private static final float CHANGE_DIRECTION_TIME = 20;
+    private MinionShooterEnemy minionShooterEnemy;
     private float speed;
     private float direction;
     private float radius;
@@ -36,30 +39,15 @@ public class EnemyGang extends Enemy {
         setCollisionRadius(radius);
         setHealth(health);
         setAggroDistance(650);
-        setAttackDistance(450);
+        setAttackDistance(900);
         setSpeed(speed);
-/*
-        MinionShooterEnemy minionShooterEnemy = new MinionShooterEnemy("minion_shooter", new Vector2(
-                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                50,
-                (float) (getOrientation() + Math.PI / 5), 10,  getSpace());
-        getSpace().addGameObject(minionShooterEnemy);
 
-        MinionShooterEnemy minionShooterEnemyTwo = new MinionShooterEnemy("minion_shooter", new Vector2(
-                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+        minionShooterEnemy = new MinionShooterEnemy("minion_shooter", new Vector2(
+                getPosition().x + getCollisionRadius() * (float) Math.cos(getOrientation()),
+                getPosition().y + getCollisionRadius() * (float) Math.sin(getOrientation())),
                 50,
-                (float) (getOrientation() + Math.PI / 3), 10,  getSpace());
-        getSpace().addGameObject(minionShooterEnemyTwo);
+                 getOrientation() , 10,  getSpace());
 
-        MinionShooterEnemy minionShooterEnemyThree = new MinionShooterEnemy("minion_shooter", new Vector2(
-                getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                50,
-                (float) (getOrientation() + Math.PI / 7), 10,  getSpace());
-        getSpace().addGameObject(minionShooterEnemyThree);
-*/
     }
 
     @Override
@@ -76,15 +64,20 @@ public class EnemyGang extends Enemy {
 
     }
 
+    public enum MinionState {
+        PACIFIST, CHASE, SHOOT, SELF_DESTRUCT;
+    }
+
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAggroDistance() ) {
                 float angle = angleBetween(this, target);
+                float angleNoAim = angleBetweenNoAim(this, target);
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle)  , getPosition().y +=  Math.sin(angle) ));
                 setOrientation(angle);
-                setDirection(angle);
-
+                setDirection(angleNoAim);
+                minionState = MinionState.SHOOT;
             }
         }
     }
@@ -123,7 +116,7 @@ public class EnemyGang extends Enemy {
         switch (attackState){
             case SHOOT:
                 ammoCount = getAmmoCount();
-                float shotCount = delta / 0.5f + shotLeftOver;
+                float shotCount = delta / 1.5f + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -134,7 +127,7 @@ public class EnemyGang extends Enemy {
                     shotLeftOver = 0;
                 }
 
-                for (int i = 0; i < exactShotCount; i++) {
+                for(int i = 0; i < exactShotCount; i++) {
                     toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(), 2f, randomDamageCountBullet()));
                 }
 
@@ -142,6 +135,22 @@ public class EnemyGang extends Enemy {
 
             case PACIFIST:
                 shotLeftOver = 0;
+                break;
+        }
+
+        switch (minionState){
+            case PACIFIST:
+                break;
+            case SHOOT:
+                for (int i = 1; i <= 4; i++) {
+                    toAdd.add(minionShooterEnemy);
+                    minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.PI * 5 + (i * 3) * getSpeed() * delta),
+                            (float) (getPosition().y + Math.PI * 5 + (i * 3) * getSpeed() * delta))
+                    );
+                    minionShooterEnemy.setOrientation(getOrientation());
+                    minionShooterEnemy.setDirection(getDirection());
+                    i++;
+                }
                 break;
         }
     }

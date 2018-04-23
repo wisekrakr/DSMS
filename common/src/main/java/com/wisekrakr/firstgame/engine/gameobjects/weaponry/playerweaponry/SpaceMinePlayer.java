@@ -17,6 +17,7 @@ public class SpaceMinePlayer extends SpaceMine {
     private int damage;
     private float radius;
 
+
     public SpaceMinePlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
         super(name, initialPosition, space, direction, speed, radius, damage);
         setDestructTime(20f);
@@ -28,7 +29,7 @@ public class SpaceMinePlayer extends SpaceMine {
         if (subject instanceof Enemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
-
+            setDestruct(true);
             Random random = new Random();
             int debrisParts = random.nextInt(10)+1;
             for(int i = 0; i < debrisParts; i++) {
@@ -38,6 +39,7 @@ public class SpaceMinePlayer extends SpaceMine {
             }
         }
     }
+
 
 }
 

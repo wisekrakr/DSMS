@@ -14,11 +14,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
 /**
  * Created by David on 12/1/2017.
  */
 public class Hud implements Disposable {
+
+    private Spaceship.SwitchWeaponState switchWeaponState = Spaceship.SwitchWeaponState.NONE;
 
     private final MyAssetManager myAssetManager;
     public Stage stage;
@@ -48,6 +51,7 @@ public class Hud implements Disposable {
     private Label missileCountLabel;
     private Label healthLabel;
     private Label healthCountLabel;
+    private String weaponName;
 
     public Hud(MyAssetManager myAssetManager) {
         this.myAssetManager = myAssetManager;
@@ -58,7 +62,7 @@ public class Hud implements Disposable {
         missileCounter = 0;
         score = 0;
         healthCounter = 1000;
-        name = "Wisekrakr";
+
 
         viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
@@ -79,10 +83,9 @@ public class Hud implements Disposable {
         distanceCountLabel = new Label(String.format("%06d", distanceCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         scoreLabel = new Label("Score", new Label.LabelStyle(font, Color.WHITE));
         scoreCountLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
-        ammoLabel = new Label("Ammo", new Label.LabelStyle(font, Color.WHITE));
+        //ammoLabel = new Label("Ammo", new Label.LabelStyle(font, Color.WHITE));
+        ammoLabel = new Label(String.format("%s", getAmmoLabel()), new Label.LabelStyle(font, Color.WHITE));
         ammoCountLabel = new Label(String.format("%06d", ammoCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
-        missileLabel = new Label("Missiles", new Label.LabelStyle(font, Color.WHITE));
-        missileCountLabel = new Label(String.format("%06d", missileCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         nameLabel = new Label("Your name here", new Label.LabelStyle(font, Color.WHITE));
         nameSetLabel = new Label(String.format("%s", getNameSetLabel()), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         healthLabel = new Label("HP", new Label.LabelStyle(font, Color.WHITE));
@@ -106,7 +109,6 @@ public class Hud implements Disposable {
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
         table.add(ammoLabel).expandX().padTop(10);
-        table.add(missileLabel).expandX().padTop(10);
         table.add(nameLabel).expandX().padTop(10);
         table.add(healthLabel).expandX().padTop(10);
         table.row();
@@ -114,7 +116,6 @@ public class Hud implements Disposable {
         table.add(distanceCountLabel).expandX();
         table.add(scoreCountLabel).expandX();
         table.add(ammoCountLabel).expandX();
-        table.add(missileCountLabel).expandX();
         table.add(nameSetLabel).expandX();
         table.add(healthCountLabel).expandX();
 
@@ -129,26 +130,44 @@ public class Hud implements Disposable {
         return nameSetLabel;
     }
 
+    public Spaceship.SwitchWeaponState getSwitchWeaponState() {
+        return switchWeaponState;
+    }
+
+    public Label getAmmoLabel() {
+        return ammoLabel;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void update(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
         timeCounter += delta;
         if (timeCounter >= 1) {
             timeCounter = 0;
             worldTimer++;
+            weaponName = getSwitchWeaponState().toString();
+            setName("Wisekrakr");
 
             timeCountLabel.setText(String.format("%s",worldTimer));
             if (myself != null) {
                 distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
                 scoreCountLabel.setText(Integer.toString((Integer) myself.scoreProperties().get("score")));
+                ammoLabel.setText(String.format("%s", myself.randomProperties().get("switchWeaponState")));
                 ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
-                missileCountLabel.setText(Integer.toString((Integer) myself.missileProperties().get("missileCount")));
                 healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
-                nameSetLabel.setText(String.format("%s", myself.getType()));
+                nameSetLabel.setText(String.format("%s", getName()));
             }
             else {
                 distanceCountLabel.setText("N/A");
                // scoreCountLabel.setText("N/A");
+                ammoLabel.setText("N/A");
                 ammoCountLabel.setText("N/A");
-                missileCountLabel.setText("N/A");
                 healthCountLabel.setText("N/A");
                 nameSetLabel.setText("N/A");
             }

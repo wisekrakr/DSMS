@@ -32,7 +32,8 @@ public class EnemyShotty extends Enemy {
         ammoCount = (int) Double.POSITIVE_INFINITY;
         setCollisionRadius(radius);
         setHealth(health);
-        setAggroDistance(1350);
+        setAggroDistance(500);
+        setAttackDistance(800);
         setAttackDistance(speed);
     }
 
@@ -52,13 +53,10 @@ public class EnemyShotty extends Enemy {
             if (distanceBetween(this, target) <= getAggroDistance() ) {
 
                 float angle = angleBetween(this, target);
-
-                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-                setPosition(new Vector2(getPosition().x +=  Math.cos(angle)  , getPosition().y +=  Math.sin(angle)  ));
-
+                float angleNoAim = angleBetweenNoAim(this, target);
+                setPosition(new Vector2(getPosition().x -=  Math.cos(angle)  , getPosition().y -=  Math.sin(angle)  ));
                 setOrientation(angle);
-
-                setDirection(angle);
+                setDirection(angleNoAim);
 
             }
         }

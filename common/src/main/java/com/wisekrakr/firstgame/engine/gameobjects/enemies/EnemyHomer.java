@@ -54,13 +54,11 @@ public class EnemyHomer extends Enemy {
 
             if (distanceBetween(this, target) <= getAggroDistance() ) {
                 float angle = angleBetween(this, target);
+                float angleNoAim = angleBetweenNoAim(this, target);
 
-                // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle) ));
-
                 setOrientation(angle);
-
-                setDirection(angle);
+                setDirection(angleNoAim);
 
             }
         }

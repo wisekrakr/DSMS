@@ -63,14 +63,7 @@ public class Enemy extends GameObject {
     @Override
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        Random random = new Random();
-        if(distanceBetween(this, target) <= 300){
-            float angle = angleBetween(this, target);
-            setPosition(new Vector2(getPosition().x -=  Math.cos(angle) * random.nextFloat() * 3 ,
-                    getPosition().y -=  Math.sin(angle) * random.nextFloat() * 3 ));
-            setOrientation(angle);
-            setDirection(angle);
-        }
+
     }
 
     @Override

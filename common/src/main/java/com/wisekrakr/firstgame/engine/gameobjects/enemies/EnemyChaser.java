@@ -10,6 +10,7 @@ import java.util.*;
 
 public class EnemyChaser extends Enemy {
 
+    private static final float CLOSE_RANGE = 100;
     private static final float CHANGE_DIRECTION_TIME = 5;
     private float speed;
     private float direction;
@@ -55,21 +56,19 @@ public class EnemyChaser extends Enemy {
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (target instanceof Player) {
-            if (distanceBetween(this, target) <= getAggroDistance() ) {
+            if (distanceBetween(this, target) <= getAggroDistance() - CLOSE_RANGE ) {
                 float angle = angleBetween(this, target);
+                float angleNoAim = angleBetweenNoAim(this, target);
                 setPosition(new Vector2(getPosition().x  +=  Math.cos(angle)  , getPosition().y += Math.sin(angle) ));
                 setOrientation(angle);
-                setDirection(angle);
-                /*
-                for (int i = 0; i < 1 ; i++){
-                    toAdd.add(new MinionShooterEnemy("minion_shooter", new Vector2(
-                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
-                            50,
-                            (float) (getOrientation() + Math.PI / 5), 10,  getSpace()));
-                }
-                */
-
+                setDirection(angleNoAim);
+            }
+            if (distanceBetween(this, target) <= CLOSE_RANGE){
+                float angle = angleBetween(this, target);
+                float angleNoAim = angleBetweenNoAim(this, target);
+                setPosition(new Vector2(getPosition().x  -=  Math.cos(angle)  , getPosition().y -= Math.sin(angle) ));
+                setOrientation(angle);
+                setDirection(angleNoAim);
             }
         }
     }
@@ -99,7 +98,7 @@ public class EnemyChaser extends Enemy {
             setDirection(randomDirection);
             time=0;
         }
-
+        
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
                 getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );

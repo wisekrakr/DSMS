@@ -72,9 +72,10 @@ public class EnemyPest extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAggroDistance() ) {
                 float angle = angleBetween(this, target);
+                float angleNoAim = angleBetweenNoAim(this, target);
                 setPosition(new Vector2(getPosition().x +=  Math.cos(angle), getPosition().y +=  Math.sin(angle)));
                 setOrientation(angle);
-                setDirection(angle);
+                setDirection(angleNoAim);
 
             }
         }

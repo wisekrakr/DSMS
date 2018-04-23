@@ -20,6 +20,7 @@ public class Minion extends GameObject {
     private float time;
     private int damage;
     private float destructTime;
+    private boolean destruct;
 
     public Minion(String name, Vector2 position, int health, float direction, float radius,  SpaceEngine space) {
         super(name, position, space);
@@ -54,6 +55,7 @@ public class Minion extends GameObject {
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);
+            destruct = true;
         }
 
     }
@@ -63,6 +65,9 @@ public class Minion extends GameObject {
         return damage;
     }
 
+    public boolean isDestruct() {
+        return destruct;
+    }
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
