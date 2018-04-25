@@ -9,14 +9,15 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionS
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 public class EnemyGang extends Enemy {
 
     private MinionState minionState = MinionState.PACIFIST;
     private static final float CHANGE_DIRECTION_TIME = 20;
-    private MinionShooterEnemy minionShooterEnemy;
+    private MinionShooterEnemy minionShooterEnemyOne;
+
+
     private float speed;
     private float direction;
     private float radius;
@@ -42,11 +43,12 @@ public class EnemyGang extends Enemy {
         setAttackDistance(900);
         setSpeed(speed);
 
-        minionShooterEnemy = new MinionShooterEnemy("minion_shooter", new Vector2(
-                getPosition().x + getCollisionRadius() * (float) Math.cos(getOrientation()),
-                getPosition().y + getCollisionRadius() * (float) Math.sin(getOrientation())),
+        minionShooterEnemyOne = new MinionShooterEnemy("minion_shooter", new Vector2(
+                getPosition().x + 8 * (float) Math.cos(getOrientation()),
+                getPosition().y + 8 * (float) Math.sin(getOrientation())),
                 50,
                  getOrientation() , 10,  getSpace());
+
 
     }
 
@@ -88,7 +90,7 @@ public class EnemyGang extends Enemy {
 
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance() ) {
-                attackState = AttackState.SHOOT;
+                attackState = AttackState.FIRE_BULLETS;
             }
             else{
                 attackState = AttackState.PACIFIST;
@@ -114,7 +116,7 @@ public class EnemyGang extends Enemy {
         setOrientation(direction);
 
         switch (attackState){
-            case SHOOT:
+            case FIRE_BULLETS:
                 ammoCount = getAmmoCount();
                 float shotCount = delta / 1.5f + shotLeftOver;
 
@@ -140,19 +142,25 @@ public class EnemyGang extends Enemy {
 
         switch (minionState){
             case PACIFIST:
+                toDelete.add(minionShooterEnemyOne);
                 break;
             case SHOOT:
-                for (int i = 1; i <= 4; i++) {
-                    toAdd.add(minionShooterEnemy);
-                    minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.PI * 5 + (i * 3) * getSpeed() * delta),
-                            (float) (getPosition().y + Math.PI * 5 + (i * 3) * getSpeed() * delta))
+
+                for (int i = 0; i < 1; i++) {
+                    toAdd.add(minionShooterEnemyOne);
+                    minionShooterEnemyOne.setPosition(new Vector2((getPosition().x * getSpeed() * delta),
+                            (getPosition().y * getSpeed() * delta))
                     );
-                    minionShooterEnemy.setOrientation(getOrientation());
-                    minionShooterEnemy.setDirection(getDirection());
+                    minionShooterEnemyOne.setOrientation(minionShooterEnemyOne.getOrientation());
+                    minionShooterEnemyOne.setDirection(minionShooterEnemyOne.getDirection());
                     i++;
                 }
                 break;
         }
+        if (this.getHealth() <= 0) {
+            toDelete.add(minionShooterEnemyOne);
+        }
+
     }
 
     public int getAmmoCount() {

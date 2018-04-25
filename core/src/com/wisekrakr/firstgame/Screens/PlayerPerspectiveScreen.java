@@ -82,7 +82,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
      */
     private Stage backgroundStage;
     private BitmapFont font;
-    private int chooseWeapon;
+    private int chosenWeapon;
+    private int chosenNumber;
 
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
@@ -163,15 +164,25 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         System.out.println("boooooost!");
                     }
                     if (buttonCode == GamePadControls.BUTTON_Y) {
-                        shootingState = Spaceship.ShootingState.PLACE_MINE;
-                        System.out.println("mine!");
+
                     }
                     if (buttonCode == GamePadControls.BUTTON_X) {
-                        shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-                        System.out.println("firing missile");
+                        setChosenWeapon(getChosenWeapon()+1);
+                        if (getChosenWeapon() >= 4){
+                            setChosenWeapon(0);
+                        }
+                        System.out.println("choosing weapon");
                     }
                     if (buttonCode == GamePadControls.BUTTON_A) {
-                        shootingState = Spaceship.ShootingState.FIRING;
+                        if (getChosenWeapon() == 1) {
+                            shootingState = Spaceship.ShootingState.FIRING;
+                        }
+                        if (getChosenWeapon() == 2) {
+                            shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+                        }
+                        if (getChosenWeapon() == 3) {
+                            shootingState = Spaceship.ShootingState.PLACE_MINE;
+                        }
                         System.out.println("pew");
 
                     }
@@ -284,12 +295,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     }
 
-    public int getChooseWeapon() {
-        return chooseWeapon;
+    public int getChosenWeapon() {
+        return chosenWeapon;
     }
 
-    public void setChooseWeapon(int chooseWeapon) {
-        this.chooseWeapon = chooseWeapon;
+    public void setChosenWeapon(int chosenWeapon) {
+        this.chosenWeapon = chosenWeapon;
     }
 
     private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
@@ -363,18 +374,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shootingState = Spaceship.ShootingState.PACIFIST;
         switchWeaponState = Spaceship.SwitchWeaponState.NONE;
 
-        if (controller != null) {
-            if (this.controller.getButton(GamePadControls.BUTTON_A)) {
-                shootingState = Spaceship.ShootingState.FIRING;
-            } else if (this.controller.getButton(GamePadControls.BUTTON_X)) {
-                shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-            } else if (controller.getButton(GamePadControls.BUTTON_Y)) {
-                shootingState = Spaceship.ShootingState.PLACE_MINE;
-            }
-        }
-
-
-        switch (chooseWeapon) {
+        switch (chosenWeapon) {
             case 0:
                 setSwitchWeaponState(Spaceship.SwitchWeaponState.NONE);
                 break;
@@ -389,24 +389,43 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 break;
 
         }
-        //final Spaceship.ShootingState shootingState;
+
+        if (controller != null) {
+            if (this.controller.getButton(GamePadControls.BUTTON_X)) {
+                setChosenWeapon(getChosenWeapon() + 1);
+                if (getChosenWeapon() >= 4){
+                    setChosenWeapon(0);
+                }
+            } else if (this.controller.getButton(GamePadControls.BUTTON_A)) {
+                if (getChosenWeapon() == 1) {
+                    shootingState = Spaceship.ShootingState.FIRING;
+                }
+                if (getChosenWeapon() == 2) {
+                    shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+                }
+                if (getChosenWeapon() == 3) {
+                    shootingState = Spaceship.ShootingState.PLACE_MINE;
+                }
+            }
+
+        }
+        if (Gdx.input.isKeyJustPressed(chooseWeaponKey)) {
+            setChosenWeapon(getChosenWeapon() + 1);
+            if (getChosenWeapon() >= 4) {
+                setChosenWeapon(0);
+            }
+        }
+
         if (shootingState == Spaceship.ShootingState.PACIFIST) {
-            if (Gdx.input.isKeyPressed(chooseWeaponKey)) {
-                if (chooseWeaponNumber(0,3)) {
-                    setChooseWeapon(chooseWeapon + 1);
-                    if (Gdx.input.isKeyPressed(shootKey)) {
-                        if (switchWeaponState == Spaceship.SwitchWeaponState.BULLETS){
-                            shootingState = Spaceship.ShootingState.FIRING;
-                        }else if (switchWeaponState == Spaceship.SwitchWeaponState.MISSILES){
-                            shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-                        }else if (switchWeaponState == Spaceship.SwitchWeaponState.SPACE_MINES){
-                            shootingState = Spaceship.ShootingState.PLACE_MINE;
-                        }else {
-                            shootingState = Spaceship.ShootingState.PACIFIST;
-                        }
-                    }
-                }if (chooseWeapon > 3) {
-                    setChooseWeapon(0);
+            if (Gdx.input.isKeyPressed(shootKey)) {
+                if (getChosenWeapon() == 1) {
+                    shootingState = Spaceship.ShootingState.FIRING;
+                }
+                if (getChosenWeapon() == 2) {
+                    shootingState = Spaceship.ShootingState.MISSILE_FIRING;
+                }
+                if (getChosenWeapon() == 3) {
+                    shootingState = Spaceship.ShootingState.PLACE_MINE;
                 }
             }
         }
@@ -414,9 +433,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         aimingState = Spaceship.AimingState.NONE;
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState, switchWeaponState);
-    }
-    private boolean chooseWeaponNumber(int lower, int higher){
-        return lower <= chooseWeapon && chooseWeapon <= higher;
     }
 
     private void addSoundEffects(){

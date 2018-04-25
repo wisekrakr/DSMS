@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
 import java.util.Set;
 
@@ -37,6 +38,11 @@ public class MissilePlayer extends AutonomousWeaponsPlayer {
         if(subject instanceof Enemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
+        }
+        if (subject instanceof MinionShooterEnemy){
+            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - getDamage());
+
         }
     }
 

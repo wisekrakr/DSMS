@@ -50,6 +50,7 @@ public class Spaceship extends GameObject {
     private float minesLeftOver;
     private int randomMinion;
     private boolean minionActivated = false;
+    private float speed;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -134,7 +135,7 @@ public class Spaceship extends GameObject {
         }
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
-            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), this.getCollisionRadius() * 2, randomDamageCountMissile()));
+            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), getSpeed(), this.getCollisionRadius() * 2, randomDamageCountMissile()));
         }
         if (subject instanceof PowerUpMissile) {
             toDelete.add(subject);
@@ -300,7 +301,7 @@ public class Spaceship extends GameObject {
 
         }
 
-        float speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+        speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
 
         if (speed > 320) {
             speedX = speedX * 320 / speed;
@@ -358,23 +359,6 @@ public class Spaceship extends GameObject {
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
 
-        switch (switchWeaponState){
-            case NONE:
-                setShootingState(ShootingState.PACIFIST);
-                break;
-            case BULLETS:
-                //now able to fire bullets
-                setShootingState(ShootingState.FIRING);
-                break;
-            case MISSILES:
-                //now able to fire missiles
-                setShootingState(ShootingState.MISSILE_FIRING);
-                break;
-            case SPACE_MINES:
-                //now able to place mines
-                setShootingState(ShootingState.PLACE_MINE);
-                break;
-        }
 
         switch (shootingState) {
             case FIRING:
@@ -531,6 +515,10 @@ public class Spaceship extends GameObject {
 
     public int getMineAmmoCount() {
         return mineAmmoCount;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     @Override

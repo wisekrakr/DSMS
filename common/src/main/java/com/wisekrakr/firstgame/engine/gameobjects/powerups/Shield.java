@@ -17,19 +17,12 @@ import java.util.Set;
  */
 public class Shield extends AutonomousWeaponsEnemy {
 
-    private float radius;
-    private float direction;
-    private int damage;
     private float time;
     private static final float SHIELD_TIME = 20;
 
-    public Shield(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage) {
-        super(name, initialPosition, space, direction, radius, damage);
-        this.radius = radius;
-        this.direction = direction;
-        this.damage = damage;
+    public Shield(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
+        super(name, initialPosition, space, direction, speed, radius, damage);
 
-        setCollisionRadius(radius);
     }
 
     @Override

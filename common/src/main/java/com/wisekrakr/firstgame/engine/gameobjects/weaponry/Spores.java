@@ -15,15 +15,11 @@ public class Spores extends AutonomousWeaponsEnemy {
     private float radius;
     private int damage;
     private float time;
-    private static final float DEFAULT_TENTACLE_SPEED = 400;
+    private static final float SPEED = 400;
 
-    public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage) {
-        super(name, initialPosition, space, direction, radius, damage);
-        this.direction = direction;
-        this.radius = radius;
-        this.damage = damage;
+    public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
+        super(name, initialPosition, space, direction, speed, radius, damage);
 
-        setCollisionRadius(radius);
     }
 
     @Override
@@ -38,12 +34,8 @@ public class Spores extends AutonomousWeaponsEnemy {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_TENTACLE_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_TENTACLE_SPEED * delta)
-        );
-        setOrientation(direction);
-
-        float destructTime = 10.0f;
+        super.elapseTime(clock, delta, toDelete, toAdd);
+        float destructTime = 8.0f;
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);
@@ -51,36 +43,4 @@ public class Spores extends AutonomousWeaponsEnemy {
 
     }
 
-    public float getDirection() {
-        return direction;
-    }
-
-    public void setDirection(float direction) {
-        this.direction = direction;
-    }
-
-    @Override
-    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (target instanceof Player) {
-
-            float angle = angleBetween(this, target);
-
-            // to make the chaser chase the player with less vigilance, divide cos and sin by 2
-            setPosition(new Vector2(getPosition().x +=  Math.cos(angle) , getPosition().y +=  Math.sin(angle) ));
-
-            setOrientation(angle);
-
-            setDirection(angle);
-
-        }
-    }
-
-    @Override
-    public Map<String, Object> getExtraSnapshotProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        result.put("radius", radius);
-
-        return result;
-    }
 }

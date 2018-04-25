@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
 import java.util.Set;
 
@@ -19,6 +20,11 @@ public class BulletPlayer extends Bullet {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Enemy){
+            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - getDamage());
+
+        }
+        if (subject instanceof MinionShooterEnemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
 

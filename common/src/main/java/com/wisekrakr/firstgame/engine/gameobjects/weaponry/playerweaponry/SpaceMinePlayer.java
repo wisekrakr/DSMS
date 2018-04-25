@@ -6,6 +6,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.SpaceMine;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,18 @@ public class SpaceMinePlayer extends SpaceMine {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (subject instanceof Enemy){
+            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - getDamage());
+            setDestruct(true);
+            Random random = new Random();
+            int debrisParts = random.nextInt(10)+1;
+            for(int i = 0; i < debrisParts; i++) {
+                toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
+                        random.nextFloat() * 60, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getRadius()));
+
+            }
+        }
+        if (subject instanceof MinionShooterEnemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
             setDestruct(true);
