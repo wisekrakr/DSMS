@@ -33,4 +33,14 @@ public class EnemyShitter extends Enemy {
         }
     }
 
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(target, toDelete, toAdd);
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= getAttackDistance()) {
+                setAttackState(AttackState.FIRE_MINES);
+            }
+        }
+    }
+
 }

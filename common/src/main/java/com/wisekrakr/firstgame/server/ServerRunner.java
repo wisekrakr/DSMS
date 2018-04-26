@@ -89,12 +89,12 @@ public class ServerRunner {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine);
         engine.addGameObject(powerUp);
-
+/*
         for (int i = 0; i < 7; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    50,randomGenerator.nextFloat() * 2000 - 1000,
+                    70,randomGenerator.nextFloat() * 2000 - 1000,
                     200f,22f, engine);
             engine.addGameObject(chaser);
         }
@@ -107,7 +107,7 @@ public class ServerRunner {
                     150f,30f, engine);
             engine.addGameObject(shitter);
         }
-
+*/
         for (int i = 0; i < 5; i++) {
             EnemyPest pest = new EnemyPest("Pest", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -116,7 +116,7 @@ public class ServerRunner {
                     230f,15f, engine);
             engine.addGameObject(pest);
         }
-/*
+
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -125,7 +125,7 @@ public class ServerRunner {
                     175f,25f, engine);
             engine.addGameObject(enemyBlinker);
         }
-
+/*
         EnemyMotherShip enemyMotherShip = new EnemyMotherShip("MotherShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),

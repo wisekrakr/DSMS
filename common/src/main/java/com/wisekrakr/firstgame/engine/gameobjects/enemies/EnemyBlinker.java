@@ -12,18 +12,14 @@ import java.util.Random;
 import java.util.Set;
 
 public class EnemyBlinker extends Enemy {
-
-    private static final float BLINK_TIME = 5;
     private float time;
-    private AttackState attackState = AttackState.PACIFIST;
-
 
     public EnemyBlinker(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(950);
-        setAttackDistance(750);
-        setChangeDirectionTime(15f);
+        setAggroDistance(950f);
+        setAttackDistance(750f);
+        setChangeDirectionTime(8f);
     }
 
 
@@ -32,7 +28,18 @@ public class EnemyBlinker extends Enemy {
         super.targetSpotted(target, toDelete, toAdd);
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAggroDistance()  ) {
-                attackState = AttackState.CHASE;
+                setAttackState(AttackState.BLINK);
+            }
+        }
+    }
+
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(target, toDelete, toAdd);
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= getAttackDistance()) {
+                setAttackState(AttackState.FIRE_LASER);
+                setMovingState(MovingState.DODGING);
             }
         }
     }
@@ -43,30 +50,11 @@ public class EnemyBlinker extends Enemy {
         super.elapseTime(clock, delta, toDelete, toAdd);
 
         time += delta;
-        if(time >= getChangeDirectionTime()){
-            Random random = new Random();
-            setPosition(new Vector2(
-                    getPosition().x + delta * getSpeed() * (random.nextFloat() * 300 - 100),
-                    getPosition().y + delta * getSpeed() * (random.nextFloat() * 300 - 100)
-            ));
-            float randomDirection = setRandomDirection();
-            setDirection(randomDirection);
-
-            time=0;
-        }
-        switch (attackState){
-
-            case CHASE:
-                if(time >= BLINK_TIME) {
-
-                    Random random = new Random();
-                    setPosition(new Vector2(
-                            getPosition().x + delta * getSpeed() * (random.nextFloat() * 200 - 100),
-                            getPosition().y + delta * getSpeed() * (random.nextFloat() * 200 - 100)
-                    ));
-                    time = 0;
-                }
-                break;
+        if (getAttackState() == AttackState.PACIFIST) {
+            if (time >= getChangeDirectionTime()) {
+                setAttackState(AttackState.BLINK);
+                time = 0;
+            }
         }
     }
 }

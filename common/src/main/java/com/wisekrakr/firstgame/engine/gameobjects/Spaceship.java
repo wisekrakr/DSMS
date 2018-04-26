@@ -51,6 +51,7 @@ public class Spaceship extends GameObject {
     private int randomMinion;
     private boolean minionActivated = false;
     private float speed;
+    private float randomAngle;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -147,7 +148,6 @@ public class Spaceship extends GameObject {
         }
         if (subject instanceof PowerUpMinion) {
             toDelete.add(subject);
-
             randomMinion = MathUtils.random(1, 2);
             switch (randomMinion) {
                 case 1:
@@ -336,14 +336,6 @@ public class Spaceship extends GameObject {
                 break;
         }
 
-//        speed = Math.min(speed + delta * 280f, 400);
-
-        /*
-        if (Math.signum(oldSpeed) == -Math.signum(speed)) {
-            speed = 0;
-        }
-        */
-
         //Player gets deleted when health is 0
         if (health <= 0) {
             toDelete.add(this);
@@ -357,7 +349,6 @@ public class Spaceship extends GameObject {
 
 
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
-
 
 
         switch (shootingState) {

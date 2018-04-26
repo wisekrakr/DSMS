@@ -24,7 +24,16 @@ public class EnemyMotherShip extends Enemy {
             subject.setHealth(subject.getHealth() - 20);
             toDelete.add(subject);
         }
+    }
 
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(target, toDelete, toAdd);
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= getAttackDistance()) {
+                setAttackState(AttackState.FIRE_CHILDREN);
+            }
+        }
     }
 
 }

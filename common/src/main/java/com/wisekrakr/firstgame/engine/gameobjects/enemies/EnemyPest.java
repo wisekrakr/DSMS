@@ -22,7 +22,7 @@ public class EnemyPest extends Enemy {
 
         setAggroDistance(950);
         setAttackDistance(750);
-        setChangeDirectionTime(10f);
+        setChangeDirectionTime(3f);
 
     }
 
@@ -32,6 +32,16 @@ public class EnemyPest extends Enemy {
 
         if(subject instanceof MissilePlayer){
             toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, getOrientation(), 300, 10f, getSpace()));
+        }
+    }
+
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.attackTarget(target, toDelete, toAdd);
+        if (target instanceof Player) {
+            if (distanceBetween(this, target) <= getAttackDistance()) {
+                setAttackState(AttackState.FIRE_BULLETS);
+            }
         }
     }
 }
