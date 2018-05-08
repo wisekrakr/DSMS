@@ -1,5 +1,6 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
+
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -19,8 +20,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Enemy extends GameObject {
 
@@ -32,9 +31,6 @@ public class Enemy extends GameObject {
     private float aggroDistance;
     private float time;
     private float changeDirectionTime;
-
-    private static final float CLOSE_RANGE = 100;
-    private static final float CLOSEST_TARGET = 100;
 
     private AttackState attackState = AttackState.PACIFIST;
     private MovingState movingState = MovingState.DEFAULT_FORWARDS;
@@ -55,7 +51,7 @@ public class Enemy extends GameObject {
     private float minesLeft;
 
     private float randomAngle;
-
+    private float updatedAngle;
 
     public Enemy(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(name, position, space);
@@ -93,10 +89,11 @@ public class Enemy extends GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 15);
+            setMovingState(MovingState.BACKWARDS);
         }
         if (subject instanceof BulletPlayer || subject instanceof AutonomousWeaponsPlayer || subject instanceof BulletMisc) {
             float angle = angleBetween(this, subject);
-            movingState = MovingState.DEFAULT_FORWARDS;
+            setMovingState(MovingState.DEFAULT_FORWARDS);
             setOrientation(angle);
             setDirection(angle);
 
@@ -132,7 +129,7 @@ public class Enemy extends GameObject {
     }
 
     public enum MovingState {
-        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING
+        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY
     }
 
 
@@ -157,27 +154,19 @@ public class Enemy extends GameObject {
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (target instanceof Player) {
-            if (distanceBetween(this, target) <= getAggroDistance()  ) {
+            if (distanceBetween(this, target) <= getAggroDistance()) {
                 float angle = angleBetween(this, target);
                 float angleNoAim = angleBetweenNoAim(this, target);
                 //setPosition(new Vector2(getPosition().x  +=  Math.cos(angle), getPosition().y += Math.sin(angle) ));
                 if (!(getHealth() <= getHealth()*(10f/100f))){
-                    setMovingState(MovingState.DEFAULT_FORWARDS);
+                    setMovingState(getMovingState());
                     setOrientation(angle);
                     setDirection(angleNoAim);
                 }else {
                     setMovingState(MovingState.BACKWARDS);
                     setAttackState(AttackState.PACIFIST);
                 }
-
-
-                /*
-                if (distanceBetween(this, target) >= CLOSE_RANGE){
-                    setPosition(new Vector2(getPosition().x  -=  Math.cos(angle), getPosition().y -= Math.sin(angle)));
-                }
-                */
             }
-
         }
     }
 
@@ -196,15 +185,37 @@ public class Enemy extends GameObject {
         }
     }
 
-    @Override
-    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    private float updateAngle(float delta){
+        time += delta;
 
+        if (time >= getChangeDirectionTime()) {
+            updatedAngle = (float) (45 * Math.PI * delta);
+            time = 0;
+        }
+
+        return updatedAngle;
+    }
+
+    private float randomAngle(float delta){
         time += delta;
         Random random = new Random();
 
         if (time >= getChangeDirectionTime()) {
-            randomAngle = (float) (random.nextInt((int) getAttackDistance()) * Math.PI * delta);
+            randomAngle = (float) (random.nextInt(360) * Math.PI * delta);
             time = 0;
+        }
+        return randomAngle;
+    }
+
+    @Override
+    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        Random random = new Random();
+
+        /*If the enemy has an float of less than 0 health, the enemy gets destroyed and debris GameObjects are spawned in its place
+         * */
+        if (health <= 0) {
+            setAttackState(AttackState.SELF_DESTRUCT);
         }
 
         /*These are the ways an Enemy can move. Different kinds of movements for different occasions.
@@ -216,6 +227,7 @@ public class Enemy extends GameObject {
             case DEFAULT_FORWARDS:
                 /* Here we give every individual enemy its own random direction change. setChangeDirectionTime is handled in each individual enemy class
                  * */
+                time += delta;
                 if(time >= getChangeDirectionTime()){
                     float randomDirection = setRandomDirection();
                     setDirection(randomDirection);
@@ -225,6 +237,11 @@ public class Enemy extends GameObject {
                         getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
                 );
                 setOrientation(direction);
+/*
+                toAdd.add(new Exhaust("exhaust", new Vector2(this.getPosition().x - getCollisionRadius() * (float) Math.cos(this.getOrientation()),
+                        this.getPosition().y - getCollisionRadius() * (float) Math.sin(this.getOrientation())), getSpace(),
+                        -this.getOrientation(), getCollisionRadius() / 5));
+                        */
                 break;
             case BACKWARDS:
                 setPosition(new Vector2(getPosition().x - (float) Math.cos(direction) * getSpeed() * delta,
@@ -233,8 +250,27 @@ public class Enemy extends GameObject {
                 setOrientation((float) (direction + Math.PI));
                 break;
             case DODGING:
-                setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + randomAngle) * getSpeed() * delta ),
-                        (getPosition().y + (float) Math.sin(direction + randomAngle) * getSpeed() * delta))
+                setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + randomAngle(delta)) * getSpeed() * delta ),
+                        (getPosition().y + (float) Math.sin(direction + randomAngle(delta)) * getSpeed() * delta))
+                );
+                setOrientation(direction);
+                break;
+            case FLY_AROUND:
+                setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + updateAngle(delta)) * getSpeed() * delta ),
+                        (getPosition().y + (float) Math.sin(direction + updateAngle(delta)) * getSpeed() * delta))
+                );
+                setOrientation(direction);
+
+                break;
+
+            case FLY_BY:
+                time += delta;
+                if(time >= getChangeDirectionTime()){
+                    setSpeed(getSpeed() + 200f);
+                    time = 0;
+                }
+                setPosition(new Vector2(getPosition().x + (float) Math.cos(direction + updateAngle(delta)) * getSpeed() * delta,
+                        getPosition().y + (float) Math.sin(direction + updateAngle(delta)) * getSpeed() * delta)
                 );
                 setOrientation(direction);
                 break;
@@ -245,7 +281,7 @@ public class Enemy extends GameObject {
 
         /*All types of attacks an enemy can do.
         * Every type spawns a enemyweaponry gameObject every "shotcount"
-        * The type an individual enemy uses is handled in the children classes*/
+        * The type an individual enemy uses is handled in child classes*/
 
         switch (attackState) {
             case FIRE_BULLETS:
@@ -329,7 +365,7 @@ public class Enemy extends GameObject {
                     Random randomGenerator = new Random();
                     toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * 100f,
                             getPosition().y + randomGenerator.nextFloat() * 100f),
-                            getSpace(), getOrientation() + randomGenerator.nextFloat() * 100f, 200,1f, randomDamageCountBullet() / 5));
+                            getSpace(), getOrientation() + randomGenerator.nextFloat() * 100f, 200,2f, randomDamageCountBullet() / 5));
                 }
 
                 break;
@@ -432,12 +468,7 @@ public class Enemy extends GameObject {
                 break;
         }
 
-        /*If the enemy has an float of less than 0 health, the enemy gets destroyed and debris GameObjects are spawned in its place
-        * */
 
-        if (health <= 0) {
-            setAttackState(AttackState.SELF_DESTRUCT);
-        }
     }
 
     public float getSpeed() {
@@ -496,10 +527,6 @@ public class Enemy extends GameObject {
 
     public void setChangeDirectionTime(float changeDirectionTime) {
         this.changeDirectionTime = changeDirectionTime;
-    }
-
-    public float getRandomAngle() {
-        return randomAngle;
     }
 
     public int getAmmoCount() {

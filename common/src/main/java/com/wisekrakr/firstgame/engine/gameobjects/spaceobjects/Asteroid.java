@@ -31,6 +31,9 @@ public class Asteroid extends GameObject {
         this.radius = radius;
 
         setCollisionRadius(radius);
+        setSpeed(speed);
+        setRotationSpeed(rotationSpeed);
+
     }
 
     public float getRadius() {
@@ -39,9 +42,9 @@ public class Asteroid extends GameObject {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        setOrientation(getOrientation() + rotationSpeed * delta);
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * speed * delta,
-                getPosition().y + (float) Math.sin(direction) * speed * delta)
+        setOrientation(getOrientation() + getRotationSpeed() * delta);
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );
     }
 
@@ -80,6 +83,22 @@ public class Asteroid extends GameObject {
 
     public void setDirection(float direction) {
         this.direction = direction;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public float getRotationSpeed() {
+        return rotationSpeed;
+    }
+
+    public void setRotationSpeed(float rotationSpeed) {
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     @Override

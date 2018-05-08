@@ -21,13 +21,12 @@ public class MinionShooterPlayer extends Minion {
 
     private static final float ATTACK_DISTANCE = 700;
     private static final float SPOTTED_DISTANCE = 900;
-    private static final float SPEED = 100;
+
     private float direction;
     private float radius;
     private int health;
     private float shotLeftOver;
     private int ammoCount;
-    private float time;
     private int damage;
 
     public MinionShooterPlayer(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
@@ -70,7 +69,7 @@ public class MinionShooterPlayer extends Minion {
         }
     }
 
-    //TODO: Minion either keeps shooting or only shoots one random enemy
+    //TODO: Bug// Minion either keeps shooting or only shoots one random enemy sometimes
     @Override
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(target instanceof Enemy) {
@@ -103,12 +102,7 @@ public class MinionShooterPlayer extends Minion {
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         super.elapseTime(clock, delta, toDelete, toAdd);
-/*
-        setPosition(new Vector2((float) (getPosition().x + Math.cos(direction) * 300 * delta),
-                (float) (getPosition().y + Math.sin(direction) * 300 * delta))
-        );
-        setOrientation(direction);
-*/
+
         switch (minionState){
             case SHOOT:
                 ammoCount = getAmmoCount();
@@ -125,7 +119,7 @@ public class MinionShooterPlayer extends Minion {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new BulletMisc("bullito", getPosition(), getSpace(), getDirection(), 400, 2f, randomDamageCountBullet()));
+                    toAdd.add(new BulletMisc("bullito", getPosition(), getSpace(), getDirection(), 400, 2f, this.randomDamageCountBullet()));
                 }
 
                 break;

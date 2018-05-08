@@ -1,16 +1,7 @@
-package com.wisekrakr.firstgame.Screens;
+package com.wisekrakr.firstgame.playscreens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.wisekrakr.firstgame.Constants;
-import com.wisekrakr.firstgame.SpaceGameContainer;
-import com.wisekrakr.firstgame.client.ClientConnector;
-import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-
-import java.util.List;
 
 public class MiniMap extends Viewport {
 

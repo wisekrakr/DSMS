@@ -1,12 +1,10 @@
-package com.wisekrakr.firstgame.Screens;
+package com.wisekrakr.firstgame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,21 +17,21 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.VideoPlayer;
-import com.wisekrakr.firstgame.VideoPlayerCreator;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import javafx.scene.media.VideoTrack;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.playscreens.PlayerPerspectiveScreen;
 
 import java.util.Arrays;
-import java.util.Set;
+import java.util.Random;
 import java.util.UUID;
 
 
 public class StartScreen extends ScreenAdapter {
 
     private static final String TAG = "";
+
 
     private VideoPlayer videoPlayer;
     private ShapeRenderer shapeRenderer;
@@ -55,6 +53,7 @@ public class StartScreen extends ScreenAdapter {
         myAssetManager = new MyAssetManager();
         myAssetManager.loadSkins();
         myAssetManager.loadMusic();
+        myAssetManager.loadTextures();
         //myAssetManager.loadVideos();
 
         final Music music = myAssetManager.assetManager.get("music/space_explorers.mp3", Music.class);
@@ -62,7 +61,7 @@ public class StartScreen extends ScreenAdapter {
         music.setLooping(true);
         music.setVolume(0.5f);
 
-        texture = new Texture(new FileHandle("background/stars.jpg"));
+        texture = myAssetManager.assetManager.get("background/stars.jpg", Texture.class);
 /*
         videoPlayer = VideoPlayerCreator.createVideoPlayer();
         //Gdx.gl.glEnable(GL20.GL_CULL_FACE);
@@ -78,12 +77,11 @@ public class StartScreen extends ScreenAdapter {
 */
         minX = 0;
         minY = 0;
-        width = 1080;
-        height = 720;
+        width = 800;
+        height = 800;
         spaceship = new Spaceship("start ship", new Vector2(100,300), new SpaceEngine(minX, minY, width, height));
 
         Skin skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/uiskin.json")));
-        TextureAtlas textureAtlas = new TextureAtlas();
 
         Table table = new Table();
         table.setFillParent(true);

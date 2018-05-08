@@ -64,6 +64,8 @@ public class MyAssetManager implements Disposable{
     public void loadTextures() {
         assetManager.load("background/bg1.png", Texture.class);
         assetManager.load("texture/pausedPic2.png", Texture.class);
+        assetManager.load("background/stars.jpg", Texture.class);
+        assetManager.load("texture/crosshair.png", Texture.class);
 
         assetManager.finishLoading();
     }

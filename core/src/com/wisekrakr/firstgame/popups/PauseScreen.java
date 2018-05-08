@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.PopUps;
+package com.wisekrakr.firstgame.popups;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,29 +14,27 @@ public class PauseScreen implements Disposable {
 
     private final MyAssetManager myAssetManager;
     private TextureRegion textureRegion;
-    private OrthographicCamera camera;
     private Texture texture;
-    public Stage stage;
+    private Stage stage;
     private SpriteBatch batch;
 
-    public PauseScreen(MyAssetManager myAssetManager, SpriteBatch batch) {
+    public PauseScreen(MyAssetManager myAssetManager, SpriteBatch batch, Stage stage) {
         this.myAssetManager = myAssetManager;
         this.batch = batch;
+        this.stage = stage;
 
-        myAssetManager = new MyAssetManager();
         myAssetManager.loadFonts();
 
         texture = this.myAssetManager.assetManager.get("texture/pausedPic2.png");
         textureRegion = new TextureRegion(texture,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-
     }
 
     public void update(){
 
-        batch.begin();
-        batch.draw(textureRegion, 0,0);
-        batch.end();
+        stage.getBatch().begin();
+        stage.getBatch().draw(textureRegion, 0,0);
+        stage.getBatch().end();
 
     }
 

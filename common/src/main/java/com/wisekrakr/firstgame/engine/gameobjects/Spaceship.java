@@ -1,6 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -8,6 +10,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.*;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.*;
@@ -15,6 +18,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.*;
 import java.util.*;
 
 public class Spaceship extends GameObject {
+
 
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
@@ -43,6 +47,7 @@ public class Spaceship extends GameObject {
     private SpaceMinePlayer currentSpaceMine;
     private MinionShooterPlayer minionShooterPlayer;
     private MinionFighterPlayer minionFighterPlayer;
+    private Rotunda rotunda;
 
     private float lastDodge = -100000f;
     private float time;
@@ -51,7 +56,10 @@ public class Spaceship extends GameObject {
     private int randomMinion;
     private boolean minionActivated = false;
     private float speed;
-    private float randomAngle;
+    private float oldMouseX;
+    private float oldMouseY;
+    private float mouseX;
+    private float mouseY;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -67,6 +75,12 @@ public class Spaceship extends GameObject {
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
+
+        rotunda = new Rotunda("rotunda", new Vector2(
+                getPosition().x + (getCollisionRadius() * 2) ,
+                getPosition().y + (getCollisionRadius() * 2)),
+                getSpace(), 10,
+                getOrientation());
 
     }
 
@@ -152,20 +166,20 @@ public class Spaceship extends GameObject {
             switch (randomMinion) {
                 case 1:
                     minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(
-                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            getPosition().x + (getCollisionRadius() * 2) ,
+                            getPosition().y + (getCollisionRadius() * 2)),
                             50,
-                            (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                            getAngle() , 10, getSpace());
                     toAdd.add(minionShooterPlayer);
                     powerUpState = PowerUpState.MINION;
                     minionActivated = true;
                     break;
                 case 2:
                     minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
-                            getPosition().x + (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                            getPosition().y + (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())),
+                            getPosition().x + (getCollisionRadius() * 2),
+                            getPosition().y + (getCollisionRadius() * 2)),
                             50,
-                            (float) (getAngle() + Math.PI / 5), 10, getSpace());
+                            getAngle(), 10, getSpace());
                     toAdd.add(minionFighterPlayer);
                     powerUpState = PowerUpState.MINION;
                     minionActivated = true;
@@ -258,6 +272,18 @@ public class Spaceship extends GameObject {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        oldMouseX = mouseX;
+        oldMouseY = mouseY;
+
+        mouseX = Gdx.input.getX();
+        mouseY = Gdx.input.getY();
+
+        if((mouseX - oldMouseX) > 0){
+            angle = angle + 6f * delta;
+        }else if ((mouseX - oldMouseX) < 0){
+            angle = angle - 6f * delta;
+        }
+
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;
@@ -267,7 +293,6 @@ public class Spaceship extends GameObject {
                 break;
         }
         setOrientation(angle);
-
 
         switch (throttle) {
             case FORWARDS:
@@ -371,17 +396,20 @@ public class Spaceship extends GameObject {
         switch (powerUpState) {
             case MINION:
                 if (randomMinion == 1) {
+/*
                     minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 300 * delta),
                             (float) (getPosition().y + Math.PI * 3 * 300 * delta))
                     );
+*/
+                    minionShooterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float)Math.cos(Math.PI * 3) * getSpeed() * delta,
+                            getPosition().y + getCollisionRadius() * 2 + (float)Math.sin(Math.PI * 3) * getSpeed() * delta));
+
                 }
 
                 if (randomMinion == 2) {
                     if (minionFighterPlayer.getMinionState() != Minion.MinionState.SHOOT) {
-
-                        minionFighterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 300 * delta),
-                                (float) (getPosition().y + Math.PI * 3 * 300 * delta))
-                        );
+                        minionFighterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float)Math.cos(Math.PI * 3) * getSpeed() * delta,
+                                getPosition().y + getCollisionRadius() * 2 + (float)Math.sin(Math.PI * 3) * getSpeed() * delta));
                     }
                 }
 

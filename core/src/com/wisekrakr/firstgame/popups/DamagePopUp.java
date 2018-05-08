@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.PopUps;
+package com.wisekrakr.firstgame.popups;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.SpaceGameContainer;
-import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
 public class DamagePopUp implements Disposable {

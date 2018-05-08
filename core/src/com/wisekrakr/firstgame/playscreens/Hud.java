@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.Screens;
+package com.wisekrakr.firstgame.playscreens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -149,13 +149,13 @@ public class Hud implements Disposable {
     public void update(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
         timeCounter += delta;
         if (timeCounter >= 1) {
-            timeCounter = 0;
-            worldTimer++;
-            weaponName = getSwitchWeaponState().toString();
-            setName("Wisekrakr");
-
-            timeCountLabel.setText(String.format("%s",worldTimer));
             if (myself != null) {
+                timeCounter = 0;
+                worldTimer++;
+                weaponName = getSwitchWeaponState().toString();
+                setName("Wisekrakr");
+
+                timeCountLabel.setText(String.format("%s",worldTimer));
                 distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
                 scoreCountLabel.setText(Integer.toString((Integer) myself.scoreProperties().get("score")));
                 ammoLabel.setText(String.format("%s", myself.randomProperties().get("switchWeaponState")));
@@ -164,6 +164,7 @@ public class Hud implements Disposable {
                 nameSetLabel.setText(String.format("%s", getName()));
             }
             else {
+
                 distanceCountLabel.setText("N/A");
                // scoreCountLabel.setText("N/A");
                 ammoLabel.setText("N/A");

@@ -18,8 +18,8 @@ public class BulletMisc extends Bullet {
         if (subject instanceof Enemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
-
         }
+
     }
 
 }

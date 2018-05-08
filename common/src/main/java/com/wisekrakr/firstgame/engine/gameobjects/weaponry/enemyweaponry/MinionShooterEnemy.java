@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
@@ -20,16 +19,16 @@ public class MinionShooterEnemy extends Minion {
     private MinionState minionState = MinionState.PACIFIST;
 
     private static final float ATTACK_DISTANCE = 700;
-    private static final float SPOTTED_DISTANCE = 900;
-    private static final float SPEED = 100;
+    private static final float SPOTTED_DISTANCE = 700;
+
     private float direction;
     private float radius;
     private int health;
     private float shotLeftOver;
     private int ammoCount;
-    private float time;
+
     private int damage;
-    private BulletEnemy bulletMisc;
+    private BulletEnemy bulletEnemy;
 
     public MinionShooterEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(name, position, health, direction, radius, space);
@@ -113,8 +112,8 @@ public class MinionShooterEnemy extends Minion {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    bulletMisc = new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, randomDamageCountBullet());
-                    toAdd.add(bulletMisc);
+                    bulletEnemy = new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, randomDamageCountBullet());
+                    toAdd.add(bulletEnemy);
                 }
 
                 break;

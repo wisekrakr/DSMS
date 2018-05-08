@@ -32,7 +32,7 @@ public class Exhaust extends GameObject {
         );
         setOrientation(direction);
 
-        float destructTime = 0.3f;
+        float destructTime = 0.2f;
         time += delta;
         if(time >= destructTime){
             toDelete.add(this);
