@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -56,6 +55,7 @@ public class Spaceship extends GameObject {
     private int randomMinion;
     private boolean minionActivated = false;
     private float speed;
+
     private float oldMouseX;
     private float oldMouseY;
     private float mouseX;
@@ -94,7 +94,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum SteeringState {
-        LEFT, CENTER, RIGHT
+        LEFT, CENTER, RIGHT,
     }
 
     public enum SpecialPowerState {
@@ -270,9 +270,10 @@ public class Spaceship extends GameObject {
         }
     }
 
+
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        /*
+/*
         oldMouseX = mouseX;
         oldMouseY = mouseY;
 
@@ -285,6 +286,7 @@ public class Spaceship extends GameObject {
             angle = angle - 6f * delta;
         }
 */
+
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;

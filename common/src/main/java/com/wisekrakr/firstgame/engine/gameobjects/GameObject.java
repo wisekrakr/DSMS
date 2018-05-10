@@ -130,6 +130,7 @@ public abstract class GameObject {
                 getDamageProperties(), getRandomProperties());
     }
 
+
     public int getHealth() {
         return health;
     }

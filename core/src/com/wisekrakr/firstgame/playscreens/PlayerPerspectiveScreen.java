@@ -23,12 +23,15 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.*;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.popups.PauseScreenAdapter;
 
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -106,7 +109,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             connector.createSpaceship(name, 100 + i * 50, 0);
             i = i + 1;
         }
-
 
         myAssetManager = new MyAssetManager();
         myAssetManager.loadFonts();
@@ -208,11 +210,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         } else {
                             gameState = GameState.PAUSE;
                         }
-                        System.out.println("start button pushed");
+                        System.out.println("Paused");
                     }
                     if (buttonCode == GamePadControls.BUTTON_BACK) {
                         gameState = GameState.STOPPED;
-                        System.out.println("back button pushed");
+                        System.out.println("Resumed");
                     }
 
                     return false;
@@ -284,18 +286,46 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
 
+
     private void handleInput() {
         applyControl(first);
 
-        inputManager.update();
-
+        //Keyboard input
         if (inputManager.isKeyDown(Input.Keys.UP)) {
             camera.zoom += 0.08;
         }
         if (inputManager.isKeyDown(Input.Keys.DOWN)) {
             camera.zoom -= 0.08;
         }
+        if (inputManager.isKeyDown(Input.Keys.ESCAPE)) {
+            if (paused) {
+                gameState = GameState.RESUME;
+            } else {
+                gameState = GameState.PAUSE;
+            }
+            System.out.println("Paused");
+        }
+        if (inputManager.isKeyDown(Input.Keys.BACKSPACE)) {
+            gameState = GameState.STOPPED;
+            System.out.println("Stopped");
+        }
 
+        //Mouse input
+        inputManager.getTouchState(0);
+
+        if (inputManager.isTouchPressed(0)) {
+            System.out.println("PRESSED");
+        }
+        if (inputManager.isTouchDown(0)) {
+            System.out.println("DOWN");
+            System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
+            System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
+        }
+        if (inputManager.isTouchReleased(0)) {
+            System.out.println("RELEASED");
+        }
+
+        inputManager.update();
     }
 
     public int getChosenWeapon() {
@@ -430,14 +460,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         //Mouse
-
+/*
         if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             setChosenWeapon(getChosenWeapon() + 1);
             if (getChosenWeapon() >= 4) {
                 setChosenWeapon(0);
             }
         }
-
+*/
         //Keyboard
 
         if (shootingState == Spaceship.ShootingState.PACIFIST) {
@@ -455,7 +485,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         //Mouse
-
+/*
         if (shootingState == Spaceship.ShootingState.PACIFIST) {
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
                 if (getChosenWeapon() == 1) {
@@ -469,7 +499,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }
             }
         }
-
+*/
         aimingState = Spaceship.AimingState.NONE;
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState, switchWeaponState);
@@ -1077,13 +1107,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
             case PAUSE:
                 paused = true;
-
+                Gdx.app.getApplicationListener().pause();
                 setPauseScreen();
                 break;
 
             case RESUME:
                 paused = false;
+                Gdx.app.getApplicationListener().resume();
                 setGameState(GameState.RUN);
+
                 break;
 
             case STOPPED:
@@ -1115,6 +1147,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputManager);
+
     }
 
     @Override

@@ -88,8 +88,8 @@ public class SpaceSnapshot implements Serializable {
             return position;
         }
 
-        public void setPosition(Vector2 position) {
-            this.position = position;
+        public void setOrientation(float orientation) {
+            this.orientation = orientation;
         }
 
         public Map<String, Object> extraProperties() {
