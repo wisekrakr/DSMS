@@ -31,7 +31,7 @@ import java.util.UUID;
 public class StartScreen extends ScreenAdapter {
 
     private static final String TAG = "";
-
+    private PlayerPerspectiveScreen playScreen;
 
     private VideoPlayer videoPlayer;
     private ShapeRenderer shapeRenderer;
@@ -46,6 +46,8 @@ public class StartScreen extends ScreenAdapter {
 
     public StartScreen(final SpaceGameContainer container, final ClientConnector connector) {
         final String unique = UUID.randomUUID().toString();
+
+        playScreen = new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A"), unique + "-A");
 
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -114,7 +116,7 @@ public class StartScreen extends ScreenAdapter {
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                container.setScreen(new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A"), unique + "-A"));
+                container.setScreen(playScreen);
                 music.stop();
             }
         });

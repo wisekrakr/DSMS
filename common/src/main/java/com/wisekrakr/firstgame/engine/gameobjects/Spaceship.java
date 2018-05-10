@@ -272,6 +272,7 @@ public class Spaceship extends GameObject {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        /*
         oldMouseX = mouseX;
         oldMouseY = mouseY;
 
@@ -283,7 +284,7 @@ public class Spaceship extends GameObject {
         }else if ((mouseX - oldMouseX) < 0){
             angle = angle - 6f * delta;
         }
-
+*/
         switch (steering) {
             case LEFT:
                 angle = angle + 3f * delta;

@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame;
+package com.wisekrakr.firstgame.input;
 
 import com.badlogic.gdx.controllers.PovDirection;
 

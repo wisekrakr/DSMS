@@ -1,10 +1,8 @@
 package com.wisekrakr.firstgame.playscreens;
 
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
@@ -16,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
@@ -25,6 +24,8 @@ import com.wisekrakr.firstgame.*;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import com.wisekrakr.firstgame.input.GamePadControls;
+import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.popups.PauseScreenAdapter;
 
 
@@ -35,7 +36,6 @@ import java.util.Random;
  * Created by David on 11/23/2017.
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter {
-
 
     private Label myselfLabel;
     private Label damageLabel;
@@ -62,6 +62,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private String second = null;
 
     private Controller controller;
+    private InputManager inputManager;
+    private boolean up,down,left,right;
 
     private Spaceship.SteeringState steering;
     private Spaceship.ThrottleState throttle;
@@ -125,11 +127,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         backgroundTexture.setWrap(Texture.TextureWrap.MirroredRepeat, Texture.TextureWrap.MirroredRepeat);
         backgroundStars.setSpeed(0.05f);
 
-        Gdx.input.setInputProcessor(stage);
+        //InputManager set as inputprocessor in show method
+        inputManager = new InputManager();
         controllerInput();
-
-
-
 
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
@@ -140,8 +140,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         pauseScreenAdapter = new PauseScreenAdapter();
 
-    }
 
+    }
 
     private void controllerInput() {
         Controllers.addListener(new ControllerAdapter() {
@@ -285,20 +285,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     private void handleInput() {
-        applyControl(Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.E, Input.Keys.Q, Input.Keys.C, Input.Keys.V, Input.Keys.R, Input.Keys.X, first);
-        //applyControl(controller, Input.Keys.I, Input.Keys.K, Input.Keys.J, Input.Keys.L, Input.Keys.ENTER, Input.Keys.O, Input.Keys.P, Input.Keys.COLON, Input.Keys.COMMA, second);
+        applyControl(first);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        inputManager.update();
+
+        if (inputManager.isKeyDown(Input.Keys.UP)) {
             camera.zoom += 0.08;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (inputManager.isKeyDown(Input.Keys.DOWN)) {
             camera.zoom -= 0.08;
         }
-/*
-        if(Gdx.input.isKeyPressed(Input.Keys.INSERT)){
-            container.setScreen(new PauseScreen());
-        }
-        */
 
     }
 
@@ -310,15 +306,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         this.chosenWeapon = chosenWeapon;
     }
 
-    private void applyControl(int forwardsKey, int reverseKey, int leftKey, int rightKey, int boostKey, int dodgeKey,
-                              int shootKey, int altShootKey, int chooseWeaponKey, int resetKey, final String target) {
-        /*
-        if (Gdx.input.isKeyPressed(resetKey)) {
-            target.setPosition(new Vector2(0, 0));
-            target.resetControl();
-        }
-        */
-        //final Spaceship.ThrottleState throttle;
+    private void applyControl(final String target) {
 
         throttle = Spaceship.ThrottleState.STATUSQUO;
 
@@ -336,10 +324,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         //Keyboard
 
-        if (throttle == Spaceship.ThrottleState.STATUSQUO) {
-            if (Gdx.input.isKeyPressed(forwardsKey)) {
+        if (throttle == Spaceship.ThrottleState.STATUSQUO){
+            if (inputManager.isKeyDown(Input.Keys.W)){
                 throttle = Spaceship.ThrottleState.FORWARDS;
-            } else if (Gdx.input.isKeyPressed(reverseKey)) {
+                System.out.println("go");
+            }else if (inputManager.isKeyDown(Input.Keys.S)) {
                 throttle = Spaceship.ThrottleState.REVERSE;
             }
         }
@@ -361,10 +350,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         //Keyboard
 
         if (steering == Spaceship.SteeringState.CENTER) {
-            //final Spaceship.SteeringState steering;
-            if (Gdx.input.isKeyPressed(leftKey)) {
+            if (inputManager.isKeyDown(Input.Keys.A)) {
                 steering = Spaceship.SteeringState.LEFT;
-            } else if (Gdx.input.isKeyPressed(rightKey)) {
+            } else if (inputManager.isKeyDown(Input.Keys.D)) {
                 steering = Spaceship.SteeringState.RIGHT;
             }
         }
@@ -384,10 +372,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         //Keyboard
 
         if (powerState == Spaceship.SpecialPowerState.NO_POWER) {
-            //Spaceship.SpecialPowerState powerState;
-            if (Gdx.input.isKeyPressed(boostKey)) {
+            if (inputManager.isKeyDown(Input.Keys.E)) {
                 powerState = Spaceship.SpecialPowerState.BOOSTING;
-            } else if (Gdx.input.isKeyPressed(dodgeKey)) {
+            } else if (inputManager.isKeyDown(Input.Keys.Q)) {
                 powerState = Spaceship.SpecialPowerState.ULTRA_DODGE;
             }
         }
@@ -435,7 +422,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         //Keyboard
 
-        if (Gdx.input.isKeyJustPressed(chooseWeaponKey)) {
+        if (inputManager.isKeyDown(Input.Keys.F)) {
             setChosenWeapon(getChosenWeapon() + 1);
             if (getChosenWeapon() >= 4) {
                 setChosenWeapon(0);
@@ -454,7 +441,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         //Keyboard
 
         if (shootingState == Spaceship.ShootingState.PACIFIST) {
-            if (Gdx.input.isKeyPressed(shootKey)) {
+            if (inputManager.isKeyDown(Input.Keys.C)) {
                 if (getChosenWeapon() == 1) {
                     shootingState = Spaceship.ShootingState.FIRING;
                 }
@@ -1123,6 +1110,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
 
+    }
+
+    @Override
+    public void show() {
+        Gdx.input.setInputProcessor(inputManager);
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
