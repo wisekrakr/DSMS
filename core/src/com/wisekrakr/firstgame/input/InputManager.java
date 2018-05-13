@@ -222,19 +222,19 @@ public class InputManager implements InputProcessor {
     public void update(){
 
         for (int i = 0; i < 256; i++) {
-            KeyState k = keyStates.get(i);
-            k.pressed = false;
-            k.released = false;
+            KeyState keyState = keyStates.get(i);
+            keyState.pressed = false;
+            keyState.released = false;
         }
 
         for (int i = 0; i < touchStates.size; i++) {
-            TouchState t = touchStates.get(i);
+            TouchState touchState = touchStates.get(i);
 
-            t.pressed = false;
-            t.released = false;
+            touchState.pressed = false;
+            touchState.released = false;
 
-            t.displacementX = 0;
-            t.displacementY = 0;
+            touchState.displacementX = 0;
+            touchState.displacementY = 0;
         }
 
     }

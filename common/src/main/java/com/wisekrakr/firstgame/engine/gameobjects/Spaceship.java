@@ -462,7 +462,7 @@ public class Spaceship extends GameObject {
             missileLeftOver = 0;
         }
         for (int i = 0; i < exactMissileCount; i++) {
-            currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 400, 5f, randomDamageCountMissile());
+            currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 500, 5f, randomDamageCountMissile());
             toAdd.add(currentMissile);
         }
 

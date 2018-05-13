@@ -451,8 +451,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         //Keyboard
+        int a = getChosenWeapon();
 
-        if (inputManager.isKeyDown(Input.Keys.F)) {
+        if (inputManager.isKeyPressed(Input.Keys.F)) {
             setChosenWeapon(getChosenWeapon() + 1);
             if (getChosenWeapon() >= 4) {
                 setChosenWeapon(0);

@@ -27,11 +27,13 @@ public class PowerUpMinion extends PowerUp {
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
 /*
-        minionShooterPlayer.setPosition(minionShooterPlayer.getPosition().sub(getPosition()).rotate(90 * delta).add(getPosition()));
+        //minionShooterPlayer.setPosition(minionShooterPlayer.getPosition().sub(getPosition()).rotate(90 * delta).add(getPosition()));
         float angle = angleBetween(minionShooterPlayer, this);
-
+        angle += 3f * delta;
+        //minionShooterPlayer.setPosition(new Vector2(getPosition().rotate(angle)));
+        minionShooterPlayer.setPosition(new Vector2(minionShooterPlayer.getPosition().rotateRad(1.1f * delta)));
         toAdd.add(minionShooterPlayer);
-        */
+*/
     }
 }
 

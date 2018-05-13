@@ -17,65 +17,38 @@ public class MissilePlayer extends AutonomousWeaponsPlayer {
     private int damage;
     private float time;
 
-    private static final float ATTACK_RANGE = 200;
-    private static final float DEFAULT_MISSILE_SPEED = 550;
-
+    private static final float ATTACK_RANGE = 400;
 
     public MissilePlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
-        super(name, initialPosition, space, direction, radius, damage);
+        super(name, initialPosition, space, direction, radius, damage, speed);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
         this.damage = damage;
 
         setCollisionRadius(radius);
-    }
-
-
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.collide(subject, toDelete, toAdd);
-        if(subject instanceof Enemy){
-            toDelete.add(this);
-            subject.setHealth(subject.getHealth() - getDamage());
-        }
-        if (subject instanceof MinionShooterEnemy){
-            toDelete.add(this);
-            subject.setHealth(subject.getHealth() - getDamage());
-
-        }
-    }
-
-    @Override
-    public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if(target instanceof Enemy) {
-            if(distanceBetween(this, target)< ATTACK_RANGE){
-                attackTarget(target, toDelete, toAdd);
-            }
-        }
-
+        setSpeed(speed);
+        setAttackDistance(500f);
     }
 
     @Override
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (target instanceof Enemy) {
-            float angle = angleBetween(this, target);
-            setPosition(new Vector2(getPosition().x += Math.cos(angle), getPosition().y += Math.sin(angle)));
-            setOrientation(angle);
-            setDirection(angle);
+            if (distanceBetween(this, target) <= getAttackDistance()) {
+                float angle = angleBetween(this, target);
+                setAttackState(AttackState.HOMING);
+                setOrientation(angle);
+                setDirection(angle);
+            }else {
+                setAttackState(AttackState.NONE);
+            }
         }
     }
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_MISSILE_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_MISSILE_SPEED * delta)
-        );
-        setOrientation(direction);
-
+        super.elapseTime(clock, delta, toDelete, toAdd);
         float destructTime = 3.0f;
         time += delta;
         if(time >= destructTime){
@@ -83,11 +56,4 @@ public class MissilePlayer extends AutonomousWeaponsPlayer {
         }
     }
 
-    public float getDirection() {
-        return direction;
-    }
-
-    public void setDirection(float direction) {
-        this.direction = direction;
-    }
 }

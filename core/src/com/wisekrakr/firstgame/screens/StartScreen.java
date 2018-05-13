@@ -61,7 +61,7 @@ public class StartScreen extends ScreenAdapter {
         final Music music = myAssetManager.assetManager.get("music/space_explorers.mp3", Music.class);
         music.play();
         music.setLooping(true);
-        music.setVolume(0.5f);
+        music.setVolume(0.2f);
 
         texture = myAssetManager.assetManager.get("background/stars.jpg", Texture.class);
 /*

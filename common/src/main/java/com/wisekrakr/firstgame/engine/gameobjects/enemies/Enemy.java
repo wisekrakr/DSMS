@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -31,6 +32,7 @@ public class Enemy extends GameObject {
     private float aggroDistance;
     private float time;
     private float changeDirectionTime;
+    private Vector2 targetVector;
 
     private AttackState attackState = AttackState.PACIFIST;
     private MovingState movingState = MovingState.DEFAULT_FORWARDS;
@@ -129,7 +131,7 @@ public class Enemy extends GameObject {
     }
 
     public enum MovingState {
-        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY
+        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY, ROTATE_AROUND
     }
 
 
@@ -201,7 +203,7 @@ public class Enemy extends GameObject {
         Random random = new Random();
 
         if (time >= getChangeDirectionTime()) {
-            randomAngle = (float) (random.nextInt(360) * Math.PI * delta);
+            randomAngle = (float) (random.nextInt(180) * Math.PI * delta);
             time = 0;
         }
         return randomAngle;
@@ -253,7 +255,7 @@ public class Enemy extends GameObject {
                 setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + randomAngle(delta)) * getSpeed() * delta ),
                         (getPosition().y + (float) Math.sin(direction + randomAngle(delta)) * getSpeed() * delta))
                 );
-                setOrientation(direction);
+
                 break;
             case FLY_AROUND:
                 setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + updateAngle(delta)) * getSpeed() * delta ),
@@ -273,6 +275,15 @@ public class Enemy extends GameObject {
                         getPosition().y + (float) Math.sin(direction + updateAngle(delta)) * getSpeed() * delta)
                 );
                 setOrientation(direction);
+                break;
+            case ROTATE_AROUND:
+                //setPosition(new Vector2(getPosition().rotateRad(0.5f * delta)));
+
+                //float newPositionX = (float) ((getPosition().x - targetVector.x) * Math.cos(direction) - getPosition().y * Math.sin(direction));
+                //float newPositionY = (float) ((getPosition().x - targetVector.x) * Math.sin(direction) + getPosition().y * Math.cos(direction));
+
+                setOrientation(direction);
+
                 break;
             case FROZEN:
 
@@ -571,6 +582,14 @@ public class Enemy extends GameObject {
 
     public void setMovingState(MovingState movingState) {
         this.movingState = movingState;
+    }
+
+    public Vector2 getTargetVector() {
+        return targetVector;
+    }
+
+    public void setTargetVector(Vector2 targetVector) {
+        this.targetVector = targetVector;
     }
 
     @Override

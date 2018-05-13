@@ -1,5 +1,6 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -13,8 +14,8 @@ public class EnemyFlyby extends Enemy {
     public EnemyFlyby(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(1500f);
-        setAttackDistance(750f);
+        setAggroDistance(900f);
+        setAttackDistance(500f);
         setChangeDirectionTime(3f);
     }
 
@@ -23,7 +24,9 @@ public class EnemyFlyby extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAggroDistance()) {
                 if (!(getHealth() <= getHealth()*(10f/100f))){
-                    setMovingState(MovingState.FLY_BY);
+                    float angle = angleBetween(this, target);
+                    setMovingState(MovingState.DEFAULT_FORWARDS);
+                    setOrientation(angle);
                 }else {
                     setMovingState(MovingState.BACKWARDS);
                     setAttackState(AttackState.PACIFIST);
@@ -41,7 +44,8 @@ public class EnemyFlyby extends Enemy {
                 float angleNoAim = angleBetweenNoAim(this, target);
                 setOrientation(angle);
                 setDirection(angleNoAim);
-                setMovingState(MovingState.DEFAULT_FORWARDS);
+                setTargetVector(target.getPosition());
+                setMovingState(MovingState.ROTATE_AROUND);
                 setAttackState(AttackState.FIRE_BULLETS);
             }else{
                 setAttackState(AttackState.PACIFIST);
