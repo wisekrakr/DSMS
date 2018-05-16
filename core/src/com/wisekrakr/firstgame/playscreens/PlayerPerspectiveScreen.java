@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
@@ -23,15 +22,13 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.*;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
+import com.wisekrakr.firstgame.overlays.Hud;
 import com.wisekrakr.firstgame.popups.PauseScreenAdapter;
 
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -141,7 +138,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         createOverlayHud();
 
         pauseScreenAdapter = new PauseScreenAdapter();
-
 
     }
 
@@ -320,6 +316,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             System.out.println("DOWN");
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
             System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
+
+
         }
         if (inputManager.isTouchReleased(0)) {
             System.out.println("RELEASED");
@@ -577,6 +575,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                             (20f / 2));
 
+
                 } else if ("SpaceMinePlayer".equals(object.getType())) {
                     shapeRenderer.setColor(Color.WHITE);
                     shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
@@ -698,9 +697,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             object.getPosition().y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
                     enemyLabel.setVisible(true);
-                    enemyLabel.setPosition(object.getPosition().x, object.getPosition().y + 30, Align.center);
-
-
+                    enemyLabel.setPosition(enemy.getPosition().x, enemy.getPosition().y + 30, Align.center);
 
 
                 }else if ("EnemyEls".equals(object.getType())) {
@@ -1139,6 +1136,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     public Spaceship.ShootingState getShootingState() {
         return shootingState;
     }
+
+
 
     @Override
     public void resize(int width, int height) {

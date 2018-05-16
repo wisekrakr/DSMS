@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 import java.io.Serializable;
 import java.util.List;
@@ -42,7 +43,6 @@ public class SpaceSnapshot implements Serializable {
         private Map<String, Object> ammoExtra;
         private Map<String, Object> healthExtra;
         private Map<String, Object> scoreExtra;
-        private Map<String, Object> missileExtra;
         private Map<String, Object> damageExtra;
         private Map<String, Object> randomExtra;
 
@@ -50,9 +50,9 @@ public class SpaceSnapshot implements Serializable {
         public GameObjectSnapshot() {
         }
 
-        public GameObjectSnapshot(String name, String type, float speed, float orientation, Vector2 position,  Map<String,
+        public GameObjectSnapshot(String name, String type, float speed, float orientation, Vector2 position, Map<String,
                 Object> extra, Map<String, Object> ammoExtra, Map<String, Object> healthExtra, Map<String, Object> scoreExtra,
-                                  Map<String, Object> missileExtra, Map<String, Object> damageExtra, Map<String, Object> randomExtra) {
+                                  Map<String, Object> damageExtra, Map<String, Object> randomExtra) {
             this.name = name;
             this.type = type;
             this.speed = speed;
@@ -62,7 +62,6 @@ public class SpaceSnapshot implements Serializable {
             this.ammoExtra = ammoExtra;
             this.healthExtra = healthExtra;
             this.scoreExtra = scoreExtra;
-            this.missileExtra = missileExtra;
             this.damageExtra = damageExtra;
             this.randomExtra = randomExtra;
 
@@ -88,10 +87,6 @@ public class SpaceSnapshot implements Serializable {
             return position;
         }
 
-        public void setOrientation(float orientation) {
-            this.orientation = orientation;
-        }
-
         public Map<String, Object> extraProperties() {
             return extra;
         }
@@ -107,11 +102,6 @@ public class SpaceSnapshot implements Serializable {
         public Map<String, Object> scoreProperties() {
             return scoreExtra;
         }
-
-        public Map<String, Object> missileProperties() {
-            return missileExtra;
-        }
-
 
         public Map<String, Object> damageProperties() {
             return damageExtra;

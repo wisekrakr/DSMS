@@ -21,12 +21,12 @@ public abstract class GameObject {
     private float collisionRadius;
     private int health;
 
-
     protected GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
 
         this.position = initialPosition;
         this.name = name;
         this.space = space;
+
 
     }
     /**
@@ -126,7 +126,7 @@ public abstract class GameObject {
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
-                getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(), getMissileProperties(),
+                getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(),
                 getDamageProperties(), getRandomProperties());
     }
 
@@ -149,10 +149,6 @@ public abstract class GameObject {
     public Map<String, Object> getScoreProperties() {
         return new HashMap<>();
     }
-    public Map<String, Object> getMissileProperties() {
-        return new HashMap<>();
-    }
-
 
     public Map<String, Object> getDamageProperties() {
         return new HashMap<>();
@@ -162,4 +158,8 @@ public abstract class GameObject {
     public Map<String, Object> getRandomProperties() {
         return new HashMap<>();
     }
+
+
+
+
 }

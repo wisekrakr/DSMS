@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.playscreens;
+package com.wisekrakr.firstgame.overlays;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.Viewport;

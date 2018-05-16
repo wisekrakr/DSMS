@@ -2,6 +2,8 @@ package com.wisekrakr.firstgame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Timer;
+import com.wisekrakr.firstgame.screens.SplashIntroScreen;
 import com.wisekrakr.firstgame.screens.StartScreen;
 import com.wisekrakr.firstgame.client.ClientConnector;
 
@@ -30,7 +32,34 @@ public class SpaceGameContainer extends Game {
             return;
         }
 
-        setScreen(new StartScreen(this, connector));
+        //setScreen(new StartScreen(this, connector));
+        setScreen(new SplashIntroScreen());
+
+        final long splash_start_time = System.currentTimeMillis();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        long splash_elapsed_time = System.currentTimeMillis() - splash_start_time;
+                        if (splash_elapsed_time <= 5000) {
+                            Timer.schedule(
+                                    new Timer.Task() {
+                                        @Override
+                                        public void run() {
+                                            setScreen(new StartScreen(SpaceGameContainer.this, connector));
+                                        }
+                                    }, (float)(5000 - splash_elapsed_time) / 1000f);
+                        } else {
+                            setScreen(new StartScreen(SpaceGameContainer.this, connector));
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
 }

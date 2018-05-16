@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
@@ -21,7 +22,7 @@ public class Spaceship extends GameObject {
 
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
-    public SpecialPowerState powerState = SpecialPowerState.NO_POWER;
+    private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
     private AimingState aimingState = AimingState.NONE;
     private PowerUpState powerUpState = PowerUpState.NONE;
@@ -60,6 +61,7 @@ public class Spaceship extends GameObject {
     private float oldMouseY;
     private float mouseX;
     private float mouseY;
+    private float mouseAngle;
 
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(name, position, space);
@@ -147,6 +149,7 @@ public class Spaceship extends GameObject {
 
             }
             */
+
         }
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
@@ -273,7 +276,7 @@ public class Spaceship extends GameObject {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-/*
+
         oldMouseX = mouseX;
         oldMouseY = mouseY;
 
@@ -285,7 +288,8 @@ public class Spaceship extends GameObject {
         }else if ((mouseX - oldMouseX) < 0){
             angle = angle - 6f * delta;
         }
-*/
+
+
 
         switch (steering) {
             case LEFT:
@@ -583,15 +587,6 @@ public class Spaceship extends GameObject {
         Map<String, Object> result = new HashMap<>();
 
         result.put("score", score);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getMissileProperties() {
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("missileCount", missileAmmoCount);
 
         return result;
     }

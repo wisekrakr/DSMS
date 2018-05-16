@@ -10,6 +10,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUp;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -108,6 +109,7 @@ public class ServerRunner {
             engine.addGameObject(enemyFlyby);
         }
 /*
+
         for (int i = 0; i < 4; i++) {
             EnemyEls enemyEls = new EnemyEls("ELS", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -194,6 +196,14 @@ public class ServerRunner {
             engine.addGameObject(enemyGang);
         }
 */
+        for (int i = 0; i < 1; i++){
+            Rotunda rotunda = new Rotunda("rotunda test", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    engine, 50, randomGenerator.nextFloat() * 2 * (float) Math.PI);
+            engine.addGameObject(rotunda);
+        }
+
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -201,7 +211,7 @@ public class ServerRunner {
                     randomGenerator.nextFloat() * 20,
                     randomGenerator.nextFloat() * 80,
                     randomGenerator.nextFloat() * 2 * (float) Math.PI, engine,
-                    randomGenerator.nextFloat() * 30);
+                    randomGenerator.nextFloat() * 20);
             engine.addGameObject(asteroid);
         }
 
