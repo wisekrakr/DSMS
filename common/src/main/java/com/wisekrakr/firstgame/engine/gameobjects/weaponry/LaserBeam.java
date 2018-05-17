@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
@@ -19,7 +20,7 @@ public class LaserBeam extends GameObject {
     private float time;
 
     public LaserBeam(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage) {
-        super(name, initialPosition, space);
+        super(GameObjectType.LASER_BEAM, name, initialPosition, space);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;

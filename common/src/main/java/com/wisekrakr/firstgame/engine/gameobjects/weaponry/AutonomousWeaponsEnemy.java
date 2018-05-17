@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
@@ -18,7 +19,7 @@ public class AutonomousWeaponsEnemy extends GameObject {
     private float speed;
 
     public AutonomousWeaponsEnemy(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
-        super(name, initialPosition, space);
+        super(GameObjectType.AUTONOMOUS_WEAPON_ENEMY, name, initialPosition, space);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;

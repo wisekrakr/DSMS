@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.spaceobjects;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -23,7 +24,7 @@ public class Asteroid extends GameObject {
     private float radius;
 
     public Asteroid(String name, Vector2 position, float rotationSpeed, float speed, float direction, SpaceEngine space, float radius) {
-        super(name, position, space);
+        super(GameObjectType.ASTEROID, name, position, space);
 
         this.rotationSpeed = rotationSpeed;
         this.speed = speed;

@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
@@ -20,14 +21,13 @@ public abstract class GameObject {
     private SpaceEngine space;
     private float collisionRadius;
     private int health;
+    private GameObjectType type;
 
-    protected GameObject(String name, Vector2 initialPosition, SpaceEngine space) {
-
+    protected GameObject(GameObjectType type, String name, Vector2 initialPosition, SpaceEngine space) {
+        this.type = type;
         this.position = initialPosition;
         this.name = name;
         this.space = space;
-
-
     }
     /**
      * update the state taking into account an elapsed time of delta seconds
@@ -63,14 +63,11 @@ public abstract class GameObject {
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {    }
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {    }
 
-    public int randomDamageCountBullet(){
-        Random random = new Random();
-        return random.nextInt(10) + 1;
-    }
     public int randomDamageCountMissile(){
         Random random = new Random();
         return random.nextInt(20 - 10 + 1) + 10;
     }
+
     public int randomDamageCountMine(){
         Random random = new Random();
         return random.nextInt(50 - 10 + 1) + 10;
@@ -86,7 +83,7 @@ public abstract class GameObject {
         return random.nextFloat() * 1200;
     }
 
-    public float distanceBetween(GameObject subject, GameObject target) {
+    public static float distanceBetween(GameObject subject, GameObject target) {
 
         float attackDistanceX = target.getPosition().x - subject.getPosition().x;
         float attackDistanceY = target.getPosition().y - subject.getPosition().y;
@@ -94,7 +91,7 @@ public abstract class GameObject {
         return (float) Math.hypot(attackDistanceX, attackDistanceY);
     }
 
-    public float angleBetween(GameObject subject, GameObject target) {
+    public static float angleBetween(GameObject subject, GameObject target) {
 
         float attackDistanceX = target.getPosition().x - subject.getPosition().x;
         float attackDistanceY = target.getPosition().y - subject.getPosition().y;
@@ -125,7 +122,7 @@ public abstract class GameObject {
     }
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
-        return new SpaceSnapshot.GameObjectSnapshot(name, getClass().getSimpleName(), 0, orientation, position,
+        return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
                 getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(),
                 getDamageProperties(), getRandomProperties());
     }
@@ -160,6 +157,9 @@ public abstract class GameObject {
     }
 
 
+    public void afterAdd(List<GameObject> toAdd) {
+    }
 
-
+    public void afterRemove(List<GameObject> toAdd, List<GameObject> toRemove) {
+    }
 }

@@ -9,6 +9,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUp;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerupGenerator;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
 
@@ -85,18 +86,17 @@ public class ServerRunner {
 
         Random randomGenerator = new Random();
 
-        PowerUp powerUp = new PowerUp("power up", new Vector2(
+        engine.addGameObject(new PowerupGenerator(new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
-                engine);
-        engine.addGameObject(powerUp);
+                engine));
 
         for (int i = 0; i < 5; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    70,randomGenerator.nextFloat() * 2000 - 1000,
-                    200f,22f, engine);
+                    70, randomGenerator.nextFloat() * 2000 - 1000,
+                    200f, 22f, engine);
             engine.addGameObject(chaser);
         }
 
@@ -104,8 +104,8 @@ public class ServerRunner {
             EnemyFlyby enemyFlyby = new EnemyFlyby("FlyerBy", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
-                    40,randomGenerator.nextFloat() * 2000 - 1000,
-                    200f,20f, engine);
+                    40, randomGenerator.nextFloat() * 2000 - 1000,
+                    200f, 20f, engine);
             engine.addGameObject(enemyFlyby);
         }
 /*
@@ -196,7 +196,7 @@ public class ServerRunner {
             engine.addGameObject(enemyGang);
         }
 */
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 1; i++) {
             Rotunda rotunda = new Rotunda("rotunda test", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
@@ -252,27 +252,25 @@ public class ServerRunner {
                                 engine.addGameObject(result);
 
                                 myFleet.put(request.getName(), result);
-                            }
-                            else if (incoming instanceof SpaceshipControlRequest) {
+                            } else if (incoming instanceof SpaceshipControlRequest) {
                                 SpaceshipControlRequest request = (SpaceshipControlRequest) incoming;
 
                                 Spaceship ship = myFleet.get(request.getName());
 
                                 if (ship == null) {
                                     System.out.println("Unknown ship: " + request.getName());
-                                }
-                                else {
+                                } else {
                                     engine.forObject(ship, new SpaceEngine.GameObjectHandler() {
                                         @Override
                                         public void doIt(GameObject target) {
                                             ship.control(request.getThrottleState(), request.getSteeringState(),
                                                     request.getSpecialPowerState(), request.getShootingState(),
-                                                    request.getAimingState(), request.getSwitchWeaponState());
+                                                    request.getAimingState(), request.getSwitchWeaponState(),
+                                                    request.getHardSteering());
                                         }
                                     });
                                 }
-                            }
-                            else {
+                            } else {
                                 System.out.println("Unknown request: " + incoming);
                             }
                         }
@@ -301,8 +299,7 @@ public class ServerRunner {
 
                             Thread.sleep(10L);
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         System.out.println("Connection to " + clientSocket + " broken: " + e.getMessage());
                     }
 

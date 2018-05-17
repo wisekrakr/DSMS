@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
@@ -20,7 +21,7 @@ public class Bullet extends GameObject {
 
 
     public Bullet(String name, Vector2 initialPosition, SpaceEngine space, float direction,float speed, float radius, int damage) {
-        super(name, initialPosition, space);
+        super(GameObjectType.BULLET, name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;

@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
@@ -15,7 +16,7 @@ public class EnemyBlinker extends Enemy {
     private float time;
 
     public EnemyBlinker(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(name, position, health, direction, speed, radius, space);
+        super(GameObjectType.BLINKER, name, position, health, direction, speed, radius, space);
 
         setAggroDistance(950f);
         setAttackDistance(750f);

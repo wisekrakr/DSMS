@@ -1,11 +1,12 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
@@ -55,8 +56,8 @@ public class Enemy extends GameObject {
     private float randomAngle;
     private float updatedAngle;
 
-    public Enemy(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(name, position, space);
+    public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(type, name, position, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -279,8 +280,11 @@ public class Enemy extends GameObject {
             case ROTATE_AROUND:
                 //setPosition(new Vector2(getPosition().rotateRad(0.5f * delta)));
 
-                //float newPositionX = (float) ((getPosition().x - targetVector.x) * Math.cos(direction) - getPosition().y * Math.sin(direction));
-                //float newPositionY = (float) ((getPosition().x - targetVector.x) * Math.sin(direction) + getPosition().y * Math.cos(direction));
+                /* TODO: Max rotation example
+                float newPositionX = (float) ((getPosition().x - targetVector.x) * Math.cos(direction)) + targetVector.x;
+                float newPositionY = (float) ((getPosition().y - targetVector.y) * Math.sin(direction)) + targetVector.y;
+                setPosition(new Vector2(newPositionX, newPositionY));
+                */
 
                 setOrientation(direction);
 
@@ -309,7 +313,7 @@ public class Enemy extends GameObject {
 
                 for (int i = 0; i < exactShotCount; i++) {
                     toAdd.add(new BulletEnemy("enemybullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
-                            2f, randomDamageCountBullet()));
+                            2f, BulletMechanics.determineBulletDamage()));
                 }
 
                 break;
@@ -346,15 +350,15 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactShottyShotCount; i++) {
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getDirection(), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /6), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /6), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /7), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /7), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /8), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /8), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), 400, 2f, randomDamageCountBullet()));
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), 400, 2f, randomDamageCountBullet()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getDirection(), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /6), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /6), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /7), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /7), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /8), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /8), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), 400, 2f, BulletMechanics.determineBulletDamage()));
 
                 }
                 break;
@@ -376,7 +380,7 @@ public class Enemy extends GameObject {
                     Random randomGenerator = new Random();
                     toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * 100f,
                             getPosition().y + randomGenerator.nextFloat() * 100f),
-                            getSpace(), getOrientation() + randomGenerator.nextFloat() * 100f, 200,2f, randomDamageCountBullet() / 5));
+                            getSpace(), getOrientation() + randomGenerator.nextFloat() * 100f, 200,2f, BulletMechanics.determineBulletDamage() / 5));
                 }
 
                 break;
@@ -427,7 +431,7 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < laserExactShotCount; i++) {
-                    toAdd.add(new LaserBeamEnemy("laser", getPosition(), getSpace(), getOrientation(), 2f, randomDamageCountBullet()));
+                    toAdd.add(new LaserBeamEnemy("laser", getPosition(), getSpace(), getOrientation(), 2f, BulletMechanics.determineBulletDamage()));
                 }
 
                 break;

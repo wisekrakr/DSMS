@@ -1,10 +1,9 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +21,8 @@ public class Minion extends GameObject {
     private float destructTime;
     private boolean destruct;
 
-    public Minion(String name, Vector2 position, int health, float direction, float radius,  SpaceEngine space) {
-        super(name, position, space);
+    public Minion(GameObjectType type, String name, Vector2 position, int health, float direction, float radius,  SpaceEngine space) {
+        super(type, name, position, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;

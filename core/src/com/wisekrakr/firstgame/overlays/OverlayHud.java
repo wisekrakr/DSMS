@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.client.ClientConnector;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
 public class OverlayHud implements Disposable {
@@ -41,7 +42,7 @@ public class OverlayHud implements Disposable {
         font.getData().setScale(0.4f);
         if (snapshot != null) {
             for (SpaceSnapshot.GameObjectSnapshot object: snapshot.getGameObjects()) {
-                if ("EnemyChaser".equals(object.getType())) {
+                if (GameObjectType.ENEMY_CHASER == object.getType()) {
                     enemyLabel.setVisible(true);
                     enemyLabel = new Label(String.format("%s", getEnemyLabel()), new Label.LabelStyle(new BitmapFont(), Color.GREEN));
                     enemyLabel.setPosition(object.getPosition().x, object.getPosition().y, Align.center);

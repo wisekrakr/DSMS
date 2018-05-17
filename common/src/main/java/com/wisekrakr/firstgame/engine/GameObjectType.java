@@ -1,0 +1,38 @@
+package com.wisekrakr.firstgame.engine;
+
+public enum GameObjectType {
+    SPACESHIP,
+    ASTEROID,
+    DEBRIS,
+    ROTUNDA,
+    EXHAUST,
+    AUTONOMOUS_WEAPON_ENEMY,
+    AUTONOMOUS_WEAPON_PLAYER,
+    BULLET,
+    LASER_BEAM,
+    SPACE_MINE,
+    ENEMY_CHASER,
+    BLINKER,
+    GANG,
+    ELS,
+    MUTATOR,
+    PEST,
+    DODGER,
+    HOMER,
+    MOTHERSHIP,
+    SHITTER,
+    SHOTTY,
+    FLYBY,
+    PLANET,
+    MISSILE,
+    SPORE,
+    MINION_SHOOTER,
+    MINION_FIGHTER,
+    POWERUP_MISSILE,
+    POWERUP_SHIELD,
+    POWERUP_MINION,
+    POWERUP_HEALTH,
+    SHIELD,
+    POWERUP_GENERATOR
+
+}

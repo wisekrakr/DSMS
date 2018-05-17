@@ -34,12 +34,29 @@ public class SpaceEngine {
     public void addGameObject(GameObject object) {
         synchronized (monitor) {
             gameObjects.add(object);
+
+            List<GameObject> toAdd = new ArrayList<>();
+            object.afterAdd(toAdd);
+
+            for (GameObject o: toAdd) {
+                addGameObject(o);
+            }
         }
     }
 
     public void removeGameObject(GameObject object) {
         synchronized (monitor) {
             gameObjects.remove(object);
+            List<GameObject> toAdd = new ArrayList<>();
+            List<GameObject> toRemove = new ArrayList<>();
+            object.afterRemove(toAdd, toRemove);
+
+            for (GameObject o: toAdd) {
+                addGameObject(o);
+            }
+            for (GameObject o: toRemove) {
+                removeGameObject(o);
+            }
         }
     }
 
@@ -243,11 +260,11 @@ public class SpaceEngine {
 
 
             for (GameObject gameObject : toDelete) {
-                gameObjects.remove(gameObject);
+                removeGameObject(gameObject);
             }
 
             for (GameObject gameObject : toAdd) {
-                gameObjects.add(gameObject);
+                addGameObject(gameObject);
             }
         }
     }

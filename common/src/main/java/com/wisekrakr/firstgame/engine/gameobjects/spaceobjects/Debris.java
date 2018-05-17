@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.spaceobjects;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
@@ -18,7 +19,7 @@ public class Debris extends GameObject {
 
     public Debris(String name, Vector2 initialPosition, SpaceEngine space, float rotationSpeed, float speed, float direction, float radius) {
 
-        super(name, initialPosition, space);
+        super(GameObjectType.DEBRIS, name, initialPosition, space);
         this.rotationSpeed = rotationSpeed;
         this.speed = speed;
         this.direction = direction;

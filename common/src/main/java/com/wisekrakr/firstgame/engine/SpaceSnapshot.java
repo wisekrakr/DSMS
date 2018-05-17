@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 import java.io.Serializable;
 import java.util.List;
@@ -35,7 +34,7 @@ public class SpaceSnapshot implements Serializable {
 
     public static class GameObjectSnapshot implements Serializable {
         private String name;
-        private String type;
+        private GameObjectType type;
         private float speed;
         private float orientation;
         private Vector2 position;
@@ -50,7 +49,7 @@ public class SpaceSnapshot implements Serializable {
         public GameObjectSnapshot() {
         }
 
-        public GameObjectSnapshot(String name, String type, float speed, float orientation, Vector2 position, Map<String,
+        public GameObjectSnapshot(String name, GameObjectType type, float speed, float orientation, Vector2 position, Map<String,
                 Object> extra, Map<String, Object> ammoExtra, Map<String, Object> healthExtra, Map<String, Object> scoreExtra,
                                   Map<String, Object> damageExtra, Map<String, Object> randomExtra) {
             this.name = name;
@@ -71,7 +70,7 @@ public class SpaceSnapshot implements Serializable {
             return name;
         }
 
-        public String getType() {
+        public GameObjectType getType() {
             return type;
         }
 

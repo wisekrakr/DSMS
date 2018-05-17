@@ -1,9 +1,9 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class SpaceMine extends GameObject {
 
 
     public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
-        super(name, initialPosition, space);
+        super(GameObjectType.SPACE_MINE, name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;

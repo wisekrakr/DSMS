@@ -1,9 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
@@ -28,7 +30,7 @@ public class EnemyGang extends Enemy {
     private AttackState attackState = AttackState.PACIFIST;
 
     public EnemyGang(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(name, position, health, direction, speed, radius, space);
+        super(GameObjectType.GANG, name, position, health, direction, speed, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -130,7 +132,7 @@ public class EnemyGang extends Enemy {
                 }
 
                 for(int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(), 2f, randomDamageCountBullet()));
+                    toAdd.add(new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(), 2f, BulletMechanics.determineBulletDamage()));
                 }
 
                 break;

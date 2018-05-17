@@ -1,9 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
@@ -31,7 +33,7 @@ public class MinionShooterEnemy extends Minion {
     private BulletEnemy bulletEnemy;
 
     public MinionShooterEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+        super(GameObjectType.MINION_SHOOTER, name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -50,7 +52,7 @@ public class MinionShooterEnemy extends Minion {
             subject.setHealth(subject.getHealth() - getDamage());
         }
         if (subject instanceof BulletPlayer){
-            setHealth(getHealth() - subject.randomDamageCountBullet());
+            setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof MissilePlayer){
             setHealth(getHealth() - subject.randomDamageCountMissile());
@@ -112,7 +114,7 @@ public class MinionShooterEnemy extends Minion {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    bulletEnemy = new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, randomDamageCountBullet());
+                    bulletEnemy = new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, BulletMechanics.determineBulletDamage());
                     toAdd.add(bulletEnemy);
                 }
 

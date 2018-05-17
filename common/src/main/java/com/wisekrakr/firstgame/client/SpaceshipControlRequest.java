@@ -12,11 +12,12 @@ public class SpaceshipControlRequest implements Serializable {
     private Spaceship.ShootingState shootingState;
     private Spaceship.AimingState aimingState;
     private Spaceship.SwitchWeaponState switchWeaponState;
+    private Float hardSteering;
 
 
     public SpaceshipControlRequest(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
                                    Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState,
-                                   Spaceship.AimingState aimingState, Spaceship.SwitchWeaponState switchWeaponState) {
+                                   Spaceship.AimingState aimingState, Spaceship.SwitchWeaponState switchWeaponState, Float hardSteering) {
         this.name = name;
         this.throttleState = throttleState;
         this.steeringState = steeringState;
@@ -25,6 +26,7 @@ public class SpaceshipControlRequest implements Serializable {
         this.aimingState = aimingState;
         this.switchWeaponState = switchWeaponState;
 
+        this.hardSteering = hardSteering;
     }
 /*
     public SpaceshipControlRequest(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState, Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState) {
@@ -55,5 +57,9 @@ public class SpaceshipControlRequest implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public Float getHardSteering() {
+        return hardSteering;
     }
 }

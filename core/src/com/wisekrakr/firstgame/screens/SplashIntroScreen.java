@@ -22,7 +22,7 @@ public class SplashIntroScreen extends ScreenAdapter {
 
     public SplashIntroScreen() {
         batch = new SpriteBatch();
-        texture = new Texture("texture/intrologo.jpg");
+//        texture = new Texture("texture/intrologo.jpg");
 
     }
 
@@ -33,14 +33,14 @@ public class SplashIntroScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(texture, 0,  0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//        batch.draw(texture, 0,  0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
     }
 
     @Override
     public void dispose() {
-        texture.dispose();
+//        texture.dispose();
         batch.dispose();
     }
 }

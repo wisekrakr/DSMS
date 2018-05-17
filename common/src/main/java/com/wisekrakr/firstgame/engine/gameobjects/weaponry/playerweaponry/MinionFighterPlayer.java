@@ -1,9 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
@@ -29,7 +31,7 @@ public class MinionFighterPlayer extends Minion {
     private int damage;
 
     public MinionFighterPlayer(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(name, position, health, direction, radius, space);
+        super(GameObjectType.MINION_FIGHTER, name, position, health, direction, radius, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -47,13 +49,13 @@ public class MinionFighterPlayer extends Minion {
             subject.setHealth(subject.getHealth() - getDamage());
         }
         if (subject instanceof BulletEnemy){
-            setHealth(getHealth() - subject.randomDamageCountBullet());
+            setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof MissileEnemy){
             setHealth(getHealth() - subject.randomDamageCountMissile());
         }
         if (subject instanceof LaserBeamEnemy){
-            setHealth(getHealth() - subject.randomDamageCountBullet());
+            setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof SpaceMineEnemy){
             setHealth(getHealth() - subject.randomDamageCountMine());
@@ -148,6 +150,7 @@ public class MinionFighterPlayer extends Minion {
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
+        System.out.println("Radius = " + radius);
         result.put("radius", radius);
 
         return result;

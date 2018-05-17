@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
@@ -17,7 +18,7 @@ public class Exhaust extends GameObject {
     private float time;
 
     public Exhaust(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
-        super(name, initialPosition, space);
+        super(GameObjectType.EXHAUST, name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
         setCollisionRadius(radius);

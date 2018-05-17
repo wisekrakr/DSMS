@@ -5,10 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.*;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
@@ -27,6 +28,7 @@ public class Spaceship extends GameObject {
     private AimingState aimingState = AimingState.NONE;
     private PowerUpState powerUpState = PowerUpState.NONE;
     private SwitchWeaponState switchWeaponState = SwitchWeaponState.NONE;
+    private Float hardSteering;
 
     private float speedX = 0;
     private float speedY = 0;
@@ -57,14 +59,15 @@ public class Spaceship extends GameObject {
     private boolean minionActivated = false;
     private float speed;
 
-    private float oldMouseX;
-    private float oldMouseY;
-    private float mouseX;
-    private float mouseY;
-    private float mouseAngle;
-
+    /*
+        private float oldMouseX;
+        private float oldMouseY;
+        private float mouseX;
+        private float mouseY;
+        private float mouseAngle;
+    */
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
-        super(name, position, space);
+        super(GameObjectType.SPACESHIP, name, position, space);
 
         ammoCount = 10000;
         missileAmmoCount = 50;
@@ -79,7 +82,7 @@ public class Spaceship extends GameObject {
         spaceMines = new ArrayList<>();
 
         rotunda = new Rotunda("rotunda", new Vector2(
-                getPosition().x + (getCollisionRadius() * 2) ,
+                getPosition().x + (getCollisionRadius() * 2),
                 getPosition().y + (getCollisionRadius() * 2)),
                 getSpace(), 10,
                 getOrientation());
@@ -114,6 +117,7 @@ public class Spaceship extends GameObject {
     public enum PowerUpState {
         SHIELD, MINION, NONE
     }
+
     public enum SwitchWeaponState {
         NONE, BULLETS, MISSILES, SPACE_MINES
     }
@@ -125,13 +129,14 @@ public class Spaceship extends GameObject {
     }
 
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
-                        AimingState aimingState, SwitchWeaponState switchWeaponState) {
+                        AimingState aimingState, SwitchWeaponState switchWeaponState, Float hardSteering) {
         this.throttle = throttle;
         this.steering = steering;
         this.powerState = powerState;
         this.shootingState = shootingState;
         this.aimingState = aimingState;
         this.switchWeaponState = switchWeaponState;
+        this.hardSteering = hardSteering;
     }
 
     @Override
@@ -169,10 +174,10 @@ public class Spaceship extends GameObject {
             switch (randomMinion) {
                 case 1:
                     minionShooterPlayer = new MinionShooterPlayer("minion_shooter", new Vector2(
-                            getPosition().x + (getCollisionRadius() * 2) ,
+                            getPosition().x + (getCollisionRadius() * 2),
                             getPosition().y + (getCollisionRadius() * 2)),
                             50,
-                            getAngle() , 10, getSpace());
+                            getAngle(), 10, getSpace());
                     toAdd.add(minionShooterPlayer);
                     powerUpState = PowerUpState.MINION;
                     minionActivated = true;
@@ -277,7 +282,7 @@ public class Spaceship extends GameObject {
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        oldMouseX = mouseX;
+/*        oldMouseX = mouseX;
         oldMouseY = mouseY;
 
         mouseX = Gdx.input.getX();
@@ -288,16 +293,21 @@ public class Spaceship extends GameObject {
         }else if ((mouseX - oldMouseX) < 0){
             angle = angle - 6f * delta;
         }
+*/
 
 
-
-        switch (steering) {
-            case LEFT:
-                angle = angle + 3f * delta;
-                break;
-            case RIGHT:
-                angle = angle - 3f * delta;
-                break;
+        if (hardSteering != null) {
+            angle = angle - hardSteering;
+            hardSteering = null;
+        } else {
+            switch (steering) {
+                case LEFT:
+                    angle = angle + 3f * delta;
+                    break;
+                case RIGHT:
+                    angle = angle - 3f * delta;
+                    break;
+            }
         }
         setOrientation(angle);
 
@@ -408,15 +418,15 @@ public class Spaceship extends GameObject {
                             (float) (getPosition().y + Math.PI * 3 * 300 * delta))
                     );
 */
-                    minionShooterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float)Math.cos(Math.PI * 3) * getSpeed() * delta,
-                            getPosition().y + getCollisionRadius() * 2 + (float)Math.sin(Math.PI * 3) * getSpeed() * delta));
+                    minionShooterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float) Math.cos(Math.PI * 3) * getSpeed() * delta,
+                            getPosition().y + getCollisionRadius() * 2 + (float) Math.sin(Math.PI * 3) * getSpeed() * delta));
 
                 }
 
                 if (randomMinion == 2) {
                     if (minionFighterPlayer.getMinionState() != Minion.MinionState.SHOOT) {
-                        minionFighterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float)Math.cos(Math.PI * 3) * getSpeed() * delta,
-                                getPosition().y + getCollisionRadius() * 2 + (float)Math.sin(Math.PI * 3) * getSpeed() * delta));
+                        minionFighterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float) Math.cos(Math.PI * 3) * getSpeed() * delta,
+                                getPosition().y + getCollisionRadius() * 2 + (float) Math.sin(Math.PI * 3) * getSpeed() * delta));
                     }
                 }
 
@@ -430,7 +440,7 @@ public class Spaceship extends GameObject {
 
     }
 
-    private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd){
+    private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         bullets.add(currentBullet);
 
@@ -446,13 +456,13 @@ public class Spaceship extends GameObject {
         }
 
         for (int i = 0; i < exactShotCount; i++) {
-            currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f, randomDamageCountBullet());
+            currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f, BulletMechanics.determineBulletDamage());
             toAdd.add(currentBullet);
 
         }
     }
 
-    private void activateMissiles(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd){
+    private void activateMissiles(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         missiles.add(currentMissile);
 
         float missileCount = delta / 0.5f + missileLeftOver;
@@ -472,7 +482,7 @@ public class Spaceship extends GameObject {
 
     }
 
-    private void activateSpaceMines(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd){
+    private void activateSpaceMines(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         spaceMines.add(currentSpaceMine);
 
         float minesCount = delta / 2.0f + minesLeftOver;
@@ -562,11 +572,11 @@ public class Spaceship extends GameObject {
 
         if (switchWeaponState == SwitchWeaponState.BULLETS) {
             result.put("ammoCount", getAmmoCount());
-        }else if (switchWeaponState == SwitchWeaponState.MISSILES){
+        } else if (switchWeaponState == SwitchWeaponState.MISSILES) {
             result.put("ammoCount", getMissileAmmoCount());
-        }else if (switchWeaponState == SwitchWeaponState.SPACE_MINES){
+        } else if (switchWeaponState == SwitchWeaponState.SPACE_MINES) {
             result.put("ammoCount", getMineAmmoCount());
-        }else {
+        } else {
             result.put("ammoCount", 0);
         }
 

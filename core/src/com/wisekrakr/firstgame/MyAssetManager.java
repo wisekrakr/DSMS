@@ -26,7 +26,7 @@ public class MyAssetManager implements Disposable{
         assetManager.load("sound/photon1.wav", Sound.class);
         assetManager.load("sound/photon2.wav", Sound.class);
         assetManager.load("sound/acc1.mp3", Sound.class);
-        assetManager.load("sound/mine_blowup.mp3", Sound.class);
+//        assetManager.load("sound/mine_blowup.mp3", Sound.class);
 
         assetManager.finishLoading();
     }
@@ -61,7 +61,7 @@ public class MyAssetManager implements Disposable{
         assetManager.load("texture/pausedPic2.png", Texture.class);
         assetManager.load("background/stars.jpg", Texture.class);
         assetManager.load("texture/crosshair.png", Texture.class);
-        assetManager.load("texture/intrologo.jpg", Texture.class);
+//        assetManager.load("texture/intrologo.jpg", Texture.class);
 
         assetManager.finishLoading();
     }
