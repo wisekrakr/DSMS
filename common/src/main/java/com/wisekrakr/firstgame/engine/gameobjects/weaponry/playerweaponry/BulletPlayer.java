@@ -2,19 +2,21 @@ package com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class BulletPlayer extends Bullet {
 
-
-
     public BulletPlayer(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
         super(name, initialPosition, space, direction, speed, radius, damage);
+
     }
 
     @Override
@@ -22,12 +24,12 @@ public class BulletPlayer extends Bullet {
         if (subject instanceof Enemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
-
+            setHit(true);
         }
         if (subject instanceof MinionShooterEnemy){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
-
+            setHit(true);
         }
     }
 

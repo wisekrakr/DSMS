@@ -21,7 +21,7 @@ public class Minion extends GameObject {
     private float destructTime;
     private boolean destruct;
 
-    public Minion(GameObjectType type, String name, Vector2 position, int health, float direction, float radius,  SpaceEngine space) {
+    public Minion(GameObjectType type, String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
         super(type, name, position, space);
         this.direction = direction;
         this.radius = radius;

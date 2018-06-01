@@ -21,7 +21,6 @@ public class EnemyChaser extends Enemy {
         setAttackDistance(750f);
         setChangeDirectionTime(5f);
 
-
     }
 
     @Override

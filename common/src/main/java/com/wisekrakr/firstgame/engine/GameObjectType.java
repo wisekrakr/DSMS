@@ -2,12 +2,11 @@ package com.wisekrakr.firstgame.engine;
 
 public enum GameObjectType {
     SPACESHIP,
+    ENEMY,
     ASTEROID,
     DEBRIS,
     ROTUNDA,
     EXHAUST,
-    AUTONOMOUS_WEAPON_ENEMY,
-    AUTONOMOUS_WEAPON_PLAYER,
     BULLET,
     LASER_BEAM,
     SPACE_MINE,

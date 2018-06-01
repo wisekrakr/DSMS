@@ -29,6 +29,10 @@ public class SpaceMineEnemy extends SpaceMine {
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
 
+            if (((Player) subject).isKilled()){
+                ((Player) subject).setKillerName(this.getName());
+            }
+
             Random random = new Random();
             int debrisParts = random.nextInt(10)+1;
             for(int i = 0; i < debrisParts; i++) {

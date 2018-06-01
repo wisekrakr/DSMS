@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,6 +9,8 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.*;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
@@ -49,6 +50,7 @@ public class Spaceship extends GameObject {
     private SpaceMinePlayer currentSpaceMine;
     private MinionShooterPlayer minionShooterPlayer;
     private MinionFighterPlayer minionFighterPlayer;
+    private Shield shield;
     private Rotunda rotunda;
 
     private float lastDodge = -100000f;
@@ -58,13 +60,18 @@ public class Spaceship extends GameObject {
     private int randomMinion;
     private boolean minionActivated = false;
     private float speed;
+    private float minionAngle;
+
+    private boolean isKilled = false;
+    private String killerName;
+    private boolean shieldActivated;
 
     /*
-        private float oldMouseX;
-        private float oldMouseY;
-        private float mouseX;
-        private float mouseY;
-        private float mouseAngle;
+    private float oldMouseX;
+    private float oldMouseY;
+    private float mouseX;
+    private float mouseY;
+    private float mouseAngle;
     */
     public Spaceship(String name, Vector2 position, SpaceEngine space) {
         super(GameObjectType.SPACESHIP, name, position, space);
@@ -115,7 +122,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum PowerUpState {
-        SHIELD, MINION, NONE
+        MINION, NONE
     }
 
     public enum SwitchWeaponState {
@@ -126,6 +133,13 @@ public class Spaceship extends GameObject {
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         // angle = angle + (float) Math.PI;
+    }
+
+    private String killedBy(){
+        if (isKilled){
+            return killerName;
+        }
+        return null;
     }
 
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
@@ -158,7 +172,9 @@ public class Spaceship extends GameObject {
         }
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
-            toAdd.add(new Shield("shield", getPosition(), getSpace(), getAngle(), getSpeed(), this.getCollisionRadius() * 2, randomDamageCountMissile()));
+            shield = new Shield("shield", getPosition(), getSpace(), getAngle(), getSpeed(), this.getCollisionRadius() * 2, MissileMechanics.determineMissileDamage());
+            toAdd.add(shield);
+            shieldActivated = true;
         }
         if (subject instanceof PowerUpMissile) {
             toDelete.add(subject);
@@ -181,6 +197,7 @@ public class Spaceship extends GameObject {
                     toAdd.add(minionShooterPlayer);
                     powerUpState = PowerUpState.MINION;
                     minionActivated = true;
+
                     break;
                 case 2:
                     minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
@@ -294,10 +311,14 @@ public class Spaceship extends GameObject {
             angle = angle - 6f * delta;
         }
 */
-
+        //Player gets deleted when health is 0
+        if (health <= 0) {
+            toDelete.add(this);
+            isKilled = true;
+        }
 
         if (hardSteering != null) {
-            angle = angle - hardSteering;
+            angle = angle + hardSteering;
             hardSteering = null;
         } else {
             switch (steering) {
@@ -378,16 +399,17 @@ public class Spaceship extends GameObject {
                 break;
         }
 
-        //Player gets deleted when health is 0
-        if (health <= 0) {
-            toDelete.add(this);
-        }
 
         //Player movement
         setPosition(new Vector2(
                 getPosition().x + delta * speedX,
                 getPosition().y + delta * speedY
         ));
+
+        //if shieldActivated set shield to player position
+        if(shieldActivated){
+            shield.setPosition(getPosition());
+        }
 
 
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
@@ -413,20 +435,16 @@ public class Spaceship extends GameObject {
         switch (powerUpState) {
             case MINION:
                 if (randomMinion == 1) {
-/*
-                    minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 300 * delta),
-                            (float) (getPosition().y + Math.PI * 3 * 300 * delta))
-                    );
-*/
-                    minionShooterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float) Math.cos(Math.PI * 3) * getSpeed() * delta,
-                            getPosition().y + getCollisionRadius() * 2 + (float) Math.sin(Math.PI * 3) * getSpeed() * delta));
-
+                    minionAngle += 3f * delta;
+                    minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+                            (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
                 }
 
                 if (randomMinion == 2) {
                     if (minionFighterPlayer.getMinionState() != Minion.MinionState.SHOOT) {
-                        minionFighterPlayer.setPosition(new Vector2(getPosition().x + getCollisionRadius() * 2 + (float) Math.cos(Math.PI * 3) * getSpeed() * delta,
-                                getPosition().y + getCollisionRadius() * 2 + (float) Math.sin(Math.PI * 3) * getSpeed() * delta));
+                        minionAngle += 3f * delta;
+                        minionFighterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+                                (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
                     }
                 }
 
@@ -456,6 +474,7 @@ public class Spaceship extends GameObject {
         }
 
         for (int i = 0; i < exactShotCount; i++) {
+
             currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f, BulletMechanics.determineBulletDamage());
             toAdd.add(currentBullet);
 
@@ -476,7 +495,7 @@ public class Spaceship extends GameObject {
             missileLeftOver = 0;
         }
         for (int i = 0; i < exactMissileCount; i++) {
-            currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 500, 5f, randomDamageCountMissile());
+            currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 500, 5f, MissileMechanics.determineMissileDamage());
             toAdd.add(currentMissile);
         }
 
@@ -497,7 +516,7 @@ public class Spaceship extends GameObject {
         }
 
         for (int i = 0; i < exactMineCount; i++) {
-            currentSpaceMine = new SpaceMinePlayer("mine", getPosition(), getSpace(), getAngle(), 300, 8f, randomDamageCountMine());
+            currentSpaceMine = new SpaceMinePlayer("mine", getPosition(), getSpace(), getAngle(), 300, 8f, MineMechanics.determineMineDamage());
             toAdd.add(currentSpaceMine);
         }
     }
@@ -557,6 +576,14 @@ public class Spaceship extends GameObject {
         return speed;
     }
 
+    public boolean isKilled() {
+        return isKilled;
+    }
+
+    public void setKillerName(String killerName) {
+        this.killerName = killerName;
+    }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -606,6 +633,16 @@ public class Spaceship extends GameObject {
         Map<String, Object> result = new HashMap<>();
 
         result.put("switchWeaponState", switchWeaponState);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getKilledByProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("isKilled", isKilled);
+        result.put("killedBy", killedBy());
 
         return result;
     }

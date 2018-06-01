@@ -37,6 +37,7 @@ public class DesktopLauncher {
             port = 12345;
             ServerRunner server = new ServerRunner(port);
             server.start();
+
         }
 
         new LwjglApplication(new SpaceGameContainer(host, port), config);

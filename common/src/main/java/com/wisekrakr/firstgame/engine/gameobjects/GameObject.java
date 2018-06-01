@@ -62,15 +62,15 @@ public abstract class GameObject {
     }
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {    }
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {    }
+    public boolean isHit(GameObject object){
+            return
+                    Math.sqrt(
+                            (((this.getPosition().x) - (object.getPosition().x)))
+                                    * ((this.getPosition().x) - (object.getPosition().x))
+                                    + ((this.getPosition().y) - (object.getPosition().y))
+                                    * ((this.getPosition().y) - (object.getPosition().y)))
+                            < (this.getCollisionRadius() + object.getCollisionRadius());
 
-    public int randomDamageCountMissile(){
-        Random random = new Random();
-        return random.nextInt(20 - 10 + 1) + 10;
-    }
-
-    public int randomDamageCountMine(){
-        Random random = new Random();
-        return random.nextInt(50 - 10 + 1) + 10;
     }
 
     public float setRandomDirection(){
@@ -124,7 +124,7 @@ public abstract class GameObject {
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
                 getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getScoreProperties(),
-                getDamageProperties(), getRandomProperties());
+                getDamageProperties(), getRandomProperties(), getKilledByProperties());
     }
 
 
@@ -153,6 +153,9 @@ public abstract class GameObject {
 
 
     public Map<String, Object> getRandomProperties() {
+        return new HashMap<>();
+    }
+    public Map<String, Object> getKilledByProperties() {
         return new HashMap<>();
     }
 

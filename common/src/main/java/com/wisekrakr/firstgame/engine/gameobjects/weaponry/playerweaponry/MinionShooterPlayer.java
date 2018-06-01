@@ -6,6 +6,8 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
@@ -54,13 +56,13 @@ public class MinionShooterPlayer extends Minion {
             setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof MissileEnemy){
-            setHealth(getHealth() - subject.randomDamageCountMissile());
+            setHealth(getHealth() - MissileMechanics.determineMissileDamage());
         }
         if (subject instanceof LaserBeamEnemy){
             setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof SpaceMineEnemy){
-            setHealth(getHealth() - subject.randomDamageCountMine());
+            setHealth(getHealth() - MineMechanics.determineMineDamage());
         }
     }
 
@@ -71,16 +73,12 @@ public class MinionShooterPlayer extends Minion {
         }
     }
 
-    //TODO: Bug// Minion either keeps shooting or only shoots one random enemy sometimes
     @Override
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(target instanceof Enemy) {
             if(distanceBetween(this, target)<= SPOTTED_DISTANCE) {
                 float angle = angleBetween(this, target);
-            /*
-            setPosition(new Vector2(getPosition().x += (getCollisionRadius() * 2) * (float) Math.cos(getOrientation()),
-                    getPosition().y += (getCollisionRadius() * 2) * (float) Math.sin(getOrientation())));
-                    */
+
                 setOrientation(angle);
                 setDirection(angle);
             }

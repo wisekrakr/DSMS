@@ -18,6 +18,7 @@ public class Bullet extends GameObject {
 
     private static final float DEFAULT_BULLET_SPEED = 1200;
     private float time;
+    private boolean hit;
 
 
     public Bullet(String name, Vector2 initialPosition, SpaceEngine space, float direction,float speed, float radius, int damage) {
@@ -26,7 +27,7 @@ public class Bullet extends GameObject {
         this.radius = radius;
         this.speed = speed;
         this.damage = damage;
-
+        hit = false;
         setCollisionRadius(radius);
     }
 
@@ -74,6 +75,14 @@ public class Bullet extends GameObject {
         this.damage = damage;
     }
 
+    public boolean isHit() {
+        return hit;
+    }
+
+    public void setHit(boolean hit) {
+        this.hit = hit;
+    }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -88,6 +97,15 @@ public class Bullet extends GameObject {
         Map<String, Object> result = new HashMap<>();
 
         result.put("damage", damage);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getRandomProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("hit", hit);
 
         return result;
     }

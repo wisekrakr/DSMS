@@ -108,7 +108,7 @@ public class ServerRunner {
                     200f, 20f, engine);
             engine.addGameObject(enemyFlyby);
         }
-/*
+
 
         for (int i = 0; i < 4; i++) {
             EnemyEls enemyEls = new EnemyEls("ELS", new Vector2(
@@ -118,7 +118,7 @@ public class ServerRunner {
                     300f,25f, engine);
             engine.addGameObject(enemyEls);
         }
-
+/*
         for (int i = 0; i < 5; i++) {
             EnemyShitter shitter = new EnemyShitter("Shitter", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -195,7 +195,7 @@ public class ServerRunner {
                     120f,10f, engine);
             engine.addGameObject(enemyGang);
         }
-*/
+
         for (int i = 0; i < 1; i++) {
             Rotunda rotunda = new Rotunda("rotunda test", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -203,7 +203,7 @@ public class ServerRunner {
                     engine, 50, randomGenerator.nextFloat() * 2 * (float) Math.PI);
             engine.addGameObject(rotunda);
         }
-
+*/
         for (int i = 0; i < 20; i++) {
             Asteroid asteroid = new Asteroid("Boeja", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,

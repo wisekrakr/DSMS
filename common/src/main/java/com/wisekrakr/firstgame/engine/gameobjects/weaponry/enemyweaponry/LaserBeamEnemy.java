@@ -20,6 +20,9 @@ public class LaserBeamEnemy extends LaserBeam {
         if(subject instanceof Player){
             toDelete.add(this);
             subject.setHealth(subject.getHealth() - getDamage());
+            if (((Player) subject).isKilled()){
+                ((Player) subject).setKillerName(this.getName());
+            }
         }
     }
 

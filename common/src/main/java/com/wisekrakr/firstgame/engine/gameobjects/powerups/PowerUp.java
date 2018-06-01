@@ -22,8 +22,8 @@ public class PowerUp extends GameObject {
         Random random = new Random();
 
         time += delta;
-        if (time >= random.nextFloat() * 12000f) {
-            int randomPowerUp = MathUtils.random(3, 3);
+        if (time >= random.nextFloat() * 1200f) {
+            int randomPowerUp = MathUtils.random(2, 2);
                 switch (randomPowerUp) {
                     case 1:
                         PowerUpMissile powerUpMissile = new PowerUpMissile("missile power up", new Vector2(random.nextFloat() * 5000 - 3000,

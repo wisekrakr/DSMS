@@ -34,8 +34,10 @@ public class MyAssetManager implements Disposable{
      * All the Fonts loaded in the the AssetManager
      */
     public void loadFonts() {
+        assetManager.load("font/default.fnt", BitmapFont.class);
         assetManager.load("font/myFont.fnt", BitmapFont.class);
         assetManager.load("font/myFontBlack.fnt", BitmapFont.class);
+        assetManager.load("font/achievementFont.fnt", BitmapFont.class);
         assetManager.finishLoading();
     }
     /*
@@ -61,8 +63,8 @@ public class MyAssetManager implements Disposable{
         assetManager.load("texture/pausedPic2.png", Texture.class);
         assetManager.load("background/stars.jpg", Texture.class);
         assetManager.load("texture/crosshair.png", Texture.class);
-//        assetManager.load("texture/intrologo.jpg", Texture.class);
-
+        assetManager.load("texture/intrologo.jpg", Texture.class);
+        assetManager.load("texture/healthbar.png", Texture.class);
         assetManager.finishLoading();
     }
 

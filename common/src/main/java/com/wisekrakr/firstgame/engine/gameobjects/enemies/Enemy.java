@@ -7,8 +7,9 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
@@ -16,6 +17,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBe
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MissileEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.SpaceMineEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,8 +95,11 @@ public class Enemy extends GameObject {
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 15);
             setMovingState(MovingState.BACKWARDS);
+            if (((Player) subject).isKilled()){
+                ((Player) subject).setKillerName(this.getName());
+            }
         }
-        if (subject instanceof BulletPlayer || subject instanceof AutonomousWeaponsPlayer || subject instanceof BulletMisc) {
+        if (subject instanceof BulletPlayer || subject instanceof MissilePlayer || subject instanceof BulletMisc) {
             float angle = angleBetween(this, subject);
             setMovingState(MovingState.DEFAULT_FORWARDS);
             setOrientation(angle);
@@ -332,7 +337,7 @@ public class Enemy extends GameObject {
 
                 for (int i = 0; i < missileExactShotCount; i++) {
                     toAdd.add(new MissileEnemy("enemymissile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getSpace(), getOrientation(), 300,5f, randomDamageCountMissile()));
+                            getSpace(), getOrientation(), 300,5f, MissileMechanics.determineMissileDamage()));
                 }
 
                 break;
@@ -450,7 +455,7 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactMinesShotCount; i++) {
-                    toAdd.add(new SpaceMineEnemy("enemy_mine", getPosition(), getSpace(), getOrientation(), 300, 8f, randomDamageCountMine()));
+                    toAdd.add(new SpaceMineEnemy("enemy_mine", getPosition(), getSpace(), getOrientation(), 300, 8f, MineMechanics.determineMineDamage()));
                 }
 
                 break;

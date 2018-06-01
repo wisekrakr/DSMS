@@ -1,12 +1,17 @@
 package com.wisekrakr.firstgame.overlays;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -19,8 +24,11 @@ import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 /**
  * Created by David on 12/1/2017.
  */
-public class Hud implements Disposable {
+public class ScreenHud implements Disposable {
 
+    private ProgressBar bar;
+    private ProgressBar.ProgressBarStyle barStyle;
+    private Skin skin;
     private Spaceship.SwitchWeaponState switchWeaponState = Spaceship.SwitchWeaponState.NONE;
 
     private final MyAssetManager myAssetManager;
@@ -53,7 +61,7 @@ public class Hud implements Disposable {
     private Label healthCountLabel;
     private String weaponName;
 
-    public Hud(MyAssetManager myAssetManager) {
+    public ScreenHud(MyAssetManager myAssetManager) {
         this.myAssetManager = myAssetManager;
         worldTimer = 0;
         timeCounter = 0;
@@ -63,12 +71,12 @@ public class Hud implements Disposable {
         score = 0;
         healthCounter = 1000;
 
-
         viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
 
         myAssetManager = new MyAssetManager();
         myAssetManager.loadFonts();
+        myAssetManager.loadTextures();
 
         Table table = new Table();
         table.top();
@@ -94,17 +102,24 @@ public class Hud implements Disposable {
         Table infoTable = new Table();
         infoTable.bottom();
         infoTable.setFillParent(true);
-/*
-        TextureRegion slider = new TextureRegion(new Texture("healthbar.png"));
-        TextureRegion knob = new TextureRegion(new Texture("knob.png"));
 
-        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle(
-                new TextureRegionDrawable(slider),
-                new TextureRegionDrawable(knob));
-        style.knobBefore = style.knob;
-        progressBar = new ProgressBar(0, 300, 1, false, style);
-        progressBar.setValue(1000);
-*/
+        Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
+        TextureRegion slider = new TextureRegion(healthBar);
+        slider.setRegionWidth(100);
+        slider.setRegionHeight(10);
+        TextureRegionDrawable healthBarTexture = new TextureRegionDrawable(slider);
+
+        skin = new Skin();
+        Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("white", new Texture(pixmap));
+
+        barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
+        barStyle.knobBefore = barStyle.knob;
+        bar = new ProgressBar(0, 1000, 0.5f, false, barStyle);
+        bar.setAnimateDuration(1.2f);
+
         table.add(timeLabel).expandX().padTop(10);
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
@@ -119,9 +134,8 @@ public class Hud implements Disposable {
         table.add(nameSetLabel).expandX();
         table.add(healthCountLabel).expandX();
 
- //       infoTable.add(progressBar).expandX();
-
         stage.addActor(table);
+ //       stage.addActor(bar);
  //      stage.addActor(infoTable);
     }
 
@@ -162,6 +176,8 @@ public class Hud implements Disposable {
                 ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
                 healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
                 nameSetLabel.setText(String.format("%s", getName()));
+
+
             }
             else {
 
@@ -173,6 +189,13 @@ public class Hud implements Disposable {
                 nameSetLabel.setText("N/A");
             }
         }
+
+
+    }
+
+
+    public ProgressBar getBar() {
+        return bar;
     }
 
     @Override

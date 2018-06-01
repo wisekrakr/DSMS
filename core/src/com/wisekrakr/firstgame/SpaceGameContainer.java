@@ -32,7 +32,8 @@ public class SpaceGameContainer extends Game {
             return;
         }
 
-        //setScreen(new StartScreen(this, connector));
+        setScreen(new StartScreen(this, connector));
+        /*
         setScreen(new SplashIntroScreen());
 
         final long splash_start_time = System.currentTimeMillis();
@@ -60,6 +61,7 @@ public class SpaceGameContainer extends Game {
                 });
             }
         }).start();
+        */
     }
 
 }

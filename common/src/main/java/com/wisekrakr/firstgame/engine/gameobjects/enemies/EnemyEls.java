@@ -12,7 +12,7 @@ import java.util.Set;
 public class EnemyEls extends Enemy {
 
     private MinionShooterEnemy minionShooterEnemy;
-    private float rotationBy;
+    private float minionAngle;
 
     public EnemyEls(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.ELS, name, position, health, direction, speed, radius, space);
@@ -42,20 +42,9 @@ public class EnemyEls extends Enemy {
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(clock, delta, toDelete, toAdd);
-
-        rotationBy = (float) (rotationBy * Math.PI/180);
-/*
-        float rotateX = (float) (Math.cos(rotationBy) * (this.getPosition().x - minionShooterEnemy.getPosition().x)
-                - Math.sin(this.getPosition().y - minionShooterEnemy.getPosition().y));
-        float rotateY = (float) (Math.cos(rotationBy) * (this.getPosition().x - minionShooterEnemy.getPosition().x)
-                - Math.sin(this.getPosition().y - minionShooterEnemy.getPosition().y));
-
-        float rotateTime = 90 * delta;
-*/
-        minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 300 * delta),
-                (float) (getPosition().y + Math.PI * 3 * 300 * delta))
-        );
-        minionShooterEnemy.setOrientation(rotationBy);
+        minionAngle += 2f * delta;
+        minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+                (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
 
         toAdd.add(minionShooterEnemy);
 

@@ -6,6 +6,8 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
@@ -52,13 +54,13 @@ public class MinionFighterPlayer extends Minion {
             setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof MissileEnemy){
-            setHealth(getHealth() - subject.randomDamageCountMissile());
+            setHealth(getHealth() - MissileMechanics.determineMissileDamage());
         }
         if (subject instanceof LaserBeamEnemy){
             setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof SpaceMineEnemy){
-            setHealth(getHealth() - subject.randomDamageCountMine());
+            setHealth(getHealth() - MineMechanics.determineMineDamage());
         }
 
 

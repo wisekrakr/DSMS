@@ -6,7 +6,9 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.Shield;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
@@ -50,18 +52,21 @@ public class MinionShooterEnemy extends Minion {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Player){
             subject.setHealth(subject.getHealth() - getDamage());
+            if (((Player) subject).isKilled()){
+                ((Player) subject).setKillerName(this.getName());
+            }
         }
         if (subject instanceof BulletPlayer){
             setHealth(getHealth() - BulletMechanics.determineBulletDamage());
         }
         if (subject instanceof MissilePlayer){
-            setHealth(getHealth() - subject.randomDamageCountMissile());
+            setHealth(getHealth() - MissileMechanics.determineMissileDamage());
         }
         if (subject instanceof Shield){
             setHealth(getHealth() - 25);
         }
         if (subject instanceof SpaceMinePlayer){
-            setHealth(getHealth() - subject.randomDamageCountMine());
+            setHealth(getHealth() - MineMechanics.determineMineDamage());
         }
     }
 

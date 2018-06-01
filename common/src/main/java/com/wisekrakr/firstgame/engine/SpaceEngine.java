@@ -2,10 +2,8 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.Shield;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.AutonomousWeaponsPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 
@@ -170,7 +168,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof AutonomousWeaponsEnemy) {
+                if (subject instanceof HomingEnemyWeaponry) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
                             if (target != subject ) {
@@ -186,7 +184,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof AutonomousWeaponsPlayer) {
+                if (subject instanceof MissilePlayer) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
                             if (target != subject) {
