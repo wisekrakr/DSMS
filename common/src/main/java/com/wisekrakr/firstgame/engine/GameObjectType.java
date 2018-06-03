@@ -21,7 +21,7 @@ public enum GameObjectType {
     MOTHERSHIP,
     SHITTER,
     SHOTTY,
-    FLYBY,
+    FACE_HUGGER,
     PLANET,
     MISSILE,
     SPORE,

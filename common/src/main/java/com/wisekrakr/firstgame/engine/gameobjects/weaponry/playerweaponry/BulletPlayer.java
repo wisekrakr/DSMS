@@ -2,14 +2,11 @@ package com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class BulletPlayer extends Bullet {

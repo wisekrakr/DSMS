@@ -2,10 +2,9 @@ package com.wisekrakr.firstgame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Timer;
-import com.wisekrakr.firstgame.screens.SplashIntroScreen;
 import com.wisekrakr.firstgame.screens.StartScreen;
 import com.wisekrakr.firstgame.client.ClientConnector;
+
 
 import java.net.InetSocketAddress;
 
@@ -22,6 +21,7 @@ public class SpaceGameContainer extends Game {
     @Override
     public void create() {
         final ClientConnector connector = new ClientConnector(new InetSocketAddress(host, port));
+
         try {
             connector.start();
         } catch (Exception e) {

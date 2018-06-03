@@ -103,23 +103,6 @@ public class ScreenHud implements Disposable {
         infoTable.bottom();
         infoTable.setFillParent(true);
 
-        Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
-        TextureRegion slider = new TextureRegion(healthBar);
-        slider.setRegionWidth(100);
-        slider.setRegionHeight(10);
-        TextureRegionDrawable healthBarTexture = new TextureRegionDrawable(slider);
-
-        skin = new Skin();
-        Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        skin.add("white", new Texture(pixmap));
-
-        barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
-        barStyle.knobBefore = barStyle.knob;
-        bar = new ProgressBar(0, 1000, 0.5f, false, barStyle);
-        bar.setAnimateDuration(1.2f);
-
         table.add(timeLabel).expandX().padTop(10);
         table.add(distanceLabel).expandX().padTop(10);
         table.add(scoreLabel).expandX().padTop(10);
@@ -135,8 +118,7 @@ public class ScreenHud implements Disposable {
         table.add(healthCountLabel).expandX();
 
         stage.addActor(table);
- //       stage.addActor(bar);
- //      stage.addActor(infoTable);
+
     }
 
 
@@ -171,10 +153,10 @@ public class ScreenHud implements Disposable {
 
                 timeCountLabel.setText(String.format("%s",worldTimer));
                 distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
-                scoreCountLabel.setText(Integer.toString((Integer) myself.scoreProperties().get("score")));
+                scoreCountLabel.setText(Float.toString((Float) myself.scoreProperties().get("score")));
                 ammoLabel.setText(String.format("%s", myself.randomProperties().get("switchWeaponState")));
                 ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
-                healthCountLabel.setText(Integer.toString((Integer) myself.healthProperties().get("health")));
+                healthCountLabel.setText(Float.toString((Float) myself.healthProperties().get("health")));
                 nameSetLabel.setText(String.format("%s", getName()));
 
 

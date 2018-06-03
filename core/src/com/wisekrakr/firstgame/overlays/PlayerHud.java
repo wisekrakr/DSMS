@@ -40,6 +40,7 @@ public class PlayerHud {
     private String name;
 
 
+
     public PlayerHud(OrthographicCamera camera) {
         this.camera = camera;
 
@@ -72,6 +73,10 @@ public class PlayerHud {
         return (Float) object.extraProperties().get("radius");
     }
 
+    private Integer health(SpaceSnapshot.GameObjectSnapshot object){
+        return (Integer) object.healthProperties().get("health");
+    }
+
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
         name = object.getName();
         nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
@@ -80,9 +85,10 @@ public class PlayerHud {
     }
 
     public ProgressBar progressBar(SpaceSnapshot.GameObjectSnapshot object){
+
         barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
-        bar = new ProgressBar(0, 1000, 0.5f, false, barStyle);
+        bar = new ProgressBar(0, health(object), 0.5f, false, barStyle);
         bar.setAnimateDuration(1.2f);
         bar.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
         return bar;

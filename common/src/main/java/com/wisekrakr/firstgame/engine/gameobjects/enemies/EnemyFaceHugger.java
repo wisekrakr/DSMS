@@ -1,23 +1,34 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 
 import java.util.Set;
 
-public class EnemyFlyby extends Enemy {
+public class EnemyFaceHugger extends Enemy {
 
+    public EnemyFaceHugger(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+        super(GameObjectType.FACE_HUGGER, name, position, health, direction, speed, radius, space);
 
-    public EnemyFlyby(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.FLYBY, name, position, health, direction, speed, radius, space);
-
-        setAggroDistance(900f);
-        setAttackDistance(500f);
+        setAggroDistance(700f);
+        setAttackDistance(300f);
         setChangeDirectionTime(3f);
+    }
+
+    @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (subject instanceof BulletPlayer || subject instanceof MissilePlayer || subject instanceof BulletMisc) {
+            float angle = angleBetween(this, subject);
+            setMovingState(MovingState.DEFAULT_FORWARDS);
+            setOrientation(angle);
+            setDirection(angle);
+        }
     }
 
     @Override
@@ -46,7 +57,7 @@ public class EnemyFlyby extends Enemy {
                 setOrientation(angle);
                 setDirection(angleNoAim);
                 setTargetVector(target.getPosition());
-                setMovingState(MovingState.ROTATE_AROUND);
+                setMovingState(MovingState.FACE_HUGGING);
                 setAttackState(AttackState.FIRE_BULLETS);
             }else{
                 setAttackState(AttackState.PACIFIST);

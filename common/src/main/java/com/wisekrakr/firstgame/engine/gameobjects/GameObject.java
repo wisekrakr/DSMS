@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 
 import java.util.*;
 
@@ -20,7 +21,8 @@ public abstract class GameObject {
     private float orientation;
     private SpaceEngine space;
     private float collisionRadius;
-    private int health;
+    private float health;
+    private int damage;
     private GameObjectType type;
 
     protected GameObject(GameObjectType type, String name, Vector2 initialPosition, SpaceEngine space) {
@@ -62,14 +64,23 @@ public abstract class GameObject {
     }
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {    }
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {    }
-    public boolean isHit(GameObject object){
+    public void initDebris(Set<GameObject> toDelete, Set<GameObject> toAdd){
+        Random random = new Random();
+        int debrisParts = random.nextInt(10)+1;
+        for(int i = 0; i < debrisParts; i++) {
+            toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
+                    random.nextFloat() * 60, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getCollisionRadius()));
+
+        }
+    }
+    public boolean isHit(GameObject object1, GameObject object2){
             return
                     Math.sqrt(
-                            (((this.getPosition().x) - (object.getPosition().x)))
-                                    * ((this.getPosition().x) - (object.getPosition().x))
-                                    + ((this.getPosition().y) - (object.getPosition().y))
-                                    * ((this.getPosition().y) - (object.getPosition().y)))
-                            < (this.getCollisionRadius() + object.getCollisionRadius());
+                            (((object1.getPosition().x) - (object2.getPosition().x)))
+                                    * ((object1.getPosition().x) - (object2.getPosition().x))
+                                    + ((object1.getPosition().y) - (object2.getPosition().y))
+                                    * ((object1.getPosition().y) - (object2.getPosition().y)))
+                            < (object1.getCollisionRadius() + object2.getCollisionRadius());
 
     }
 
@@ -128,12 +139,21 @@ public abstract class GameObject {
     }
 
 
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public Map<String, Object> getExtraSnapshotProperties() {
         return new HashMap<>();
     }

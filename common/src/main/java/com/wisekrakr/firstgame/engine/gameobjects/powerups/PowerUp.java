@@ -19,34 +19,5 @@ public class PowerUp extends GameObject {
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        Random random = new Random();
-
-        time += delta;
-        if (time >= random.nextFloat() * 1200f) {
-            int randomPowerUp = MathUtils.random(2, 2);
-                switch (randomPowerUp) {
-                    case 1:
-                        PowerUpMissile powerUpMissile = new PowerUpMissile("missile power up", new Vector2(random.nextFloat() * 5000 - 3000,
-                                random.nextFloat() * 5000 - 3000), getSpace());
-                        toAdd.add(powerUpMissile);
-                        break;
-                    case 2:
-                        PowerUpShield powerUpShield = new PowerUpShield("shield power up", new Vector2(random.nextFloat() * 5000 - 3000,
-                                random.nextFloat() * 5000 - 3000), getSpace());
-                        toAdd.add(powerUpShield);
-                        break;
-                    case 3:
-                        PowerUpMinion powerUpMinion = new PowerUpMinion("minion power up", new Vector2(random.nextFloat() * 5000 - 3000,
-                                random.nextFloat() * 5000 - 3000), getSpace());
-                        toAdd.add(powerUpMinion);
-                        break;
-                    case 4:
-                        PowerUpHealth powerUpHealth = new PowerUpHealth("health", new Vector2(random.nextFloat() * 5000 - 3000,
-                                random.nextFloat() * 5000 - 3000), getSpace());
-                        toAdd.add(powerUpHealth);
-                        break;
-            }
-            time = 0;
-        }
     }
 }

@@ -9,13 +9,10 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MissileEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.SpaceMineEnemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.*;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 
@@ -29,7 +26,7 @@ public class Enemy extends GameObject {
 
     private float direction;
     private float radius;
-    private int health;
+    private float health;
     private float speed;
     private float attackDistance;
     private float aggroDistance;
@@ -57,6 +54,13 @@ public class Enemy extends GameObject {
 
     private float randomAngle;
     private float updatedAngle;
+    private float rotationAngle;
+    private double minionAngle;
+    private MinionShooterEnemy minionShooterEnemy;
+    private EnemyGang enemyGang;
+    private float gangAngle;
+
+    private float damageTaken;
 
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(type, name, position, space);
@@ -79,6 +83,7 @@ public class Enemy extends GameObject {
         laserShotLeftOver = laserAmmoCount;
         minesCount = (int) Double.POSITIVE_INFINITY;
         minesLeft = minesCount;
+        damageTaken = 0;
 
         setHealth(health);
         setCollisionRadius(radius);
@@ -90,6 +95,32 @@ public class Enemy extends GameObject {
        this.setDirection(this.getDirection() + (float) Math.PI);
     }
 
+    /* These are the methods to initialize a MinionShooter for an enemy. Implement the methods in an enemy class. Example = EnemyEls*/
+
+    public Minion initMinion(){
+        minionShooterEnemy = new MinionShooterEnemy("minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
+                getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 8f, getSpace());
+        return minionShooterEnemy;
+    }
+
+    public void minionMovement(float delta){
+        minionAngle += 2f * delta;
+        minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+                (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
+    }
+
+    public EnemyGang initGang(){
+        enemyGang = new EnemyGang("Boi", new Vector2(getPosition().x + getCollisionRadius() * 2,
+                getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 120f, 10f, getSpace());
+        return enemyGang;
+    }
+
+    public void gangMovement(float delta){
+        gangAngle += 2f * delta;
+        enemyGang.setPosition(new Vector2((float) (getTargetVector().x + Math.cos(minionAngle) * 45f),
+                (float) (getTargetVector().y + Math.sin(minionAngle) * 45f)));
+    }
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Player){
@@ -98,13 +129,14 @@ public class Enemy extends GameObject {
             if (((Player) subject).isKilled()){
                 ((Player) subject).setKillerName(this.getName());
             }
+
         }
         if (subject instanceof BulletPlayer || subject instanceof MissilePlayer || subject instanceof BulletMisc) {
             float angle = angleBetween(this, subject);
             setMovingState(MovingState.DEFAULT_FORWARDS);
             setOrientation(angle);
             setDirection(angle);
-
+            damageTaken = subject.getDamage();
         }
     }
 
@@ -132,12 +164,12 @@ public class Enemy extends GameObject {
     * The CHASE case is in every children class respectively */
 
     public enum AttackState {
-        PACIFIST, BLINK, FIRE_BULLETS, FIRE_MISSILES, FIRE_MINES, FIRE_CHILDREN, FIRE_MINIONS, FIRE_SPORES, FIRE_SHOTGUN,
+        PACIFIST, BLINK, FIRE_BULLETS, FIRE_MISSILES, FIRE_MINES, FIRE_CHILDREN, GANG_VOILENCE, FIRE_SPORES, FIRE_SHOTGUN,
         FIRE_LASER, SELF_DESTRUCT
     }
 
     public enum MovingState {
-        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY, ROTATE_AROUND
+        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY, FACE_HUGGING
     }
 
 
@@ -282,14 +314,10 @@ public class Enemy extends GameObject {
                 );
                 setOrientation(direction);
                 break;
-            case ROTATE_AROUND:
-                //setPosition(new Vector2(getPosition().rotateRad(0.5f * delta)));
-
-                /* TODO: Max rotation example
-                float newPositionX = (float) ((getPosition().x - targetVector.x) * Math.cos(direction)) + targetVector.x;
-                float newPositionY = (float) ((getPosition().y - targetVector.y) * Math.sin(direction)) + targetVector.y;
-                setPosition(new Vector2(newPositionX, newPositionY));
-                */
+            case FACE_HUGGING:
+                rotationAngle += 3f * delta;
+                setPosition(new Vector2((float) (getTargetVector().x + Math.cos(rotationAngle) * 45f),
+                        (float) (getTargetVector().y + Math.sin(rotationAngle) * 45f)));
 
                 setOrientation(direction);
 
@@ -461,11 +489,7 @@ public class Enemy extends GameObject {
                 break;
             case SELF_DESTRUCT:
                 toDelete.add(this);
-                int debrisParts = random.nextInt(10) + 1;
-                for (int i = 0; i < debrisParts; i++) {
-                    toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
-                            random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getRadius()));
-                }
+                initDebris(toDelete, toAdd);
                 break;
  //TODO: fix blink
             case BLINK:
@@ -476,6 +500,12 @@ public class Enemy extends GameObject {
                     ));
                     time = 0;
                 }
+                break;
+            case GANG_VOILENCE:
+                EnemyGang enemyGang = new EnemyGang("Gang!", new Vector2(
+                        targetVector.x + getCollisionRadius() * 2, targetVector.y + getCollisionRadius() * 2),
+                        50,random.nextFloat() * 2000 - 1000,120f,10f, getSpace());
+                toAdd.add(enemyGang);
                 break;
             case PACIFIST:
                 shotLeftOver = 0;
@@ -528,12 +558,12 @@ public class Enemy extends GameObject {
     }
 
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 
@@ -601,6 +631,22 @@ public class Enemy extends GameObject {
         this.targetVector = targetVector;
     }
 
+    public float getGangAngle() {
+        return gangAngle;
+    }
+
+    public void setGangAngle(float gangAngle) {
+        this.gangAngle = gangAngle;
+    }
+
+    public float getDamageTaken() {
+        return damageTaken;
+    }
+
+    public void setDamageTaken(float damageTaken) {
+        this.damageTaken = damageTaken;
+    }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -619,6 +665,12 @@ public class Enemy extends GameObject {
         return result;
     }
 
+    @Override
+    public Map<String, Object> getDamageProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
 
+        result.put("damageTaken", damageTaken);
 
+        return result;
+    }
 }

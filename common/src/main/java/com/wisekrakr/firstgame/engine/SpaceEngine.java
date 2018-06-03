@@ -21,7 +21,6 @@ public class SpaceEngine {
     private Set<GameObject> gameObjects = new HashSet<GameObject>();
     private float clock = 0f;
 
-
     public SpaceEngine(float minX, float minY, float width, float height) {
         this.minX = minX;
         this.minY = minY;

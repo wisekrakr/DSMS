@@ -6,8 +6,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class Spores extends HomingEnemyWeaponry {

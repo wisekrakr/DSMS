@@ -7,6 +7,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
+import java.util.List;
 import java.util.Set;
 
 public class EnemyEls extends Enemy {
@@ -21,9 +22,7 @@ public class EnemyEls extends Enemy {
         setAttackDistance(750f);
         setChangeDirectionTime(3f);
 
-        minionShooterEnemy = new MinionShooterEnemy("minionEls", new Vector2(getPosition().x + getCollisionRadius() * 2,
-                getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 8f, getSpace());
-
+        minionShooterEnemy = (MinionShooterEnemy) initMinion();
     }
 
     @Override
@@ -42,12 +41,8 @@ public class EnemyEls extends Enemy {
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(clock, delta, toDelete, toAdd);
-        minionAngle += 2f * delta;
-        minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
-                (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
-
+        minionMovement(delta);
         toAdd.add(minionShooterEnemy);
-
 
     }
 }

@@ -22,6 +22,7 @@ import java.util.*;
 public class Spaceship extends GameObject {
 
 
+    private static final float FIRE_RATE = 0.5f;
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
@@ -39,8 +40,8 @@ public class Spaceship extends GameObject {
     private int missileAmmoCount;
     private float shotLeftOver;
     private float missileLeftOver;
-    private int health;
-    private int score;
+    private float health;
+    private float score;
 
     private List<BulletPlayer> bullets;
     private List<MissilePlayer> missiles;
@@ -65,6 +66,7 @@ public class Spaceship extends GameObject {
     private boolean isKilled = false;
     private String killerName;
     private boolean shieldActivated;
+    private float lastShot;
 
     /*
     private float oldMouseX;
@@ -84,7 +86,7 @@ public class Spaceship extends GameObject {
 
         setCollisionRadius(20f);
 
-        bullets = new ArrayList<>();
+        bullets = new ArrayList<>(ammoCount);
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
 
@@ -155,21 +157,12 @@ public class Spaceship extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+/*
         if (subject instanceof Enemy) {
             subject.setHealth(subject.getHealth() - 20);
             setHealth(getHealth() - 20);
-            /*
-            Random random = new Random();
-            int debrisParts = random.nextInt(10) + 1;
-            for (int i = 0; i < debrisParts; i++) {
-                toAdd.add(new Debris("debris", subject.getPosition(), getSpace(), random.nextFloat() * 10,
-                        random.nextFloat() * 30, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * ((Enemy) subject).getRadius()));
-
-            }
-            */
-
         }
+        */
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
             shield = new Shield("shield", getPosition(), getSpace(), getAngle(), getSpeed(), this.getCollisionRadius() * 2, MissileMechanics.determineMissileDamage());
@@ -216,79 +209,33 @@ public class Spaceship extends GameObject {
 
     public void scoringSystem(GameObject enemy, GameObject subject) {
 
-        if (enemy instanceof Enemy) {
-            if (subject instanceof BulletPlayer) {
-                if (Math.sqrt(
-                        (((enemy.getPosition().x) - (subject.getPosition().x)))
-                                * ((enemy.getPosition().x) - (subject.getPosition().x))
-                                + ((enemy.getPosition().y) - (subject.getPosition().y))
-                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
-                    this.setScore(this.getScore() + ((BulletPlayer) subject).getDamage());
-                    if (enemy.getHealth() <= 0) {
-                        this.setScore(this.getScore() + 50);
+        if (enemy instanceof Enemy){
+            if (subject instanceof BulletPlayer || subject instanceof MissilePlayer || subject instanceof SpaceMinePlayer
+                    || subject instanceof BulletMisc){
+                if (isHit(enemy, subject)){
+                    if (subject instanceof BulletPlayer) {
+                        this.setScore(this.getScore() + ((BulletPlayer) subject).getDamage());
+                        if (enemy.getHealth() <= 0) {
+                            this.setScore(this.getScore() + 50);
+                        }
                     }
-                }
-            }
-        }
-
-        if (enemy instanceof Enemy) {
-            if (subject instanceof MissilePlayer) {
-                if (Math.sqrt(
-                        (((enemy.getPosition().x) - (subject.getPosition().x)))
-                                * ((enemy.getPosition().x) - (subject.getPosition().x))
-                                + ((enemy.getPosition().y) - (subject.getPosition().y))
-                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
-                    this.setScore(this.getScore() + ((MissilePlayer) subject).getDamage());
-                    if (enemy.getHealth() <= 0) {
-                        this.setScore(this.getScore() + 100);
+                    if (subject instanceof MissilePlayer){
+                        this.setScore(this.getScore() + ((MissilePlayer) subject).getDamage());
+                        if (enemy.getHealth() <= 0) {
+                            this.setScore(this.getScore() + 100);
+                        }
                     }
-                }
-            }
-        }
-
-        if (enemy instanceof Enemy) {
-            if (subject instanceof SpaceMinePlayer) {
-                if (Math.sqrt(
-                        (((enemy.getPosition().x) - (subject.getPosition().x)))
-                                * ((enemy.getPosition().x) - (subject.getPosition().x))
-                                + ((enemy.getPosition().y) - (subject.getPosition().y))
-                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
-                    this.setScore(this.getScore() + ((SpaceMinePlayer) subject).getDamage());
-                    if (enemy.getHealth() <= 0) {
-                        this.setScore(this.getScore() + 250);
+                    if (subject instanceof SpaceMinePlayer){
+                        this.setScore(this.getScore() + ((SpaceMinePlayer) subject).getDamage());
+                        if (enemy.getHealth() <= 0) {
+                            this.setScore(this.getScore() + 200);
+                        }
                     }
-                }
-            }
-        }
-
-        if (enemy instanceof Enemy) {
-            if (subject instanceof Shield) {
-                if (Math.sqrt(
-                        (((enemy.getPosition().x) - (subject.getPosition().x)))
-                                * ((enemy.getPosition().x) - (subject.getPosition().x))
-                                + ((enemy.getPosition().y) - (subject.getPosition().y))
-                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
-                    if (enemy.getHealth() <= 0) {
-                        this.setScore(this.getScore() + 250);
-                    }
-                }
-            }
-        }
-
-        if (enemy instanceof Enemy) {
-            if (subject instanceof BulletMisc) {
-                if (Math.sqrt(
-                        (((enemy.getPosition().x) - (subject.getPosition().x)))
-                                * ((enemy.getPosition().x) - (subject.getPosition().x))
-                                + ((enemy.getPosition().y) - (subject.getPosition().y))
-                                * ((enemy.getPosition().y) - (subject.getPosition().y)))
-                        < (enemy.getCollisionRadius() + subject.getCollisionRadius())) {
-                    if (enemy.getHealth() <= 0) {
-                        this.setScore(this.getScore() + 100);
+                    if (subject instanceof BulletMisc){
+                        this.setScore(this.getScore() + ((BulletMisc) subject).getDamage());
+                        if (enemy.getHealth() <= 0) {
+                            this.setScore(this.getScore() + 50);
+                        }
                     }
                 }
             }
@@ -460,8 +407,6 @@ public class Spaceship extends GameObject {
 
     private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        bullets.add(currentBullet);
-
         float shotCount = delta / 0.2f + shotLeftOver;
 
         int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
@@ -479,10 +424,10 @@ public class Spaceship extends GameObject {
             toAdd.add(currentBullet);
 
         }
+
     }
 
     private void activateMissiles(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        missiles.add(currentMissile);
 
         float missileCount = delta / 0.5f + missileLeftOver;
 
@@ -502,7 +447,6 @@ public class Spaceship extends GameObject {
     }
 
     private void activateSpaceMines(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        spaceMines.add(currentSpaceMine);
 
         float minesCount = delta / 2.0f + minesLeftOver;
 
@@ -522,12 +466,12 @@ public class Spaceship extends GameObject {
     }
 
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 
@@ -559,11 +503,11 @@ public class Spaceship extends GameObject {
         return distanceTravelled;
     }
 
-    public int getScore() {
+    public float getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(float score) {
         this.score = score;
     }
 

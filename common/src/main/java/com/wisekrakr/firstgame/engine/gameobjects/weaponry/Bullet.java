@@ -28,6 +28,7 @@ public class Bullet extends GameObject {
         this.speed = speed;
         this.damage = damage;
         hit = false;
+
         setCollisionRadius(radius);
     }
 

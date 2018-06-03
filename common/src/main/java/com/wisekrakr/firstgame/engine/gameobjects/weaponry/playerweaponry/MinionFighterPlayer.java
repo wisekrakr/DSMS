@@ -27,7 +27,7 @@ public class MinionFighterPlayer extends Minion {
     private static final float SPEED = 300;
     private float direction;
     private float radius;
-    private int health;
+    private float health;
 
     private float time;
     private int damage;
@@ -122,12 +122,12 @@ public class MinionFighterPlayer extends Minion {
     }
 
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 

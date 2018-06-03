@@ -5,15 +5,17 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.SpaceGameContainer;
 import com.wisekrakr.firstgame.VideoPlayer;
@@ -31,6 +33,8 @@ import java.util.UUID;
 public class StartScreen extends ScreenAdapter {
 
     private static final String TAG = "";
+    private TextField textField;
+    private BitmapFont font;
     private PlayerPerspectiveScreen playScreen;
 
     private VideoPlayer videoPlayer;
@@ -56,7 +60,7 @@ public class StartScreen extends ScreenAdapter {
         myAssetManager.loadSkins();
         myAssetManager.loadMusic();
         myAssetManager.loadTextures();
-        //myAssetManager.loadVideos();
+        myAssetManager.loadFonts();
 
         final Music music = myAssetManager.assetManager.get("music/space_explorers.mp3", Music.class);
         music.play();
@@ -64,19 +68,9 @@ public class StartScreen extends ScreenAdapter {
         music.setVolume(0.2f);
 
         texture = myAssetManager.assetManager.get("background/stars.jpg", Texture.class);
-/*
-        videoPlayer = VideoPlayerCreator.createVideoPlayer();
-        //Gdx.gl.glEnable(GL20.GL_CULL_FACE);
-        //Gdx.gl.glCullFace(GL20.GL_BACK);
+        font = myAssetManager.assetManager.get("font/myFont.fnt", BitmapFont.class);
+        font.getData().scale(0.1f);
 
-        try {
-            FileHandle videoFile = myAssetManager.assetManager.get("video/test.avi");
-            Gdx.app.log(TAG, "Loading file : " + videoFile.file().getAbsolutePath());
-            videoPlayer.play(videoFile);
-        } catch (Exception e) {
-            Gdx.app.log(TAG, "Err: " + e);
-        }
-*/
         minX = 0;
         minY = 0;
         width = 800;
@@ -87,18 +81,22 @@ public class StartScreen extends ScreenAdapter {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
-        stage.addActor(table);
+        table.setDebug(false);
 
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
+
+        textField = new TextField("", skin);
+        textField.setText("Ship Name?");
 
         TextButton newGame = new TextButton("New Game", skin);
         TextButton preferences = new TextButton("Preferences", skin);
         TextButton exit = new TextButton("Exit", skin);
 
+        table.add(textField).uniformX();
+        table.row();
         table.add(newGame).uniformX();
-        table.row().pad(10, 0, 10, 0);
+        table.row();
         table.add(preferences).uniformX();
         table.row();
         table.add(exit).uniformX();
@@ -128,6 +126,8 @@ public class StartScreen extends ScreenAdapter {
             }
         });
 
+        stage.addActor(table);
+        Gdx.input.setInputProcessor(stage);
     }
 
     private void setSpaceshipBounds(){
@@ -141,8 +141,6 @@ public class StartScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        //videoPlayer.render();
 
 
         stage.getBatch().begin();
@@ -173,7 +171,10 @@ public class StartScreen extends ScreenAdapter {
         stage.act();
         stage.draw();
 
+    }
 
+    public TextField getTextField() {
+        return textField;
     }
 
     @Override

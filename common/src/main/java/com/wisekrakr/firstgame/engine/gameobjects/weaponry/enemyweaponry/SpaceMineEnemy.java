@@ -4,12 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.SpaceMine;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 public class SpaceMineEnemy extends SpaceMine {
@@ -33,13 +29,7 @@ public class SpaceMineEnemy extends SpaceMine {
                 ((Player) subject).setKillerName(this.getName());
             }
 
-            Random random = new Random();
-            int debrisParts = random.nextInt(10)+1;
-            for(int i = 0; i < debrisParts; i++) {
-                toAdd.add(new Debris("debris", getPosition(), getSpace(), random.nextFloat() * 10,
-                        random.nextFloat() * 60, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getRadius()));
-
-            }
+            initDebris(toDelete, toAdd);
         }
     }
 

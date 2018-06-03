@@ -27,7 +27,7 @@ public class MinionShooterEnemy extends Minion {
 
     private float direction;
     private float radius;
-    private int health;
+    private float health;
     private float shotLeftOver;
     private int ammoCount;
 
@@ -140,12 +140,12 @@ public class MinionShooterEnemy extends Minion {
     }
 
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 

@@ -7,9 +7,7 @@ import com.badlogic.gdx.Gdx;
  */
 public class Constants {
 
-    public static final float DELTA = Gdx.graphics.getDeltaTime();
 
-    public static final float AGGRO_DISTANCE = 150;
 
     public static final int WORLD_WIDTH = 1400;
     public static final int WORLD_HEIGHT = 1400;

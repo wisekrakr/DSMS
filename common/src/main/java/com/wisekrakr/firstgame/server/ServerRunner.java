@@ -8,7 +8,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUp;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerupGenerator;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
@@ -51,11 +50,11 @@ public class ServerRunner {
     }
 
     private SpaceEngine initializeEngine() {
-        float minX = -3000;
-        float minY = -3000;
-        float width = 5000;
-        float height = 5000;
-        float plusOfXY = 3000;
+        float minX = EngineConstants.MIN_X;
+        float minY = EngineConstants.MIN_Y;
+        float width = EngineConstants.ENGINE_WIDTH;
+        float height = EngineConstants.ENGINE_HEIGHT;
+        float plusOfXY = EngineConstants.PLUS_XY;
 
         SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
 
@@ -101,12 +100,12 @@ public class ServerRunner {
         }
 
         for (int i = 0; i < 4; i++) {
-            EnemyFlyby enemyFlyby = new EnemyFlyby("FlyerBy", new Vector2(
+            EnemyFaceHugger enemyFaceHugger = new EnemyFaceHugger("Face Hugger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
                     40, randomGenerator.nextFloat() * 2000 - 1000,
                     200f, 20f, engine);
-            engine.addGameObject(enemyFlyby);
+            engine.addGameObject(enemyFaceHugger);
         }
 
 

@@ -17,12 +17,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.*;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameObjectType;
+import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
@@ -102,13 +102,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private int chosenWeapon;
     private int chosenNumber;
     private List<Label> volatileLabels = new ArrayList<Label>();
+    private List<ProgressBar> volatileBars = new ArrayList<ProgressBar>();
     private Random random = new Random();
     private Float hardSteering;
 
     private GameObjectRenderer gameObjectRenderer;
     private boolean foundMySelf;
-
-
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -153,6 +152,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shapeRenderer.setAutoShapeType(true);
 
         screenHud = new ScreenHud(myAssetManager);
+
         achievementTexts = new AchievementTexts(myAssetManager);
         enemyHud = new EnemyHud(camera);
         playerHud = new PlayerHud(camera);
@@ -560,6 +560,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         for (Label label : volatileLabels) {
             label.remove();
         }
+        for (ProgressBar progressBar : volatileBars){
+            progressBar.remove();
+        }
 
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
@@ -597,7 +600,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                 overlayCameraProjection = camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
                 radius = (Float) object.extraProperties().get("radius");
-                health = (Integer) object.healthProperties().get("health");
+                //health = (Integer) object.healthProperties().get("health");
                 x = object.getPosition().x;
                 y = object.getPosition().y;
 
@@ -664,23 +667,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-/*
-                        Label enemyChaserLabel = new Label("Chaser", new Label.LabelStyle(font, Color.RED));
-                        overlayStage.addActor(enemyChaserLabel);
-                        enemyChaserLabel.setVisible(true);
-                        enemyChaserLabel.setPosition(getOverlayCameraProjection().x, getOverlayCameraProjection().y + 30, Align.center);
 
-                        Label chaserHealthLabel = new Label(health.toString(), new Label.LabelStyle(font, Color.RED));
-                        overlayStage.addActor(chaserHealthLabel);
-                        chaserHealthLabel.setVisible(true);
-                        chaserHealthLabel.setPosition(getOverlayCameraProjection().x, getOverlayCameraProjection().y - 30, Align.center);
-*/
-                        Label chaserHealthLabel = enemyHud.healthLabel(object);
+                        //Label chaserHealthLabel = enemyHud.healthLabel(object);
                         Label chaserNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(chaserHealthLabel);
+                        //overlayStage.addActor(chaserHealthLabel);
                         overlayStage.addActor(chaserNameLabel);
-                        volatileLabels.add(chaserHealthLabel);
+                        //volatileLabels.add(chaserHealthLabel);
                         volatileLabels.add(chaserNameLabel);
+
+                        ProgressBar healthBar = enemyHud.healthBar(object);
+                        overlayStage.addActor(healthBar);
+                        volatileBars.add(healthBar);
 
                         break;
 
@@ -699,7 +696,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         volatileLabels.add(elsNameLabel);
                         volatileLabels.add(elsHealthLabel);
                         break;
-                    case FLYBY:
+                    case FACE_HUGGER:
                         enemy = object;
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(x, y, radius);
@@ -981,6 +978,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         screenHud.stage.draw();
         achievementTexts.update(myself, delta);
         achievementTexts.stage.draw();
+
 
     }
 

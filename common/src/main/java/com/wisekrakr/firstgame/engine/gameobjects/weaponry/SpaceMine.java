@@ -28,7 +28,7 @@ public class SpaceMine extends GameObject {
         this.damage = damage;
 
         setCollisionRadius(radius);
-        setDestruct(false);
+        isDestruct = false;
     }
 
     @Override
