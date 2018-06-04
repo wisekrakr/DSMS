@@ -9,6 +9,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
@@ -56,11 +57,12 @@ public class Enemy extends GameObject {
     private float updatedAngle;
     private float rotationAngle;
     private double minionAngle;
-    private MinionShooterEnemy minionShooterEnemy;
+    private MinionShooterEnemy minion;
     private EnemyGang enemyGang;
     private float gangAngle;
 
     private float damageTaken;
+    private boolean minionActivated = false;
 
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(type, name, position, space);
@@ -97,15 +99,17 @@ public class Enemy extends GameObject {
 
     /* These are the methods to initialize a MinionShooter for an enemy. Implement the methods in an enemy class. Example = EnemyEls*/
 
-    public Minion initMinion(){
-        minionShooterEnemy = new MinionShooterEnemy("minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
+    public Minion initMinionShooter(){
+        minion = new MinionShooterEnemy("Shooter Minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
                 getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 8f, getSpace());
-        return minionShooterEnemy;
+        minion.setSpeed(getSpeed());
+        minionActivated =  true;
+        return minion;
     }
 
     public void minionMovement(float delta){
         minionAngle += 2f * delta;
-        minionShooterEnemy.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+        minion.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
                 (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
     }
 
@@ -258,6 +262,10 @@ public class Enemy extends GameObject {
             setAttackState(AttackState.SELF_DESTRUCT);
         }
 
+        if (minionActivated){
+            minion.setPosition(getPosition());
+        }
+
         /*These are the ways an Enemy can move. Different kinds of movements for different occasions.
         * -DEFAULT_FORWARDS sets the enemy to move towards the direction it has been given
         * -BACKWARDS sets the enemy to move backwards with the opposite direction it has been given
@@ -345,8 +353,10 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    toAdd.add(new BulletEnemy("enemybullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
-                            2f, BulletMechanics.determineBulletDamage()));
+                    Bullet bullet = new Bullet("enemybullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
+                            2f, BulletMechanics.determineBulletDamage());
+                    toAdd.add(bullet);
+                    bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
                 }
 
                 break;
@@ -519,6 +529,14 @@ public class Enemy extends GameObject {
         }
 
 
+    }
+
+    public boolean isMinionActivated() {
+        return minionActivated;
+    }
+
+    public void setMinionActivated(boolean minionActivated) {
+        this.minionActivated = minionActivated;
     }
 
     public float getSpeed() {

@@ -840,11 +840,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     case POWERUP_MINION:
                         spaceObject = object;
-                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.setColor(Color.SKY);
                         shapeRenderer.circle(x, y, 30);
                         shapeRenderer.setColor(Color.WHITE);
                         shapeRenderer.circle(x, y, 22);
-                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(x, y, 15 / 2);
 
                         break;
@@ -853,7 +853,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         spaceObject = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, 30);
-                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x, y, 22);
                         shapeRenderer.setColor(Color.WHITE);
                         shapeRenderer.circle(x, y, 15 / 2);

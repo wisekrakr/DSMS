@@ -207,16 +207,9 @@ public class SpaceEngine {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
-                    }
-                }
-            }
-
 /**
  * In this section gameobjects( minions of Enemy ) calculate how far they are of each other and they attack in their different ways
  */
-            for (GameObject subject : gameObjects) {
-                if (subject instanceof Minion) {
-                    for (GameObject target : gameObjects) {
                         if (target instanceof Player) {
                             if (target != subject) {
                                 subject.getClosestTarget(target, toDelete, toAdd);
@@ -242,9 +235,6 @@ public class SpaceEngine {
                                 if(subject instanceof MissilePlayer){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
-                                if(subject instanceof Shield){
-                                    ((Player) player).scoringSystem(enemy, subject);
-                                }
                                 if(subject instanceof BulletMisc){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
@@ -253,7 +243,6 @@ public class SpaceEngine {
                     }
                 }
             }
-
 
 
             for (GameObject gameObject : toDelete) {

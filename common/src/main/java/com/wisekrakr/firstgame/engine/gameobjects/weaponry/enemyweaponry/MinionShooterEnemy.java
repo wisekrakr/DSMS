@@ -5,195 +5,42 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.Shield;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.SpaceMinePlayer;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class MinionShooterEnemy extends Minion {
 
-    private MinionState minionState = MinionState.PACIFIST;
-
-    private static final float ATTACK_DISTANCE = 700;
-    private static final float SPOTTED_DISTANCE = 700;
-
-    private float direction;
-    private float radius;
-    private float health;
-    private float shotLeftOver;
-    private int ammoCount;
-
-    private int damage;
-    private BulletEnemy bulletEnemy;
-
-    public MinionShooterEnemy(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+    public MinionShooterEnemy(String name, Vector2 position, int health, float direction, float radius,  SpaceEngine space) {
         super(GameObjectType.MINION_SHOOTER, name, position, health, direction, radius, space);
-        this.direction = direction;
-        this.radius = radius;
-        this.health = health;
-
-        ammoCount = (int) Double.POSITIVE_INFINITY;;
-        shotLeftOver = ammoCount;
 
         setCollisionRadius(radius);
         setHealth(health);
 
-    }
+        setAggroDistance(700f);
+        setAttackDistance(600f);
 
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player){
-            subject.setHealth(subject.getHealth() - getDamage());
-            if (((Player) subject).isKilled()){
-                ((Player) subject).setKillerName(this.getName());
-            }
-        }
-        if (subject instanceof BulletPlayer){
-            setHealth(getHealth() - BulletMechanics.determineBulletDamage());
-        }
-        if (subject instanceof MissilePlayer){
-            setHealth(getHealth() - MissileMechanics.determineMissileDamage());
-        }
-        if (subject instanceof Shield){
-            setHealth(getHealth() - 25);
-        }
-        if (subject instanceof SpaceMinePlayer){
-            setHealth(getHealth() - MineMechanics.determineMineDamage());
-        }
-    }
+        setEnemyMinion(true);
 
-    @Override
-    public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(target instanceof Player) {
-            if(distanceBetween(this, target)<= SPOTTED_DISTANCE) {
-                float angle = angleBetween(this, target);
-
-                setOrientation(angle);
-                setDirection(angle);
-            }
-        }
     }
 
     @Override
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         if (target instanceof Player){
-            if (distanceBetween(this, target)<= ATTACK_DISTANCE){
+            if (distanceBetween(this, target)<= getAttackDistance()){
                 if (!toDelete.contains(target)) {
-                    minionState = MinionState.SHOOT;
+                    setMinionAttackState(MinionAttackState.SHOOT);
                 }else {
-                    minionState = MinionState.PACIFIST;
+                    setMinionAttackState(MinionAttackState.PACIFIST);
                 }
             }
         }
     }
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
         super.elapseTime(clock, delta, toDelete, toAdd);
-/*
-        setPosition(new Vector2((float) (getPosition().x + Math.PI * 3 * 120 * delta),
-                (float) (getPosition().y + Math.PI * 3 * 120 * delta))
-        );
-*/
-        switch (minionState){
-            case SHOOT:
-                ammoCount = getAmmoCount();
-
-                float shotCount = delta / 0.8f + shotLeftOver;
-
-                int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
-
-                ammoCount = ammoCount - exactShotCount;
-                if (ammoCount > 0) {
-                    shotLeftOver = shotCount - exactShotCount;
-                } else {
-                    shotLeftOver = 0;
-                }
-
-                for (int i = 0; i < exactShotCount; i++) {
-                    bulletEnemy = new BulletEnemy("bullito", getPosition(), getSpace(), getOrientation(), 400, 2f, BulletMechanics.determineBulletDamage());
-                    toAdd.add(bulletEnemy);
-                }
-
-                break;
-
-            case PACIFIST:
-                shotLeftOver = 0;
-                break;
-        }
-    }
-
-    public float getDirection() {
-        return direction;
-    }
-
-    public void setDirection(float direction) {
-        this.direction = direction;
-    }
-
-    @Override
-    public float getHealth() {
-        return health;
-    }
-
-    @Override
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
-    public int getAmmoCount() {
-        return ammoCount;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public MinionState getMinionState() {
-        return minionState;
-    }
-
-    public void setMinionState(MinionState minionState) {
-        this.minionState = minionState;
-    }
-
-    @Override
-    public Map<String, Object> getExtraSnapshotProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getHealthProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        result.put("health", health);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("damage", damage);
-
-        return result;
     }
 
 }

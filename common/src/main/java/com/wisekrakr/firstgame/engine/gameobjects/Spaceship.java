@@ -12,7 +12,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.*;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.*;
@@ -43,27 +42,27 @@ public class Spaceship extends GameObject {
     private float health;
     private float score;
 
-    private List<BulletPlayer> bullets;
+    private List<Bullet> bullets;
     private List<MissilePlayer> missiles;
-    private BulletPlayer currentBullet;
+    private Bullet currentBullet;
     private MissilePlayer currentMissile;
     private List<SpaceMinePlayer> spaceMines;
     private SpaceMinePlayer currentSpaceMine;
     private MinionShooterPlayer minionShooterPlayer;
     private MinionFighterPlayer minionFighterPlayer;
     private Shield shield;
-    private Rotunda rotunda;
 
     private float lastDodge = -100000f;
     private float time;
     private int mineAmmoCount;
     private float minesLeftOver;
     private int randomMinion;
-    private boolean minionActivated = false;
+    private boolean minionShooterActivated = false;
+    private boolean minionFighterActivated = false;
     private float speed;
     private float minionAngle;
 
-    private boolean isKilled = false;
+    private boolean isKilled;
     private String killerName;
     private boolean shieldActivated;
     private float lastShot;
@@ -86,15 +85,9 @@ public class Spaceship extends GameObject {
 
         setCollisionRadius(20f);
 
-        bullets = new ArrayList<>(ammoCount);
+        bullets = new ArrayList<>();
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
-
-        rotunda = new Rotunda("rotunda", new Vector2(
-                getPosition().x + (getCollisionRadius() * 2),
-                getPosition().y + (getCollisionRadius() * 2)),
-                getSpace(), 10,
-                getOrientation());
 
     }
 
@@ -189,8 +182,7 @@ public class Spaceship extends GameObject {
                             getAngle(), 10, getSpace());
                     toAdd.add(minionShooterPlayer);
                     powerUpState = PowerUpState.MINION;
-                    minionActivated = true;
-
+                    minionShooterActivated = true;
                     break;
                 case 2:
                     minionFighterPlayer = new MinionFighterPlayer("minion_fighter", new Vector2(
@@ -200,10 +192,11 @@ public class Spaceship extends GameObject {
                             getAngle(), 10, getSpace());
                     toAdd.add(minionFighterPlayer);
                     powerUpState = PowerUpState.MINION;
-                    minionActivated = true;
+                    minionFighterActivated = true;
                     break;
 
             }
+
         }
     }
 
@@ -354,10 +347,9 @@ public class Spaceship extends GameObject {
         ));
 
         //if shieldActivated set shield to player position
-        if(shieldActivated){
+        if (shieldActivated){
             shield.setPosition(getPosition());
         }
-
 
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
@@ -382,27 +374,26 @@ public class Spaceship extends GameObject {
         switch (powerUpState) {
             case MINION:
                 if (randomMinion == 1) {
-                    minionAngle += 3f * delta;
-                    minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
-                            (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
-                }
-
-                if (randomMinion == 2) {
-                    if (minionFighterPlayer.getMinionState() != Minion.MinionState.SHOOT) {
-                        minionAngle += 3f * delta;
-                        minionFighterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+                    if (minionShooterActivated){
+                        minionAngle += 2f * delta;
+                        minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
                                 (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
                     }
                 }
-
+                if (randomMinion == 2) {
+                    if (minionFighterActivated){
+                        if (minionFighterPlayer.getMinionAttackState() != Minion.MinionAttackState.FIGHT) {
+                            minionAngle += 2f * delta;
+                            minionFighterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+                                    (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
+                        }
+                    }
+                }
                 break;
-
             case NONE:
                 break;
 
         }
-
-
     }
 
     private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -420,8 +411,9 @@ public class Spaceship extends GameObject {
 
         for (int i = 0; i < exactShotCount; i++) {
 
-            currentBullet = new BulletPlayer("bullito", getPosition(), getSpace(), getAngle(), 400, 2f, BulletMechanics.determineBulletDamage());
+            currentBullet = new Bullet("bullito", getPosition(), getSpace(), getAngle(), getSpeed(), 2f, BulletMechanics.determineBulletDamage());
             toAdd.add(currentBullet);
+            currentBullet.setBulletState(Bullet.BulletState.ATTACK_ENEMY);
 
         }
 

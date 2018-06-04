@@ -97,13 +97,13 @@ public class EnemyHud {
     }
 
     public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
-
+//TODO: min value of bar gets an Exception ---fix
         barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         //barStyle.knobBefore = barStyle.knob;
         bar = new ProgressBar(0, health(object), 1.5f, false, barStyle);
         bar.setAnimateDuration(1.2f);
         bar.setSize(radius(object) * 1.5f, radius(object) * 1.5f);
-        bar.setValue((float)health(object));
+        bar.setValue(health(object));
         bar.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
 
 
