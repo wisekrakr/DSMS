@@ -5,13 +5,7 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class EnemyGang extends Enemy {
@@ -51,7 +45,7 @@ public class EnemyGang extends Enemy {
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         time += delta;
         if (time >= 5){
-            setAttackState(AttackState.GANG_VOILENCE);
+            setAttackState(AttackState.GANG_VIOLENCE);
 
         }
 

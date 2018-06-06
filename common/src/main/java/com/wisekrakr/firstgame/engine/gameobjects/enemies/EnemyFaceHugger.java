@@ -5,9 +5,8 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.BulletMisc;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
 
 import java.util.Set;
 
@@ -23,7 +22,7 @@ public class EnemyFaceHugger extends Enemy {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof BulletPlayer || subject instanceof MissilePlayer || subject instanceof BulletMisc) {
+        if (subject instanceof Bullet || subject instanceof HomingMissile) {
             float angle = angleBetween(this, subject);
             setMovingState(MovingState.DEFAULT_FORWARDS);
             setOrientation(angle);

@@ -20,8 +20,6 @@ import java.util.*;
 
 public class Spaceship extends GameObject {
 
-
-    private static final float FIRE_RATE = 0.5f;
     private ThrottleState throttle = ThrottleState.STATUSQUO;
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
@@ -29,8 +27,9 @@ public class Spaceship extends GameObject {
     private AimingState aimingState = AimingState.NONE;
     private PowerUpState powerUpState = PowerUpState.NONE;
     private SwitchWeaponState switchWeaponState = SwitchWeaponState.NONE;
-    private Float hardSteering;
 
+    private static final float FIRE_RATE = 0.5f;
+    private Float hardSteering;
     private float speedX = 0;
     private float speedY = 0;
     private float angle = (float) (Math.PI / 2);
@@ -43,9 +42,9 @@ public class Spaceship extends GameObject {
     private float score;
 
     private List<Bullet> bullets;
-    private List<MissilePlayer> missiles;
+    private List<HomingMissile> missiles;
     private Bullet currentBullet;
-    private MissilePlayer currentMissile;
+    private HomingMissile currentMissile;
     private List<SpaceMinePlayer> spaceMines;
     private SpaceMinePlayer currentSpaceMine;
     private MinionShooterPlayer minionShooterPlayer;
@@ -61,6 +60,8 @@ public class Spaceship extends GameObject {
     private boolean minionFighterActivated = false;
     private float speed;
     private float minionAngle;
+    private float defaultSpeed = 240;
+    private float maxSpeed = 500;
 
     private boolean isKilled;
     private String killerName;
@@ -89,7 +90,10 @@ public class Spaceship extends GameObject {
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
 
+
+
     }
+
 
     public void modifySpeed(float v) {
         speedX = speedX * v;
@@ -203,31 +207,24 @@ public class Spaceship extends GameObject {
     public void scoringSystem(GameObject enemy, GameObject subject) {
 
         if (enemy instanceof Enemy){
-            if (subject instanceof BulletPlayer || subject instanceof MissilePlayer || subject instanceof SpaceMinePlayer
-                    || subject instanceof BulletMisc){
+            if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMinePlayer){
                 if (isHit(enemy, subject)){
-                    if (subject instanceof BulletPlayer) {
-                        this.setScore(this.getScore() + ((BulletPlayer) subject).getDamage());
+                    if (subject instanceof Bullet) {
+                        this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 50);
                         }
                     }
-                    if (subject instanceof MissilePlayer){
-                        this.setScore(this.getScore() + ((MissilePlayer) subject).getDamage());
+                    if (subject instanceof HomingMissile){
+                        this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 100);
                         }
                     }
                     if (subject instanceof SpaceMinePlayer){
-                        this.setScore(this.getScore() + ((SpaceMinePlayer) subject).getDamage());
+                        this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 200);
-                        }
-                    }
-                    if (subject instanceof BulletMisc){
-                        this.setScore(this.getScore() + ((BulletMisc) subject).getDamage());
-                        if (enemy.getHealth() <= 0) {
-                            this.setScore(this.getScore() + 50);
                         }
                     }
                 }
@@ -274,15 +271,15 @@ public class Spaceship extends GameObject {
 
         switch (throttle) {
             case FORWARDS:
-                speedX = speedX + delta * 240f * (float) Math.cos(angle);
-                speedY = speedY + delta * 240f * (float) Math.sin(angle);
+                speedX = speedX + delta * defaultSpeed * (float) Math.cos(angle);
+                speedY = speedY + delta * defaultSpeed * (float) Math.sin(angle);
 
                 toAdd.add(new Exhaust("exhaust", this.getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius() / 5));
                 break;
 
             case REVERSE:
-                speedX = speedX - delta * 240f * (float) Math.cos(angle);
-                speedY = speedY - delta * 240f * (float) Math.sin(angle);
+                speedX = speedX - delta * defaultSpeed * (float) Math.cos(angle);
+                speedY = speedY - delta * defaultSpeed * (float) Math.sin(angle);
 
 //                speed = Math.max(speed - delta * 155f, -230);
                 break;
@@ -306,21 +303,21 @@ public class Spaceship extends GameObject {
 
         speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
 
-        if (speed > 320) {
-            speedX = speedX * 320 / speed;
-            speedY = speedY * 320 / speed;
+        if (speed > (defaultSpeed + (defaultSpeed/2))) {
+            speedX = speedX * (defaultSpeed + (defaultSpeed/2)) / speed;
+            speedY = speedY * (defaultSpeed + (defaultSpeed/2)) / speed;
         }
 
 
         switch (powerState) {
             case BOOSTING:
-                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + 320, 500);
-                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + 320, 500);
+                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed/2)), maxSpeed);
+                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed/2)), maxSpeed);
 
                 speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
-                if (speed > 500) {
-                    speedX = speedX * 500 / speed;
-                    speedY = speedY * 500 / speed;
+                if (speed > maxSpeed) {
+                    speedX = speedX * maxSpeed / speed;
+                    speedY = speedY * maxSpeed / speed;
                 }
 
                 toAdd.add(new Exhaust("exhaust", getPosition(), getSpace(), -this.getOrientation(), getCollisionRadius() / 3));
@@ -338,7 +335,6 @@ public class Spaceship extends GameObject {
 
                 break;
         }
-
 
         //Player movement
         setPosition(new Vector2(
@@ -432,8 +428,11 @@ public class Spaceship extends GameObject {
             missileLeftOver = 0;
         }
         for (int i = 0; i < exactMissileCount; i++) {
-            currentMissile = new MissilePlayer("missilito", getPosition(), getSpace(), getAngle(), 500, 5f, MissileMechanics.determineMissileDamage());
+            currentMissile = new HomingMissile("missilito", getPosition(), getSpace(), getAngle(), getSpeed(), 5f,
+                    MissileMechanics.determineMissileDamage(), true);
             toAdd.add(currentMissile);
+            currentMissile.missileEnable(this);
+            currentMissile.setMissileSpeed(defaultSpeed * 2);
         }
 
     }

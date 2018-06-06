@@ -9,12 +9,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MissileEnemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.SpaceMineEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.SpaceMinePlayer;
 
@@ -74,10 +70,10 @@ public class Minion extends GameObject {
                 if (subject instanceof Enemy) {
                     subject.setHealth(subject.getHealth() - getDamage());
                 }
-                if (subject instanceof BulletEnemy) {
+                if (subject instanceof Bullet) {
                     setHealth(getHealth() - BulletMechanics.determineBulletDamage());
                 }
-                if (subject instanceof MissileEnemy) {
+                if (subject instanceof HomingMissile) {
                     setHealth(getHealth() - MissileMechanics.determineMissileDamage());
                 }
                 if (subject instanceof LaserBeamEnemy) {
@@ -96,10 +92,10 @@ public class Minion extends GameObject {
                         ((Player) subject).setKillerName(this.getName());
                     }
                 }
-                if (subject instanceof BulletPlayer) {
+                if (subject instanceof Bullet) {
                     setHealth(getHealth() - BulletMechanics.determineBulletDamage());
                 }
-                if (subject instanceof MissilePlayer) {
+                if (subject instanceof HomingMissile) {
                     setHealth(getHealth() - MissileMechanics.determineMissileDamage());
                 }
                 if (subject instanceof Shield) {
@@ -156,12 +152,7 @@ public class Minion extends GameObject {
             toDelete.add(this);
             destruct = true;
         }
-/*
-        minionAngle += 2f * delta;
-        setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
-                (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
-        setOrientation(direction);
-*/
+
         switch (minionAttackState){
             case SHOOT:
                 ammoCount = getAmmoCount();

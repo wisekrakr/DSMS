@@ -14,7 +14,6 @@ public class EnemyEls extends Enemy {
 
     private MinionShooterEnemy minionShooterEnemy;
 
-
     public EnemyEls(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.ELS, name, position, health, direction, speed, radius, space);
 
@@ -23,7 +22,6 @@ public class EnemyEls extends Enemy {
         setChangeDirectionTime(3f);
 
         minionShooterEnemy = (MinionShooterEnemy) initMinionShooter();
-        setMinionActivated(isMinionActivated());
     }
 
     @Override
@@ -44,6 +42,5 @@ public class EnemyEls extends Enemy {
         super.elapseTime(clock, delta, toDelete, toAdd);
         minionMovement(delta);
         toAdd.add(minionShooterEnemy);
-
     }
 }

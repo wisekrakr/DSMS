@@ -90,7 +90,7 @@ public class ServerRunner {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine));
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 5; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
@@ -99,6 +99,7 @@ public class ServerRunner {
             engine.addGameObject(chaser);
         }
 
+/*
         for (int i = 0; i < 6; i++) {
             EnemyEls enemyEls = new EnemyEls("ELS", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -107,7 +108,16 @@ public class ServerRunner {
                     300f,25f, engine);
             engine.addGameObject(enemyEls);
         }
-/*
+
+        for(int i = 0; i < 5; i++){
+            EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
+                    randomGenerator.nextFloat() * width - plusOfXY,
+                    randomGenerator.nextFloat() * height - plusOfXY),
+                    75,randomGenerator.nextFloat() * 2000 - 1000,
+                    175f,30f, engine);
+            engine.addGameObject(enemyHomer);
+        }
+
         for (int i = 0; i < 4; i++) {
             EnemyFaceHugger enemyFaceHugger = new EnemyFaceHugger("Face Hugger", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
@@ -148,14 +158,14 @@ public class ServerRunner {
         EnemyMotherShip enemyMotherShip = new EnemyMotherShip("MotherShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
-                200, randomGenerator.nextFloat(),
+                200, randomGenerator.nextFloat() * 2000 - 1000,
                 30f,150f, engine);
         engine.addGameObject(enemyMotherShip);
 
         EnemyMutator enemyMutator = new EnemyMutator("SporeShip", new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
-                150, randomGenerator.nextFloat(),
+                150, randomGenerator.nextFloat() * 2000 - 1000,
                 50f,100f, engine);
         engine.addGameObject(enemyMutator);
 
@@ -177,14 +187,6 @@ public class ServerRunner {
             engine.addGameObject(enemyShotty);
         }
 
-        for(int i = 0; i < 3; i++){
-            EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    75,randomGenerator.nextFloat() * 2000 - 1000,
-                    175f,30f, engine);
-            engine.addGameObject(enemyHomer);
-        }
 
         for (int i = 0; i < 5; i++) {
             EnemyGang enemyGang = new EnemyGang("Gang!", new Vector2(

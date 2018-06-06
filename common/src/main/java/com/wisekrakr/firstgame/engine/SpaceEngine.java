@@ -2,10 +2,7 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.Shield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -167,7 +164,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof HomingEnemyWeaponry) {
+                if (subject instanceof Spores || subject instanceof HomingMissile) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
                             if (target != subject ) {
@@ -183,11 +180,10 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof MissilePlayer) {
+                if (subject instanceof HomingMissile) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
                             if (target != subject) {
-                                //subject.getClosestTarget(target, toDelete, toAdd);
                                 subject.attackTarget(target,toDelete,toAdd);
                             }
                         }
@@ -229,13 +225,10 @@ public class SpaceEngine {
                     for (GameObject enemy : gameObjects) {
                         if (enemy instanceof Enemy) {
                             for(GameObject subject: gameObjects){
-                                if(subject instanceof BulletPlayer){
+                                if(subject instanceof Bullet){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
-                                if(subject instanceof MissilePlayer){
-                                    ((Player) player).scoringSystem(enemy, subject);
-                                }
-                                if(subject instanceof BulletMisc){
+                                if(subject instanceof HomingMissile){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                             }

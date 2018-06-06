@@ -5,12 +5,9 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.BulletPlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
 
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 public class EnemyMutator extends Enemy {
@@ -20,17 +17,24 @@ public class EnemyMutator extends Enemy {
 
         setAggroDistance(1000);
         setAttackDistance(550);
+        setChangeDirectionTime(20f);
 
     }
 
     @Override
+    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.targetSpotted(target, toDelete, toAdd);
+        setMovingState(MovingState.DEFAULT_FORWARDS);
+    }
+/*
+    @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(subject instanceof BulletPlayer){
+        if(subject instanceof Bullet){
             setRadius(getRadius() - subject.getCollisionRadius());
             setCollisionRadius(getRadius());
             toDelete.add(subject);
         }
-        if(subject instanceof MissilePlayer){
+        if(subject instanceof HomingMissile){
             setRadius(getRadius() - subject.getCollisionRadius());
             setCollisionRadius(getRadius());
             toDelete.add(subject);
@@ -39,13 +43,15 @@ public class EnemyMutator extends Enemy {
             toDelete.add(subject);
         }
     }
-
+*/
     @Override
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.attackTarget(target, toDelete, toAdd);
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_SPORES);
+            }else{
+                setAttackState(AttackState.PACIFIST);
             }
         }
     }

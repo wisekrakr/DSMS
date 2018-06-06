@@ -5,11 +5,8 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.BulletEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MissilePlayer;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,7 +28,7 @@ public class EnemyPest extends Enemy {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.collide(subject, toDelete, toAdd);
 
-        if(subject instanceof MissilePlayer){
+        if(subject instanceof HomingMissile){
             toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, getOrientation(), 300, 10f, getSpace()));
         }
     }

@@ -5,10 +5,7 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MissileEnemy;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class EnemyHomer extends Enemy {
@@ -23,11 +20,19 @@ public class EnemyHomer extends Enemy {
     }
 
     @Override
+    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.targetSpotted(target, toDelete, toAdd);
+        setMovingState(MovingState.DEFAULT_FORWARDS);
+    }
+
+    @Override
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.attackTarget(target, toDelete, toAdd);
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_MISSILES);
+            }else{
+                setAttackState(AttackState.PACIFIST);
             }
         }
     }

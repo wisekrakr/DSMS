@@ -6,19 +6,28 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-public class Spores extends HomingEnemyWeaponry {
+public class Spores extends GameObject {
 
     private float time;
+    private float radius;
+    private int damage;
+    private float direction;
+    private float speed;
 
     public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
-        super(GameObjectType.SPORE, name, initialPosition, space, direction, speed, radius, damage);
+        super(GameObjectType.SPORE, name, initialPosition, space);
+        this.radius = radius;
+        this.damage = damage;
+        this.direction = direction;
+        this.speed = speed;
 
         setCollisionRadius(radius);
         setDamage(damage);
         setSpeed(speed);
-
     }
 
     @Override
@@ -63,6 +72,57 @@ public class Spores extends HomingEnemyWeaponry {
             toDelete.add(this);
         }
 
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public float getDirection() {
+        return direction;
+    }
+
+    public void setDirection(float direction) {
+        this.direction = direction;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", radius);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getDamageProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("damage", damage);
+
+        return result;
     }
 
 }
