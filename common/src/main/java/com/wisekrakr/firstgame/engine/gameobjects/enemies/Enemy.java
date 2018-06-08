@@ -9,11 +9,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.*;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +52,7 @@ public class Enemy extends GameObject {
     private float updatedAngle;
     private float rotationAngle;
     private double minionAngle;
-    private MinionShooterEnemy minion;
+    private Minion minionShooter;
     private EnemyGang enemyGang;
     private float gangAngle;
 
@@ -99,18 +96,20 @@ public class Enemy extends GameObject {
     * */
 
     public Minion initMinionShooter(){
-        minion = new MinionShooterEnemy("Shooter Minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
+        minionShooter = new Minion("Shooter Minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
                 getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 8f, getSpace());
-        minion.setSpeed(getSpeed());
+        minionShooter.setSpeed(getSpeed());
         setMinionActivated(isMinionActivated());
-        return minion;
+        minionShooter.setMinionShooter(true);
+        minionShooter.setEnemyMinion(true);
+        return minionShooter;
     }
 
     /* Initialize this method in the elapsedTime method of the class where you want a Minion
      */
     public void minionMovement(float delta){
         minionAngle += 2f * delta;
-        minion.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
+        minionShooter.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
                 (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
     }
 
@@ -252,7 +251,7 @@ public class Enemy extends GameObject {
         }
 
         if (minionActivated){
-            minion.setPosition(getPosition());
+            minionShooter.setPosition(getPosition());
         }
 
         /*These are the ways an Enemy can move. Different kinds of movements for different occasions.
@@ -467,7 +466,8 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < laserExactShotCount; i++) {
-                    toAdd.add(new LaserBeamEnemy("laser", getPosition(), getSpace(), getOrientation(), 2f, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new LaserBeam("laser", getPosition(), getSpace(), getOrientation(), 2f,
+                            BulletMechanics.determineBulletDamage(), getSpeed() * 3));
                 }
 
                 break;
@@ -486,7 +486,10 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactMinesShotCount; i++) {
-                    toAdd.add(new SpaceMineEnemy("enemy_mine", getPosition(), getSpace(), getOrientation(), 300, 8f, MineMechanics.determineMineDamage()));
+                    SpaceMine spaceMine = new SpaceMine("enemy_mine", getPosition(), getSpace(), getOrientation(),
+                            300, 8f, MineMechanics.determineMineDamage());
+                    toAdd.add(spaceMine);
+                    spaceMine.setEnemyMine(true);
                 }
 
                 break;
@@ -496,7 +499,7 @@ public class Enemy extends GameObject {
                 break;
  //TODO: fix blink
             case BLINK:
-                if(time >= 3) {
+                if(time >= 5) {
                     setPosition(new Vector2(
                             getPosition().x + delta * getSpeed() * (random.nextFloat() * 200 - 100),
                             getPosition().y + delta * getSpeed() * (random.nextFloat() * 200 - 100)

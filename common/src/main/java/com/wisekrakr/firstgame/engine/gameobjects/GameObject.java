@@ -50,6 +50,12 @@ public abstract class GameObject {
     public void setOrientation(float newOrientation) {
         this.orientation = newOrientation;
     }
+    public GameObjectType getType() {
+        return type;
+    }
+    public void setType(GameObjectType type) {
+        this.type = type;
+    }
     public float getEnemyMarginOfError() {
         return enemyMarginOfError;
     }

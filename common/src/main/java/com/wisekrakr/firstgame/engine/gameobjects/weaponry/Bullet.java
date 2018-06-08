@@ -6,7 +6,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +44,12 @@ public class Bullet extends GameObject {
                 subject.setHealth(subject.getHealth() - getDamage());
                 setHit(true);
             }
-            if (subject instanceof MinionShooterEnemy) {
-                toDelete.add(this);
-                subject.setHealth(subject.getHealth() - getDamage());
-                setHit(true);
+            if (subject instanceof Minion) {
+                if (((Minion) subject).isEnemyMinion()) {
+                    toDelete.add(this);
+                    subject.setHealth(subject.getHealth() - getDamage());
+                    setHit(true);
+                }
             }
         }
         if (bulletState == BulletState.ATTACK_PLAYER){

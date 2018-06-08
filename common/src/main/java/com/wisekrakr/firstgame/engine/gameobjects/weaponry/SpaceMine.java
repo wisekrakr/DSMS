@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,8 @@ public class SpaceMine extends GameObject {
     private int damage;
     private boolean isDestruct;
 
+    private boolean playerMine;
+    private boolean enemyMine;
 
     public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
         super(GameObjectType.SPACE_MINE, name, initialPosition, space);
@@ -28,12 +32,52 @@ public class SpaceMine extends GameObject {
         this.damage = damage;
 
         setCollisionRadius(radius);
+
         isDestruct = false;
+    }
+
+    @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        if (playerMine) {
+            if (subject instanceof Enemy) {
+                toDelete.add(this);
+                subject.setHealth(subject.getHealth() - getDamage());
+                setDestruct(true);
+                initDebris(toDelete, toAdd);
+            }
+            if (subject instanceof Minion) {
+                if (((Minion) subject).isEnemyMinion()) {
+                    toDelete.add(this);
+                    subject.setHealth(subject.getHealth() - getDamage());
+                    setDestruct(true);
+                    initDebris(toDelete, toAdd);
+                }
+            }
+        }
+
+        if (enemyMine){
+            if (subject instanceof Player){
+                toDelete.add(this);
+                subject.setHealth(subject.getHealth() - getDamage());
+
+                if (((Player) subject).isKilled()){
+                    ((Player) subject).setKillerName(this.getName());
+                }
+
+                initDebris(toDelete, toAdd);
+            }
+        }
     }
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
+        if (playerMine){
+            setDestructTime(20f);
+        }
+        if (enemyMine){
+            setDestructTime(10f);
+        }
         destructTime = getDestructTime();
         time += delta;
         if(time >= destructTime){
@@ -45,6 +89,22 @@ public class SpaceMine extends GameObject {
             }
         }
 
+    }
+
+    public boolean isPlayerMine() {
+        return playerMine;
+    }
+
+    public void setPlayerMine(boolean playerMine) {
+        this.playerMine = playerMine;
+    }
+
+    public boolean isEnemyMine() {
+        return enemyMine;
+    }
+
+    public void setEnemyMine(boolean enemyMine) {
+        this.enemyMine = enemyMine;
     }
 
     public float getDestructTime() {

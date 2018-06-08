@@ -6,13 +6,13 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Minion;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
+import java.util.List;
 import java.util.Set;
 
 public class EnemyEls extends Enemy {
 
-    private MinionShooterEnemy minionShooterEnemy;
+    private Minion minionShooter;
 
     public EnemyEls(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.ELS, name, position, health, direction, speed, radius, space);
@@ -21,7 +21,7 @@ public class EnemyEls extends Enemy {
         setAttackDistance(750f);
         setChangeDirectionTime(3f);
 
-        minionShooterEnemy = (MinionShooterEnemy) initMinionShooter();
+        minionShooter = initMinionShooter();
     }
 
     @Override
@@ -38,9 +38,15 @@ public class EnemyEls extends Enemy {
     }
 
     @Override
+    public void afterRemove(List<GameObject> toAdd, List<GameObject> toRemove) {
+        toAdd.add(minionShooter);
+    }
+
+    @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(clock, delta, toDelete, toAdd);
         minionMovement(delta);
-        toAdd.add(minionShooterEnemy);
+        toAdd.add(minionShooter);
+
     }
 }

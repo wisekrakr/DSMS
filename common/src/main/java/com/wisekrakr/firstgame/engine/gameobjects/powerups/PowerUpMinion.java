@@ -3,11 +3,6 @@ package com.wisekrakr.firstgame.engine.gameobjects.powerups;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.MinionShooterPlayer;
-
-import java.util.List;
-import java.util.Set;
 
 public class PowerUpMinion extends PowerUp {
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,23 +17,35 @@ public class LaserBeam extends GameObject {
     private float speed;
     private int damage;
 
-    private static final float DEFAULT_BULLET_SPEED = 1200;
     private float time;
 
-    public LaserBeam(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage) {
+    public LaserBeam(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage, float speed) {
         super(GameObjectType.LASER_BEAM, name, initialPosition, space);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;
+        this.speed = speed;
 
         setCollisionRadius(radius);
     }
 
     @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        if(subject instanceof Player){
+            toDelete.add(this);
+            subject.setHealth(subject.getHealth() - getDamage());
+            if (((Player) subject).isKilled()){
+                ((Player) subject).setKillerName(this.getName());
+            }
+        }
+    }
+
+    @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * DEFAULT_BULLET_SPEED * delta,
-                getPosition().y + (float) Math.sin(direction) * DEFAULT_BULLET_SPEED * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * getSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * getSpeed() * delta)
         );
         setOrientation(direction);
 

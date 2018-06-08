@@ -5,10 +5,7 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.SpaceMineEnemy;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class EnemyShitter extends Enemy {
@@ -16,8 +13,8 @@ public class EnemyShitter extends Enemy {
     public EnemyShitter(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.SHITTER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(800);
-        setAttackDistance(750);
+        setAggroDistance(600);
+        setAttackDistance(400);
         setChangeDirectionTime(16f);
 
     }

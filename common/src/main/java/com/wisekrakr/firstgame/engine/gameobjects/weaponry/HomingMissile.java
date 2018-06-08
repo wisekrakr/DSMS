@@ -8,12 +8,15 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.MinionShooterEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/*
+ *To set a missile as a weapon for either enemy or player, create a HomingMissile, then use enableMissile method, and also
+ *set the speed for the missile ===> do this all in the class you want to use a missile in/for.
+ */
 public class HomingMissile extends GameObject {
 
     private float radius;
@@ -62,10 +65,11 @@ public class HomingMissile extends GameObject {
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - getDamage());
                 }
-                if (subject instanceof MinionShooterEnemy) {
-                    toDelete.add(this);
-                    subject.setHealth(subject.getHealth() - getDamage());
-
+                if (subject instanceof Minion) {
+                    if (((Minion) subject).isEnemyMinion()) {
+                        toDelete.add(this);
+                        subject.setHealth(subject.getHealth() - getDamage());
+                    }
                 }
             }
             if (isEnemyMissile()) {

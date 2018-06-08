@@ -160,7 +160,7 @@ public class SpaceEngine {
                 }
             }
 /**
- * In this section gameobjects(enemy weaponry package) are Enemy weapons that follow the player(homing weapons).
+ * In this section gameobjects(enemy weaponry ) are Enemy weapons that follow the player(homing weapons).
  */
 
             for (GameObject subject : gameObjects) {
@@ -171,17 +171,9 @@ public class SpaceEngine {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
-                    }
-                }
-            }
-
 /**
  * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
  */
-
-            for (GameObject subject : gameObjects) {
-                if (subject instanceof HomingMissile) {
-                    for (GameObject target : gameObjects) {
                         if (target instanceof Enemy) {
                             if (target != subject) {
                                 subject.attackTarget(target,toDelete,toAdd);
@@ -190,6 +182,7 @@ public class SpaceEngine {
                     }
                 }
             }
+
 
 /**
  * In this section gameobjects( minions of Player ) calculate how far they are of each other and they attack in their different ways
@@ -229,6 +222,9 @@ public class SpaceEngine {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                                 if(subject instanceof HomingMissile){
+                                    ((Player) player).scoringSystem(enemy, subject);
+                                }
+                                if(subject instanceof SpaceMine){
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                             }

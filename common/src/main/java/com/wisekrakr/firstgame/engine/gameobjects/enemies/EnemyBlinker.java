@@ -5,11 +5,7 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 public class EnemyBlinker extends Enemy {

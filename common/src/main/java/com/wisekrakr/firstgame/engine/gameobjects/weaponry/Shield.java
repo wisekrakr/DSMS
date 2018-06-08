@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry;
+package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
@@ -7,8 +7,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.LaserBeam;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class Shield extends GameObject {
         if(subject instanceof Spores){
             toDelete.add(subject);
         }
-        if(subject instanceof LaserBeamEnemy){
+        if(subject instanceof LaserBeam){
             toDelete.add(subject);
         }
     }

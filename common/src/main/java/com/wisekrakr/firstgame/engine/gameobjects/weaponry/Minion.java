@@ -9,10 +9,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.LaserBeamEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.enemyweaponry.SpaceMineEnemy;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.Shield;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.playerweaponry.SpaceMinePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,9 +38,11 @@ public class Minion extends GameObject {
 
     private boolean playerMinion;
     private boolean enemyMinion;
+    private boolean minionFighter;
+    private boolean minionShooter;
 
-    public Minion(GameObjectType type, String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(type, name, position, space);
+    public Minion(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
+        super(GameObjectType.MINION, name, position, space);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -54,6 +52,9 @@ public class Minion extends GameObject {
 
         setCollisionRadius(radius);
         setHealth(health);
+
+        setAggroDistance(700f);
+        setAttackDistance(600f);
 
         damage = 10;
         speed = 400f;
@@ -76,10 +77,10 @@ public class Minion extends GameObject {
                 if (subject instanceof HomingMissile) {
                     setHealth(getHealth() - MissileMechanics.determineMissileDamage());
                 }
-                if (subject instanceof LaserBeamEnemy) {
+                if (subject instanceof LaserBeam) {
                     setHealth(getHealth() - BulletMechanics.determineBulletDamage());
                 }
-                if (subject instanceof SpaceMineEnemy) {
+                if (subject instanceof SpaceMine) {
                     setHealth(getHealth() - MineMechanics.determineMineDamage());
                 }
             }
@@ -101,7 +102,7 @@ public class Minion extends GameObject {
                 if (subject instanceof Shield) {
                     setHealth(getHealth() - 25);
                 }
-                if (subject instanceof SpaceMinePlayer) {
+                if (subject instanceof SpaceMine) {
                     setHealth(getHealth() - MineMechanics.determineMineDamage());
                 }
             }
@@ -113,7 +114,7 @@ public class Minion extends GameObject {
         if (playerMinion) {
             if (target instanceof Enemy) {
                 if (distanceBetween(this, target) <= getAggroDistance()) {
-                    if (minionAttackState == MinionAttackState.SHOOT || minionAttackState == MinionAttackState.FIGHT) {
+                    if (minionShooter || minionFighter) {
                         float angle = angleBetween(this, target);
                         setOrientation(angle);
                         setDirection(angle);
@@ -125,7 +126,7 @@ public class Minion extends GameObject {
         }
         if (enemyMinion) {
             if (target instanceof Player) {
-                if (minionAttackState == MinionAttackState.SHOOT || minionAttackState == MinionAttackState.FIGHT) {
+                if (minionShooter || minionFighter) {
                     if (distanceBetween(this, target) <= getAggroDistance()) {
                         float angle = angleBetween(this, target);
                         setOrientation(angle);
@@ -136,6 +137,46 @@ public class Minion extends GameObject {
                 }
             }
         }
+    }
+
+    @Override
+    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        if (playerMinion) {
+            if (target instanceof Enemy) {
+                if (distanceBetween(this, target) <= getAttackDistance()) {
+                    if (minionShooter) {
+                        if (!toDelete.contains(target)) {
+                            setMinionAttackState(MinionAttackState.SHOOT);
+                        } else {
+                            setMinionAttackState(MinionAttackState.PACIFIST);
+                        }
+                    }
+                    if (minionFighter){
+                        if (!toDelete.contains(target)) {
+                            setMinionAttackState(MinionAttackState.FIGHT);
+                        } else {
+                            setMinionAttackState(MinionAttackState.PACIFIST);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (enemyMinion){
+            if (target instanceof Player){
+                if (distanceBetween(this, target)<= getAttackDistance()){
+                    if (minionShooter) {
+                        if (!toDelete.contains(target)) {
+                            setMinionAttackState(MinionAttackState.SHOOT);
+                        } else {
+                            setMinionAttackState(MinionAttackState.PACIFIST);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -195,6 +236,22 @@ public class Minion extends GameObject {
                 break;
         }
 
+    }
+
+    public boolean isMinionFighter() {
+        return minionFighter;
+    }
+
+    public void setMinionFighter(boolean minionFighter) {
+        this.minionFighter = minionFighter;
+    }
+
+    public boolean isMinionShooter() {
+        return minionShooter;
+    }
+
+    public void setMinionShooter(boolean minionShooter) {
+        this.minionShooter = minionShooter;
     }
 
     public boolean isPlayerMinion() {
@@ -313,4 +370,16 @@ public class Minion extends GameObject {
         return result;
     }
 
+    @Override
+    public Map<String, Object> getRandomProperties() {
+        Map<String, Object> result = new HashMap<>();
+
+        if (minionShooter) {
+            result.put("minionshooter", minionShooter);
+        }
+        if (minionFighter){
+            result.put("minionfighter", minionFighter);
+        }
+        return result;
+    }
 }

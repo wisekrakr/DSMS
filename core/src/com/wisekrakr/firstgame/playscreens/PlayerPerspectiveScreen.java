@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.*;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
@@ -85,7 +84,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private boolean paused = false;
     private SpaceSnapshot.GameObjectSnapshot myself;
     private SpaceSnapshot.GameObjectSnapshot enemy;
-    private SpaceSnapshot.GameObjectSnapshot spaceObject;
+    private SpaceSnapshot.GameObjectSnapshot objectSnapshot;
     private GameObjectType gameObjectType;
 
     /**
@@ -584,7 +583,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         myself = null;
         enemy = null;
-        spaceObject = null;
+        objectSnapshot = null;
 
 
         if (snapshot != null) {
@@ -629,7 +628,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case SPACE_MINE:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         Color blinkingColor = chooseRandomColor(new Color[]{Color.RED, Color.WHITE, Color.WHITE, Color.RED});
                         shapeRenderer.setColor(blinkingColor);
                         shapeRenderer.circle(x, y, radius);
@@ -641,13 +640,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         }
                         break;
                     case BULLET:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
 
                         break;
                     case ASTEROID:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.BROWN);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.GREEN);
@@ -656,7 +655,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case ROTUNDA:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(x, y, radius);
                         break;
@@ -749,7 +748,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case LASER_BEAM:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         Color bulletColor = chooseRandomColor(BULLET_COLORS);
                         shapeRenderer.setColor(bulletColor);
                         shapeRenderer.rectLine(x, y,x + 25 * (float) Math.cos(object.getOrientation()),
@@ -786,7 +785,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case MISSILE:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
                         break;
@@ -801,7 +800,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case SPORE:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         Color sporeColor = chooseRandomColor(SPORE_COLORS);
                         shapeRenderer.setColor(sporeColor);
                         shapeRenderer.circle(x, y, radius);
@@ -818,7 +817,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case POWERUP_MISSILE:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.GOLD);
                         shapeRenderer.circle(x, y, 28);
                         shapeRenderer.setColor(Color.WHITE);
@@ -828,7 +827,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case POWERUP_SHIELD:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, 30);
                         shapeRenderer.setColor(Color.WHITE);
@@ -839,7 +838,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case POWERUP_MINION:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.SKY);
                         shapeRenderer.circle(x, y, 30);
                         shapeRenderer.setColor(Color.WHITE);
@@ -850,7 +849,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case POWERUP_HEALTH:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, 30);
                         shapeRenderer.setColor(Color.GREEN);
@@ -858,40 +857,45 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.WHITE);
                         shapeRenderer.circle(x, y, 15 / 2);
                         break;
+//TODO: how to switch colors for different minions
+                    case MINION:
+                        objectSnapshot = object;
+                        Boolean minionShooter = (Boolean) objectSnapshot.randomProperties().get("minionshooter");
+                        Boolean minionFighter = (Boolean) objectSnapshot.randomProperties().get("minionfighter");
 
-                    case MINION_SHOOTER:
-                        spaceObject = object;
                         shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.SKY);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+                        /*
+                        else if (minionFighter) {
+                            objectSnapshot = object;
+                            shapeRenderer.setColor(Color.SKY);
+                            shapeRenderer.circle(x, y, radius);
+                            shapeRenderer.setColor(Color.YELLOW);
+                            shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                    y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+                        }
+                        */
+                        break;
 
-                        break;
-                    case MINION_FIGHTER:
-                        spaceObject = object;
-                        shapeRenderer.setColor(Color.SKY);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-                        break;
                     case SHIELD:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         String lightBlue = "8EE2EC";
                         shapeRenderer.setColor(Color.valueOf(lightBlue));
                         shapeRenderer.circle(x, y, radius);
                         break;
 
                     case EXHAUST:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         Color exhaustColor = chooseRandomColor(EXHAUST_COLORS);
                         shapeRenderer.setColor(exhaustColor);
                         shapeRenderer.circle(x, y, radius);
                         break;
 
                     case DEBRIS:
-                        spaceObject = object;
+                        objectSnapshot = object;
                         Color debrisColor = chooseRandomColor(DEBRIS_COLORS);
                         shapeRenderer.setColor(debrisColor);
                         shapeRenderer.circle(x, y, radius);
