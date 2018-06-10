@@ -33,6 +33,7 @@ public class EnemyEls extends Enemy {
                 setMovingState(MovingState.FLY_AROUND);
             }else{
                 setAttackState(AttackState.PACIFIST);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
             }
         }
     }

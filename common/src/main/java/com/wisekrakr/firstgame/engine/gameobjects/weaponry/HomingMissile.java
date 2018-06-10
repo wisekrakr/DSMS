@@ -64,6 +64,8 @@ public class HomingMissile extends GameObject {
                 if (subject instanceof Enemy) {
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - getDamage());
+                    float z = ((Enemy) subject).getMaxHealth() - subject.getHealth();
+                    ((Enemy) subject).setDamageTaken(z);
                 }
                 if (subject instanceof Minion) {
                     if (((Minion) subject).isEnemyMinion()) {
@@ -77,7 +79,7 @@ public class HomingMissile extends GameObject {
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - MissileMechanics.determineMissileDamage());
                     if (((Player) subject).isKilled()) {
-                        ((Player) subject).setKillerName((String) subject.getKilledByProperties().get("killdBy"));
+                        ((Player) subject).setKillerName((String) subject.getKilledByProperties().get("killedBy"));
                     }
                 }
             }

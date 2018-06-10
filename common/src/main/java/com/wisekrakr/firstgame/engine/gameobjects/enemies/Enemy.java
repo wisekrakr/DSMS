@@ -58,6 +58,9 @@ public class Enemy extends GameObject {
 
     private float damageTaken;
     private boolean minionActivated = false;
+    private boolean hit = false;
+    private float healthPercentage;
+    private float maxHealth;
 
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(type, name, position, space);
@@ -65,6 +68,8 @@ public class Enemy extends GameObject {
         this.radius = radius;
         this.health = health;
         this.speed = speed;
+        maxHealth = this.health;
+
 
         ammoCount = (int) Double.POSITIVE_INFINITY;
         shotLeftOver = ammoCount;
@@ -80,7 +85,6 @@ public class Enemy extends GameObject {
         laserShotLeftOver = laserAmmoCount;
         minesCount = (int) Double.POSITIVE_INFINITY;
         minesLeft = minesCount;
-        damageTaken = 0;
 
         setHealth(health);
         setCollisionRadius(radius);
@@ -125,6 +129,15 @@ public class Enemy extends GameObject {
                 (float) (getTargetVector().y + Math.sin(minionAngle) * 45f)));
     }
 
+    private float healthInPercentages(){
+        if (isHit()) {
+            float z = getHealth() - getDamageTaken();
+            healthPercentage = z / maxHealth * 100;
+            healthPercentage /= 100;
+        }
+        return healthPercentage;
+    }
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Player){
@@ -135,12 +148,12 @@ public class Enemy extends GameObject {
             }
 
         }
-        if (subject instanceof Bullet || subject instanceof HomingMissile) {
+        if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine) {
             float angle = angleBetween(this, subject);
             setMovingState(MovingState.DEFAULT_FORWARDS);
             setOrientation(angle);
             setDirection(angle);
-            damageTaken = subject.getDamage();
+            setHit(true);
         }
     }
 
@@ -165,7 +178,7 @@ public class Enemy extends GameObject {
     }
 
     /*Every way to attack a player. Switch and cases are below in the elapsedTime() method
-    * The CHASE case is in every children class respectively */
+     */
 
     public enum AttackState {
         PACIFIST, BLINK, FIRE_BULLETS, FIRE_MISSILES, FIRE_MINES, FIRE_CHILDREN, GANG_VIOLENCE, FIRE_SPORES, FIRE_SHOTGUN,
@@ -527,6 +540,14 @@ public class Enemy extends GameObject {
 
     }
 
+    public boolean isHit() {
+        return hit;
+    }
+
+    public void setHit(boolean hit) {
+        this.hit = hit;
+    }
+
     public boolean isMinionActivated() {
         return minionActivated;
     }
@@ -579,6 +600,10 @@ public class Enemy extends GameObject {
     @Override
     public void setHealth(float health) {
         this.health = health;
+    }
+
+    public float getMaxHealth() {
+        return maxHealth;
     }
 
     public void setRadius(float radius) {
@@ -683,7 +708,34 @@ public class Enemy extends GameObject {
     public Map<String, Object> getDamageProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
+        result.put("healthPercentage", healthInPercentages());
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getDamageTakenProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
         result.put("damageTaken", damageTaken);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getRandomProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("hit", hit);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getMaxHealthProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("maxHealth", maxHealth);
 
         return result;
     }

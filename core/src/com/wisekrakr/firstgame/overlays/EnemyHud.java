@@ -4,13 +4,11 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.wisekrakr.firstgame.HealthBar;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
@@ -31,12 +29,7 @@ public class EnemyHud {
     private Skin skin;
 
     private MyAssetManager myAssetManager;
-    private Integer damage;
     private float time;
-    private boolean hit;
-
-    private float health;
-
 
     public EnemyHud(OrthographicCamera camera) {
         this.camera = camera;
@@ -50,8 +43,8 @@ public class EnemyHud {
 
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
         TextureRegion slider = new TextureRegion(healthBar);
-        slider.setRegionWidth(30);
-        slider.setRegionHeight(10);
+        slider.setRegionWidth(20);
+        slider.setRegionHeight(7);
         healthBarTexture = new TextureRegionDrawable(slider);
 
         skin = new Skin();
@@ -70,12 +63,24 @@ public class EnemyHud {
     private Float radius(SpaceSnapshot.GameObjectSnapshot object){
         return (Float) object.extraProperties().get("radius");
     }
+
     private Float health(SpaceSnapshot.GameObjectSnapshot object){
         return (Float) object.healthProperties().get("health");
     }
 
+    private Float maxHealth(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.maxHealthProperties().get("maxHealth");
+    }
+    private Float healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.damageProperties().get("healthPercentage");
+    }
+
     private Float damageTaken(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("damageTaken");
+        return (Float) object.damageTakenProperties().get("damageTaken");
+    }
+
+    private Boolean isHit(SpaceSnapshot.GameObjectSnapshot object){
+        return (Boolean) object.randomProperties().get("hit");
     }
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
@@ -97,35 +102,36 @@ public class EnemyHud {
     }
 
     public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
-//TODO: min value of bar gets an Exception ---fix
+
         barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
-        //barStyle.knobBefore = barStyle.knob;
-        bar = new ProgressBar(0, health(object), 1.5f, false, barStyle);
-        bar.setAnimateDuration(1.2f);
-        bar.setSize(radius(object) * 1.5f, radius(object) * 1.5f);
-        bar.setValue(health(object));
+        barStyle.knobBefore = barStyle.knob;
+
+        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
+        bar.setSize(radius(object) * 3, radius(object) * 3);
         bar.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
-
-
-
-
+        bar.setValue(health(object));
         return bar;
     }
 
-    public Label damageLabel(SpaceSnapshot.GameObjectSnapshot object){
-        damage = (Integer) object.damageProperties().get("damage");
-        hit = (Boolean) object.randomProperties().get("hit");
 
-        damageLabel = new Label(damage.toString(), new Label.LabelStyle(font, Color.RED));
-        if (!(hit)){
+    public Label damageLabel(SpaceSnapshot.GameObjectSnapshot object){
+        if (damageTaken(object) > 0) {
+            damageLabel = new Label(damageTaken(object).toString(), new Label.LabelStyle(font, Color.RED));
+            damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y, Align.center);
             damageLabel.setVisible(false);
         }
-        damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y, Align.center);
         return damageLabel;
     }
 
-    public void update(SpaceSnapshot.GameObjectSnapshot object, float delta) {
-
+    public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){
+        time += delta;
+        if (isHit(object)) {
+            if (damageLabel.isVisible()) {
+                if (time >= 2) {
+                    damageLabel.setVisible(false);
+                }
+            }
+        }
     }
 
 

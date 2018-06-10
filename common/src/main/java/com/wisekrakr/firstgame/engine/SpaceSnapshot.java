@@ -41,8 +41,10 @@ public class SpaceSnapshot implements Serializable {
         private Map<String, Object> extra;
         private Map<String, Object> ammoExtra;
         private Map<String, Object> healthExtra;
+        private Map<String, Object> maxHealthExtra;
         private Map<String, Object> scoreExtra;
         private Map<String, Object> damageExtra;
+        private Map<String, Object> damageTakenExtra;
         private Map<String, Object> randomExtra;
         private Map<String, Object> killedByExtra;
 
@@ -50,8 +52,8 @@ public class SpaceSnapshot implements Serializable {
         }
 
         public GameObjectSnapshot(String name, GameObjectType type, float speed, float orientation, Vector2 position, Map<String,
-                Object> extra, Map<String, Object> ammoExtra, Map<String, Object> healthExtra, Map<String, Object> scoreExtra,
-                                  Map<String, Object> damageExtra, Map<String, Object> randomExtra, Map<String, Object> killedByExtra) {
+                Object> extra, Map<String, Object> ammoExtra, Map<String, Object> healthExtra, Map<String, Object> maxHealthExtra,  Map<String, Object> scoreExtra,
+                                  Map<String, Object> damageExtra, Map<String, Object> damageTakenExtra, Map<String, Object> randomExtra, Map<String, Object> killedByExtra) {
             this.name = name;
             this.type = type;
             this.speed = speed;
@@ -60,6 +62,7 @@ public class SpaceSnapshot implements Serializable {
             this.extra = extra;
             this.ammoExtra = ammoExtra;
             this.healthExtra = healthExtra;
+            this.maxHealthExtra = maxHealthExtra;
             this.scoreExtra = scoreExtra;
             this.damageExtra = damageExtra;
             this.randomExtra = randomExtra;
@@ -99,12 +102,20 @@ public class SpaceSnapshot implements Serializable {
             return healthExtra;
         }
 
+        public Map<String, Object> maxHealthProperties() {
+            return maxHealthExtra;
+        }
+
         public Map<String, Object> scoreProperties() {
             return scoreExtra;
         }
 
         public Map<String, Object> damageProperties() {
             return damageExtra;
+        }
+
+        public Map<String, Object> damageTakenProperties() {
+            return damageTakenExtra;
         }
 
         public Map<String, Object> randomProperties() {

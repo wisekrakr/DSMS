@@ -1,109 +1,75 @@
 package com.wisekrakr.firstgame;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
-
-import java.util.Random;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
 public class GameObjectRenderer {
 
-    private Random random;
-    private ShapeRenderer shaperenderer;
-    private Color color;
-    private Shape shape;
-    private ShapeRenderer.ShapeType shapeType;
+    private Sprite playerSprite;
+    private Sprite bulletSprite;
+    private Sprite missileSprite;
+    private Sprite asteroidSprite;
 
-    public GameObjectRenderer(ShapeRenderer shapeRenderer) {
-        this.shaperenderer = shapeRenderer;
-        random = new Random();
+    private Stage stage;
+    private OrthographicCamera camera;
+    private MyAssetManager myAssetManager;
+
+    private Texture asteroidTexture;
+
+    public GameObjectRenderer(OrthographicCamera camera, Stage stage) {
+        this.camera = camera;
+        this.stage = stage;
+
+        myAssetManager = new MyAssetManager();
+        myAssetManager.loadTextures();
     }
 
-    public void drawObject(Color color, ShapeRenderer.ShapeType shapeType, Shape shape){
-        this.shapeType = ShapeRenderer.ShapeType.Filled;
-        this.color = color;
-        this.shape = shape;
+    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.extraProperties().get("radius");
     }
 
-    private static final String yellowish = "EDE49E";
-    private static final String reddish = "F88158";
-
-    private static final Color[] SPORE_COLORS = {
-            Color.PURPLE,
-            Color.RED,
-            Color.YELLOW,
-            Color.GREEN
-    };
-
-
-    private static final Color[] DEBRIS_COLORS = {
-            Color.valueOf(yellowish),
-            Color.DARK_GRAY,
-            Color.LIGHT_GRAY,
-            Color.valueOf(reddish)
-    };
-
-    private static final Color[] EXHAUST_COLORS = {
-            Color.YELLOW,
-            Color.GOLDENROD,
-            Color.ORANGE,
-            Color.SCARLET
-    };
-
-    private static final Color[] BULLET_COLORS = {
-            Color.BLUE,
-            Color.RED,
-            Color.YELLOW,
-            Color.GREEN
-    };
-
-
-    private Color chooseColor(Color[] colors) {
-        return colors[random.nextInt(colors.length)];
+    public Sprite playerTexture(SpaceSnapshot.GameObjectSnapshot object){
+        Texture texture = myAssetManager.assetManager.get("sprites/spaceship.png");
+        playerSprite = new Sprite(texture);
+        playerSprite.setPosition(object.getPosition().x - playerSprite.getWidth()/2, object.getPosition().y - playerSprite.getHeight()/2);
+        playerSprite.setRotation(object.getOrientation());
+        playerSprite.setScale(3f);
+        return playerSprite;
     }
 
-    public ShapeRenderer getShaperenderer() {
-        return shaperenderer;
+    public Sprite asteroidTexture(SpaceSnapshot.GameObjectSnapshot object){
+        asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_big.png");
+        asteroidSprite = new Sprite(asteroidTexture);
+        asteroidSprite.setPosition(object.getPosition().x - asteroidSprite.getWidth()/2, object.getPosition().y - asteroidSprite.getHeight()/2);
+        asteroidSprite.setRotation(object.getOrientation());
+        return asteroidSprite;
     }
 
-    public void setShaperenderer(ShapeRenderer shaperenderer) {
-        this.shaperenderer = shaperenderer;
+    public Sprite bulletTexture(SpaceSnapshot.GameObjectSnapshot object){
+        Texture texture = myAssetManager.assetManager.get("sprites/bullet_small.png");
+        bulletSprite = new Sprite(texture);
+        bulletSprite.setPosition(object.getPosition().x - bulletSprite.getWidth()/2, object.getPosition().y - bulletSprite.getHeight()/2);
+
+        return bulletSprite;
     }
 
-    public Color getColor() {
-        return color;
+    public Sprite missileTexture(SpaceSnapshot.GameObjectSnapshot object){
+        Texture texture = myAssetManager.assetManager.get("sprites/missile_default.png");
+        missileSprite = new Sprite(texture);
+        missileSprite.setPosition(object.getPosition().x - missileSprite.getWidth()/2, object.getPosition().y - missileSprite.getHeight()/2);
+
+        return missileSprite;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    public void drawObjects(){
 
-    public Shape getShape() {
-        return shape;
-    }
-
-    public void setShape(Shape shape) {
-        this.shape = shape;
-    }
-
-    public static Color[] getSporeColors() {
-        return SPORE_COLORS;
-    }
-
-    public static Color[] getDebrisColors() {
-        return DEBRIS_COLORS;
-    }
-
-    public static Color[] getExhaustColors() {
-        return EXHAUST_COLORS;
-    }
-
-    public static Color[] getBulletColors() {
-        return BULLET_COLORS;
-    }
-
-    public ShapeRenderer.ShapeType getShapeType() {
-        return shapeType;
+        stage.getBatch().begin();
+        playerSprite.draw(stage.getBatch());
+//        asteroidSprite.draw(stage.getBatch());
+        stage.getBatch().end();
     }
 }

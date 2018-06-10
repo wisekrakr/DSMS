@@ -42,6 +42,8 @@ public class SpaceMine extends GameObject {
             if (subject instanceof Enemy) {
                 toDelete.add(this);
                 subject.setHealth(subject.getHealth() - getDamage());
+                float z = ((Enemy) subject).getMaxHealth() - subject.getHealth();
+                ((Enemy) subject).setDamageTaken(z);
                 setDestruct(true);
                 initDebris(toDelete, toAdd);
             }

@@ -581,9 +581,12 @@ public class Spaceship extends GameObject {
     public Map<String, Object> getKilledByProperties() {
         Map<String, Object> result = new HashMap<>();
 
+
         result.put("isKilled", isKilled);
         result.put("killedBy", killedBy());
 
         return result;
     }
+
+
 }
