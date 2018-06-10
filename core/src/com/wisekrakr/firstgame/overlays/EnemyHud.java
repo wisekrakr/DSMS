@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.Align;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 
+import java.util.ArrayList;
+
 
 public class EnemyHud {
 
@@ -30,6 +32,7 @@ public class EnemyHud {
 
     private MyAssetManager myAssetManager;
     private float time;
+    private ArrayList<DamageAnimation>damageAnimations;
 
     public EnemyHud(OrthographicCamera camera) {
         this.camera = camera;
@@ -80,7 +83,7 @@ public class EnemyHud {
     }
 
     private Boolean isHit(SpaceSnapshot.GameObjectSnapshot object){
-        return (Boolean) object.randomProperties().get("hit");
+        return (Boolean) object.hitProperties().get("hit");
     }
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
@@ -115,23 +118,25 @@ public class EnemyHud {
 
 
     public Label damageLabel(SpaceSnapshot.GameObjectSnapshot object){
-        if (damageTaken(object) > 0) {
-            damageLabel = new Label(damageTaken(object).toString(), new Label.LabelStyle(font, Color.RED));
-            damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y, Align.center);
-            damageLabel.setVisible(false);
-        }
+
+        damageLabel = new Label(damageTaken(object).toString(), new Label.LabelStyle(font, Color.RED));
+        damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y);
+
+
         return damageLabel;
     }
 
     public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){
-        time += delta;
+/*
         if (isHit(object)) {
-            if (damageLabel.isVisible()) {
-                if (time >= 2) {
-                    damageLabel.setVisible(false);
-                }
+            damageLabel.setVisible(true);
+            time += delta;
+            if (time >= 2) {
+                damageLabel.setVisible(false);
+                time = 0;
             }
-        }
+      }
+*/
     }
 
 

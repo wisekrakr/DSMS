@@ -79,7 +79,7 @@ public abstract class GameObject {
 
         }
     }
-    public boolean isHit(GameObject object1, GameObject object2){
+    public boolean collisionDetected(GameObject object1, GameObject object2){
             return
                     Math.sqrt(
                             (((object1.getPosition().x) - (object2.getPosition().x)))
@@ -141,7 +141,7 @@ public abstract class GameObject {
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
                 getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getMaxHealthProperties(), getScoreProperties(),
-                getDamageProperties(), getDamageTakenProperties(), getRandomProperties(), getKilledByProperties());
+                getDamageProperties(), getDamageTakenProperties(), getRandomProperties(), getKilledByProperties(), getHitProperties());
     }
 
 
@@ -187,7 +187,9 @@ public abstract class GameObject {
     public Map<String, Object> getKilledByProperties() {
         return new HashMap<>();
     }
-
+    public Map<String, Object> getHitProperties() {
+        return new HashMap<>();
+    }
 
     public void afterAdd(List<GameObject> toAdd) {
     }

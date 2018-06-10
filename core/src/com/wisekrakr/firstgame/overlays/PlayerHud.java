@@ -53,8 +53,8 @@ public class PlayerHud {
 
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
         TextureRegion slider = new TextureRegion(healthBar);
-        slider.setRegionWidth(100);
-        slider.setRegionHeight(10);
+        slider.setRegionWidth(Gdx.graphics.getWidth());
+        slider.setRegionHeight(50);
         healthBarTexture = new TextureRegionDrawable(slider);
 
         skin = new Skin();
@@ -69,28 +69,36 @@ public class PlayerHud {
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("radius");
+    private Float health(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.healthProperties().get("health");
     }
 
-    private Integer health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Integer) object.healthProperties().get("health");
+    private Float maxHealth(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.maxHealthProperties().get("maxHealth");
     }
+    private Float healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.damageProperties().get("healthPercentage");
+    }
+
+    private Float damageTaken(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.damageTakenProperties().get("damageTaken");
+    }
+
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
-        name = object.getName();
+        name = "Wisekrakr";
         nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
-        nameLabel.setPosition(projection(object).x, projection(object).y + (radius(object) + 10), Align.center);
+        nameLabel.setPosition(projection(object).x, projection(object).y + 30, Align.center);
         return nameLabel;
     }
 
-    public ProgressBar progressBar(SpaceSnapshot.GameObjectSnapshot object){
+    public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
 
         barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
-        bar = new ProgressBar(0, health(object), 0.5f, false, barStyle);
-        bar.setAnimateDuration(1.2f);
-        bar.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
+        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
+        bar.setPosition(Gdx.graphics.getWidth()/2,0, Align.center);
+        bar.setValue(health(object));
         return bar;
     }
 

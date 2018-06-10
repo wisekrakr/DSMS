@@ -213,10 +213,12 @@ public class Minion extends GameObject {
                     Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getOrientation(), 500, 2f, BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
                     if (enemyMinion) {
-                        bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
+                        //bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
+                        bullet.setPlayerBullet(true);
                     }
                     if (playerMinion){
-                        bullet.setBulletState(Bullet.BulletState.ATTACK_ENEMY);
+                        //bullet.setBulletState(Bullet.BulletState.ATTACK_ENEMY);
+                        bullet.setEnemyBullet(true);
                     }
                 }
                 break;

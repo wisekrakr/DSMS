@@ -13,8 +13,6 @@ import java.util.Set;
 
 public class Bullet extends GameObject {
 
-    private BulletState bulletState = BulletState.NONE;
-
     private float direction;
     private float radius;
     private float speed;
@@ -23,6 +21,8 @@ public class Bullet extends GameObject {
     private float time;
     private boolean hit;
 
+    private boolean playerBullet;
+    private boolean enemyBullet;
 
     public Bullet(String name, Vector2 initialPosition, SpaceEngine space, float direction,float speed, float radius, int damage) {
         super(GameObjectType.BULLET, name, initialPosition, space);
@@ -38,12 +38,10 @@ public class Bullet extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (bulletState == BulletState.ATTACK_ENEMY) {
+        if (playerBullet) {
             if (subject instanceof Enemy) {
                 toDelete.add(this);
                 subject.setHealth(subject.getHealth() - getDamage());
-                float z = ((Enemy) subject).getMaxHealth() - subject.getHealth();
-                ((Enemy) subject).setDamageTaken(z);
                 setHit(true);
             }
             if (subject instanceof Minion) {
@@ -54,7 +52,7 @@ public class Bullet extends GameObject {
                 }
             }
         }
-        if (bulletState == BulletState.ATTACK_PLAYER){
+        if (enemyBullet){
             if(subject instanceof Player){
                 toDelete.add(this);
                 subject.setHealth(subject.getHealth() - getDamage());
@@ -65,9 +63,6 @@ public class Bullet extends GameObject {
         }
     }
 
-    public enum BulletState{
-        NONE, ATTACK_PLAYER, ATTACK_ENEMY
-    }
 
     private float bulletSpeed(){
         return speed = 500f;
@@ -81,31 +76,16 @@ public class Bullet extends GameObject {
         if(time >= destructTime){
             toDelete.add(this);
         }
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * bulletSpeed() * delta,
+                getPosition().y + (float) Math.sin(direction) * bulletSpeed() * delta)
+        );
+        setOrientation(direction);
 
-        switch (bulletState){
-            case NONE:
-                break;
-            case ATTACK_PLAYER:
-                setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * bulletSpeed() * delta,
-                        getPosition().y + (float) Math.sin(direction) * bulletSpeed() * delta)
-                );
-                setOrientation(direction);
-                break;
-            case ATTACK_ENEMY:
-                setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * bulletSpeed() * delta,
-                        getPosition().y + (float) Math.sin(direction) * bulletSpeed() * delta)
-                );
-                setOrientation(direction);
-                break;
-        }
     }
-
-
 
     public float getDirection() {
         return direction;
     }
-
 
     public float getRadius() {
         return radius;
@@ -135,12 +115,20 @@ public class Bullet extends GameObject {
         this.hit = hit;
     }
 
-    public BulletState getBulletState() {
-        return bulletState;
+    public boolean isPlayerBullet() {
+        return playerBullet;
     }
 
-    public void setBulletState(BulletState bulletState) {
-        this.bulletState = bulletState;
+    public void setPlayerBullet(boolean playerBullet) {
+        this.playerBullet = playerBullet;
+    }
+
+    public boolean isEnemyBullet() {
+        return enemyBullet;
+    }
+
+    public void setEnemyBullet(boolean enemyBullet) {
+        this.enemyBullet = enemyBullet;
     }
 
     @Override

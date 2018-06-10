@@ -65,7 +65,12 @@ public class Spaceship extends GameObject {
     private boolean isKilled;
     private String killerName;
     private boolean shieldActivated;
-    private float lastShot;
+
+    private float damageTaken = 0;
+    private boolean hit = false;
+    private float healthPercentage;
+    private float maxHealth;
+
 
     /*
     private float oldMouseX;
@@ -82,14 +87,13 @@ public class Spaceship extends GameObject {
         mineAmmoCount = 20;
         health = 1000;
         score = 0;
+        maxHealth = health;
 
         setCollisionRadius(20f);
 
         bullets = new ArrayList<>();
         missiles = new ArrayList<>();
         spaceMines = new ArrayList<>();
-
-
 
     }
 
@@ -140,6 +144,15 @@ public class Spaceship extends GameObject {
         return null;
     }
 
+    private float healthInPercentages(){
+        if (isHit()) {
+            float z = getHealth() - getDamageTaken();
+            healthPercentage = z / maxHealth * 100;
+            healthPercentage /= 100;
+        }
+        return healthPercentage;
+    }
+
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
                         AimingState aimingState, SwitchWeaponState switchWeaponState, Float hardSteering) {
         this.throttle = throttle;
@@ -159,6 +172,26 @@ public class Spaceship extends GameObject {
             setHealth(getHealth() - 20);
         }
         */
+
+        if (subject instanceof Bullet) {
+            if (((Bullet) subject).isEnemyBullet()) {
+                setHit(true);
+                setDamageTaken(subject.getDamage());
+            }
+        }
+        if (subject instanceof HomingMissile) {
+            if (((HomingMissile) subject).isEnemyMissile()) {
+                setHit(true);
+                setDamageTaken(subject.getDamage());
+            }
+        }
+        if (subject instanceof SpaceMine) {
+            if (((SpaceMine) subject).isEnemyMine()) {
+                setHit(true);
+                setDamageTaken(subject.getDamage());
+            }
+        }
+
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
             shield = new Shield("shield", getPosition(), getSpace(), getAngle(), getSpeed(), this.getCollisionRadius() * 2, MissileMechanics.determineMissileDamage());
@@ -203,7 +236,6 @@ public class Spaceship extends GameObject {
                     break;
 
             }
-
         }
     }
 
@@ -212,7 +244,7 @@ public class Spaceship extends GameObject {
 
         if (enemy instanceof Enemy){
             if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine){
-                if (isHit(enemy, subject)){
+                if (collisionDetected(enemy, subject)){
                     if (subject instanceof Bullet) {
                         this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
@@ -413,8 +445,8 @@ public class Spaceship extends GameObject {
 
             currentBullet = new Bullet("bullito", getPosition(), getSpace(), getAngle(), getSpeed(), 2f, BulletMechanics.determineBulletDamage());
             toAdd.add(currentBullet);
-            currentBullet.setBulletState(Bullet.BulletState.ATTACK_ENEMY);
-
+            //currentBullet.setBulletState(Bullet.BulletState.ATTACK_ENEMY);
+            currentBullet.setPlayerBullet(true);
         }
 
     }
@@ -524,6 +556,26 @@ public class Spaceship extends GameObject {
         this.killerName = killerName;
     }
 
+    public float getDamageTaken() {
+        return damageTaken;
+    }
+
+    public void setDamageTaken(float damageTaken) {
+        this.damageTaken = damageTaken;
+    }
+
+    public boolean isHit() {
+        return hit;
+    }
+
+    public void setHit(boolean hit) {
+        this.hit = hit;
+    }
+
+    public float getMaxHealth() {
+        return maxHealth;
+    }
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -581,12 +633,47 @@ public class Spaceship extends GameObject {
     public Map<String, Object> getKilledByProperties() {
         Map<String, Object> result = new HashMap<>();
 
-
         result.put("isKilled", isKilled);
         result.put("killedBy", killedBy());
 
         return result;
     }
 
+    @Override
+    public Map<String, Object> getDamageProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("healthPercentage", healthInPercentages());
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getDamageTakenProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("damageTaken", damageTaken);
+
+        return result;
+    }
+
+
+    @Override
+    public Map<String, Object> getMaxHealthProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("maxHealth", maxHealth);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getHitProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("hit", hit);
+
+        return result;
+    }
 
 }

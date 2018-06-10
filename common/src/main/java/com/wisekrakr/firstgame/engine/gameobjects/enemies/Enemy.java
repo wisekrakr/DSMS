@@ -56,11 +56,12 @@ public class Enemy extends GameObject {
     private EnemyGang enemyGang;
     private float gangAngle;
 
-    private float damageTaken;
     private boolean minionActivated = false;
+    private float damageTaken = 0;
     private boolean hit = false;
     private float healthPercentage;
     private float maxHealth;
+
 
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(type, name, position, space);
@@ -138,6 +139,8 @@ public class Enemy extends GameObject {
         return healthPercentage;
     }
 
+
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if(subject instanceof Player){
@@ -148,12 +151,35 @@ public class Enemy extends GameObject {
             }
 
         }
-        if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine) {
-            float angle = angleBetween(this, subject);
-            setMovingState(MovingState.DEFAULT_FORWARDS);
-            setOrientation(angle);
-            setDirection(angle);
-            setHit(true);
+        if (subject instanceof Bullet) {
+            if (((Bullet) subject).isPlayerBullet()) {
+                float angle = angleBetween(this, subject);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
+                setOrientation(angle);
+                setDirection(angle);
+                setHit(true);
+                setDamageTaken(subject.getDamage());
+            }
+        }
+        if (subject instanceof HomingMissile){
+            if(((HomingMissile) subject).isPlayerMissile()){
+                float angle = angleBetween(this, subject);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
+                setOrientation(angle);
+                setDirection(angle);
+                setHit(true);
+                setDamageTaken(subject.getDamage());
+            }
+        }
+        if (subject instanceof SpaceMine){
+            if(((SpaceMine) subject).isPlayerMine()){
+                float angle = angleBetween(this, subject);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
+                setOrientation(angle);
+                setDirection(angle);
+                setHit(true);
+                setDamageTaken(subject.getDamage());
+            }
         }
     }
 
@@ -357,7 +383,8 @@ public class Enemy extends GameObject {
                     Bullet bullet = new Bullet("enemybullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
                             2f, BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
-                    bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
+                    //bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
+                    bullet.setEnemyBullet(true);
                 }
 
                 break;
@@ -723,7 +750,7 @@ public class Enemy extends GameObject {
     }
 
     @Override
-    public Map<String, Object> getRandomProperties() {
+    public Map<String, Object> getHitProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("hit", hit);

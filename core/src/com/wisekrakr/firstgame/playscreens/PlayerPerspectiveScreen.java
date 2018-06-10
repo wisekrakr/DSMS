@@ -107,6 +107,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private TextureAtlas atlas;
     private Sprite asteroidSprite;
+    private Boolean hit;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -599,6 +600,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                 }
                 radius = (Float) object.extraProperties().get("radius");
+                hit = (Boolean) object.hitProperties().get("hit");
 
                 x = object.getPosition().x;
                 y = object.getPosition().y;
@@ -626,13 +628,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         stage.getBatch().begin();
                         sprite.draw(stage.getBatch());
                         stage.getBatch().end();
-
+*/
                         Label playerLabel = playerHud.nameLabel(object);
-                        ProgressBar bar = playerHud.progressBar(object);
+                        ProgressBar bar = playerHud.healthBar(object);
                         overlayStage.addActor(playerLabel);
                         overlayStage.addActor(bar);
                         volatileLabels.add(playerLabel);
-*/
+                        volatileBars.add(bar);
+//TODO:: just keeps going and going, so not only when hit, but as soon as something hits, it keeps going====> fixarooni
+                        if (hit){
+                            System.out.println("Player hit!");
+                        }
 
                         //gameObjectRenderer.playerTexture(object);
 
@@ -691,11 +697,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label chaserNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(chaserNameLabel);
                         volatileLabels.add(chaserNameLabel);
-/*
+
                         Label damageLabel = enemyHud.damageLabel(object);
-                        overlayStage.addActor(damageLabel);
+                        if (hit) {
+                            overlayStage.addActor(damageLabel);
+                        }
                         volatileLabels.add(damageLabel);
-*/
+
                         ProgressBar chaserHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(chaserHealthBar);
                         volatileBars.add(chaserHealthBar);
@@ -1040,6 +1048,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                 updateHud(myself, delta);
                 updateOverlay();
+                enemyHud.update(enemy, delta);
 
                 break;
 
