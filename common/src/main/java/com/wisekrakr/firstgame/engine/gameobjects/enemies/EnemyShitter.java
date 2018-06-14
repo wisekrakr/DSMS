@@ -13,14 +13,20 @@ public class EnemyShitter extends Enemy {
     public EnemyShitter(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.SHITTER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(600);
-        setAttackDistance(400);
+        setAggroDistance(150);
+        setAttackDistance(100);
         setChangeDirectionTime(16f);
 
     }
 
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
+        super.targetSpotted(target, toDelete, toAdd);
+        setMovingState(MovingState.FLY_AWAY);
+
+
+        /*
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAggroDistance() ) {
                 float angle = angleBetween(this, target);
@@ -29,6 +35,7 @@ public class EnemyShitter extends Enemy {
                 setDirection(-angle);
             }
         }
+        */
     }
 
     @Override
@@ -37,6 +44,10 @@ public class EnemyShitter extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_MINES);
+                setMovingState(MovingState.FLY_AWAY);
+            }else {
+                setAttackState(AttackState.PACIFIST);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
             }
         }
     }

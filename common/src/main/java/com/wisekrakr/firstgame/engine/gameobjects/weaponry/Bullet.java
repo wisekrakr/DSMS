@@ -21,6 +21,8 @@ public class Bullet extends GameObject {
     private float time;
     private boolean hit;
 
+    private float bulletSpeed;
+
     private boolean playerBullet;
     private boolean enemyBullet;
 
@@ -51,6 +53,20 @@ public class Bullet extends GameObject {
                     setHit(true);
                 }
             }
+            if (subject instanceof HomingMissile){
+                if (((HomingMissile) subject).isEnemyMissile()){
+                    toDelete.add(this);
+                    toDelete.add(subject);
+                    setHit(true);
+                }
+            }
+            if (subject instanceof SpaceMine){
+                if (((SpaceMine) subject).isEnemyMine()){
+                    toDelete.add(this);
+                    toDelete.add(subject);
+                    setHit(true);
+                }
+            }
         }
         if (enemyBullet){
             if(subject instanceof Player){
@@ -60,13 +76,25 @@ public class Bullet extends GameObject {
                     ((Player) subject).setKillerName(this.getName());
                 }
             }
+            if (subject instanceof HomingMissile){
+                if (((HomingMissile) subject).isPlayerMissile()){
+                    toDelete.add(this);
+                    toDelete.add(subject);
+                    setHit(true);
+                }
+            }
+            if (subject instanceof SpaceMine){
+                if (((SpaceMine) subject).isPlayerMine()){
+                    toDelete.add(this);
+                    toDelete.add(subject);
+                    setHit(true);
+                }
+            }
         }
     }
 
 
-    private float bulletSpeed(){
-        return speed = 500f;
-    }
+
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -76,8 +104,8 @@ public class Bullet extends GameObject {
         if(time >= destructTime){
             toDelete.add(this);
         }
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * bulletSpeed() * delta,
-                getPosition().y + (float) Math.sin(direction) * bulletSpeed() * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * bulletSpeed * delta,
+                getPosition().y + (float) Math.sin(direction) * bulletSpeed * delta)
         );
         setOrientation(direction);
 
@@ -129,6 +157,14 @@ public class Bullet extends GameObject {
 
     public void setEnemyBullet(boolean enemyBullet) {
         this.enemyBullet = enemyBullet;
+    }
+
+    public float getBulletSpeed() {
+        return bulletSpeed;
+    }
+
+    public void setBulletSpeed(float bulletSpeed) {
+        this.bulletSpeed = bulletSpeed;
     }
 
     @Override

@@ -13,26 +13,16 @@ public class EnemyShotty extends Enemy {
     public EnemyShotty(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.SHOTTY, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(850);
-        setAttackDistance(800);
+        setAggroDistance(212.5f);
+        setAttackDistance(200f);
         setChangeDirectionTime(17f);
 
     }
 
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (target instanceof Player) {
-
-            if (distanceBetween(this, target) <= getAggroDistance()) {
-                float angle = angleBetween(this, target);
-                float angleNoAim = angleBetweenNoAim(this, target);
-
-                setPosition(new Vector2(getPosition().x -= Math.cos(angle), getPosition().y -= Math.sin(angle)));
-                setOrientation(angle);
-                setDirection(angleNoAim);
-
-            }
-        }
+        super.targetSpotted(target, toDelete, toAdd);
+        setMovingState(MovingState.DEFAULT_FORWARDS);
     }
 
     @Override
@@ -40,7 +30,11 @@ public class EnemyShotty extends Enemy {
         super.attackTarget(target, toDelete, toAdd);
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
+                setMovingState(MovingState.DODGING);
                 setAttackState(AttackState.FIRE_SHOTGUN);
+            }else {
+                setMovingState(MovingState.DEFAULT_FORWARDS);
+                setAttackState(AttackState.PACIFIST);
             }
         }
     }

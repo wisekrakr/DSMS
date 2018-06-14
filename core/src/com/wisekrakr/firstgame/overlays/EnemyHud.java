@@ -31,8 +31,10 @@ public class EnemyHud {
     private Skin skin;
 
     private MyAssetManager myAssetManager;
-    private float time;
+
     private ArrayList<DamageAnimation>damageAnimations;
+    private boolean hitDetected = false;
+    private float timeCounter;
 
     public EnemyHud(OrthographicCamera camera) {
         this.camera = camera;
@@ -46,12 +48,12 @@ public class EnemyHud {
 
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
         TextureRegion slider = new TextureRegion(healthBar);
-        slider.setRegionWidth(20);
-        slider.setRegionHeight(7);
+        slider.setRegionWidth(5);
+        slider.setRegionHeight(2);
         healthBarTexture = new TextureRegionDrawable(slider);
 
         skin = new Skin();
-        Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
+        Pixmap pixmap = new Pixmap(3, 3, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
         skin.add("white", new Texture(pixmap));
@@ -94,11 +96,12 @@ public class EnemyHud {
     }
 
     public Label healthLabel(SpaceSnapshot.GameObjectSnapshot object){
+        int healthInt = Math.round(health(object));
 
-        if (!(health(object) <= health(object)*(50f/100f))){
-            healthLabel = new Label(health(object).toString(), new Label.LabelStyle(font, Color.GREEN));
+        if (!(healthInt <= healthInt*(50f/100f))){
+            healthLabel = new Label("" + healthInt, new Label.LabelStyle(font, Color.GREEN));
         }else{
-            healthLabel = new Label(health(object).toString(), new Label.LabelStyle(font, Color.RED));
+            healthLabel = new Label("" + healthInt, new Label.LabelStyle(font, Color.RED));
         }
         healthLabel.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
         return healthLabel;
@@ -111,31 +114,37 @@ public class EnemyHud {
 
         bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
         bar.setSize(radius(object) * 3, radius(object) * 3);
-        bar.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
+        bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 3), Align.center);
         bar.setValue(health(object));
         return bar;
     }
 
 
     public Label damageLabel(SpaceSnapshot.GameObjectSnapshot object){
+        int damageTakenInt = Math.round(damageTaken(object));
 
-        damageLabel = new Label(damageTaken(object).toString(), new Label.LabelStyle(font, Color.RED));
+        damageLabel = new Label("" + damageTakenInt, new Label.LabelStyle(font, Color.RED));
         damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y);
-
 
         return damageLabel;
     }
 
     public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){
 /*
-        if (isHit(object)) {
-            damageLabel.setVisible(true);
-            time += delta;
-            if (time >= 2) {
-                damageLabel.setVisible(false);
-                time = 0;
+        timeCounter += delta;
+        if(!hitDetected) {
+            damageLabel.setVisible(false);
+            System.out.println("MISSSSSS");
+            if (isHit(object)) {
+                System.out.println("Hit!");
+                damageLabel.setVisible(true);
+                //if (timeCounter >= 1){
+                    damageLabel.remove();
+                    hitDetected = !hitDetected;
+                    timeCounter = 0;
+                //}
             }
-      }
+        }
 */
     }
 

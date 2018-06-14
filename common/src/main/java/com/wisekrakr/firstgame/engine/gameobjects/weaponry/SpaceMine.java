@@ -20,18 +20,24 @@ public class SpaceMine extends GameObject {
     private float destructTime;
     private int damage;
     private boolean isDestruct;
+    private float areaOfEffect;
 
     private boolean playerMine;
     private boolean enemyMine;
 
-    public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
+    /*
+    When initializing a SpaceMine in any other class, don't forget to setPlayer- or EnemyMine and setAreaOfEffect.
+     */
+
+    public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, float areaOfEffect, int damage) {
         super(GameObjectType.SPACE_MINE, name, initialPosition, space);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
         this.damage = damage;
+        this.areaOfEffect = areaOfEffect;
 
-        setCollisionRadius(radius);
+        setCollisionRadius(radius + areaOfEffect);
 
         isDestruct = false;
     }
@@ -133,6 +139,14 @@ public class SpaceMine extends GameObject {
 
     public void setDestruct(boolean destruct) {
         isDestruct = destruct;
+    }
+
+    public float getAreaOfEffect() {
+        return areaOfEffect;
+    }
+
+    public void setAreaOfEffect(float areaOfEffect) {
+        this.areaOfEffect = areaOfEffect;
     }
 
     @Override

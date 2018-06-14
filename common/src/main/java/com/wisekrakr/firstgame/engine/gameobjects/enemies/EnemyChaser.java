@@ -13,8 +13,8 @@ public class EnemyChaser extends Enemy {
     public EnemyChaser(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.ENEMY_CHASER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(950f);
-        setAttackDistance(750f);
+        setAggroDistance(237.5f);
+        setAttackDistance(187.5f);
         setChangeDirectionTime(5f);
     }
 

@@ -6,18 +6,27 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class PowerUp extends GameObject {
 
-    private float time;
-
     public PowerUp(GameObjectType type, String name, Vector2 initialPosition, SpaceEngine space) {
         super(type, name, initialPosition, space);
+
     }
+
+
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    }
+
+    @Override
+    public Map<String, Object> getExtraSnapshotProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("radius", getCollisionRadius());
+
+        return result;
     }
 }

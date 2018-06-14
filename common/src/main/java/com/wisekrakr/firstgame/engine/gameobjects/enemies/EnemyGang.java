@@ -16,8 +16,8 @@ public class EnemyGang extends Enemy {
     public EnemyGang(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.GANG, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(900);
-        setAttackDistance(600);
+        setAggroDistance(225f);
+        setAttackDistance(150f);
         setChangeDirectionTime(20f);
 
     }

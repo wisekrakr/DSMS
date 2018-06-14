@@ -15,7 +15,7 @@ public class PowerUpMissile extends PowerUp{
 
     public PowerUpMissile(String name, Vector2 initialPosition, SpaceEngine space) {
         super(GameObjectType.POWERUP_MISSILE, name, initialPosition, space);
-        setCollisionRadius(30);
+        setCollisionRadius(7.5f);
     }
 
     @Override

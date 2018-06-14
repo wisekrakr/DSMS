@@ -18,8 +18,8 @@ public class EnemyPest extends Enemy {
     public EnemyPest(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.PEST, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(950);
-        setAttackDistance(750);
+        setAggroDistance(237.5f);
+        setAttackDistance(187.5f);
         setChangeDirectionTime(3f);
 
     }
@@ -29,7 +29,10 @@ public class EnemyPest extends Enemy {
         super.collide(subject, toDelete, toAdd);
 
         if(subject instanceof HomingMissile){
-            toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, getOrientation(), 300, 10f, getSpace()));
+            if (((HomingMissile) subject).isPlayerMissile()) {
+                toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, this.getOrientation(), this.getSpeed(),
+                        getRadius() - ((HomingMissile) subject).getRadius(), getSpace()));
+            }
         }
     }
 
@@ -39,6 +42,9 @@ public class EnemyPest extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_BULLETS);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
+            }else{
+                setAttackState(AttackState.PACIFIST);
             }
         }
     }

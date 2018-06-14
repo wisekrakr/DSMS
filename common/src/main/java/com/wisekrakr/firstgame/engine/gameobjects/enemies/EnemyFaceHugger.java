@@ -15,8 +15,8 @@ public class EnemyFaceHugger extends Enemy {
     public EnemyFaceHugger(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.FACE_HUGGER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(700f);
-        setAttackDistance(300f);
+        setAggroDistance(175f);
+        setAttackDistance(75f);
         setChangeDirectionTime(3f);
     }
 

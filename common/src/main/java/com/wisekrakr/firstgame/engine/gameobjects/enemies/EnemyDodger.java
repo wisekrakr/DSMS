@@ -13,26 +13,16 @@ public class EnemyDodger extends Enemy {
     public EnemyDodger(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.DODGER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(500);
-        setAttackDistance(700);
+        setAggroDistance(125f);
+        setAttackDistance(175f);
         setChangeDirectionTime(20f);
 
     }
 
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (target instanceof Player) {
-
-            if (distanceBetween(this, target) <= getAggroDistance()) {
-                float angle = angleBetween(this, target);
-                float angleNoAim = angleBetweenNoAim(this, target);
-
-                setPosition(new Vector2(getPosition().x -= Math.cos(angle) * 2, getPosition().y -= Math.sin(angle) * 2));
-                setOrientation(angle);
-                setDirection(angleNoAim);
-
-            }
-        }
+        super.targetSpotted(target, toDelete, toAdd);
+        setMovingState(MovingState.BACKWARDS);
     }
 
     @Override
@@ -41,6 +31,9 @@ public class EnemyDodger extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_BULLETS);
+                setMovingState(MovingState.DODGING);
+            }else{
+                setAttackState(AttackState.PACIFIST);
             }
         }
     }

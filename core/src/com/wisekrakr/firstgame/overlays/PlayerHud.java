@@ -53,8 +53,8 @@ public class PlayerHud {
 
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
         TextureRegion slider = new TextureRegion(healthBar);
-        slider.setRegionWidth(Gdx.graphics.getWidth());
-        slider.setRegionHeight(50);
+        slider.setRegionWidth(3);
+        slider.setRegionHeight(1);
         healthBarTexture = new TextureRegionDrawable(slider);
 
         skin = new Skin();
@@ -96,8 +96,10 @@ public class PlayerHud {
 
         barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
-        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
-        bar.setPosition(Gdx.graphics.getWidth()/2,0, Align.center);
+
+        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, true, barStyle);
+        bar.setSize(5 * 5, 5 * 5);
+        bar.setPosition(Gdx.graphics.getWidth() - bar.getWidth()/2, Gdx.graphics.getHeight() - 25, Align.right);
         bar.setValue(health(object));
         return bar;
     }

@@ -11,7 +11,7 @@ public class PowerUpHealth extends PowerUp {
 
     public PowerUpHealth(String name, Vector2 initialPosition, SpaceEngine space) {
         super(GameObjectType.POWERUP_HEALTH, name, initialPosition, space);
-        setCollisionRadius(30);
+        setCollisionRadius(7.5f);
     }
 
     @Override

@@ -17,8 +17,8 @@ public class EnemyEls extends Enemy {
     public EnemyEls(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.ELS, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(950f);
-        setAttackDistance(750f);
+        setAggroDistance(237.5f);
+        setAttackDistance(187.5f);
         setChangeDirectionTime(3f);
 
         minionShooter = initMinionShooter();
@@ -47,6 +47,11 @@ public class EnemyEls extends Enemy {
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.elapseTime(clock, delta, toDelete, toAdd);
         minionMovement(delta);
+        if (!(getHealth() <= getHealth()*(20f/100f))){
+            setMinionRotationSpeed(getSpeed() / 10);
+        }else {
+            setMinionRotationSpeed(getSpeed() / 20);
+        }
         toAdd.add(minionShooter);
 
     }

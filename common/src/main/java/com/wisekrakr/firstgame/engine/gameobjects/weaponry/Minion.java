@@ -34,7 +34,6 @@ public class Minion extends GameObject {
 
     private int ammoCount;
     private float shotLeftOver;
-    private float minionAngle;
 
     private boolean playerMinion;
     private boolean enemyMinion;
@@ -53,8 +52,8 @@ public class Minion extends GameObject {
         setCollisionRadius(radius);
         setHealth(health);
 
-        setAggroDistance(700f);
-        setAttackDistance(600f);
+        setAggroDistance(175f);
+        setAttackDistance(150f);
 
         damage = 10;
         speed = 400f;
@@ -210,14 +209,13 @@ public class Minion extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getOrientation(), 500, 2f, BulletMechanics.determineBulletDamage());
+                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(), 0.5f, BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
+                    bullet.setBulletSpeed(getSpeed() * 3);
                     if (enemyMinion) {
-                        //bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
                         bullet.setPlayerBullet(true);
                     }
                     if (playerMinion){
-                        //bullet.setBulletState(Bullet.BulletState.ATTACK_ENEMY);
                         bullet.setEnemyBullet(true);
                     }
                 }

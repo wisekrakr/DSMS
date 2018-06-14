@@ -191,7 +191,7 @@ public abstract class GameObject {
         return new HashMap<>();
     }
 
-    public void afterAdd(List<GameObject> toAdd) {
+    public void afterAdd(List<GameObject> toAdd, List<GameObject> toRemove) {
     }
 
     public void afterRemove(List<GameObject> toAdd, List<GameObject> toRemove) {

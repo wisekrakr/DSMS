@@ -9,8 +9,8 @@ public class Constants {
 
 
 
-    public static final int WORLD_WIDTH = 1400;
-    public static final int WORLD_HEIGHT = 1400;
+    public static final int WORLD_WIDTH = 800;
+    public static final int WORLD_HEIGHT = 800;
 
     public static final int HUD_WIDTH = 800;
     public static final int HUD_HEIGHT = 800;

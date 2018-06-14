@@ -13,18 +13,24 @@ public class EnemyMotherShip extends Enemy {
     public EnemyMotherShip(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.MOTHERSHIP, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(1250);
-        setAttackDistance(850);
-
+        setAggroDistance(312.5f);
+        setAttackDistance(212.5f);
+        setChangeDirectionTime(30f);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+        super.collide(subject, toDelete, toAdd);
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 20);
             toDelete.add(subject);
         }
+    }
+
+    @Override
+    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        super.targetSpotted(target, toDelete, toAdd);
+        setMovingState(MovingState.DEFAULT_FORWARDS);
     }
 
     @Override
@@ -33,6 +39,10 @@ public class EnemyMotherShip extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_CHILDREN);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
+            }else{
+                setAttackState(AttackState.PACIFIST);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
             }
         }
     }

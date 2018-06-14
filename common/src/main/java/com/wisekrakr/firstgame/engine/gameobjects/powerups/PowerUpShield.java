@@ -12,7 +12,7 @@ public class PowerUpShield extends PowerUp {
 
     public PowerUpShield(String name, Vector2 initialPosition, SpaceEngine space) {
         super(GameObjectType.POWERUP_SHIELD, name, initialPosition, space);
-        setCollisionRadius(30);
+        setCollisionRadius(7.5f);
     }
 
     @Override

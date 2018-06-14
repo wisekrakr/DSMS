@@ -57,11 +57,20 @@ public class Enemy extends GameObject {
     private float gangAngle;
 
     private boolean minionActivated = false;
+    private float minionRotationSpeed;
+    private float mineAreaOfEffect;
+
     private float damageTaken = 0;
     private boolean hit = false;
     private float healthPercentage;
     private float maxHealth;
 
+    private float bulletRadius = 0.5f;
+    private float missileRadius = 1.25f;
+    private float mineRadius = 2f;
+    private float minionRadius = 2.5f;
+
+    //TODO: Create fire rate system for enemies
 
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(type, name, position, space);
@@ -70,7 +79,6 @@ public class Enemy extends GameObject {
         this.health = health;
         this.speed = speed;
         maxHealth = this.health;
-
 
         ammoCount = (int) Double.POSITIVE_INFINITY;
         shotLeftOver = ammoCount;
@@ -102,7 +110,7 @@ public class Enemy extends GameObject {
 
     public Minion initMinionShooter(){
         minionShooter = new Minion("Shooter Minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
-                getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 8f, getSpace());
+                getPosition().y + getCollisionRadius() * 2), (int) (getHealth()/3), getOrientation(), minionRadius, getSpace());
         minionShooter.setSpeed(getSpeed());
         setMinionActivated(isMinionActivated());
         minionShooter.setMinionShooter(true);
@@ -110,24 +118,24 @@ public class Enemy extends GameObject {
         return minionShooter;
     }
 
-    /* Initialize this method in the elapsedTime method of the class where you want a Minion
+    /* Initialize this method in the elapsedTime method of the Enemy child class where you want a Minion, and setMinionRotationSpeed there.
      */
     public void minionMovement(float delta){
-        minionAngle += 2f * delta;
-        minionShooter.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 45f),
-                (float) (getPosition().y + Math.sin(minionAngle) * 45f)));
+        minionAngle += getMinionRotationSpeed() * delta;
+        minionShooter.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * getSpeed() /3),
+                (float) (getPosition().y + Math.sin(minionAngle) * getSpeed() /3)));
     }
 
     public EnemyGang initGang(){
-        enemyGang = new EnemyGang("Boi", new Vector2(getPosition().x + getCollisionRadius() * 2,
-                getPosition().y + getCollisionRadius() * 2), 20, getOrientation(), 120f, 10f, getSpace());
+        enemyGang = new EnemyGang("Boi", new Vector2(getPosition().x + getCollisionRadius(),
+                getPosition().y + getCollisionRadius()), (int) getHealth(), getOrientation(), getSpeed(), getRadius(), getSpace());
         return enemyGang;
     }
 
     public void gangMovement(float delta){
         gangAngle += 2f * delta;
-        enemyGang.setPosition(new Vector2((float) (getTargetVector().x + Math.cos(minionAngle) * 45f),
-                (float) (getTargetVector().y + Math.sin(minionAngle) * 45f)));
+        enemyGang.setPosition(new Vector2((float) (getTargetVector().x + Math.cos(minionAngle) * getSpeed()),
+                (float) (getTargetVector().y + Math.sin(minionAngle) * getSpeed())));
     }
 
     private float healthInPercentages(){
@@ -169,6 +177,7 @@ public class Enemy extends GameObject {
                 setDirection(angle);
                 setHit(true);
                 setDamageTaken(subject.getDamage());
+                toDelete.add(subject);
             }
         }
         if (subject instanceof SpaceMine){
@@ -212,7 +221,7 @@ public class Enemy extends GameObject {
     }
 
     public enum MovingState {
-        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY, FACE_HUGGING
+        FROZEN, DEFAULT_FORWARDS, BACKWARDS, DODGING, FLY_AROUND, FLY_BY, FACE_HUGGING, FLY_AWAY
     }
 
 
@@ -339,9 +348,10 @@ public class Enemy extends GameObject {
                 break;
 
             case FLY_BY:
+//Todo: change this case to something like a fast and then slow moving ship
                 time += delta;
                 if(time >= getChangeDirectionTime()){
-                    setSpeed(getSpeed() + 200f);
+                    setSpeed(getSpeed() *2);
                     time = 0;
                 }
                 setPosition(new Vector2(getPosition().x + (float) Math.cos(direction + updateAngle(delta)) * getSpeed() * delta,
@@ -351,11 +361,21 @@ public class Enemy extends GameObject {
                 break;
             case FACE_HUGGING:
                 rotationAngle += 3f * delta;
-                setPosition(new Vector2((float) (getTargetVector().x + Math.cos(rotationAngle) * 45f),
-                        (float) (getTargetVector().y + Math.sin(rotationAngle) * 45f)));
+                setMinionRotationSpeed(getSpeed()/2);
+                if (getHealth() <= getHealth()*(10f/100f )){
+                    setMinionRotationSpeed(getSpeed());
+                }
+                setPosition(new Vector2((float) (getTargetVector().x + Math.cos(rotationAngle) * getMinionRotationSpeed()),
+                        (float) (getTargetVector().y + Math.sin(rotationAngle) * getMinionRotationSpeed())));
 
                 setOrientation(direction);
 
+                break;
+
+            case FLY_AWAY:
+                setPosition(new Vector2(getPosition().x -=  Math.cos(direction), getPosition().y -=  Math.sin(direction)));
+                setOrientation(-direction);
+                setDirection(-direction);
                 break;
             case FROZEN:
 
@@ -381,10 +401,10 @@ public class Enemy extends GameObject {
 
                 for (int i = 0; i < exactShotCount; i++) {
                     Bullet bullet = new Bullet("enemybullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
-                            2f, BulletMechanics.determineBulletDamage());
+                            bulletRadius, BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
-                    //bullet.setBulletState(Bullet.BulletState.ATTACK_PLAYER);
                     bullet.setEnemyBullet(true);
+                    bullet.setBulletSpeed(getSpeed() * 3);
                 }
 
                 break;
@@ -402,15 +422,16 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < missileExactShotCount; i++) {
-                    HomingMissile missile = new HomingMissile("enemymissile", new Vector2(getPosition().x + 16, getPosition().y + 16),
-                            getSpace(), getOrientation(), getSpeed(),5f, MissileMechanics.determineMissileDamage(), true);
+                    HomingMissile missile = new HomingMissile("enemymissile", new Vector2(getPosition().x + getCollisionRadius(),
+                            getPosition().y + getCollisionRadius()),
+                            getSpace(), getOrientation(), getSpeed(),missileRadius, MissileMechanics.determineMissileDamage(), true);
                     missile.missileEnable(this);
                     toAdd.add(missile);
-                    missile.setMissileSpeed(getSpeed() * 2);
+                    missile.setMissileSpeed(getSpeed() * 3);
                 }
 
                 break;
-
+//TODO: This needs to be fixed. The way of making them, aiming them and the speed of them. THIS WHOLE THING NEEDS TO BE FIXED
             case FIRE_SHOTGUN:
                 shottyAmmoCount = getShottyAmmoCount();
                 float shottyShotCount = delta / 4.5f + shottyShotLeftOver;
@@ -424,16 +445,23 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactShottyShotCount; i++) {
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getDirection(), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /6), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /6), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /7), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /7), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /8), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /8), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), 400, 2f, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), 400, 2f, BulletMechanics.determineBulletDamage()));
+                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getDirection(), getSpeed(),
+                            bulletRadius, BulletMechanics.determineBulletDamage());
+                    toAdd.add(bullet);
+                    bullet.setEnemyBullet(true);
+                    bullet.setBulletSpeed(getSpeed() * 10);
+/*
 
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getDirection(), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /6), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /6), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /7), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /7), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /8), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /8), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
+*/
                 }
                 break;
 
@@ -452,9 +480,9 @@ public class Enemy extends GameObject {
 
                 for (int i = 0; i < sporesExactShotCount; i++) {
                     Random randomGenerator = new Random();
-                    toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * 100f,
-                            getPosition().y + randomGenerator.nextFloat() * 100f),
-                            getSpace(), getOrientation() + randomGenerator.nextFloat() * 100f, 200,2f,
+                    toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * getCollisionRadius(),
+                            getPosition().y + randomGenerator.nextFloat() * getCollisionRadius()),
+                            getSpace(), getOrientation() + randomGenerator.nextFloat() * getCollisionRadius(), getSpeed() * 4, bulletRadius,
                             BulletMechanics.determineBulletDamage() / 5));
                 }
 
@@ -472,13 +500,12 @@ public class Enemy extends GameObject {
                 } else {
                     childrenShotLeftOver = 0;
                 }
-
                 for(int i = 0; i < childrenExactShotCount; i++) {
                     Random randomGenerator = new Random();
-                    EnemyChaser enemyChaser = new EnemyChaser("ChaserMinion1", new Vector2(
+                    EnemyChaser enemyChaser = new EnemyChaser("ChaserMinion" + String.valueOf(childrenAmmoCount), new Vector2(
                             getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
-                            8, getDirection(), 220,10f, getSpace());
+                            (int) (getMaxHealth()/10), getDirection(), getSpeed() * 6, minionRadius, getSpace());
                     toAdd.add(enemyChaser);
 
                     float destructTime = 8.0f;
@@ -506,7 +533,7 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < laserExactShotCount; i++) {
-                    toAdd.add(new LaserBeam("laser", getPosition(), getSpace(), getOrientation(), 2f,
+                    toAdd.add(new LaserBeam("laser", getPosition(), getSpace(), getOrientation(), bulletRadius,
                             BulletMechanics.determineBulletDamage(), getSpeed() * 3));
                 }
 
@@ -526,8 +553,9 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactMinesShotCount; i++) {
+                    setMineAreaOfEffect(7f);
                     SpaceMine spaceMine = new SpaceMine("enemy_mine", getPosition(), getSpace(), getOrientation(),
-                            300, 8f, MineMechanics.determineMineDamage());
+                            getSpeed(), mineRadius, getMineAreaOfEffect(), MineMechanics.determineMineDamage());
                     toAdd.add(spaceMine);
                     spaceMine.setEnemyMine(true);
                 }
@@ -550,7 +578,7 @@ public class Enemy extends GameObject {
             case GANG_VIOLENCE:
                 EnemyGang enemyGang = new EnemyGang("Gang!", new Vector2(
                         targetVector.x + getCollisionRadius() * 2, targetVector.y + getCollisionRadius() * 2),
-                        50,random.nextFloat() * 2000 - 1000,120f,10f, getSpace());
+                        (int) getMaxHealth(),random.nextFloat() * 2000 - 1000, getSpeed(), minionRadius, getSpace());
                 toAdd.add(enemyGang);
                 break;
             case PACIFIST:
@@ -711,6 +739,22 @@ public class Enemy extends GameObject {
 
     public void setDamageTaken(float damageTaken) {
         this.damageTaken = damageTaken;
+    }
+
+    public float getMineAreaOfEffect() {
+        return mineAreaOfEffect;
+    }
+
+    public void setMineAreaOfEffect(float mineAreaOfEffect) {
+        this.mineAreaOfEffect = mineAreaOfEffect;
+    }
+
+    public float getMinionRotationSpeed() {
+        return minionRotationSpeed;
+    }
+
+    public void setMinionRotationSpeed(float minionRotationSpeed) {
+        this.minionRotationSpeed = minionRotationSpeed;
     }
 
     @Override

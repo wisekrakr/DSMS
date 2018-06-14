@@ -17,6 +17,7 @@ public class Spores extends GameObject {
     private int damage;
     private float direction;
     private float speed;
+    private float attackDistance;
 
     public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
         super(GameObjectType.SPORE, name, initialPosition, space);
@@ -28,6 +29,7 @@ public class Spores extends GameObject {
         setCollisionRadius(radius);
         setDamage(damage);
         setSpeed(speed);
+        setAttackDistance(125f);
     }
 
     @Override
@@ -106,6 +108,13 @@ public class Spores extends GameObject {
         this.speed = speed;
     }
 
+    public float getAttackDistance() {
+        return attackDistance;
+    }
+
+    public void setAttackDistance(float attackDistance) {
+        this.attackDistance = attackDistance;
+    }
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {

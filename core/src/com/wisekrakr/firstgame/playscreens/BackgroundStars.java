@@ -1,5 +1,6 @@
 package com.wisekrakr.firstgame.playscreens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -26,8 +27,8 @@ public class BackgroundStars extends Actor{
         speed = 0;
 
         x = y = originX = originY= rotation = srcY = srcX = 0;
-        width = Constants.WORLD_WIDTH;
-        heigth = Constants.WORLD_HEIGHT;
+        width = Gdx.graphics.getWidth();
+        heigth = Gdx.graphics.getHeight();
         scaleX = scaleY = 1f;
         flipX = flipY = false;
 

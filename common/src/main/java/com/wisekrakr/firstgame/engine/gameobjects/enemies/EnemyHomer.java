@@ -13,8 +13,8 @@ public class EnemyHomer extends Enemy {
     public EnemyHomer(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.HOMER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(850);
-        setAttackDistance(600);
+        setAggroDistance(212.5f);
+        setAttackDistance(150f);
         setChangeDirectionTime(12f);
 
     }
@@ -31,8 +31,10 @@ public class EnemyHomer extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_MISSILES);
+                setMovingState(MovingState.FLY_AROUND);
             }else{
                 setAttackState(AttackState.PACIFIST);
+                setMovingState(MovingState.DEFAULT_FORWARDS);
             }
         }
     }

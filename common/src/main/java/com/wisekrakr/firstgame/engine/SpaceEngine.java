@@ -28,12 +28,15 @@ public class SpaceEngine {
     public void addGameObject(GameObject object) {
         synchronized (monitor) {
             gameObjects.add(object);
-
             List<GameObject> toAdd = new ArrayList<>();
-            object.afterAdd(toAdd);
+            List<GameObject> toRemove = new ArrayList<>();
+            object.afterAdd(toAdd, toRemove);
 
             for (GameObject o: toAdd) {
                 addGameObject(o);
+            }
+            for (GameObject o: toRemove) {
+                removeGameObject(o);
             }
         }
     }

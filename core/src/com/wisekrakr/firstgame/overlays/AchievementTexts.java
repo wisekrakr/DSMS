@@ -26,8 +26,8 @@ public class AchievementTexts implements Disposable {
     private float timeCounter;
     private float timeNow;
     private Float distance;
-    private Boolean killedBy;
-    private String killer;
+    private String killerName;
+    private Float health;
 
     public AchievementTexts(MyAssetManager myAssetManager) {
         this.myAssetManager = myAssetManager;
@@ -60,8 +60,8 @@ public class AchievementTexts implements Disposable {
         if(timeCounter != 0) {
             if (myself != null) {
                 distance = (Float) myself.extraProperties().get("distanceTravelled");
-                killedBy = (Boolean) myself.killedByProperties().get("isKilled");
-                killer = (String) myself.killedByProperties().get("killedBy");
+                killerName = (String) myself.killedByProperties().get("killedBy");
+                health = (Float) myself.healthProperties().get("health");
                 if (distance >= 2222) {
                     timeNow += delta;
                     if (timeNow <= 10) {
@@ -70,10 +70,10 @@ public class AchievementTexts implements Disposable {
                         distanceLabel.remove();
                     }
                 }
-                if (killedBy){
+                if (health <= 0){
                     timeNow += delta;
                     if (timeNow <= 10){
-                        killedByLabel.setText(killer);
+                        killedByLabel.setText(killerName);
                     }
                 }
 

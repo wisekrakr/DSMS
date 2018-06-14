@@ -14,8 +14,8 @@ public class EnemyBlinker extends Enemy {
     public EnemyBlinker(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.BLINKER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(950f);
-        setAttackDistance(750f);
+        setAggroDistance(237.5f);
+        setAttackDistance(187.5f);
         setChangeDirectionTime(8f);
     }
 

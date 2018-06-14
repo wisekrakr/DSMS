@@ -15,8 +15,8 @@ public class EnemyMutator extends Enemy {
     public EnemyMutator(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.MUTATOR, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(1000);
-        setAttackDistance(550);
+        setAggroDistance(250f);
+        setAttackDistance(137.5f);
         setChangeDirectionTime(20f);
 
     }

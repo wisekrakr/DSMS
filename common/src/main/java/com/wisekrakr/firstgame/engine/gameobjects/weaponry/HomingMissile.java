@@ -43,7 +43,7 @@ public class HomingMissile extends GameObject {
         setCollisionRadius(radius);
         setDamage(damage);
         setSpeed(speed);
-        setAttackDistance(500f);
+        setAttackDistance(125f);
     }
 
     public void missileEnable(GameObject subject){
