@@ -13,12 +13,14 @@ public class GameObjectRenderer {
     private Sprite bulletSprite;
     private Sprite missileSprite;
     private Sprite asteroidSprite;
+    private Sprite shieldPowerUpSprite;
+    private Sprite healthPowerUpSprite;
 
     private Stage stage;
     private OrthographicCamera camera;
     private MyAssetManager myAssetManager;
+    private Sprite sprite;
 
-    private Texture asteroidTexture;
 
     public GameObjectRenderer(OrthographicCamera camera, Stage stage) {
         this.camera = camera;
@@ -42,7 +44,7 @@ public class GameObjectRenderer {
     }
 
     public Sprite asteroidTexture(SpaceSnapshot.GameObjectSnapshot object){
-        asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_big.png");
+        Texture asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_big.png");
         asteroidSprite = new Sprite(asteroidTexture);
         asteroidSprite.setPosition(object.getPosition().x - asteroidSprite.getWidth()/2, object.getPosition().y - asteroidSprite.getHeight()/2);
         asteroidSprite.setRotation(object.getOrientation());
@@ -65,11 +67,37 @@ public class GameObjectRenderer {
         return missileSprite;
     }
 
+    public Sprite shieldPowerUp(SpaceSnapshot.GameObjectSnapshot object){
+        Texture texture = myAssetManager.assetManager.get("sprites/powerup_shield.png");
+        shieldPowerUpSprite = new Sprite(texture);
+        shieldPowerUpSprite.setPosition(object.getPosition().x - shieldPowerUpSprite.getWidth()/2,
+                object.getPosition().y - shieldPowerUpSprite.getHeight()/2);
+
+        return shieldPowerUpSprite;
+    }
+
+    public Sprite healthPowerUp(SpaceSnapshot.GameObjectSnapshot object){
+        Texture texture = myAssetManager.assetManager.get("sprites/powerup_health.png");
+        healthPowerUpSprite = new Sprite(texture);
+        healthPowerUpSprite.setPosition(object.getPosition().x - healthPowerUpSprite.getWidth()/2,
+                object.getPosition().y - healthPowerUpSprite.getHeight()/2);
+
+        return healthPowerUpSprite;
+    }
+    public Sprite setTexture(SpaceSnapshot.GameObjectSnapshot object, Texture texture){
+        sprite = new Sprite(texture);
+        sprite.setPosition(object.getPosition().x - sprite.getWidth()/2,object.getPosition().y - sprite.getHeight()/2);
+        sprite.setScale(3f);
+
+        return sprite;
+    }
+
     public void drawObjects(){
 
         stage.getBatch().begin();
-        playerSprite.draw(stage.getBatch());
+//        playerSprite.draw(stage.getBatch());
 //        asteroidSprite.draw(stage.getBatch());
+
         stage.getBatch().end();
     }
 }

@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 
 import com.badlogic.gdx.math.Vector2;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -337,7 +338,7 @@ public class Enemy extends GameObject {
                 setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + randomAngle(delta)) * getSpeed() * delta ),
                         (getPosition().y + (float) Math.sin(direction + randomAngle(delta)) * getSpeed() * delta))
                 );
-
+                setOrientation(direction);
                 break;
             case FLY_AROUND:
                 setPosition(new Vector2((getPosition().x + (float) Math.cos(direction + updateAngle(delta)) * getSpeed() * delta ),
@@ -373,9 +374,10 @@ public class Enemy extends GameObject {
                 break;
 
             case FLY_AWAY:
-                setPosition(new Vector2(getPosition().x -=  Math.cos(direction), getPosition().y -=  Math.sin(direction)));
+                setPosition(new Vector2(getPosition().x - (float) Math.cos(direction) * (getSpeed()*2) * delta,
+                        getPosition().y - (float) Math.sin(direction) * (getSpeed()*2) * delta));
                 setOrientation(-direction);
-                setDirection(-direction);
+
                 break;
             case FROZEN:
 

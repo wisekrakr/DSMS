@@ -652,6 +652,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             timeCounter = 0;
                         }
 
+
                         //gameObjectRenderer.playerTexture(object);
 
                         break;
@@ -1072,7 +1073,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 addBackground();
 
                 renderGameObjects(delta);
-                //gameObjectRenderer.drawObjects();
+                gameObjectRenderer.drawObjects();
 
                 updateHud(myself, delta);
                 updateOverlay();
