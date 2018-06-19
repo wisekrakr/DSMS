@@ -52,9 +52,7 @@ public class StartScreen extends ScreenAdapter {
         final String unique = UUID.randomUUID().toString();
 
         playScreen = new PlayerPerspectiveScreen(connector, Arrays.asList(unique + "-A"), unique + "-A");
-
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        Gdx.input.setInputProcessor(stage);
 
         myAssetManager = new MyAssetManager();
         myAssetManager.loadSkins();

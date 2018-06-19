@@ -117,7 +117,7 @@ public abstract class GameObject {
     }
     public float angleBetweenNoAim(GameObject subject, GameObject target) {
         Random random = new Random();
-        setEnemyMarginOfError(60f);
+        setEnemyMarginOfError(getCollisionRadius() * 2);
         float number = random.nextFloat() * enemyMarginOfError;
 
         float attackDistanceX = (target.getPosition().x + number) - subject.getPosition().x;

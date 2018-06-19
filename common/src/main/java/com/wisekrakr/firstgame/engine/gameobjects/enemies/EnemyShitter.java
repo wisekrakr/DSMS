@@ -13,7 +13,7 @@ public class EnemyShitter extends Enemy {
     public EnemyShitter(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(GameObjectType.SHITTER, name, position, health, direction, speed, radius, space);
 
-        setAggroDistance(200);
+        setAggroDistance(100);
         setAttackDistance(165);
         setChangeDirectionTime(16f);
 

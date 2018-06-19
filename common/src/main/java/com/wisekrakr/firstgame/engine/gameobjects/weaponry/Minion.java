@@ -156,6 +156,7 @@ public class Minion extends GameObject {
                             setMinionAttackState(MinionAttackState.FIGHT);
                         } else {
                             setMinionAttackState(MinionAttackState.PACIFIST);
+
                         }
                     }
                 }
@@ -231,7 +232,10 @@ public class Minion extends GameObject {
                 shotLeftOver = 0;
                 break;
             case RETURN:
-
+                setPosition(new Vector2(targetVector.x + (float) Math.cos(direction) * getSpeed() * delta,
+                        targetVector.y + (float) Math.sin(direction) * getSpeed() * delta)
+                );
+                setOrientation(direction);
 
                 break;
         }

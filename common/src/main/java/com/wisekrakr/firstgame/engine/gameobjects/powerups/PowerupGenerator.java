@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.server.EngineConstants;
 
 import java.util.Random;
 import java.util.Set;
@@ -25,23 +26,27 @@ public class PowerupGenerator extends GameObject {
             int randomPowerUp = MathUtils.random(1, 4);
             switch (randomPowerUp) {
                 case 1:
-                    PowerUpMissile powerUpMissile = new PowerUpMissile("missile power up", new Vector2(random.nextFloat() * 5000 - 3000,
-                            random.nextFloat() * 5000 - 3000), getSpace());
+                    PowerUpMissile powerUpMissile = new PowerUpMissile("missile power up",
+                            new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
+                            random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
                     toAdd.add(powerUpMissile);
                     break;
                 case 2:
-                    PowerUpShield powerUpShield = new PowerUpShield("shield power up", new Vector2(random.nextFloat() * 5000 - 3000,
-                            random.nextFloat() * 5000 - 3000), getSpace());
+                    PowerUpShield powerUpShield = new PowerUpShield("shield power up",
+                            new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
+                            random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
                     toAdd.add(powerUpShield);
                     break;
                 case 3:
-                    PowerUpMinion powerUpMinion = new PowerUpMinion("minion power up", new Vector2(random.nextFloat() * 5000 - 3000,
-                            random.nextFloat() * 5000 - 3000), getSpace());
+                    PowerUpMinion powerUpMinion = new PowerUpMinion("minion power up",
+                            new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
+                                    random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
                     toAdd.add(powerUpMinion);
                     break;
                 case 4:
-                    PowerUpHealth powerUpHealth = new PowerUpHealth("health", new Vector2(random.nextFloat() * 5000 - 3000,
-                            random.nextFloat() * 5000 - 3000), getSpace());
+                    PowerUpHealth powerUpHealth = new PowerUpHealth("health",
+                            new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
+                                    random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
                     toAdd.add(powerUpHealth);
                     break;
             }

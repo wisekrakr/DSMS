@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.popups;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,15 +16,18 @@ import com.wisekrakr.firstgame.input.InputManager;
 
 public class PauseScreenAdapter extends ScreenAdapter {
 
+    private InputMultiplexer inputMultiplexer;
+
     private Texture texture;
     private MyAssetManager myAssetManager;
     private Stage stage;
-    private InputManager inputManager;
 
-    public PauseScreenAdapter() {
+    public PauseScreenAdapter(InputMultiplexer inputMultiplexer) {
+
+        this.inputMultiplexer = inputMultiplexer;
 
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        Gdx.input.setInputProcessor(stage);
+        inputMultiplexer.addProcessor(stage);
 
         myAssetManager = new MyAssetManager();
         myAssetManager.loadSkins();
@@ -49,7 +53,7 @@ public class PauseScreenAdapter extends ScreenAdapter {
 
     }
     public void hidePauseScreen(){
-        if (inputManager.isKeyDown(Input.Keys.BACKSPACE)){
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
             this.hide();
         }
     }

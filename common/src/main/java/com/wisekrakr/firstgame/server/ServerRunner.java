@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -65,6 +66,7 @@ public class ServerRunner {
                 engine.elapseTime(0);
                 long then = System.nanoTime();
                 while (true) {
+
                     try {
                         Thread.sleep(10L);
                     } catch (InterruptedException e) {
@@ -83,12 +85,17 @@ public class ServerRunner {
 
         timeThread.setDaemon(true);
 
+
+
         Random randomGenerator = new Random();
 
         engine.addGameObject(new PowerupGenerator(new Vector2(
                 randomGenerator.nextFloat() * width - plusOfXY,
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine));
+
+
+
 
         for (int i = 0; i < 4; i++) {
             EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
@@ -99,7 +106,7 @@ public class ServerRunner {
             engine.addGameObject(chaser);
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             EnemyShitter shitter = new EnemyShitter("Shitter", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
@@ -107,8 +114,8 @@ public class ServerRunner {
                     37.5f,7.5f, engine);
             engine.addGameObject(shitter);
         }
- /*
-        for (int i = 0; i < 6; i++) {
+
+        for (int i = 0; i < 2; i++) {
             EnemyEls enemyEls = new EnemyEls("ELS", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,
                     randomGenerator.nextFloat() * height - plusOfXY),
@@ -116,7 +123,7 @@ public class ServerRunner {
                     47.5f, 6.25f, engine);
             engine.addGameObject(enemyEls);
         }
-
+/*
         for (int i = 0; i < 5; i++) {
             EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
                     randomGenerator.nextFloat() * width - plusOfXY,

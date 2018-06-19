@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 
 import com.badlogic.gdx.math.Vector2;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -71,8 +70,6 @@ public class Enemy extends GameObject {
     private float mineRadius = 2f;
     private float minionRadius = 2.5f;
 
-    //TODO: Create fire rate system for enemies
-
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
         super(type, name, position, space);
         this.direction = direction;
@@ -109,7 +106,7 @@ public class Enemy extends GameObject {
     /* These are the methods to initialize a MinionShooter for an enemy. Implement the methods in an enemy class. Example = EnemyEls
     * */
 
-    public Minion initMinionShooter(){
+    Minion initMinionShooter(){
         minionShooter = new Minion("Shooter Minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
                 getPosition().y + getCollisionRadius() * 2), (int) (getHealth()/3), getOrientation(), minionRadius, getSpace());
         minionShooter.setSpeed(getSpeed());
@@ -148,7 +145,13 @@ public class Enemy extends GameObject {
         return healthPercentage;
     }
 
+    private float fireRate(float multiplier){
 
+        float rateOfFire = 0.1f;
+        rateOfFire *= multiplier;
+
+        return rateOfFire;
+    }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -303,6 +306,8 @@ public class Enemy extends GameObject {
             minionShooter.setPosition(getPosition());
         }
 
+
+
         /*These are the ways an Enemy can move. Different kinds of movements for different occasions.
         * -DEFAULT_FORWARDS sets the enemy to move towards the direction it has been given
         * -BACKWARDS sets the enemy to move backwards with the opposite direction it has been given
@@ -376,7 +381,7 @@ public class Enemy extends GameObject {
             case FLY_AWAY:
                 setPosition(new Vector2(getPosition().x - (float) Math.cos(direction) * (getSpeed()*2) * delta,
                         getPosition().y - (float) Math.sin(direction) * (getSpeed()*2) * delta));
-                setOrientation(-direction);
+                setOrientation(direction);
 
                 break;
             case FROZEN:
@@ -391,7 +396,7 @@ public class Enemy extends GameObject {
         switch (attackState) {
             case FIRE_BULLETS:
                 ammoCount = getAmmoCount();
-                float shotCount = delta / 0.5f + shotLeftOver;
+                float shotCount = delta / fireRate(5f) + shotLeftOver;
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
                 ammoCount = ammoCount - exactShotCount;
@@ -413,7 +418,7 @@ public class Enemy extends GameObject {
 
             case FIRE_MISSILES:
                 missileAmmoCount = getMissileAmmoCount();
-                float missileShotCount = delta / 1.5f + missilesShotLeftOver;
+                float missileShotCount = delta / fireRate(20f) + missilesShotLeftOver;
                 int missileExactShotCount = Math.min(Math.round(missileShotCount), missileAmmoCount);
 
                 missileAmmoCount = missileAmmoCount - missileExactShotCount;
@@ -436,7 +441,7 @@ public class Enemy extends GameObject {
 //TODO: This needs to be fixed. The way of making them, aiming them and the speed of them. THIS WHOLE THING NEEDS TO BE FIXED
             case FIRE_SHOTGUN:
                 shottyAmmoCount = getShottyAmmoCount();
-                float shottyShotCount = delta / 4.5f + shottyShotLeftOver;
+                float shottyShotCount = delta / fireRate(40f) + shottyShotLeftOver;
                 int exactShottyShotCount = Math.min(Math.round(shottyShotCount), shottyAmmoCount);
 
                 shottyAmmoCount = shottyAmmoCount - exactShottyShotCount;
@@ -469,7 +474,7 @@ public class Enemy extends GameObject {
 
             case FIRE_SPORES:
                 sporesAmmoCount = getSporesAmmoCount();
-                float sporesShotCount = delta / 0.1f + sporesShotLeftOver;
+                float sporesShotCount = delta / fireRate(2f) + sporesShotLeftOver;
 
                 int sporesExactShotCount = Math.min(Math.round(sporesShotCount), sporesAmmoCount);
 
@@ -492,7 +497,7 @@ public class Enemy extends GameObject {
 
             case FIRE_CHILDREN:
                 childrenAmmoCount = getChildrenAmmoCount();
-                float childrenShotCount = delta / 1.5f + childrenShotLeftOver;
+                float childrenShotCount = delta / fireRate(20f) + childrenShotLeftOver;
 
                 int childrenExactShotCount = Math.min(Math.round(childrenShotCount), childrenAmmoCount);
 
@@ -523,7 +528,7 @@ public class Enemy extends GameObject {
 
             case FIRE_LASER:
                 laserAmmoCount = getLaserAmmoCount();
-                float laserShotCount = delta / 0.5f + laserShotLeftOver;
+                float laserShotCount = delta / fireRate(5f) + laserShotLeftOver;
 
                 int laserExactShotCount = Math.min(Math.round(laserShotCount), laserAmmoCount);
 
@@ -543,7 +548,7 @@ public class Enemy extends GameObject {
 
             case FIRE_MINES:
                 minesCount = getMinesCount();
-                float minesShotCount = delta / 2.0f + minesLeft;
+                float minesShotCount = delta / fireRate(20f) + minesLeft;
 
                 int exactMinesShotCount = Math.min(Math.round(minesShotCount), minesCount);
 
@@ -555,7 +560,6 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactMinesShotCount; i++) {
-                    setMineAreaOfEffect(7f);
                     SpaceMine spaceMine = new SpaceMine("enemy_mine", getPosition(), getSpace(), getOrientation(),
                             getSpeed(), mineRadius, getMineAreaOfEffect(), MineMechanics.determineMineDamage());
                     toAdd.add(spaceMine);
@@ -758,6 +762,8 @@ public class Enemy extends GameObject {
     public void setMinionRotationSpeed(float minionRotationSpeed) {
         this.minionRotationSpeed = minionRotationSpeed;
     }
+
+
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {

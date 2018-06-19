@@ -45,6 +45,7 @@ public class SpaceMine extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (playerMine) {
+            setAreaOfEffect(50f);
             if (subject instanceof Enemy) {
                 toDelete.add(this);
                 subject.setHealth(subject.getHealth() - getDamage());
@@ -62,6 +63,7 @@ public class SpaceMine extends GameObject {
         }
 
         if (enemyMine){
+            setAreaOfEffect(30f);
             if (subject instanceof Player){
                 toDelete.add(this);
                 subject.setHealth(subject.getHealth() - getDamage());
