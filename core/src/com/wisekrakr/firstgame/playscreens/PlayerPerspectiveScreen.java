@@ -593,7 +593,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                  * within the borders or you die. The camera follow slightly, so you have to zoom out. The Spaceship moves freely now,
                  * without the camera following (only slightly). This can be a new GAMEMODE for this game.
                  */
-                            
+
 
                 camera.up.set(1, 0, 0);
                 camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
