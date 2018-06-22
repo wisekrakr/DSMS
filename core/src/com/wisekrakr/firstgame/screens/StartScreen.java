@@ -66,8 +66,6 @@ public class StartScreen extends ScreenAdapter {
         music.setVolume(0.2f);
 
         texture = myAssetManager.assetManager.get("background/stars.jpg", Texture.class);
-        font = myAssetManager.assetManager.get("font/myFont.fnt", BitmapFont.class);
-        font.getData().scale(0.1f);
 
         minX = 0;
         minY = 0;

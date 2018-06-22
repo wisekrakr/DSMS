@@ -41,6 +41,7 @@ public class DialogWindow implements Disposable{
         inputMultiplexer.addProcessor(stage);
 
         skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/uiskin.json")));
+        //skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
         Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
@@ -64,7 +65,7 @@ public class DialogWindow implements Disposable{
         introDialog.button(buttonYes, false);
         introDialog.button(buttonNo, true);
         introDialog.setPosition(projection(object).x, projection(object).y - 30, Align.center);
-        introDialog.setScale(0.4f);
+        introDialog.setScale(0.6f);
 
         introDialog.show(stage);
 

@@ -4,7 +4,9 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 		file: font-button-export.fnt
 	}
 	font: {
-		file: font-export.fnt
+		//file: font-export.fnt
+		//file: myFont.fnt
+		file: gamerFont.fnt
 	}
 	title: {
 		file: font-title-export.fnt

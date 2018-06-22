@@ -33,7 +33,7 @@ public class EnemyHud {
     private MyAssetManager myAssetManager;
 
     private ArrayList<DamageAnimation>damageAnimations;
-    private boolean hitDetected = false;
+    private boolean activated = true;
     private float timeCounter;
 
     public EnemyHud(OrthographicCamera camera) {
@@ -89,47 +89,61 @@ public class EnemyHud {
     }
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
-        name = object.getName();
-        nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
-        nameLabel.setPosition(projection(object).x, projection(object).y + (radius(object) + 10), Align.center);
+        if (activated) {
+            name = object.getName();
+            nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
+            nameLabel.setPosition(projection(object).x, projection(object).y + (radius(object) + 10), Align.center);
+        }
         return nameLabel;
     }
 
     public Label healthLabel(SpaceSnapshot.GameObjectSnapshot object){
-        int healthInt = Math.round(health(object));
+        if (activated) {
+            int healthInt = Math.round(health(object));
 
-        if (!(healthInt <= healthInt*(50f/100f))){
-            healthLabel = new Label("" + healthInt, new Label.LabelStyle(font, Color.GREEN));
-        }else{
-            healthLabel = new Label("" + healthInt, new Label.LabelStyle(font, Color.RED));
+            if (!(healthInt <= healthInt * (50f / 100f))) {
+                healthLabel = new Label("" + healthInt, new Label.LabelStyle(font, Color.GREEN));
+            } else {
+                healthLabel = new Label("" + healthInt, new Label.LabelStyle(font, Color.RED));
+            }
+            healthLabel.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
         }
-        healthLabel.setPosition(projection(object).x, projection(object).y - (radius(object) + 10), Align.center);
         return healthLabel;
     }
 
     public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
+        if (activated) {
+            barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
+            barStyle.knobBefore = barStyle.knob;
 
-        barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
-        barStyle.knobBefore = barStyle.knob;
-
-        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
-        bar.setSize(radius(object) * 3, radius(object) * 3);
-        bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 3), Align.center);
-        bar.setValue(health(object));
+            bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
+            bar.setSize(radius(object) * 3, radius(object) * 3);
+            bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 3), Align.center);
+            bar.setValue(health(object));
+        }
         return bar;
     }
 
 
     public Label damageLabel(SpaceSnapshot.GameObjectSnapshot object){
-        int damageTakenInt = Math.round(damageTaken(object));
+        if (activated) {
+            int damageTakenInt = Math.round(damageTaken(object));
 
-        damageLabel = new Label("" + damageTakenInt, new Label.LabelStyle(font, Color.RED));
-        damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y);
-
+            damageLabel = new Label("" + damageTakenInt, new Label.LabelStyle(font, Color.RED));
+            damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y);
+        }
         return damageLabel;
     }
 
+    public void enableEnemyHud(){
+        activated = true;
+    }
+    public void disableEnemyHud() {
+        activated = !activated;
+    }
+
     public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){
+
 /*
         timeCounter += delta;
         if(!hitDetected) {

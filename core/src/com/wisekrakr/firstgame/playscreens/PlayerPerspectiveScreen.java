@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -107,7 +108,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private boolean introDialogOneTime = true;
     private boolean hitDetected = true;
-
+    private boolean battleViewActivated = false;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -174,6 +175,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     }
+
 
     private void controllerInput() {
         Controllers.addListener(new ControllerAdapter() {
@@ -346,6 +348,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
             System.out.println("Paused");
         }
+        if (inputManager.isKeyDown(Input.Keys.SPACE)){
+            camera.zoom = 2.2f;
+            if (inputManager.isKeyPressed(Input.Keys.SPACE)) {
+                enemyHud.disableEnemyHud();
+            }
+        }else {
+            camera.zoom = 0.6f;
+        }
+
+
+
 
         //Mouse input
         inputManager.getTouchState(0);
@@ -365,8 +378,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
 
             Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
-            float touchCoordinates = (float) Math.sqrt(inputManager.touchCoordX(0) + inputManager.touchCoordY(0));
-            this.hardSteering = (float) Math.atan2(inputManager.touchCoordX(0) - mouseProjection.x, inputManager.touchCoordY(0) - mouseProjection.y);
+
+            this.hardSteering = (float) Math.atan2(Gdx.input.getX(), Gdx.input.getY());
         }
 
         if (inputManager.isTouchReleased(0)) {
@@ -587,14 +600,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         foundMySelf = false;
         for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
             if (mySelf.equals(object.getName())) {
-                camera.position.set(object.getPosition().x, object.getPosition().y, 100);
                 /**
                  * With camera.position.clamp(0.6f, 2f); we get a whole new different kind of game. Something where you have to stay
                  * within the borders or you die. The camera follow slightly, so you have to zoom out. The Spaceship moves freely now,
                  * without the camera following (only slightly). This can be a new GAMEMODE for this game.
                  */
-
-
+                camera.position.set(object.getPosition().x, object.getPosition().y, 100);
                 camera.up.set(1, 0, 0);
                 camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                 camera.update();

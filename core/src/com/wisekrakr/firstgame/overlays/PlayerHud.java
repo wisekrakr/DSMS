@@ -36,6 +36,8 @@ public class PlayerHud implements Disposable {
     private BitmapFont font;
     private OrthographicCamera camera;
     public Stage stage;
+    private Label nameLabel;
+    private ProgressBar bar;
 
     public PlayerHud(OrthographicCamera camera, InputMultiplexer inputMultiplexer) {
         this.camera = camera;
@@ -49,12 +51,10 @@ public class PlayerHud implements Disposable {
         stage = new Stage();
         inputMultiplexer.addProcessor(stage);
 
-        font = myAssetManager.assetManager.get("font/myFont.fnt");
-        font.getData().setScale(0.4f);
-        String fontString = font.toString();
+        font = myAssetManager.assetManager.get("font/gamerFont.fnt");
+        font.getData().setScale(0.6f);
 
-        skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/uiskin.json")));
-        skin.getFont("default-font").getData().scale(0.07f);
+        skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
         Pixmap pixmap = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
@@ -90,7 +90,7 @@ public class PlayerHud implements Disposable {
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
         String name = "Wisekrakr";
-        Label nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
+        nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
         nameLabel.setPosition(projection(object).x, projection(object).y + 30, Align.center);
         return nameLabel;
     }
@@ -105,7 +105,7 @@ public class PlayerHud implements Disposable {
         ProgressBar.ProgressBarStyle barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
 
-        ProgressBar bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, true, barStyle);
+        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, true, barStyle);
         bar.setSize(5 * 5, 5 * 5);
         bar.setPosition(Gdx.graphics.getWidth() - bar.getWidth()/2, Gdx.graphics.getHeight() - 25, Align.right);
         bar.setValue(health(object));

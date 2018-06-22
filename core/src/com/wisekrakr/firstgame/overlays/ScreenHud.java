@@ -82,8 +82,8 @@ public class ScreenHud implements Disposable {
         table.top();
         table.setFillParent(true);
 
-        BitmapFont font = myAssetManager.assetManager.get("font/myFont.fnt");
-        font.getData().setScale(0.4f);
+        BitmapFont font = myAssetManager.assetManager.get("font/gamerFont.fnt");
+        font.getData().setScale(0.6f);
 
         timeLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
         timeCountLabel = new Label(String.format("%06d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));

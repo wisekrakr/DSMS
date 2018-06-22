@@ -38,6 +38,7 @@ public class MyAssetManager implements Disposable{
         assetManager.load("font/myFont.fnt", BitmapFont.class);
         assetManager.load("font/myFontBlack.fnt", BitmapFont.class);
         assetManager.load("font/achievementFont.fnt", BitmapFont.class);
+        assetManager.load("font/gamerFont.fnt", BitmapFont.class);
         assetManager.finishLoading();
     }
     /*
@@ -51,8 +52,10 @@ public class MyAssetManager implements Disposable{
      * All the Skins loaded in the the AssetManager
      */
     public void loadSkins() {
-        SkinLoader.SkinParameter skinParameter = new SkinLoader.SkinParameter("font/uiskin.atlas");
-        assetManager.load("font/uiskin.json", Skin.class, skinParameter);
+        SkinLoader.SkinParameter skinParameterUISkin = new SkinLoader.SkinParameter("font/uiskin.atlas");
+        assetManager.load("font/uiskin.json", Skin.class, skinParameterUISkin);
+        SkinLoader.SkinParameter skinParameterFlatEarthSkin = new SkinLoader.SkinParameter("font/flat-earth-ui.atlas");
+        assetManager.load("font/flat-earth-ui.json", Skin.class, skinParameterFlatEarthSkin);
         assetManager.finishLoading();
     }
     /*
