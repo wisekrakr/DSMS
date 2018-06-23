@@ -8,6 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerupGenerator;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Rotunda;
@@ -94,7 +95,10 @@ public class ServerRunner {
                 randomGenerator.nextFloat() * height - plusOfXY),
                 engine));
 
-
+        engine.addGameObject(new QuestGen(new Vector2(
+                randomGenerator.nextFloat() * width - plusOfXY,
+                randomGenerator.nextFloat() * height - plusOfXY),
+                engine));
 
 
         for (int i = 0; i < 4; i++) {

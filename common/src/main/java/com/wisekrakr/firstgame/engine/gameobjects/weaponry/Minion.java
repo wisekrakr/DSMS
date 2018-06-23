@@ -210,7 +210,8 @@ public class Minion extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(), 0.5f, BulletMechanics.determineBulletDamage());
+                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
+                            BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
                     bullet.setBulletSpeed(getSpeed() * 3);
                     if (enemyMinion) {

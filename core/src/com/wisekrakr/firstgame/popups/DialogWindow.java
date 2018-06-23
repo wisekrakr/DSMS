@@ -34,7 +34,6 @@ public class DialogWindow implements Disposable{
         this.inputMultiplexer = inputMultiplexer;
 
         myAssetManager = new MyAssetManager();
-        myAssetManager.loadFonts();
         myAssetManager.loadSkins();
 
         stage = new Stage();
@@ -56,6 +55,8 @@ public class DialogWindow implements Disposable{
 
 
     public Dialog introDialog(SpaceSnapshot.GameObjectSnapshot object){
+
+
         introDialog = new Dialog("Dont get this spaceship shot!", skin);
 
         introDialog.text("Are you ready to take care of this spaceship for me?");

@@ -8,4 +8,10 @@ public class MineMechanics {
         Random random = new Random();
         return random.nextInt(50 - 10 + 1) + 10;
     }
+
+    public static float radius(float multiplier){
+        float radius = 2.0f;
+        radius *= multiplier;
+        return radius;
+    }
 }

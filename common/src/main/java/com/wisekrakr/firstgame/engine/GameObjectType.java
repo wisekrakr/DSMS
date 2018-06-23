@@ -31,6 +31,6 @@ public enum GameObjectType {
     POWERUP_MINION,
     POWERUP_HEALTH,
     SHIELD,
-    POWERUP_GENERATOR
-
+    POWERUP_GENERATOR,
+    TEST_QUEST
 }

@@ -15,8 +15,6 @@ public class PowerUp extends GameObject {
 
     }
 
-
-
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }

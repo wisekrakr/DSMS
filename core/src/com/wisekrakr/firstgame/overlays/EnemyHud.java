@@ -89,7 +89,9 @@ public class EnemyHud {
     }
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
-        if (activated) {
+        if (!(activated)){
+            nameLabel.setVisible(false);
+        }else {
             name = object.getName();
             nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
             nameLabel.setPosition(projection(object).x, projection(object).y + (radius(object) + 10), Align.center);
@@ -112,7 +114,9 @@ public class EnemyHud {
     }
 
     public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
-        if (activated) {
+        if (!(activated)){
+            bar.setVisible(false);
+        }else{
             barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
             barStyle.knobBefore = barStyle.knob;
 
@@ -121,6 +125,7 @@ public class EnemyHud {
             bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 3), Align.center);
             bar.setValue(health(object));
         }
+
         return bar;
     }
 
@@ -135,11 +140,11 @@ public class EnemyHud {
         return damageLabel;
     }
 
-    public void enableEnemyHud(){
-        activated = true;
+    public boolean enableEnemyHud(){
+        return activated = true;
     }
-    public void disableEnemyHud() {
-        activated = !activated;
+    public boolean disableEnemyHud() {
+        return activated = !activated;
     }
 
     public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){

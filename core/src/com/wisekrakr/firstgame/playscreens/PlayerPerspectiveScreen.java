@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.*;
+import com.wisekrakr.firstgame.Quests.Quest;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
@@ -44,6 +45,8 @@ import java.util.Random;
 public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private InputMultiplexer inputMultiplexer;
+
+    private Quest testQuest;
 
     private ScreenHud screenHud;
     private AchievementTexts achievementTexts;
@@ -109,6 +112,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private boolean introDialogOneTime = true;
     private boolean hitDetected = true;
     private boolean battleViewActivated = false;
+    private boolean questDialogOneTime = true;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -172,7 +176,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         dialogWindow = new DialogWindow(camera, inputMultiplexer);
 
-
+        testQuest = new Quest(inputMultiplexer);
 
     }
 
@@ -348,14 +352,24 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
             System.out.println("Paused");
         }
+
+        /**
+         * If space is pressed, a minimap is created. No enemyhud, just enemies and Player.
+         */
+
         if (inputManager.isKeyDown(Input.Keys.SPACE)){
             camera.zoom = 2.2f;
-            if (inputManager.isKeyPressed(Input.Keys.SPACE)) {
+            if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
+
         }else {
             camera.zoom = 0.6f;
         }
+        if (inputManager.isKeyReleased(Input.Keys.SPACE)){
+            enemyHud.enableEnemyHud();
+        }
+
 
 
 
@@ -991,6 +1005,27 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(debrisColor);
                         shapeRenderer.circle(x, y, radius);
                         break;
+                    case TEST_QUEST:
+                        objectSnapshot = object;
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x, y, radius);
+
+                        Boolean pickedUp = (Boolean) object.randomProperties().get("pickedUp");
+
+/*
+                        if (questDialogOneTime) {
+                            if (!(pickedUp)) {
+                                 questDialogOneTime = true;
+                            }else {
+                                System.out.println("Quest picked up");
+                                testQuest.firstQuestDialog();
+                                questDialogOneTime = false;
+                            }
+                        }
+
+*/
+
+                        break;
                     default:
                         System.out.println("Unknown game object type: " + object.getType());
                 }
@@ -1103,6 +1138,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 enemyHud.update(enemy, delta);
                 playerHud.update();
                 dialogWindow.update();
+                testQuest.update();
                 break;
 
             case PAUSE:

@@ -2,14 +2,14 @@ package com.wisekrakr.firstgame.engine.gameobjects.mechanics;
 
 import java.util.Random;
 
-public class MissileMechanics {
-    public static int determineMissileDamage(){
+public class MinionMechanics {
+    public static int determineHealth(){
         Random random = new Random();
-        return random.nextInt(20 - 10 + 1) + 10;
+        return random.nextInt(50) + 30;
     }
 
     public static float radius(float multiplier){
-        float radius = 1.25f;
+        float radius = 2.5f;
         radius *= multiplier;
         return radius;
     }
