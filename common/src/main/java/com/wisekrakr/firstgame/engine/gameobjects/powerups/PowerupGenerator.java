@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class PowerupGenerator extends GameObject {
     public PowerupGenerator(Vector2 initialPosition, SpaceEngine space) {
-        super(GameObjectType.POWERUP_GENERATOR, "Powerup generator", initialPosition, space);
+        super(GameObjectType.POWERUP_GENERATOR, "Powerup generator", initialPosition);
     }
 
     private float time;
@@ -28,25 +28,25 @@ public class PowerupGenerator extends GameObject {
                 case 1:
                     PowerUpMissile powerUpMissile = new PowerUpMissile("missile power up",
                             new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                            random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
+                            random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY));
                     toAdd.add(powerUpMissile);
                     break;
                 case 2:
                     PowerUpShield powerUpShield = new PowerUpShield("shield power up",
                             new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                            random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
+                            random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY));
                     toAdd.add(powerUpShield);
                     break;
                 case 3:
                     PowerUpMinion powerUpMinion = new PowerUpMinion("minion power up",
                             new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                                    random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
+                                    random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY));
                     toAdd.add(powerUpMinion);
                     break;
                 case 4:
                     PowerUpHealth powerUpHealth = new PowerUpHealth("health",
                             new Vector2(random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                                    random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY), getSpace());
+                                    random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY));
                     toAdd.add(powerUpHealth);
                     break;
             }

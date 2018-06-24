@@ -5,10 +5,6 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.LaserBeam;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Spores;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +20,8 @@ public class Shield extends GameObject {
     private float time;
     private float timeActivated;
 
-    public Shield(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
-        super(GameObjectType.SHIELD, name, initialPosition, space);
+    public Shield(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
+        super(GameObjectType.SHIELD, name, initialPosition);
         this.direction = direction;
         this.speed = speed;
         this.radius = radius;

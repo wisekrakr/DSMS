@@ -5,15 +5,13 @@ import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
 
 import java.util.Set;
 
 public class EnemyMutator extends Enemy {
 
     public EnemyMutator(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.MUTATOR, name, position, health, direction, speed, radius, space);
+        super(GameObjectType.MUTATOR, name, position, health, direction, speed, radius);
 
         setAggroDistance(250f);
         setAttackDistance(137.5f);

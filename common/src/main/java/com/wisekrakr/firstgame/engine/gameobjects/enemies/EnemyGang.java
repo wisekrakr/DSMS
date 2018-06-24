@@ -13,8 +13,8 @@ public class EnemyGang extends Enemy {
     private EnemyGang fuckBoi;
     private float time;
 
-    public EnemyGang(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.GANG, name, position, health, direction, speed, radius, space);
+    public EnemyGang(String name, Vector2 position, int health, float direction, float speed, float radius) {
+        super(GameObjectType.GANG, name, position, health, direction, speed, radius);
 
         setAggroDistance(225f);
         setAttackDistance(150f);

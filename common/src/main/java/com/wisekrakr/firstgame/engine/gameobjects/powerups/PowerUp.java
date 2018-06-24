@@ -1,6 +1,5 @@
 package com.wisekrakr.firstgame.engine.gameobjects.powerups;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
@@ -10,8 +9,8 @@ import java.util.*;
 
 public class PowerUp extends GameObject {
 
-    public PowerUp(GameObjectType type, String name, Vector2 initialPosition, SpaceEngine space) {
-        super(type, name, initialPosition, space);
+    public PowerUp(GameObjectType type, String name, Vector2 initialPosition) {
+        super(type, name, initialPosition);
 
     }
 

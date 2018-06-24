@@ -13,7 +13,7 @@ import java.util.Set;
 public class EnemyFaceHugger extends Enemy {
 
     public EnemyFaceHugger(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.FACE_HUGGER, name, position, health, direction, speed, radius, space);
+        super(GameObjectType.FACE_HUGGER, name, position, health, direction, speed, radius);
 
         setAggroDistance(175f);
         setAttackDistance(75f);

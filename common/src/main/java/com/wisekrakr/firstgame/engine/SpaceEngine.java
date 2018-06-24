@@ -4,10 +4,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SpaceEngine {
     private final Object monitor = new Object();
@@ -16,7 +13,9 @@ public class SpaceEngine {
     private final float width;
     private final float height;
     private Set<GameObject> gameObjects = new HashSet<GameObject>();
+    private Map<GameObject, GameObjectListener> listeners = new HashMap<>();
     private float clock = 0f;
+    private boolean paused = false;
 
     public SpaceEngine(float minX, float minY, float width, float height) {
         this.minX = minX;
@@ -25,9 +24,26 @@ public class SpaceEngine {
         this.height = height;
     }
 
+    public interface GameObjectListener {
+        void added();
+        void removed();
+    }
+
     public void addGameObject(GameObject object) {
+        addGameObject(object, null);
+    }
+
+    public void addGameObject(GameObject object, GameObjectListener listener) {
         synchronized (monitor) {
-            gameObjects.add(object);
+            if (!gameObjects.add(object)) {
+                throw new IllegalArgumentException("Game object already present");
+            }
+
+            if (listener != null) {
+                listeners.put(object, listener);
+                listener.added();
+            }
+
             List<GameObject> toAdd = new ArrayList<>();
             List<GameObject> toRemove = new ArrayList<>();
             object.afterAdd(toAdd, toRemove);
@@ -43,7 +59,16 @@ public class SpaceEngine {
 
     public void removeGameObject(GameObject object) {
         synchronized (monitor) {
-            gameObjects.remove(object);
+            if (!gameObjects.remove(object)) {
+                throw new IllegalArgumentException("Game object not present");
+            }
+
+            GameObjectListener listener = listeners.remove(object);
+            if (listener != null) {
+                listeners.put(object, listener);
+                listener.removed();
+            }
+
             List<GameObject> toAdd = new ArrayList<>();
             List<GameObject> toRemove = new ArrayList<>();
             object.afterRemove(toAdd, toRemove);
@@ -54,6 +79,24 @@ public class SpaceEngine {
             for (GameObject o: toRemove) {
                 removeGameObject(o);
             }
+        }
+    }
+
+    public void pause() {
+        synchronized (monitor) {
+            paused = true;
+        }
+    }
+
+    public void resume() {
+        synchronized (monitor) {
+            paused = false;
+        }
+    }
+
+    public void togglePause() {
+        synchronized (monitor) {
+            paused = !paused;
         }
     }
 
@@ -86,7 +129,6 @@ public class SpaceEngine {
     }
 
     private void nearestTarget(GameObject subject, Set<GameObject> targets, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
         for (GameObject target : targets) {
             if (Math.abs(target.getPosition().x - subject.getPosition().x) < Math.abs(target.getPosition().x - subject.getPosition().x)) {
                 if (Math.abs(target.getPosition().y - subject.getPosition().y) < Math.abs(target.getPosition().y - subject.getPosition().y)) {
@@ -108,8 +150,16 @@ public class SpaceEngine {
         }
     }
 
-    public void elapseTime(final float delta) {
+    public float getTime() {
+        return clock;
+    }
+
+    public void elapseTime(float delta) {
         synchronized (monitor) {
+            if (paused) {
+                delta = 0F;
+            }
+
             clock = clock + delta;
             Set<GameObject> toDelete = new HashSet<GameObject>();
             Set<GameObject> toAdd = new HashSet<GameObject>();

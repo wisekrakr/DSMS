@@ -51,7 +51,7 @@ public class PlayerHud implements Disposable {
         stage = new Stage();
         inputMultiplexer.addProcessor(stage);
 
-        font = myAssetManager.assetManager.get("font/gamerFont.fnt");
+        font = myAssetManager.assetManager.get("font/myFont.fnt");
         font.getData().setScale(0.6f);
 
         skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));

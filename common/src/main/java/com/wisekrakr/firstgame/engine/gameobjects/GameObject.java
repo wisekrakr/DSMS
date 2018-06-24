@@ -19,17 +19,15 @@ public abstract class GameObject {
     private String name;
     private Vector2 position;
     private float orientation;
-    private SpaceEngine space;
     private float collisionRadius;
     private float health;
     private int damage;
     private GameObjectType type;
 
-    protected GameObject(GameObjectType type, String name, Vector2 initialPosition, SpaceEngine space) {
+    protected GameObject(GameObjectType type, String name, Vector2 initialPosition) {
         this.type = type;
         this.position = initialPosition;
         this.name = name;
-        this.space = space;
     }
     /**
      * update the state taking into account an elapsed time of delta seconds
@@ -62,9 +60,7 @@ public abstract class GameObject {
     public void setEnemyMarginOfError(float enemyMarginOfError) {
         this.enemyMarginOfError = enemyMarginOfError;
     }
-    public SpaceEngine getSpace() {
-        return space;
-    }
+
     public String getName() {
         return name;
     }
@@ -74,7 +70,7 @@ public abstract class GameObject {
         Random random = new Random();
         int debrisParts = random.nextInt(10)+1;
         for(int i = 0; i < debrisParts; i++) {
-            toAdd.add(new Debris("debris", this.getPosition(), getSpace(), random.nextFloat() * 10,
+            toAdd.add(new Debris("debris", this.getPosition(), random.nextFloat() * 10,
                     random.nextFloat() * 60, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getCollisionRadius()));
 
         }

@@ -9,8 +9,8 @@ import java.util.Set;
 
 public class PowerUpHealth extends PowerUp {
 
-    public PowerUpHealth(String name, Vector2 initialPosition, SpaceEngine space) {
-        super(GameObjectType.POWERUP_HEALTH, name, initialPosition, space);
+    public PowerUpHealth(String name, Vector2 initialPosition) {
+        super(GameObjectType.POWERUP_HEALTH, name, initialPosition);
         setCollisionRadius(7.5f);
     }
 

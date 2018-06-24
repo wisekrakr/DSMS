@@ -11,7 +11,7 @@ import java.util.Set;
 public class EnemyHomer extends Enemy {
 
     public EnemyHomer(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.HOMER, name, position, health, direction, speed, radius, space);
+        super(GameObjectType.HOMER, name, position, health, direction, speed, radius);
 
         setAggroDistance(212.5f);
         setAttackDistance(150f);

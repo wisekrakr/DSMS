@@ -38,7 +38,7 @@ public class MyAssetManager implements Disposable{
         assetManager.load("font/myFont.fnt", BitmapFont.class);
         assetManager.load("font/myFontBlack.fnt", BitmapFont.class);
         assetManager.load("font/achievementFont.fnt", BitmapFont.class);
-        assetManager.load("font/gamerFont.fnt", BitmapFont.class);
+//        assetManager.load("font/gamerFont.fnt", BitmapFont.class);
         assetManager.finishLoading();
     }
     /*

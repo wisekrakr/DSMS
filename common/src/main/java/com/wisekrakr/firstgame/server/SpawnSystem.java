@@ -29,7 +29,7 @@ public class SpawnSystem {
                 random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
                 random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY),
                 70, random.nextFloat() * 2000 - 1000,
-                50f, 5.5f, engine);
+                50f, 5.5f);
     }
 
     public EnemyShitter addShitter(){
@@ -37,7 +37,7 @@ public class SpawnSystem {
                 random.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
                 random.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY),
                 80,random.nextFloat() * 2000 - 1000,
-                37.5f,7.5f, engine);
+                37.5f,7.5f);
     }
 
 

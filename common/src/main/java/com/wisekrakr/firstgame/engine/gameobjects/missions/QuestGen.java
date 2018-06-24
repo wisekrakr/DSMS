@@ -19,7 +19,7 @@ public class QuestGen extends GameObject {
     private boolean pickedUp = false;
 
     public QuestGen(Vector2 initialPosition, SpaceEngine space) {
-        super(GameObjectType.TEST_QUEST, "Quest Generator", initialPosition, space);
+        super(GameObjectType.TEST_QUEST, "Quest Generator", initialPosition);
         setCollisionRadius(20f);
                 
     }

@@ -11,7 +11,7 @@ import java.util.*;
 public class EnemyMotherShip extends Enemy {
 
     public EnemyMotherShip(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.MOTHERSHIP, name, position, health, direction, speed, radius, space);
+        super(GameObjectType.MOTHERSHIP, name, position, health, direction, speed, radius);
 
         setAggroDistance(312.5f);
         setAttackDistance(212.5f);

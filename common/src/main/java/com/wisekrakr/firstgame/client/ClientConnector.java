@@ -96,6 +96,10 @@ public class ClientConnector {
         queue.add(new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState, aimingState, switchWeaponState, hardSteering));
     }
 
+    public void setPaused(boolean paused) {
+        queue.add(new PauseUnPauseRequest(paused));
+    }
+
     public SpaceSnapshot getLatestSnapshot() {
         return latestSnapshot;
     }

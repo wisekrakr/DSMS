@@ -13,8 +13,8 @@ import static com.badlogic.gdx.math.MathUtils.random;
 public class PowerUpMissile extends PowerUp{
 
 
-    public PowerUpMissile(String name, Vector2 initialPosition, SpaceEngine space) {
-        super(GameObjectType.POWERUP_MISSILE, name, initialPosition, space);
+    public PowerUpMissile(String name, Vector2 initialPosition) {
+        super(GameObjectType.POWERUP_MISSILE, name, initialPosition);
         setCollisionRadius(7.5f);
     }
 

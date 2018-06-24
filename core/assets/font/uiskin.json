@@ -1,8 +1,8 @@
 {
 	com.badlogic.gdx.graphics.g2d.BitmapFont: {
 		default-font: {
-			//file: myFont.fnt
-			file: gamerFont.fnt
+			file: myFont.fnt
+			//file: gamerFont.fnt
 		}
 	},
 	com.badlogic.gdx.graphics.Color: {

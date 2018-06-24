@@ -29,8 +29,8 @@ public class SpaceMine extends GameObject {
     When initializing a SpaceMine in any other class, don't forget to setPlayer- or EnemyMine and setAreaOfEffect.
      */
 
-    public SpaceMine(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, float areaOfEffect, int damage) {
-        super(GameObjectType.SPACE_MINE, name, initialPosition, space);
+    public SpaceMine(String name, Vector2 initialPosition, float direction, float speed, float radius, float areaOfEffect, int damage) {
+        super(GameObjectType.SPACE_MINE, name, initialPosition);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;

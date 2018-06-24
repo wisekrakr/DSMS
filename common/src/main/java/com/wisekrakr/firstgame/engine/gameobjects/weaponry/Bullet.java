@@ -26,8 +26,8 @@ public class Bullet extends GameObject {
     private boolean playerBullet;
     private boolean enemyBullet;
 
-    public Bullet(String name, Vector2 initialPosition, SpaceEngine space, float direction,float speed, float radius, int damage) {
-        super(GameObjectType.BULLET, name, initialPosition, space);
+    public Bullet(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
+        super(GameObjectType.BULLET, name, initialPosition);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;

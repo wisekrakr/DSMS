@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
@@ -15,8 +14,8 @@ import java.util.Set;
 
 public class EnemyPest extends Enemy {
 
-    public EnemyPest(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(GameObjectType.PEST, name, position, health, direction, speed, radius, space);
+    public EnemyPest(String name, Vector2 position, int health, float direction, float speed, float radius) {
+        super(GameObjectType.PEST, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);
         setAttackDistance(187.5f);
@@ -31,7 +30,7 @@ public class EnemyPest extends Enemy {
         if(subject instanceof HomingMissile){
             if (((HomingMissile) subject).isPlayerMissile()) {
                 toAdd.add(new EnemyPest("pesty", this.getPosition(), 10, this.getOrientation(), this.getSpeed(),
-                        getRadius() - ((HomingMissile) subject).getRadius(), getSpace()));
+                        getRadius() - ((HomingMissile) subject).getRadius()));
             }
         }
     }

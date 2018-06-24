@@ -23,7 +23,7 @@ public class Asteroid extends GameObject {
     private float radius;
 
     public Asteroid(String name, Vector2 position, float rotationSpeed, float speed, float direction, SpaceEngine space, float radius) {
-        super(GameObjectType.ASTEROID, name, position, space);
+        super(GameObjectType.ASTEROID, name, position);
 
         this.rotationSpeed = rotationSpeed;
         this.speed = speed;

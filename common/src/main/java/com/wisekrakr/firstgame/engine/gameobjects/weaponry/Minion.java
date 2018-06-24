@@ -40,8 +40,8 @@ public class Minion extends GameObject {
     private boolean minionFighter;
     private boolean minionShooter;
 
-    public Minion(String name, Vector2 position, int health, float direction, float radius, SpaceEngine space) {
-        super(GameObjectType.MINION, name, position, space);
+    public Minion(String name, Vector2 position, int health, float direction, float radius) {
+        super(GameObjectType.MINION, name, position);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -210,7 +210,7 @@ public class Minion extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
+                    Bullet bullet = new Bullet("bullito", getPosition(), getOrientation(), getSpeed(),
                             BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
                     bullet.setBulletSpeed(getSpeed() * 3);

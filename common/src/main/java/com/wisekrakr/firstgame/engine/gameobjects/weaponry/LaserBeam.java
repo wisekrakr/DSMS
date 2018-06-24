@@ -19,8 +19,8 @@ public class LaserBeam extends GameObject {
 
     private float time;
 
-    public LaserBeam(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius, int damage, float speed) {
-        super(GameObjectType.LASER_BEAM, name, initialPosition, space);
+    public LaserBeam(String name, Vector2 initialPosition, float direction, float radius, int damage, float speed) {
+        super(GameObjectType.LASER_BEAM, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;

@@ -3,7 +3,6 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
@@ -68,8 +67,8 @@ public class Enemy extends GameObject {
 
 
 
-    public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
-        super(type, name, position, space);
+    public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius) {
+        super(type, name, position);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -107,7 +106,7 @@ public class Enemy extends GameObject {
     Minion initMinionShooter(){
         minionShooter = new Minion("Shooter Minion", new Vector2(getPosition().x + getCollisionRadius() * 2,
                 getPosition().y + getCollisionRadius() * 2), (int) (getMaxHealth()/3), getOrientation(),
-                MinionMechanics.radius(1), getSpace());
+                MinionMechanics.radius(1));
         minionShooter.setSpeed(getSpeed());
         setMinionActivated(isMinionActivated());
         minionShooter.setMinionShooter(true);
@@ -125,7 +124,7 @@ public class Enemy extends GameObject {
 
     public EnemyGang initGang(){
         enemyGang = new EnemyGang("Boi", new Vector2(getPosition().x + getCollisionRadius(),
-                getPosition().y + getCollisionRadius()), (int) getHealth(), getOrientation(), getSpeed(), getRadius(), getSpace());
+                getPosition().y + getCollisionRadius()), (int) getHealth(), getOrientation(), getSpeed(), getRadius());
         return enemyGang;
     }
 
@@ -406,7 +405,7 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactShotCount; i++) {
-                    Bullet bullet = new Bullet("enemybullito", getPosition(), getSpace(), getOrientation(), getSpeed(),
+                    Bullet bullet = new Bullet("enemybullito", getPosition(), getOrientation(), getSpeed(),
                             BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
                     bullet.setEnemyBullet(true);
@@ -430,7 +429,7 @@ public class Enemy extends GameObject {
                 for (int i = 0; i < missileExactShotCount; i++) {
                     HomingMissile missile = new HomingMissile("enemymissile", new Vector2(getPosition().x + getCollisionRadius(),
                             getPosition().y + getCollisionRadius()),
-                            getSpace(), getOrientation(), getSpeed(), MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
+                            getOrientation(), getSpeed(), MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
                     missile.missileEnable(this);
                     toAdd.add(missile);
                     missile.setMissileSpeed(getSpeed() * 3);
@@ -451,23 +450,12 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactShottyShotCount; i++) {
-                    Bullet bullet = new Bullet("bullito", getPosition(), getSpace(), getDirection(), getSpeed(),
+                    Bullet bullet = new Bullet("bullito", getPosition(), getDirection(), getSpeed(),
                             BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
                     bullet.setEnemyBullet(true);
                     bullet.setBulletSpeed(getSpeed() * 10);
-/*
 
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), getDirection(), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /6), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /6), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /7), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /7), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /8), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /8), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() - Math.PI /9), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-                    toAdd.add(new Bullet("bullito", getPosition(), getSpace(), (float) (getDirection() + Math.PI /9), getSpeed(), bulletRadius, BulletMechanics.determineBulletDamage()));
-*/
                 }
                 break;
 
@@ -488,7 +476,7 @@ public class Enemy extends GameObject {
                     Random randomGenerator = new Random();
                     toAdd.add(new Spores("spores", new Vector2(getPosition().x + randomGenerator.nextFloat() * getCollisionRadius(),
                             getPosition().y + randomGenerator.nextFloat() * getCollisionRadius()),
-                            getSpace(), getOrientation() + randomGenerator.nextFloat() * getCollisionRadius(), getSpeed() * 4,
+                            getOrientation() + randomGenerator.nextFloat() * getCollisionRadius(), getSpeed() * 4,
                             BulletMechanics.radius(0.5f),BulletMechanics.determineBulletDamage() / 5));
                 }
 
@@ -512,7 +500,7 @@ public class Enemy extends GameObject {
                             getPosition().x + randomGenerator.nextFloat() * radius,
                             getPosition().y + randomGenerator.nextFloat() * radius),
                             (int) (getMaxHealth()/10), getDirection(), getSpeed() * 6,
-                            MinionMechanics.radius(1), getSpace());
+                            MinionMechanics.radius(1));
                     toAdd.add(enemyChaser);
 
                     float destructTime = 8.0f;
@@ -540,7 +528,7 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < laserExactShotCount; i++) {
-                    toAdd.add(new LaserBeam("laser", getPosition(), getSpace(), getOrientation(), BulletMechanics.radius(1),
+                    toAdd.add(new LaserBeam("laser", getPosition(), getOrientation(), BulletMechanics.radius(1),
                             BulletMechanics.determineBulletDamage(), getSpeed() * 3));
                 }
 
@@ -560,7 +548,7 @@ public class Enemy extends GameObject {
                 }
 
                 for (int i = 0; i < exactMinesShotCount; i++) {
-                    SpaceMine spaceMine = new SpaceMine("enemy_mine", getPosition(), getSpace(), getOrientation(),
+                    SpaceMine spaceMine = new SpaceMine("enemy_mine", getPosition(), getOrientation(),
                             getSpeed(), MineMechanics.radius(1), getMineAreaOfEffect(), MineMechanics.determineMineDamage());
                     toAdd.add(spaceMine);
                     spaceMine.setEnemyMine(true);
@@ -585,7 +573,7 @@ public class Enemy extends GameObject {
                 EnemyGang enemyGang = new EnemyGang("Gang!", new Vector2(
                         targetVector.x + getCollisionRadius() * 2, targetVector.y + getCollisionRadius() * 2),
                         (int) getMaxHealth(),random.nextFloat() * 2000 - 1000, getSpeed(),
-                        MinionMechanics.radius(1), getSpace());
+                        MinionMechanics.radius(1));
                 toAdd.add(enemyGang);
                 break;
             case PACIFIST:

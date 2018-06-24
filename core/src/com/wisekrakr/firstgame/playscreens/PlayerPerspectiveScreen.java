@@ -82,7 +82,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Spaceship.AimingState aimingState;
     private Spaceship.SwitchWeaponState switchWeaponState;
 
-    private GameState gameState = GameState.RUN;
+//    private GameState gameState = GameState.RUN;
     private boolean paused = false;
     private SpaceSnapshot.GameObjectSnapshot myself;
     private SpaceSnapshot.GameObjectSnapshot enemy;
@@ -241,16 +241,20 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     }
 
                     if (buttonCode == GamePadControls.BUTTON_START) {
+                        /*
                         if (paused) {
                             gameState = GameState.RESUME;
                         } else {
                             gameState = GameState.PAUSE;
-                        }
+                        }*/
+
                         System.out.println("Paused");
                     }
+
                     if (buttonCode == GamePadControls.BUTTON_BACK) {
-                        gameState = GameState.STOPPED;
+/*                        gameState = GameState.STOPPED;
                         System.out.println("Resumed");
+                        */
                     }
 
                     return false;
@@ -332,46 +336,39 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (inputManager.isKeyDown(Input.Keys.DOWN)) {
             camera.zoom -= 0.08;
         }
-        if (inputManager.isKeyDown(Input.Keys.ESCAPE)) {
+
+        if (inputManager.isKeyDown(Input.Keys.ESCAPE) || inputManager.isKeyDown(Input.Keys.P)) {
+            /*
             if (paused) {
                 gameState = GameState.RESUME;
             } else {
                 gameState = GameState.PAUSE;
             }
             System.out.println("Paused");
+            */
         }
+        /*
         if (inputManager.isKeyDown(Input.Keys.BACKSPACE)) {
             gameState = GameState.STOPPED;
             System.out.println("Stopped");
-        }
-        if (inputManager.isKeyDown(Input.Keys.P)){
-            if (paused) {
-                gameState = GameState.RESUME;
-            } else {
-                gameState = GameState.PAUSE;
-            }
-            System.out.println("Paused");
-        }
+        }*/
 
         /**
          * If space is pressed, a minimap is created. No enemyhud, just enemies and Player.
          */
 
-        if (inputManager.isKeyDown(Input.Keys.SPACE)){
+        if (inputManager.isKeyDown(Input.Keys.SPACE)) {
             camera.zoom = 2.2f;
             if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
 
-        }else {
+        } else {
             camera.zoom = 0.6f;
         }
-        if (inputManager.isKeyReleased(Input.Keys.SPACE)){
+        if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
         }
-
-
-
 
 
         //Mouse input
@@ -537,21 +534,21 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         //Keyboard
 
         if (shootingState == Spaceship.ShootingState.PACIFIST) {
-                if (getChosenWeapon() == 1) {
-                    if (inputManager.isKeyDown(Input.Keys.C)) {
-                        shootingState = Spaceship.ShootingState.FIRING;
-                    }
+            if (getChosenWeapon() == 1) {
+                if (inputManager.isKeyDown(Input.Keys.C)) {
+                    shootingState = Spaceship.ShootingState.FIRING;
                 }
-                if (getChosenWeapon() == 2) {
-                    if (inputManager.isKeyDown(Input.Keys.C)) {
-                        shootingState = Spaceship.ShootingState.MISSILE_FIRING;
-                    }
+            }
+            if (getChosenWeapon() == 2) {
+                if (inputManager.isKeyDown(Input.Keys.C)) {
+                    shootingState = Spaceship.ShootingState.MISSILE_FIRING;
                 }
-                if (getChosenWeapon() == 3) {
-                    if (inputManager.isKeyPressed(Input.Keys.C)) {
-                        shootingState = Spaceship.ShootingState.PLACE_MINE;
-                    }
+            }
+            if (getChosenWeapon() == 3) {
+                if (inputManager.isKeyPressed(Input.Keys.C)) {
+                    shootingState = Spaceship.ShootingState.PLACE_MINE;
                 }
+            }
         }
 
         //Mouse
@@ -570,6 +567,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
         }
 */
+        if (inputManager.isKeyPressed(Input.Keys.P)) {
+            connector.setPaused(true);
+        }
+
+        if (inputManager.isKeyPressed(Input.Keys.R)) {
+            connector.setPaused(false);
+        }
+
         aimingState = Spaceship.AimingState.NONE;
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState, switchWeaponState, hardSteering);
@@ -598,13 +603,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
 
-
-
     private void renderGameObjects() {
         for (Label label : volatileLabels) {
             label.remove();
         }
-        for (ProgressBar progressBar : volatileBars){
+        for (ProgressBar progressBar : volatileBars) {
             progressBar.remove();
         }
 
@@ -683,7 +686,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         if (introDialogOneTime) {
                             if (!(hit)) {
                                 introDialogOneTime = true;
-                            }else {
+                            } else {
                                 System.out.println("player hit");
                                 dialogWindow.introDialog(object);
                                 introDialogOneTime = false;
@@ -749,7 +752,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         if (hit) {
                             overlayStage.addActor(damageLabel);
-                        }else {
+                        } else {
                             damageLabel.remove();
                         }
 
@@ -862,8 +865,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.ORANGE);
-                        shapeRenderer.circle(x + (radius /2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius /2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
                         ProgressBar motherHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(motherHealthBar);
@@ -874,8 +877,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.LIME);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.PINK);
-                        shapeRenderer.circle(x + (radius /2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius /2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
                         ProgressBar dodgerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(dodgerHealthBar);
@@ -886,8 +889,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.ORANGE);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.VIOLET);
-                        shapeRenderer.circle(x + (radius /2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius /2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
                         ProgressBar homerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(homerHealthBar);
@@ -903,8 +906,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.FIREBRICK);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.ORANGE);
-                        shapeRenderer.circle(x + (radius /2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius /2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
                         ProgressBar mutatorHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(mutatorHealthBar);
@@ -922,8 +925,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.MAROON);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.TEAL);
-                        shapeRenderer.circle(x + (radius /2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius /2) * (float) Math.sin(object.getOrientation()), radius / 2);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), radius / 2);
 
                         ProgressBar shottyHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shottyHealthBar);
@@ -934,36 +937,36 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.GOLD);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius /2 + radius /2);
+                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
                         shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(x, y, radius /2);
+                        shapeRenderer.circle(x, y, radius / 2);
                         break;
                     case POWERUP_SHIELD:
                         objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius /2 + radius /2);
+                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
                         shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius /2);
+                        shapeRenderer.circle(x, y, radius / 2);
                         break;
                     case POWERUP_MINION:
                         objectSnapshot = object;
                         shapeRenderer.setColor(Color.SKY);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius /2 + radius /2);
+                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
                         shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x, y, radius /2);
+                        shapeRenderer.circle(x, y, radius / 2);
                         break;
                     case POWERUP_HEALTH:
                         objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.circle(x, y, radius /2 + radius /2);
+                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
                         shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius /2);
+                        shapeRenderer.circle(x, y, radius / 2);
                         break;
 //TODO: how to switch colors for different minions
                     case MINION:
@@ -1073,7 +1076,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
 
-
     private void addBackground() {
 
         //backgroundStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
@@ -1113,33 +1115,34 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        handleInput();
+        addSoundEffects();
+
+        stage.act();
+        stage.draw();
+
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        addBackground();
+
+        renderGameObjects();
+        gameObjectRenderer.drawObjects();
+
+        updateHud(myself, delta);
+        updateOverlay();
+        enemyHud.update(enemy, delta);
+        playerHud.update();
+        dialogWindow.update();
+        testQuest.update();
+
+/*
+break;
         switch (gameState) {
             case GAME_READY:
                 break;
 
             case RUN:
-
-                handleInput();
-                addSoundEffects();
-
-                stage.act();
-                stage.draw();
-
-                Gdx.gl.glClearColor(0, 0, 0, 1);
-                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-                addBackground();
-
-                renderGameObjects();
-                gameObjectRenderer.drawObjects();
-
-                updateHud(myself, delta);
-                updateOverlay();
-                enemyHud.update(enemy, delta);
-                playerHud.update();
-                dialogWindow.update();
-                testQuest.update();
-                break;
 
             case PAUSE:
                 paused = true;
@@ -1159,13 +1162,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 break;
 
         }
+        */
 
-    }
-
-
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 
     public void setSwitchWeaponState(Spaceship.SwitchWeaponState switchWeaponState) {

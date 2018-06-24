@@ -9,7 +9,7 @@ import java.util.Set;
 public class Planet extends GameObject {
 
     public Planet(String name, Vector2 initialPosition, SpaceEngine space) {
-        super(GameObjectType.PLANET, name, initialPosition, space);
+        super(GameObjectType.PLANET, name, initialPosition);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class Spores extends GameObject {
     private float speed;
     private float attackDistance;
 
-    public Spores(String name, Vector2 initialPosition, SpaceEngine space, float direction, float speed, float radius, int damage) {
-        super(GameObjectType.SPORE, name, initialPosition, space);
+    public Spores(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
+        super(GameObjectType.SPORE, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;

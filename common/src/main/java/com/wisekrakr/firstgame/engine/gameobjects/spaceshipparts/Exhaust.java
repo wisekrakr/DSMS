@@ -17,8 +17,8 @@ public class Exhaust extends GameObject {
     private static final float DEFAULT_SPEED = 50;
     private float time;
 
-    public Exhaust(String name, Vector2 initialPosition, SpaceEngine space, float direction, float radius) {
-        super(GameObjectType.EXHAUST, name, initialPosition, space);
+    public Exhaust(String name, Vector2 initialPosition, float direction, float radius) {
+        super(GameObjectType.EXHAUST, name, initialPosition);
         this.direction = direction;
         this.radius = radius;
         setCollisionRadius(radius);
