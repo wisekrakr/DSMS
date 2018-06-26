@@ -33,7 +33,7 @@ public class EnemyShitter extends Enemy {
         }
         */
         super.targetSpotted(target, toDelete, toAdd);
-        setMovingState(MovingState.FLY_AWAY);
+        setMovingState(MovingState.BACKWARDS);
 
     }
 
@@ -43,10 +43,10 @@ public class EnemyShitter extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_MINES);
-                setMovingState(MovingState.FLY_AWAY);
+                setMovingState(MovingState.BACKWARDS);
             }else {
                 setAttackState(AttackState.PACIFIST);
-                setMovingState(MovingState.DEFAULT_FORWARDS);
+                setMovingState(MovingState.BACKWARDS);
             }
         }
     }

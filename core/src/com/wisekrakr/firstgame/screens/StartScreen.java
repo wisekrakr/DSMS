@@ -71,9 +71,10 @@ public class StartScreen extends ScreenAdapter {
         minY = 0;
         width = 800;
         height = 800;
-        spaceship = new Spaceship("start ship", new Vector2(100,300), new SpaceEngine(minX, minY, width, height));
+        spaceship = new Spaceship("start ship", new Vector2(100,300));
 
-        Skin skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/uiskin.json")));
+
+        Skin skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
         Table table = new Table();
         table.setFillParent(true);
@@ -84,6 +85,7 @@ public class StartScreen extends ScreenAdapter {
 
         textField = new TextField("", skin);
         textField.setText("Ship Name?");
+
 
         TextButton newGame = new TextButton("New Game", skin);
         TextButton preferences = new TextButton("Preferences", skin);

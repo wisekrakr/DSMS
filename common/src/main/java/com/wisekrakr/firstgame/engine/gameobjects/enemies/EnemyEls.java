@@ -14,7 +14,7 @@ public class EnemyEls extends Enemy {
 
     private Minion minionShooter;
 
-    public EnemyEls(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+    public EnemyEls(String name, Vector2 position, int health, float direction, float speed, float radius) {
         super(GameObjectType.ELS, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);

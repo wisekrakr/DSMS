@@ -16,7 +16,7 @@ public class Rotunda extends GameObject {
     private float radius;
     private float time;
 
-    public Rotunda(String name, Vector2 position, SpaceEngine space, float radius, float angle ) {
+    public Rotunda(String name, Vector2 position, float radius, float angle ) {
         super(GameObjectType.ROTUNDA, name, position);
         this.angle = angle;
         this.radius = radius;

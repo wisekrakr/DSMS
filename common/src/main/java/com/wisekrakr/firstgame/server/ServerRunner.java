@@ -1,5 +1,6 @@
 package com.wisekrakr.firstgame.server;
 
+import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
@@ -9,6 +10,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerupGenerator;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
 import java.io.IOException;
@@ -19,6 +22,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+
+import static com.badlogic.gdx.math.MathUtils.random;
 
 public class ServerRunner {
     private int port;
@@ -82,15 +88,36 @@ public class ServerRunner {
 
         timeThread.setDaemon(true);
 
-        gameEngine.addScenario(new WildlifeManagement(3, 1, position -> new EnemyChaser("Chaser",
+        engine.addGameObject(new PowerupGenerator(new Vector2()));
+
+        gameEngine.addScenario(new WildlifeManagement(6, 1, position -> new EnemyChaser("Chaser",
                 position,
-                70, 1000,
+                70, random.nextFloat() * 2000,
                 50f, 5.5f)));
 
-        gameEngine.addScenario(new WildlifeManagement(5, 0.01f, position -> new EnemyShitter("Shitter",
+        gameEngine.addScenario(new WildlifeManagement(3, 2, position -> new EnemyShitter("Shitter",
                 position,
-                80, 1000,
+                80, random.nextFloat() * 2000,
                 37.5f,7.5f)));
+/*
+        gameEngine.addScenario(new WildlifeManagement(10, 30, position -> new EnemyFaceHugger("FaceHugger",
+                position,
+                30, random.nextFloat() * 2000,
+                50f, 2f)));
+
+        gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyHomer("Homert",
+                position,
+                75, random.nextFloat() * 2000,
+                43.75f,7.5f)));
+
+        gameEngine.addScenario(new WildlifeManagement(5, 20, position -> new EnemyBlinker("Blinker",
+                position,
+                50, random.nextFloat() * 2000,
+                43.75f,6.25f)));
+*/
+        gameEngine.addScenario(new WildlifeManagement(20, 0.01f, position -> new Asteroid("Asteroid",
+                position, random.nextFloat() * 20, random.nextFloat() * 80,
+                random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * 5f)));
 
         timeThread.start();
 
@@ -124,7 +151,7 @@ public class ServerRunner {
                             if (incoming instanceof GameObjectCreationRequest) {
                                 GameObjectCreationRequest request = (GameObjectCreationRequest) incoming;
 
-                                Player result = new Player(request.getName(), request.getInitialPosition(), engine);
+                                Player result = new Player(request.getName(), request.getInitialPosition());
 
                                 engine.addGameObject(result);
 

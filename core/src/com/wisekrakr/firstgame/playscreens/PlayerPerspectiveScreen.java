@@ -106,7 +106,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private GameObjectRenderer gameObjectRenderer;
 
-
     private boolean foundMySelf;
 
     private boolean introDialogOneTime = true;
@@ -522,7 +521,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         //Keyboard
-        int a = getChosenWeapon();
 
         if (inputManager.isKeyPressed(Input.Keys.F)) {
             setChosenWeapon(getChosenWeapon() + 1);
@@ -825,6 +823,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
+                        Label shitterNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(shitterNameLabel);
+                        volatileLabels.add(shitterNameLabel);
+
                         ProgressBar shitterHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shitterHealthBar);
                         volatileBars.add(shitterHealthBar);
@@ -837,6 +839,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
+                        Label pestNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(pestNameLabel);
+                        volatileLabels.add(pestNameLabel);
+
                         ProgressBar pestHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(pestHealthBar);
                         volatileBars.add(pestHealthBar);
@@ -848,6 +854,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+                        Label blinkerNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(blinkerNameLabel);
+                        volatileLabels.add(blinkerNameLabel);
 
                         ProgressBar blinkerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(blinkerHealthBar);
@@ -868,6 +878,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
+                        Label motherNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(motherNameLabel);
+                        volatileLabels.add(motherNameLabel);
+
                         ProgressBar motherHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(motherHealthBar);
                         volatileBars.add(motherHealthBar);
@@ -880,6 +894,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
+                        Label dodgerNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(dodgerNameLabel);
+                        volatileLabels.add(dodgerNameLabel);
+
                         ProgressBar dodgerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(dodgerHealthBar);
                         volatileBars.add(dodgerHealthBar);
@@ -891,6 +909,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.VIOLET);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+                        Label homerNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(homerNameLabel);
+                        volatileLabels.add(homerNameLabel);
 
                         ProgressBar homerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(homerHealthBar);
@@ -908,6 +930,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.ORANGE);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+                        Label mutatorNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(mutatorNameLabel);
+                        volatileLabels.add(mutatorNameLabel);
 
                         ProgressBar mutatorHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(mutatorHealthBar);
@@ -927,6 +953,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.TEAL);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), radius / 2);
+
+                        Label shottyNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(shottyNameLabel);
+                        volatileLabels.add(shottyNameLabel);
 
                         ProgressBar shottyHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shottyHealthBar);

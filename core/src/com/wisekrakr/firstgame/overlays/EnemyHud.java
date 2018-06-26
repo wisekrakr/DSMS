@@ -43,7 +43,7 @@ public class EnemyHud {
         myAssetManager.loadFonts();
         myAssetManager.loadTextures();
 
-        font = myAssetManager.assetManager.get("font/myFont.fnt");
+        font = myAssetManager.assetManager.get("font/gamerFont.fnt");
         font.getData().setScale(0.4f);
 
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");

@@ -32,7 +32,8 @@ public class Spaceship extends GameObject {
     private Float hardSteering;
     private float speedX = 0;
     private float speedY = 0;
-    private float angle = (float) (Math.PI / 2);
+   // private float angle = (float) (Math.PI / 2);
+    private float angle = 0;
     private float distanceTravelled = 0;
     private int ammoCount;
     private int missileAmmoCount;
@@ -72,7 +73,7 @@ public class Spaceship extends GameObject {
     private float maxHealth;
 
 
-    public Spaceship(String name, Vector2 position, SpaceEngine space) {
+    public Spaceship(String name, Vector2 position) {
         super(GameObjectType.SPACESHIP, name, position);
 
         ammoCount = 10000;
@@ -278,8 +279,7 @@ public class Spaceship extends GameObject {
         }
 
         if (hardSteering != null) {
-            //angle = angle + hardSteering;
-            angle = (float) Math.atan2(Gdx.input.getX(), Gdx.input.getY());
+            angle = angle + hardSteering * delta;
             hardSteering = null;
         } else {
             switch (steering) {
@@ -297,20 +297,17 @@ public class Spaceship extends GameObject {
             case FORWARDS:
                 speedX = speedX + delta * defaultSpeed * (float) Math.cos(angle);
                 speedY = speedY + delta * defaultSpeed * (float) Math.sin(angle);
-
                 toAdd.add(new Exhaust("exhaust", this.getPosition(), -this.getOrientation(), getCollisionRadius() / 5));
                 break;
 
             case REVERSE:
                 speedX = speedX - delta * defaultSpeed * (float) Math.cos(angle);
                 speedY = speedY - delta * defaultSpeed * (float) Math.sin(angle);
-
-//                speed = Math.max(speed - delta * 155f, -230);
                 break;
 
             case STATUSQUO:
                 /*
-                setOrientation(angle); // this way i can choose a angle and shoot of that way
+                setOrientation(angle); // this way i can choose an angle and shoot that way
                 setPosition(new Vector2(
                         getPosition().x + delta * speed * angle,
                         getPosition().y + delta * speed * angle

@@ -3,6 +3,8 @@ package com.wisekrakr.firstgame.engine.scenarios;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyMotherShip;
+import com.wisekrakr.firstgame.server.EngineConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +43,22 @@ public class WildlifeManagement extends Scenario {
                 }
             });
         }
-        //
+//TODO: If we kill a certain number a boss wil arise
+/*
+        if (myObjects.size() <= 0){
+            spaceEngine.addGameObject(new EnemyMotherShip("MotherShip", randomPosition(), 200,
+                    randomDirection(), 7.5f, 40f));
+        }
+        */
     }
 
     private Vector2 randomPosition() {
-        return new Vector2(randomGenerator.nextFloat() * 1000, randomGenerator.nextFloat() * 1000);
+        return new Vector2(randomGenerator.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
+                randomGenerator.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY);
+    }
+
+    private float randomDirection(){
+        return randomGenerator.nextFloat() * 2000 - 1000;
     }
 
 /*

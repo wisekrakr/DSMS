@@ -11,7 +11,7 @@ import java.util.Set;
 public class EnemyBlinker extends Enemy {
     private float time;
 
-    public EnemyBlinker(String name, Vector2 position, int health, float direction, float speed, float radius, SpaceEngine space) {
+    public EnemyBlinker(String name, Vector2 position, int health, float direction, float speed, float radius) {
         super(GameObjectType.BLINKER, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);

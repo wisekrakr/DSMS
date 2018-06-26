@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class PowerupGenerator extends GameObject {
-    public PowerupGenerator(Vector2 initialPosition, SpaceEngine space) {
+    public PowerupGenerator(Vector2 initialPosition) {
         super(GameObjectType.POWERUP_GENERATOR, "Powerup generator", initialPosition);
     }
 
