@@ -31,21 +31,15 @@ public class SwarmScenario extends Scenario{
     public void periodicUpdate(SpaceEngine spaceEngine) {
         if (lastCreation + minCreationInterval <= spaceEngine.getTime()) {
             lastCreation = spaceEngine.getTime();
-            setSwarmOn(true);
+            isSwarmOn();
             minCreationInterval = 200f;
             for (int i = 0; i < numberOfEnemies; i++){
                 Enemy newObject = factory.apply(randomPosition());
                 spaceEngine.addGameObject(newObject);
                 newObject.setMovingState(Enemy.MovingState.DEFAULT_FORWARDS);
                 newObject.setAggroDistance((float) Double.POSITIVE_INFINITY);
-
             }
         }
-    }
-
-    private Vector2 randomPosition() {
-        return new Vector2(randomGenerator.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                randomGenerator.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY);
     }
 
     public Map<Boolean, Float> getSwarmWarning() {

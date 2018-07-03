@@ -49,14 +49,9 @@ public class WildlifeManagement extends Scenario {
     }
 
 
-    private Vector2 randomPosition() {
-        return new Vector2(randomGenerator.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                randomGenerator.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY);
-    }
 
-    private float randomDirection(){
-        return randomGenerator.nextFloat() * 2000 - 1000;
-    }
+
+
 
 /*
 

@@ -137,7 +137,8 @@ public abstract class GameObject {
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
                 getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getMaxHealthProperties(), getScoreProperties(),
-                getDamageProperties(), getDamageTakenProperties(), getRandomProperties(), getKilledByProperties(), getHitProperties());
+                getDamageProperties(), getDamageTakenProperties(), getRandomProperties(), getKilledByProperties(), getHitProperties(),
+                getPickedUpProperties());
     }
 
 
@@ -184,6 +185,9 @@ public abstract class GameObject {
         return new HashMap<>();
     }
     public Map<String, Object> getHitProperties() {
+        return new HashMap<>();
+    }
+    public Map<String, Object> getPickedUpProperties() {
         return new HashMap<>();
     }
 

@@ -641,14 +641,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }
                 Float radius = (Float) object.extraProperties().get("radius");
                 Boolean hit = (Boolean) object.hitProperties().get("hit");
+                Boolean pickedUp = (Boolean) object.pickedUpProperties().get("pickedUp");
 
                 float x = object.getPosition().x;
                 float y = object.getPosition().y;
 
+                /*
                 Label swarmWarning = playerHud.swarmWarning();
                 overlayStage.addActor(swarmWarning);
                 volatileLabels.add(swarmWarning);
-
+*/
 
                 switch (object.getType()) {
                     case POWERUP_GENERATOR:
@@ -692,6 +694,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             }
                         }
 
+
+                        if (questDialogOneTime) {
+                            if (!(pickedUp)) {
+                                questDialogOneTime = true;
+                            }else {
+                                System.out.println("Quest picked up");
+                                testQuest.firstQuestDialog();
+                                questDialogOneTime = false;
+                            }
+                        }
+
                         //gameObjectRenderer.playerSprite(object);
 
                         break;
@@ -713,6 +726,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
 
+                        Texture bulletTexture = myAssetManager.assetManager.get("sprites/bullet_small.png");
+                        Sprite bulletSprite = new Sprite(bulletTexture);
+                        gameObjectRenderer.setSpriteTo(object, bulletSprite);
+                        stage.getBatch().begin();
+                        bulletSprite.draw(stage.getBatch());
+                        stage.getBatch().end();
+
                         break;
                     case ASTEROID:
                         objectSnapshot = object;
@@ -723,7 +743,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 */
-                        Texture asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_medium.png");
+                        Texture asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_small.png");
                         Sprite asteroidSprite = new Sprite(asteroidTexture);
                         gameObjectRenderer.setSpriteTo(object, asteroidSprite);
                         stage.getBatch().begin();
@@ -926,6 +946,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
+
+                        Texture missileTexture = myAssetManager.assetManager.get("sprites/missile_default.png");
+                        Sprite missileSprite = new Sprite(missileTexture);
+                        gameObjectRenderer.setSpriteTo(object, missileSprite);
+                        stage.getBatch().begin();
+                        missileSprite.draw(stage.getBatch());
+                        stage.getBatch().end();
                         break;
                     case MUTATOR:
                         enemy = object;
@@ -976,6 +1003,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius / 2);
                         break;
                     case POWERUP_SHIELD:
+                        /*
                         objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
@@ -983,6 +1011,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius / 2 + radius / 2);
                         shapeRenderer.setColor(Color.WHITE);
                         shapeRenderer.circle(x, y, radius / 2);
+*/
+                        Texture shieldUpTexture = myAssetManager.assetManager.get("sprites/powerup_shield.png");
+                        Sprite shieldUpSprite = new Sprite(shieldUpTexture);
+                        shieldUpSprite.setScale(2f);
+                        gameObjectRenderer.setSpriteTo(object, shieldUpSprite);
+                        stage.getBatch().begin();
+                        shieldUpSprite.draw(stage.getBatch());
+                        stage.getBatch().end();
                         break;
                     case POWERUP_MINION:
                         objectSnapshot = object;
@@ -994,6 +1030,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius / 2);
                         break;
                     case POWERUP_HEALTH:
+                        /*
                         objectSnapshot = object;
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
@@ -1001,6 +1038,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius / 2 + radius / 2);
                         shapeRenderer.setColor(Color.WHITE);
                         shapeRenderer.circle(x, y, radius / 2);
+*/
+                        Texture healthUpTexture = myAssetManager.assetManager.get("sprites/powerup_health.png");
+                        Sprite healthUpSprite = new Sprite(healthUpTexture);
+                        healthUpSprite.setScale(2f);
+                        gameObjectRenderer.setSpriteTo(object, healthUpSprite);
+                        stage.getBatch().begin();
+                        healthUpSprite.draw(stage.getBatch());
+                        stage.getBatch().end();
                         break;
 //TODO: how to switch colors for different minions
                     case MINION:
@@ -1047,20 +1092,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x, y, radius);
 
-                        Boolean pickedUp = (Boolean) object.randomProperties().get("pickedUp");
-
-/*
-                        if (questDialogOneTime) {
-                            if (!(pickedUp)) {
-                                 questDialogOneTime = true;
-                            }else {
-                                System.out.println("Quest picked up");
-                                testQuest.firstQuestDialog();
-                                questDialogOneTime = false;
-                            }
-                        }
-
-*/
 
                         break;
                     default:
@@ -1113,7 +1144,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private void addBackground() {
 
         //backgroundStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+
         backgroundStage.getBatch().begin();
+        backgroundStage.getBatch().disableBlending();
         backgroundStars.draw(backgroundStage.getBatch(), 10);
         backgroundStage.getBatch().end();
 
@@ -1122,7 +1155,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     }
 
     private void setPauseScreen() {
-        //pauseScreen.update();
         pauseScreenAdapter.render();
 
     }
@@ -1160,10 +1192,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         addBackground();
 
-        //stage.getBatch().begin();
         renderGameObjects();
-        //stage.getBatch().end();
-        gameObjectRenderer.update(delta);
+        gameObjectRenderer.update(delta, myself);
         updateHud(myself, delta);
 
         updateOverlay();

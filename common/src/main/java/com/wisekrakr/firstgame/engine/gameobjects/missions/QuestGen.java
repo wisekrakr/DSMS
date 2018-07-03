@@ -16,24 +16,11 @@ public class QuestGen extends GameObject {
     private static final String TAG = "";
 
     private float lastQuestPop = -100000f;
-    private boolean pickedUp = false;
 
-    public QuestGen(Vector2 initialPosition, SpaceEngine space) {
+    public QuestGen(Vector2 initialPosition) {
         super(GameObjectType.TEST_QUEST, "Quest Generator", initialPosition);
         setCollisionRadius(20f);
                 
-    }
-
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if(subject instanceof Player){
-            pickedUp = true;
-            toDelete.add(this);
-            lastQuestPop = 0;
-
-        }
-
     }
 
     @Override
@@ -60,12 +47,4 @@ public class QuestGen extends GameObject {
         return result;
     }
 
-    @Override
-    public Map<String, Object> getRandomProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        result.put("pickedUp", pickedUp);
-
-        return result;
-    }
 }

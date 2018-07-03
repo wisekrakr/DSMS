@@ -3,12 +3,14 @@ package com.wisekrakr.firstgame.Quests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
@@ -28,7 +30,7 @@ public class Quest implements Disposable{
 
     private Dialog questDialog;
     private Boolean pickedUp = false;
-    private boolean acceptQuest = false;
+    public boolean acceptQuest = false;
     private Dialog firstQuestDialog;
 
 
@@ -48,13 +50,15 @@ public class Quest implements Disposable{
     }
 
 
-
     public Dialog firstQuestDialog(){
 
         System.out.println("FIRST QUEST");
 
         firstQuestDialog = new Dialog("Quest: Shoot them back!", skin);
         firstQuestDialog.text("Kill 3 enemy ships");
+        firstQuestDialog.setPosition(0,0, Align.topLeft);
+        firstQuestDialog.setScale(0.7f);
+
         TextButton buttonYes = new TextButton("You got it", skin);
         TextButton buttonNo = new TextButton("...Later...", skin);
 
@@ -68,6 +72,7 @@ public class Quest implements Disposable{
             public void changed(ChangeEvent event, Actor actor) {
                 firstQuestDialog.remove();
                 acceptQuest = true;
+                System.out.println("Quest accepted");
             }
         });
         buttonNo.addListener(new ChangeListener() {
@@ -78,6 +83,7 @@ public class Quest implements Disposable{
                 acceptQuest = false;
             }
         });
+
 
         return firstQuestDialog;
     }

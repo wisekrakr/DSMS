@@ -1,5 +1,6 @@
 package com.wisekrakr.firstgame.server;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
@@ -10,8 +11,10 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerupGenerator;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.scenarios.Mission;
 import com.wisekrakr.firstgame.engine.scenarios.SwarmScenario;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
@@ -29,7 +32,8 @@ import static com.badlogic.gdx.math.MathUtils.random;
 public class ServerRunner {
     private int port;
     private Thread listenThread;
-    private float elapsedTime;
+    private GameEngine gameEngine;
+    private SpaceEngine engine;
 
     public ServerRunner(int port) {
         this.port = port;
@@ -61,11 +65,9 @@ public class ServerRunner {
         float height = EngineConstants.ENGINE_HEIGHT;
         float plusOfXY = EngineConstants.PLUS_XY;
 
-        SpaceEngine engine = new SpaceEngine(minX, minY, width, height);
+        engine = new SpaceEngine(minX, minY, width, height);
 
-        GameEngine gameEngine = new GameEngine(engine);
-
-        Float swarmTime = 6f;
+        gameEngine = new GameEngine(engine);
 
         Thread timeThread = new Thread(new Runnable() {
             @Override
@@ -83,7 +85,7 @@ public class ServerRunner {
                     float elapsed = ((float) (now - then) / 1000000000L);
 
                     then = now;
-                    elapsedTime = now;
+
                     gameEngine.elapseTime(elapsed);
                 }
             }
@@ -94,7 +96,7 @@ public class ServerRunner {
         engine.addGameObject(new PowerupGenerator(new Vector2()));
 
 
-        gameEngine.addScenario(new WildlifeManagement(6, 1, position -> new EnemyChaser("Chaser",
+        gameEngine.addScenario(new WildlifeManagement(3, 1, position -> new EnemyChaser("Chaser",
                 position,
                 70, random.nextFloat() * 2000,
                 50f, 5.5f)));
@@ -119,29 +121,33 @@ public class ServerRunner {
                 position,
                 75, random.nextFloat() * 2000,
                 43.75f,7.5f)));
-*/
+
         gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyBlinker("Blinker",
                 position,
                 50, random.nextFloat() * 2000,
                 43.75f,6.25f)));
-
+*/
         gameEngine.addScenario(new WildlifeManagement(10, 0.01f, position -> new Asteroid("Asteroid",
                 position, random.nextFloat() * 20, random.nextFloat() * 80,
                 random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * 5f)));
 
-       // if (engine.getTime() >= swarmTime) {
-            //swarmTime = engine.getTime();
-            gameEngine.addScenario(new SwarmScenario(swarmTime, 20, position -> new EnemyPest("Pest", position,
-                    20, random.nextFloat() * 2000,
-                    50f, 3.5f)));
-            //gameEngine.swarmActivation();
-      //  }
+/*
+        gameEngine.addScenario(new Mission(6, QuestGen::new));
+
+
+        gameEngine.addScenario(new SwarmScenario(6, 20, position -> new EnemyPest("Pest", position,
+                20, random.nextFloat() * 2000,
+                50f, 3.5f)));
+*/
+
+
         timeThread.start();
 
 
 
         return engine;
     }
+
 
     private void listen() throws Exception {
         SpaceEngine engine = initializeEngine();

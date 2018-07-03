@@ -13,6 +13,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.*;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
@@ -68,6 +69,7 @@ public class Spaceship extends GameObject {
 
     private float damageTaken = 0;
     private boolean hit = false;
+    private boolean pickedUp = false;
     private float healthPercentage;
     private float maxHealth;
 
@@ -235,6 +237,11 @@ public class Spaceship extends GameObject {
                     break;
 
             }
+        }
+
+        if (subject instanceof QuestGen){
+            pickedUp = true;
+            toDelete.add(subject);
         }
     }
 
@@ -714,4 +721,12 @@ public class Spaceship extends GameObject {
         return result;
     }
 
+    @Override
+    public Map<String, Object> getPickedUpProperties() {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        result.put("pickedUp", pickedUp);
+
+        return result;
+    }
 }
