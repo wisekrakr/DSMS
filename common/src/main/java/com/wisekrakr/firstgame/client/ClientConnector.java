@@ -100,6 +100,8 @@ public class ClientConnector {
         queue.add(new PauseUnPauseRequest(paused));
     }
 
+
+
     public SpaceSnapshot getLatestSnapshot() {
         return latestSnapshot;
     }

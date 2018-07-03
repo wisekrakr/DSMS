@@ -65,8 +65,6 @@ public class Enemy extends GameObject {
     private float healthPercentage;
     private float maxHealth;
 
-
-
     public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius) {
         super(type, name, position);
         this.direction = direction;
@@ -83,7 +81,7 @@ public class Enemy extends GameObject {
         shottyShotLeftOver = shottyAmmoCount;
         sporesAmmoCount = (int) Double.POSITIVE_INFINITY;
         sporesShotLeftOver = sporesAmmoCount;
-        childrenAmmoCount = 6;
+        childrenAmmoCount = 10;
         childrenShotLeftOver = childrenAmmoCount;
         laserAmmoCount = (int) Double.POSITIVE_INFINITY;
         laserShotLeftOver = laserAmmoCount;
@@ -93,6 +91,7 @@ public class Enemy extends GameObject {
         setHealth(health);
         setCollisionRadius(radius);
         setSpeed(speed);
+
     }
 
     @Override

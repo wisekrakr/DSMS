@@ -32,8 +32,7 @@ public class Spaceship extends GameObject {
     private Float hardSteering;
     private float speedX = 0;
     private float speedY = 0;
-   // private float angle = (float) (Math.PI / 2);
-    private float angle = 0;
+    private float angle = (float) (Math.PI / 2);
     private float distanceTravelled = 0;
     private int ammoCount;
     private int missileAmmoCount;
@@ -279,7 +278,8 @@ public class Spaceship extends GameObject {
         }
 
         if (hardSteering != null) {
-            angle = angle + hardSteering * delta;
+            angle = (float) Math.atan2(Gdx.input.getX(), Gdx.input.getY());
+            //angle = angle + hardSteering * delta;
             hardSteering = null;
         } else {
             switch (steering) {

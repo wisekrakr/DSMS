@@ -16,10 +16,12 @@ public class GameObjectRenderer {
     private Sprite shieldPowerUpSprite;
     private Sprite healthPowerUpSprite;
 
+
     private Stage stage;
     private OrthographicCamera camera;
     private MyAssetManager myAssetManager;
     private Sprite sprite;
+    private Texture texture;
 
 
     public GameObjectRenderer(OrthographicCamera camera, Stage stage) {
@@ -34,12 +36,19 @@ public class GameObjectRenderer {
         return (Float) object.extraProperties().get("radius");
     }
 
-    public Sprite playerTexture(SpaceSnapshot.GameObjectSnapshot object){
-        Texture texture = myAssetManager.assetManager.get("sprites/spaceship.png");
-        playerSprite = new Sprite(texture);
+    public void setSpriteTo(SpaceSnapshot.GameObjectSnapshot object, Sprite sprite){
+        this.sprite = new Sprite(sprite);
+        sprite.setPosition(object.getPosition().x - sprite.getWidth()/2, object.getPosition().y - sprite.getHeight()/2);
+        sprite.setRotation(object.getOrientation());
+        sprite.setScale(0.5f);
+    }
+
+    public Sprite playerSprite(SpaceSnapshot.GameObjectSnapshot object){
+        Texture playerTexture = myAssetManager.assetManager.get("sprites/spaceship_boost.png");
+        playerSprite = new Sprite(playerTexture);
         playerSprite.setPosition(object.getPosition().x - playerSprite.getWidth()/2, object.getPosition().y - playerSprite.getHeight()/2);
         playerSprite.setRotation(object.getOrientation());
-        playerSprite.setScale(3f);
+
         return playerSprite;
     }
 
@@ -84,20 +93,13 @@ public class GameObjectRenderer {
 
         return healthPowerUpSprite;
     }
-    public Sprite setTexture(SpaceSnapshot.GameObjectSnapshot object, Texture texture){
-        sprite = new Sprite(texture);
-        sprite.setPosition(object.getPosition().x - sprite.getWidth()/2,object.getPosition().y - sprite.getHeight()/2);
-        sprite.setScale(3f);
 
-        return sprite;
-    }
-
-    public void drawObjects(){
+    public void update(float delta){
 
         stage.getBatch().begin();
 //        playerSprite.draw(stage.getBatch());
-//        asteroidSprite.draw(stage.getBatch());
-
         stage.getBatch().end();
     }
+
+
 }

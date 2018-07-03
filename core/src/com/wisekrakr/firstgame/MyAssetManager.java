@@ -10,6 +10,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
 import javafx.scene.media.VideoTrack;
@@ -72,6 +73,8 @@ public class MyAssetManager implements Disposable{
         assetManager.load("texture/healthbarBack.png", Texture.class);
         assetManager.load("texture/healthbarBorder.png", Texture.class);
         assetManager.load("sprites/spaceship.png", Texture.class);
+        assetManager.load("sprites/spaceship_fly.png", Texture.class);
+        assetManager.load("sprites/spaceship_boost.png", Texture.class);
         assetManager.load("sprites/bullet_small.png", Texture.class);
         assetManager.load("sprites/missile_default.png", Texture.class);
         assetManager.load("sprites/asteroid_big.png", Texture.class);

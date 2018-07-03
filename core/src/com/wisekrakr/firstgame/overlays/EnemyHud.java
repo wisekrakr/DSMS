@@ -35,6 +35,7 @@ public class EnemyHud {
     private ArrayList<DamageAnimation>damageAnimations;
     private boolean activated = true;
     private float timeCounter;
+    private boolean noHitYet = true;
 
     public EnemyHud(OrthographicCamera camera) {
         this.camera = camera;
@@ -149,22 +150,25 @@ public class EnemyHud {
 
     public void update(SpaceSnapshot.GameObjectSnapshot object, float delta){
 
-/*
+
         timeCounter += delta;
-        if(!hitDetected) {
+
+        if (noHitYet) {
             damageLabel.setVisible(false);
-            System.out.println("MISSSSSS");
+           // System.out.println("MISSSSSS");
             if (isHit(object)) {
-                System.out.println("Hit!");
+            //    System.out.println("Hit!");
                 damageLabel.setVisible(true);
-                //if (timeCounter >= 1){
+                noHitYet = false;
+                if (timeCounter >= 2) {
                     damageLabel.remove();
-                    hitDetected = !hitDetected;
+                    damageLabel.setVisible(false);
+                    noHitYet = true;
                     timeCounter = 0;
-                //}
+                }
             }
         }
-*/
+
     }
 
 

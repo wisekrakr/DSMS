@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -113,6 +111,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private boolean battleViewActivated = false;
     private boolean questDialogOneTime = true;
 
+
+
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
         this.mySelf = mySelf;
@@ -176,6 +176,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         dialogWindow = new DialogWindow(camera, inputMultiplexer);
 
         testQuest = new Quest(inputMultiplexer);
+
 
     }
 
@@ -378,23 +379,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
             Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
             //float touchCoordinates = (float) Math.sqrt(inputManager.touchCoordX(0) + inputManager.touchCoordY(0));
-            //this.hardSteering = (float) Math.atan2(inputManager.touchCoordX(0) - mouseProjection.x, inputManager.touchCoordY(0) - mouseProjection.y);
-
+            this.hardSteering = (float) Math.atan2(inputManager.touchCoordX(0) - mouseProjection.x, inputManager.touchCoordY(0) - mouseProjection.y);
         }
 
         if (inputManager.isTouchDown(0)) {
             System.out.println("DOWN");
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
             System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
-
-            Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
-
-            this.hardSteering = (float) Math.atan2(Gdx.input.getX(), Gdx.input.getY());
         }
 
         if (inputManager.isTouchReleased(0)) {
             System.out.println("RELEASED");
-
         }
 
         inputManager.update();
@@ -650,6 +645,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 float x = object.getPosition().x;
                 float y = object.getPosition().y;
 
+                Label swarmWarning = playerHud.swarmWarning();
+                overlayStage.addActor(swarmWarning);
+                volatileLabels.add(swarmWarning);
+
+
                 switch (object.getType()) {
                     case POWERUP_GENERATOR:
                         // TODO: remove the need for the power up generator
@@ -688,10 +688,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                                 System.out.println("player hit");
                                 dialogWindow.introDialog(object);
                                 introDialogOneTime = false;
+                                dialogWindow.introDialog(object).hide();
                             }
                         }
 
-                        //gameObjectRenderer.playerTexture(object);
+                        //gameObjectRenderer.playerSprite(object);
 
                         break;
 
@@ -715,19 +716,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
                     case ASTEROID:
                         objectSnapshot = object;
-
+/*
                         shapeRenderer.setColor(Color.BROWN);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-/*
-                        Texture asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_big.png");
-                        asteroidSprite = new Sprite(asteroidTexture);
-                        asteroidSprite.setPosition(object.getPosition().x - asteroidSprite.getWidth()/2, object.getPosition().y - asteroidSprite.getHeight()/2);
-                        asteroidSprite.setRotation(object.getOrientation());
-
 */
+                        Texture asteroidTexture = myAssetManager.assetManager.get("sprites/asteroid_medium.png");
+                        Sprite asteroidSprite = new Sprite(asteroidTexture);
+                        gameObjectRenderer.setSpriteTo(object, asteroidSprite);
+                        stage.getBatch().begin();
+                        asteroidSprite.draw(stage.getBatch());
+                        stage.getBatch().end();
                         break;
                     case ROTUNDA:
                         objectSnapshot = object;
@@ -747,7 +748,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         volatileLabels.add(chaserNameLabel);
 
                         Label damageLabel = enemyHud.damageLabel(object);
-
                         if (hit) {
                             overlayStage.addActor(damageLabel);
                         } else {
@@ -773,6 +773,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(chaserHealthBar);
                         volatileBars.add(chaserHealthBar);
 
+                       // Texture chaserTexture = myAssetManager.assetManager.get("sprites/spaceship.png");
+                       // Sprite chaserSprite = new Sprite(chaserTexture);
+                       // gameObjectRenderer.setSpriteTo(object, chaserSprite);
+                       // chaserSprite.draw(stage.getBatch());
                         break;
 
                     case ELS:
@@ -1156,10 +1160,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         addBackground();
 
+        //stage.getBatch().begin();
         renderGameObjects();
-        gameObjectRenderer.drawObjects();
-
+        //stage.getBatch().end();
+        gameObjectRenderer.update(delta);
         updateHud(myself, delta);
+
         updateOverlay();
         enemyHud.update(enemy, delta);
         playerHud.update();
@@ -1228,7 +1234,6 @@ break;
         shapeRenderer.dispose();
         batch.dispose();
         myAssetManager.dispose();
-
     }
 
 

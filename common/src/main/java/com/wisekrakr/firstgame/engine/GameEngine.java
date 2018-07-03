@@ -1,9 +1,11 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.scenarios.Scenario;
+import com.wisekrakr.firstgame.engine.scenarios.SwarmScenario;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameEngine {
     private SpaceEngine space;
@@ -22,8 +24,14 @@ public class GameEngine {
     public void start() {
     }
 
-    public void elapseTime(float f) {
-        space.elapseTime(f);
+    public void swarmActivation(){
+        for (Scenario scenario: scenarios){
+            scenario.isSwarmOn();
+        }
+    }
+
+    public void elapseTime(float delta) {
+        space.elapseTime(delta);
         if (space.getTime() > previousUpdate + updateFrequence) {
             previousUpdate = space.getTime();
 

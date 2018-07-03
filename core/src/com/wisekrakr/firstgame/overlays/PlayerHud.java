@@ -24,6 +24,10 @@ import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.scenarios.Scenario;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerHud implements Disposable {
 
@@ -38,6 +42,8 @@ public class PlayerHud implements Disposable {
     public Stage stage;
     private Label nameLabel;
     private ProgressBar bar;
+
+    private List<Scenario> scenarios = new ArrayList<Scenario>();
 
     public PlayerHud(OrthographicCamera camera, InputMultiplexer inputMultiplexer) {
         this.camera = camera;
@@ -112,6 +118,18 @@ public class PlayerHud implements Disposable {
         return bar;
     }
 
+    public Label swarmWarning(){
+        Label warning = new Label("Warning: Swarm Incoming!", skin);;
+        for (Scenario scenario: scenarios){
+            if (scenario.isSwarmOn()){
+
+                warning.setVisible(true);
+                warning.setColor(Color.TEAL);
+
+            }
+        }
+        return warning;
+    }
 
     public void update() {
 
