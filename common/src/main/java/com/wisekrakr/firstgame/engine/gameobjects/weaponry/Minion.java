@@ -213,7 +213,7 @@ public class Minion extends GameObject {
                     Bullet bullet = new Bullet("bullito", getPosition(), getOrientation(), getSpeed(),
                             BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
-                    bullet.setBulletSpeed(getSpeed() * 3);
+                    bullet.setBulletSpeed(getSpeed());
                     if (enemyMinion) {
                         bullet.setPlayerBullet(true);
                     }

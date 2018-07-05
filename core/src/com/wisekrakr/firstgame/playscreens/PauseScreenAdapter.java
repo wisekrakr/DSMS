@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.popups;
+package com.wisekrakr.firstgame.playscreens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

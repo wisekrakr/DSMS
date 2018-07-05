@@ -1,9 +1,8 @@
-package com.wisekrakr.firstgame.Quests;
+package com.wisekrakr.firstgame.quests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -13,11 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.MyAssetManager;
-import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
-
-import java.util.Set;
 
 public class Quest implements Disposable{
 

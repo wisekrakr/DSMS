@@ -82,6 +82,12 @@ public class MyAssetManager implements Disposable{
         assetManager.load("sprites/asteroid_small.png", Texture.class);
         assetManager.load("sprites/powerup_health.png", Texture.class);
         assetManager.load("sprites/powerup_shield.png", Texture.class);
+        assetManager.load("sprites/human_mothership.png", Texture.class);
+        assetManager.load("sprites/ssDodger.png", Texture.class);
+        assetManager.load("sprites/ssEls.png", Texture.class);
+        assetManager.load("sprites/ssHomer.png", Texture.class);
+        assetManager.load("sprites/ssMutator.png", Texture.class);
+        assetManager.load("sprites/ssPlane.png", Texture.class);
 
         assetManager.finishLoading();
     }

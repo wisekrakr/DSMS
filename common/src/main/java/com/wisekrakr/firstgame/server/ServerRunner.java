@@ -96,36 +96,47 @@ public class ServerRunner {
         engine.addGameObject(new PowerupGenerator(new Vector2()));
 
 
-        gameEngine.addScenario(new WildlifeManagement(3, 1, position -> new EnemyChaser("Chaser",
+        gameEngine.addScenario(new WildlifeManagement(2, 1, position -> new EnemyChaser("Chaser",
                 position,
                 70, random.nextFloat() * 2000,
                 50f, 5.5f)));
 
-        gameEngine.addScenario(new WildlifeManagement(3, 2, position -> new EnemyShitter("Shitter",
+        gameEngine.addScenario(new WildlifeManagement(2, 2, position -> new EnemyShitter("Shitter",
                 position,
                 80, random.nextFloat() * 2000,
                 37.5f,7.5f)));
 
-        gameEngine.addScenario(new WildlifeManagement(1, 120, position -> new EnemyMotherShip("Mother",
+        gameEngine.addScenario(new WildlifeManagement(1, 10, position -> new EnemyMotherShip("Mother",
                 position,
                 300, random.nextFloat() * 2000,
                 7.5f, 37.5f)));
 
+
+        gameEngine.addScenario(new WildlifeManagement(1, 10, position -> new EnemyMutator("Mutator",
+                position,
+                150, random.nextFloat() * 2000,
+                12.5f,25f)));
+
+        gameEngine.addScenario(new WildlifeManagement(2, 10, position -> new EnemyDodger("Dodger",
+                position,
+                15, random.nextFloat() * 2000,
+                31.75f,3f)));
 /*
+        gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyBlinker("Blinker",
+                position,
+                50, random.nextFloat() * 2000,
+                43.75f,6.25f)));
+
         gameEngine.addScenario(new WildlifeManagement(10, 30, position -> new EnemyFaceHugger("FaceHugger",
                 position,
                 30, random.nextFloat() * 2000,
                 50f, 2f)));
 
-        gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyHomer("Homert",
+         gameEngine.addScenario(new WildlifeManagement(2, 10, position -> new EnemyHomer("Homert",
                 position,
                 75, random.nextFloat() * 2000,
                 43.75f,7.5f)));
 
-        gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyBlinker("Blinker",
-                position,
-                50, random.nextFloat() * 2000,
-                43.75f,6.25f)));
 */
         gameEngine.addScenario(new WildlifeManagement(10, 0.01f, position -> new Asteroid("Asteroid",
                 position, random.nextFloat() * 20, random.nextFloat() * 80,

@@ -95,7 +95,7 @@ public class EnemyHud {
         }else {
             name = object.getName();
             nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
-            nameLabel.setPosition(projection(object).x, projection(object).y + (radius(object) + 10), Align.center);
+            nameLabel.setPosition(projection(object).x, projection(object).y + (radius(object) * 3), Align.center);
         }
         return nameLabel;
     }
@@ -123,7 +123,7 @@ public class EnemyHud {
 
             bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, false, barStyle);
             bar.setSize(radius(object) * 3, radius(object) * 3);
-            bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 3), Align.center);
+            bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 5), Align.center);
             bar.setValue(health(object));
         }
 

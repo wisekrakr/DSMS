@@ -38,6 +38,8 @@ public class QuestGen extends GameObject {
     }
 
 
+
+
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
