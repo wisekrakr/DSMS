@@ -1,6 +1,5 @@
 package com.wisekrakr.firstgame.server;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
@@ -10,12 +9,10 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.*;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerupGenerator;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyMotherShip;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyShitter;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
-import com.wisekrakr.firstgame.engine.scenarios.Mission;
-import com.wisekrakr.firstgame.engine.scenarios.SwarmScenario;
+import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
 import java.io.IOException;
@@ -80,6 +77,8 @@ public class ServerRunner {
                     } catch (InterruptedException e) {
                         break;
                     }
+                    StopWatch stopWatch = new StopWatch();
+                    stopWatch.start();
 
                     long now = System.nanoTime();
                     float elapsed = ((float) (now - then) / 1000000000L);
@@ -87,31 +86,41 @@ public class ServerRunner {
                     then = now;
 
                     gameEngine.elapseTime(elapsed);
+
+                    stopWatch.printIfLonger("Elapse time of " + elapsed, 100_000_000L);
                 }
             }
         });
 
         timeThread.setDaemon(true);
 
-        engine.addGameObject(new PowerupGenerator(new Vector2()));
+        //engine.addGameObject(new PowerupGenerator(new Vector2()));
 
 
-        gameEngine.addScenario(new WildlifeManagement(2, 1, position -> new EnemyChaser("Chaser",
-                position,
-                70, random.nextFloat() * 2000,
-                50f, 5.5f)));
+        gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
 
-        gameEngine.addScenario(new WildlifeManagement(2, 2, position -> new EnemyShitter("Shitter",
-                position,
-                80, random.nextFloat() * 2000,
-                37.5f,7.5f)));
+        gameEngine.addScenario(new WildlifeManagement(2, 2,
+                new GameObjectFactory() {
+                    @Override
+                    public GameObject create(Vector2 initialPosition, float initialDirection) {
+                        return new EnemyShitter("Shitter",
+                                initialPosition,
+                                80, initialDirection,
+                                37.5f, 7.5f);
+                    }
+                }));
 
-        gameEngine.addScenario(new WildlifeManagement(1, 10, position -> new EnemyMotherShip("Mother",
-                position,
-                300, random.nextFloat() * 2000,
-                7.5f, 37.5f)));
+        gameEngine.addScenario(new WildlifeManagement(1, 10, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection) {
+                return new EnemyMotherShip("Mother",
+                        initialPosition,
+                        300, initialDirection,
+                        7.5f, 37.5f);
+            }
+        }));
 
-
+/*
         gameEngine.addScenario(new WildlifeManagement(1, 10, position -> new EnemyMutator("Mutator",
                 position,
                 150, random.nextFloat() * 2000,
@@ -121,7 +130,7 @@ public class ServerRunner {
                 position,
                 15, random.nextFloat() * 2000,
                 31.75f,3f)));
-/*
+
         gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyBlinker("Blinker",
                 position,
                 50, random.nextFloat() * 2000,
@@ -138,22 +147,24 @@ public class ServerRunner {
                 43.75f,7.5f)));
 
 */
-        gameEngine.addScenario(new WildlifeManagement(10, 0.01f, position -> new Asteroid("Asteroid",
-                position, random.nextFloat() * 20, random.nextFloat() * 80,
-                random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * 5f)));
+        gameEngine.addScenario(new WildlifeManagement(10, 0.01f, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection) {
+                return new Asteroid("Asteroid",
+                        initialPosition, random.nextFloat() * 20, random.nextFloat() * 80, initialDirection
+                        , random.nextFloat() * 5f);
+            }
+        }));
 
 /*
         gameEngine.addScenario(new Mission(6, QuestGen::new));
-
-
-        gameEngine.addScenario(new SwarmScenario(6, 20, position -> new EnemyPest("Pest", position,
-                20, random.nextFloat() * 2000,
-                50f, 3.5f)));
 */
 
 
-        timeThread.start();
+        gameEngine.addScenario(ScenarioHelper.CREATE_PEST_SWARM());
 
+
+        timeThread.start();
 
 
         return engine;
@@ -214,12 +225,10 @@ public class ServerRunner {
                                 PauseUnPauseRequest pauseRequest = (PauseUnPauseRequest) incoming;
                                 if (pauseRequest.isPause()) {
                                     engine.pause();
-                                }
-                                else {
+                                } else {
                                     engine.resume();
                                 }
-                            }
-                            else {
+                            } else {
                                 System.out.println("Unknown request: " + incoming);
                             }
                         }

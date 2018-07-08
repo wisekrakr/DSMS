@@ -118,24 +118,9 @@ public class PlayerHud implements Disposable {
         return bar;
     }
 
-    public Label swarmWarning(){
-        Label warning = new Label("Warning: Swarm Incoming!", skin);;
-        for (Scenario scenario: scenarios){
-            if (scenario.isSwarmOn()){
-
-                warning.setVisible(true);
-                warning.setColor(Color.TEAL);
-
-            }
-        }
-        return warning;
-    }
-
     public void update() {
-
         stage.act();
         stage.draw();
-
     }
 
     @Override

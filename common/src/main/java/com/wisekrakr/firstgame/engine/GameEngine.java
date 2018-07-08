@@ -24,12 +24,6 @@ public class GameEngine {
     public void start() {
     }
 
-    public void swarmActivation(){
-        for (Scenario scenario: scenarios){
-            scenario.isSwarmOn();
-        }
-    }
-
     public void elapseTime(float delta) {
         space.elapseTime(delta);
         if (space.getTime() > previousUpdate + updateFrequence) {

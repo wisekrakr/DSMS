@@ -234,6 +234,10 @@ public class Enemy extends GameObject {
 
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        aimForTarget(target);
+    }
+
+    private void aimForTarget(GameObject target) {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAggroDistance()) {
                 float angle = angleBetween(this, target);

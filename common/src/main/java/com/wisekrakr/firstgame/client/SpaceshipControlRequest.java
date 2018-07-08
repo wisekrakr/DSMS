@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.client;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class SpaceshipControlRequest implements Serializable {
     private String name;
@@ -61,5 +62,26 @@ public class SpaceshipControlRequest implements Serializable {
 
     public Float getHardSteering() {
         return hardSteering;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SpaceshipControlRequest that = (SpaceshipControlRequest) o;
+        return Objects.equals(name, that.name) &&
+                throttleState == that.throttleState &&
+                steeringState == that.steeringState &&
+                specialPowerState == that.specialPowerState &&
+                shootingState == that.shootingState &&
+                aimingState == that.aimingState &&
+                switchWeaponState == that.switchWeaponState &&
+                Objects.equals(hardSteering, that.hardSteering);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, throttleState, steeringState, specialPowerState, shootingState, aimingState, switchWeaponState, hardSteering);
     }
 }

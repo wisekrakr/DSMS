@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
 import javafx.scene.media.VideoTrack;
 
-public class MyAssetManager implements Disposable{
+public class MyAssetManager implements Disposable {
 
     public AssetManager assetManager = new AssetManager();
     /*

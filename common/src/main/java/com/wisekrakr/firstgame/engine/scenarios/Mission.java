@@ -1,10 +1,9 @@
 package com.wisekrakr.firstgame.engine.scenarios;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
-import com.wisekrakr.firstgame.server.EngineConstants;
 
 import java.util.Random;
 import java.util.function.Function;
@@ -26,7 +25,7 @@ public class Mission extends Scenario {
         if (lastCreation + minCreationInterval <= spaceEngine.getTime()) {
             lastCreation = spaceEngine.getTime();
 
-            QuestGen quest = factory.apply(randomPosition());
+            QuestGen quest = factory.apply(GameHelper.randomPosition());
 
             spaceEngine.addGameObject(quest);
         }

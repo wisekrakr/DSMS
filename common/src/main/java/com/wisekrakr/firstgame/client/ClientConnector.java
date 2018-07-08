@@ -19,6 +19,7 @@ public class ClientConnector {
     private SpaceSnapshot latestSnapshot;
 
     private BlockingQueue<Object> queue = new LinkedBlockingDeque<>();
+    private SpaceshipControlRequest previousControlRequest;
 
     public ClientConnector(InetSocketAddress address) {
         this.address = address;
@@ -65,8 +66,7 @@ public class ClientConnector {
                         Object nextCommand = queue.take();
                         output.writeObject(nextCommand);
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.println("Connection to " + clientSocket + " broken: " + e.getMessage());
                 }
 
@@ -93,13 +93,18 @@ public class ClientConnector {
     public void controlSpaceship(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
                                  Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState,
                                  Spaceship.AimingState aimingState, Spaceship.SwitchWeaponState switchWeaponState, Float hardSteering) {
-        queue.add(new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState, aimingState, switchWeaponState, hardSteering));
+        SpaceshipControlRequest controlRequest =
+                new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState, aimingState, switchWeaponState, hardSteering);
+
+        if (previousControlRequest == null || !controlRequest.equals(previousControlRequest)) {
+            queue.add(controlRequest);
+            previousControlRequest = controlRequest;
+        }
     }
 
     public void setPaused(boolean paused) {
         queue.add(new PauseUnPauseRequest(paused));
     }
-
 
 
     public SpaceSnapshot getLatestSnapshot() {
