@@ -1,23 +1,21 @@
-package com.wisekrakr.firstgame.engine.gameobjects.enemies;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 
 import java.util.Set;
 
-public class EnemyGang extends Enemy {
+public class EnemyDodger extends Enemy {
 
-    private EnemyGang fuckBoi;
-    private float time;
+    public EnemyDodger(String name, Vector2 position, int health, float direction, float speed, float radius) {
+        super(GameObjectType.DODGER, name, position, health, direction, speed, radius);
 
-    public EnemyGang(String name, Vector2 position, int health, float direction, float speed, float radius) {
-        super(GameObjectType.GANG, name, position, health, direction, speed, radius);
-
-        setAggroDistance(225f);
-        setAttackDistance(150f);
+        setAggroDistance(125f);
+        setAttackDistance(175f);
         setChangeDirectionTime(20f);
 
     }
@@ -25,7 +23,7 @@ public class EnemyGang extends Enemy {
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.targetSpotted(target, toDelete, toAdd);
-        setMovingState(MovingState.DEFAULT_FORWARDS);
+        setMovingState(MovingState.BACKWARDS);
     }
 
     @Override
@@ -34,21 +32,15 @@ public class EnemyGang extends Enemy {
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_BULLETS);
-                setMovingState(MovingState.FLY_AROUND);
+                setMovingState(MovingState.DODGING);
             }else{
                 setAttackState(AttackState.PACIFIST);
             }
         }
     }
 
-    @Override
-    public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        time += delta;
-        if (time >= 5){
-            setAttackState(AttackState.GANG_VIOLENCE);
-
-        }
-
-
-    }
 }
+
+
+
+

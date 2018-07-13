@@ -9,8 +9,6 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyMotherShip;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.EnemyShitter;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
@@ -97,56 +95,13 @@ public class ServerRunner {
         //engine.addGameObject(new PowerupGenerator(new Vector2()));
 
 
-        gameEngine.addScenario(new WildlifeManagement(5, 1, ScenarioHelper.CHASER_FACTORY));
-/*
-        gameEngine.addScenario(new WildlifeManagement(2, 2,
-                new GameObjectFactory() {
-                    @Override
-                    public GameObject create(Vector2 initialPosition, float initialDirection) {
-                        return new EnemyShitter("Shitter",
-                                initialPosition,
-                                80, initialDirection,
-                                37.5f, 7.5f);
-                    }
-                }));
+        gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
+        gameEngine.addScenario(new WildlifeManagement(2, 2, ScenarioHelper.PEST_FACTORY));
+        gameEngine.addScenario(new WildlifeManagement(2, 4, ScenarioHelper.SHITTER_FACTORY));
+        gameEngine.addScenario(new WildlifeManagement(4, 3, ScenarioHelper.FACEHUGGER_FACTORY));
+        gameEngine.addScenario(new WildlifeManagement(4, 3, ScenarioHelper.BLINKER_FACTORY));
+        gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.HOMER_FACTORY));
 
-        gameEngine.addScenario(new WildlifeManagement(1, 10, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection) {
-                return new EnemyMotherShip("Mother",
-                        initialPosition,
-                        300, initialDirection,
-                        7.5f, 37.5f);
-            }
-        }));
-
-
-        gameEngine.addScenario(new WildlifeManagement(1, 10, position -> new EnemyMutator("Mutator",
-                position,
-                150, random.nextFloat() * 2000,
-                12.5f,25f)));
-
-        gameEngine.addScenario(new WildlifeManagement(2, 10, position -> new EnemyDodger("Dodger",
-                position,
-                15, random.nextFloat() * 2000,
-                31.75f,3f)));
-
-        gameEngine.addScenario(new WildlifeManagement(5, 10, position -> new EnemyBlinker("Blinker",
-                position,
-                50, random.nextFloat() * 2000,
-                43.75f,6.25f)));
-
-        gameEngine.addScenario(new WildlifeManagement(10, 30, position -> new EnemyFaceHugger("FaceHugger",
-                position,
-                30, random.nextFloat() * 2000,
-                50f, 2f)));
-
-         gameEngine.addScenario(new WildlifeManagement(2, 10, position -> new EnemyHomer("Homert",
-                position,
-                75, random.nextFloat() * 2000,
-                43.75f,7.5f)));
-
-*/
         gameEngine.addScenario(new WildlifeManagement(10, 0.01f, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection) {

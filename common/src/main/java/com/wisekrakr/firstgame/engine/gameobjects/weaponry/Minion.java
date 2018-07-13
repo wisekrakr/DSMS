@@ -9,6 +9,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.mechanics.WeaponMechanics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -187,18 +188,19 @@ public class Minion extends GameObject {
             toDelete.add(this);
         }
 
-        destructTime = 30f;
-        time += delta;
-        if(time >= destructTime){
-            toDelete.add(this);
-            destruct = true;
+        if (playerMinion) {
+            destructTime = 30f;
+            time += delta;
+            if (time >= destructTime) {
+                toDelete.add(this);
+                destruct = true;
+            }
         }
-
         switch (minionAttackState){
             case SHOOT:
                 ammoCount = getAmmoCount();
 
-                float shotCount = delta / 0.5f + shotLeftOver;
+                float shotCount = delta / WeaponMechanics.fireRate(5f) + shotLeftOver;
 
                 int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
 
@@ -213,12 +215,12 @@ public class Minion extends GameObject {
                     Bullet bullet = new Bullet("bullito", getPosition(), getOrientation(), getSpeed(),
                             BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
                     toAdd.add(bullet);
-                    bullet.setBulletSpeed(getSpeed());
+                    bullet.setBulletSpeed(getSpeed() * 2);
                     if (enemyMinion) {
-                        bullet.setPlayerBullet(true);
+                        bullet.setEnemyBullet(true);
                     }
                     if (playerMinion){
-                        bullet.setEnemyBullet(true);
+                        bullet.setPlayerBullet(true);
                     }
                 }
                 break;

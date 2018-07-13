@@ -550,7 +550,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }
             }
             if (getChosenWeapon() == 3) {
-                if (inputManager.isKeyPressed(Input.Keys.C)) {
+                if (inputManager.isKeyDown(Input.Keys.C)) {
                     shootingState = Spaceship.ShootingState.PLACE_MINE;
                 }
             }
@@ -797,7 +797,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
 
-                    case ELS:
+                    case EWM:
                         enemy = object;
                         shapeRenderer.setColor(Color.SKY);
                         shapeRenderer.circle(x, y, radius);
@@ -828,14 +828,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar huggerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(huggerHealthBar);
                         volatileBars.add(huggerHealthBar);
-                        break;
-                    case GANG:
-                        enemy = object;
-                        shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.PURPLE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
                         break;
                     case SHITTER:
                         enemy = object;

@@ -1,28 +1,27 @@
-package com.wisekrakr.firstgame.engine.gameobjects.enemies;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 
-import java.util.Set;
+import java.util.*;
 
-public class EnemyDodger extends Enemy {
+public class EnemyChaser extends Enemy {
 
-    public EnemyDodger(String name, Vector2 position, int health, float direction, float speed, float radius) {
-        super(GameObjectType.DODGER, name, position, health, direction, speed, radius);
+    public EnemyChaser(String name, Vector2 position, int health, float direction, float speed, float radius) {
+        super(GameObjectType.ENEMY_CHASER, name, position, health, direction, speed, radius);
 
-        setAggroDistance(125f);
-        setAttackDistance(175f);
-        setChangeDirectionTime(20f);
-
+        setAggroDistance(237.5f);
+        setAttackDistance(187.5f);
+        setChangeDirectionTime(5f);
     }
 
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.targetSpotted(target, toDelete, toAdd);
-        setMovingState(MovingState.BACKWARDS);
+        setMovingState(MovingState.DEFAULT_FORWARDS);
     }
 
     @Override
@@ -33,13 +32,9 @@ public class EnemyDodger extends Enemy {
                 setAttackState(AttackState.FIRE_BULLETS);
                 setMovingState(MovingState.DODGING);
             }else{
+                setMovingState(MovingState.DEFAULT_FORWARDS);
                 setAttackState(AttackState.PACIFIST);
             }
         }
     }
-
 }
-
-
-
-

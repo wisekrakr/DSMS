@@ -1,20 +1,24 @@
-package com.wisekrakr.firstgame.engine.gameobjects.enemies;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
+import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
 
-import java.util.*;
+import java.util.Set;
 
-public class EnemyChaser extends Enemy {
+public class EnemyFaceHugger extends Enemy {
 
-    public EnemyChaser(String name, Vector2 position, int health, float direction, float speed, float radius) {
-        super(GameObjectType.ENEMY_CHASER, name, position, health, direction, speed, radius);
+    public EnemyFaceHugger(String name, Vector2 position, int health, float direction, float speed, float radius) {
+        super(GameObjectType.FACE_HUGGER, name, position, health, direction, speed, radius);
 
-        setAggroDistance(237.5f);
-        setAttackDistance(187.5f);
-        setChangeDirectionTime(5f);
+        setAggroDistance(175f);
+        setAttackDistance(75f);
+        setChangeDirectionTime(3f);
     }
 
     @Override
@@ -28,11 +32,14 @@ public class EnemyChaser extends Enemy {
         super.attackTarget(target, toDelete, toAdd);
         if (target instanceof Player) {
             if (distanceBetween(this, target) <= getAttackDistance()) {
+                setTargetVector(target.getPosition());
+                setMovingState(MovingState.FACE_HUGGING);
                 setAttackState(AttackState.FIRE_BULLETS);
-                setMovingState(MovingState.DODGING);
             }else{
                 setAttackState(AttackState.PACIFIST);
             }
         }
     }
+
+
 }

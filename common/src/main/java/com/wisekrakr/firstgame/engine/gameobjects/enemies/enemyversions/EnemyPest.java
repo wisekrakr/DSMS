@@ -1,9 +1,10 @@
-package com.wisekrakr.firstgame.engine.gameobjects.enemies;
+package com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.HomingMissile;
 
 import java.util.Set;

@@ -86,11 +86,6 @@ public abstract class GameObject {
 
     }
 
-    public float setRandomDirection(){
-        Random random = new Random();
-        return random.nextFloat() * 2000 - 1000;
-    }
-
     public float setRandomDirectionStartScreen(){
         Random random = new Random();
         return random.nextFloat() * 1200;

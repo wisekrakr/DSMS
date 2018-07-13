@@ -24,12 +24,12 @@ public class WildlifeManagement extends Scenario {
     }
 
 
-
     public void periodicUpdate(SpaceEngine spaceEngine) {
         if (targetCount > myObjects.size() && lastCreation + minCreationInterval <= spaceEngine.getTime()) {
             lastCreation = spaceEngine.getTime();
 
             GameObject newObject = factory.create(GameHelper.randomPosition(), GameHelper.randomDirection());
+
 
             spaceEngine.addGameObject(newObject, new SpaceEngine.GameObjectListener() {
                 @Override
@@ -44,157 +44,11 @@ public class WildlifeManagement extends Scenario {
             });
         }
     }
-
-
-
-
-
-
-/*
-   TODO: translate into new WildlifeManagement constructs in ServerRunner.initializeEngine() and remove the comment
-
-
-
-        engine.addGameObject(new PowerupGenerator(new Vector2(
-            randomGenerator.nextFloat() * width - plusOfXY,
-            randomGenerator.nextFloat() * height - plusOfXY),
-    engine));
-
-        engine.addGameObject(new QuestGen(new Vector2(
-            randomGenerator.nextFloat() * width - plusOfXY,
-            randomGenerator.nextFloat() * height - plusOfXY),
-    engine));
-
-
-        for (int i = 0; i < 4; i++) {
-        EnemyChaser chaser = new EnemyChaser("Chaser", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                70, randomGenerator.nextFloat() * 2000 - 1000,
-                50f, 5.5f, engine);
-        engine.addGameObject(chaser);
-    }
-
-        for (int i = 0; i < 2; i++) {
-        EnemyShitter shitter = new EnemyShitter("Shitter", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                80,randomGenerator.nextFloat() * 2000 - 1000,
-                37.5f,7.5f, engine);
-        engine.addGameObject(shitter);
-    }
-
-        for (int i = 0; i < 2; i++) {
-        EnemyEls enemyEls = new EnemyEls("ELS", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                100,randomGenerator.nextFloat() * 2000 - 1000,
-                47.5f, 6.25f, engine);
-        engine.addGameObject(enemyEls);
-    }
-        for (int i = 0; i < 20; i++) {
-        Asteroid asteroid = new Asteroid("Boeja", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                randomGenerator.nextFloat() * 20,
-                randomGenerator.nextFloat() * 80,
-                randomGenerator.nextFloat() * 2 * (float) Math.PI, engine,
-                randomGenerator.nextFloat() * 5f);
-        engine.addGameObject(asteroid);
-    }
-
-
-*/
-
-    /*
-        for (int i = 0; i < 5; i++) {
-            EnemyBlinker enemyBlinker = new EnemyBlinker("Blinker", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    50,randomGenerator.nextFloat() * 2000 - 1000,
-                    43.75f,6.25f, engine);
-            engine.addGameObject(enemyBlinker);
-        }
-
-
-
-        for(int i = 0; i < 5; i++){
-            EnemyHomer enemyHomer = new EnemyHomer("MissileEnemy", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    75,randomGenerator.nextFloat() * 2000 - 1000,
-                    43.75f,7.5f, engine);
-            engine.addGameObject(enemyHomer);
-        }
-
-
-        for (int i = 0; i < 5; i++) {
-            EnemyPest pest = new EnemyPest("Pest", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    25,randomGenerator.nextFloat() * 2000 - 1000,
-                    57.5f,3.75f, engine);
-            engine.addGameObject(pest);
-        }
-
-        EnemyMotherShip enemyMotherShip = new EnemyMotherShip("MotherShip", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                200, randomGenerator.nextFloat() * 2000 - 1000,
-                7.5f,37.5f, engine);
-        engine.addGameObject(enemyMotherShip);
-
-        EnemyMutator enemyMutator = new EnemyMutator("SporeShip", new Vector2(
-                randomGenerator.nextFloat() * width - plusOfXY,
-                randomGenerator.nextFloat() * height - plusOfXY),
-                150, randomGenerator.nextFloat() * 2000 - 1000,
-                12.5f,25f, engine);
-        engine.addGameObject(enemyMutator);
-
-
-        for (int i = 0; i < 4; i++) {
-            EnemyFaceHugger enemyFaceHugger = new EnemyFaceHugger("Face Hugger", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    40, randomGenerator.nextFloat() * 2000 - 1000,
-                    50f, 2f, engine);
-            engine.addGameObject(enemyFaceHugger);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            EnemyDodger enemyDodger = new EnemyDodger("Dodger", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    10,randomGenerator.nextFloat() * 2000 - 1000 ,
-                    31.25f,3f, engine);
-            engine.addGameObject(enemyDodger);
-        }
-
-       for(int i = 0; i < 10; i++){
-            EnemyShotty enemyShotty = new EnemyShotty("Stalker", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    25,randomGenerator.nextFloat() * 2000 - 1000,
-                    32f,3f, engine);
-            engine.addGameObject(enemyShotty);
-        }
-
-        for (int i = 0; i < 5; i++) {
-            EnemyGang enemyGang = new EnemyGang("Gang!", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    50,randomGenerator.nextFloat() * 2000 - 1000,
-                    120f,2.5f, engine);
-            engine.addGameObject(enemyGang);
-        }
-
-        for (int i = 0; i < 1; i++) {
-            Rotunda rotunda = new Rotunda("rotunda test", new Vector2(
-                    randomGenerator.nextFloat() * width - plusOfXY,
-                    randomGenerator.nextFloat() * height - plusOfXY),
-                    engine, 12.5f, randomGenerator.nextFloat() * 2 * (float) Math.PI);
-            engine.addGameObject(rotunda);
-        }
-*/
-
 }
+
+
+
+
+
+
+
