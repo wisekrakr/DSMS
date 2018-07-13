@@ -97,8 +97,8 @@ public class ServerRunner {
         //engine.addGameObject(new PowerupGenerator(new Vector2()));
 
 
-        gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
-
+        gameEngine.addScenario(new WildlifeManagement(5, 1, ScenarioHelper.CHASER_FACTORY));
+/*
         gameEngine.addScenario(new WildlifeManagement(2, 2,
                 new GameObjectFactory() {
                     @Override
@@ -120,7 +120,7 @@ public class ServerRunner {
             }
         }));
 
-/*
+
         gameEngine.addScenario(new WildlifeManagement(1, 10, position -> new EnemyMutator("Mutator",
                 position,
                 150, random.nextFloat() * 2000,
@@ -158,11 +158,11 @@ public class ServerRunner {
 
 /*
         gameEngine.addScenario(new Mission(6, QuestGen::new));
-*/
+
 
 
         gameEngine.addScenario(ScenarioHelper.CREATE_PEST_SWARM());
-
+*/
 
         timeThread.start();
 

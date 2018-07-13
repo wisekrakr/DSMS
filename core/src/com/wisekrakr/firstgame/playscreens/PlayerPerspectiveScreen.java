@@ -685,7 +685,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                                 object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                                 (5 / 2));
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
+                       // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
 
 /*
                         if (introDialogOneTime) {
@@ -726,27 +726,27 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         }
                         break;
                     case BULLET:
-                    /*
-                    shapeRenderer.setColor(Color.CYAN);
-                    shapeRenderer.circle(x, y, radius);
-*/
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
-//                        batch.end();
+
+                        shapeRenderer.setColor(Color.CYAN);
+                        shapeRenderer.circle(x, y, radius);
+
+
+                       // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
+
 
                         break;
                     case ASTEROID:
-/*
-                    shapeRenderer.setColor(Color.BROWN);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.GREEN);
-                    shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                            y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-*/
 
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
-//                        batch.end();
+                        shapeRenderer.setColor(Color.BROWN);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
+
                         break;
                     case ROTUNDA:
                         shapeRenderer.setColor(Color.YELLOW);
@@ -754,13 +754,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
                     case ENEMY_CHASER:
                         enemy = object;
-                    /*
-                    shapeRenderer.setColor(Color.RED);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.BLUE);
-                    shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                            y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-*/
+
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.BLUE);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
                         Label chaserNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(chaserNameLabel);
                         volatileLabels.add(chaserNameLabel);
@@ -791,9 +791,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(chaserHealthBar);
                         volatileBars.add(chaserHealthBar);
 
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssEls.png", object, batch, 0.1f); //this is so that every object gets its own sprite
-//                        batch.end();
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssEls.png", object, batch, 0.1f); //this is so that every object gets its own sprite
+
 
                         break;
 
@@ -893,13 +893,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
                     case MOTHERSHIP:
                         enemy = object;
-                    /*
-                    shapeRenderer.setColor(Color.CYAN);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.ORANGE);
-                    shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                            y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-*/
+
+                        shapeRenderer.setColor(Color.CYAN);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.ORANGE);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
                         Label motherNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(motherNameLabel);
                         volatileLabels.add(motherNameLabel);
@@ -911,19 +911,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Texture motherTexture = myAssetManager.assetManager.get("sprites/human_mothership.png");
                         Sprite motherSprite = new Sprite(motherTexture);
 
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/human_mothership.png", object, batch, 0.7f);
-//                        batch.end();
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/human_mothership.png", object, batch, 0.7f);
+
                         break;
                     case DODGER:
                         enemy = object;
-                    /*
-                    shapeRenderer.setColor(Color.LIME);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.PINK);
-                    shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                            y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-*/
+
+                        shapeRenderer.setColor(Color.LIME);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.PINK);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
                         Label dodgerNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(dodgerNameLabel);
                         volatileLabels.add(dodgerNameLabel);
@@ -932,19 +932,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(dodgerHealthBar);
                         volatileBars.add(dodgerHealthBar);
 
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssDodger.png", object, batch, 0.1f); //this is so that every object gets its own sprite
-//                        batch.end();
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssDodger.png", object, batch, 0.1f); //this is so that every object gets its own sprite
+
                         break;
                     case HOMER:
                         enemy = object;
-                    /*
-                    shapeRenderer.setColor(Color.ORANGE);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.VIOLET);
-                    shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                            y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-*/
+
+                        shapeRenderer.setColor(Color.ORANGE);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.VIOLET);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
                         Label homerNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(homerNameLabel);
                         volatileLabels.add(homerNameLabel);
@@ -953,28 +953,28 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(homerHealthBar);
                         volatileBars.add(homerHealthBar);
 
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssHomer.png", object, batch, 0.3f);
-//                        batch.end();
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssHomer.png", object, batch, 0.3f);
+
                         break;
                     case MISSILE:
-                    /*
-                    shapeRenderer.setColor(Color.RED);
-                    shapeRenderer.circle(x, y, radius);
-*/
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/missile_default.png", object, batch, null);
-//                        batch.end();
+
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.circle(x, y, radius);
+
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/missile_default.png", object, batch, null);
+
                         break;
                     case MUTATOR:
                         enemy = object;
-                    /*
-                    shapeRenderer.setColor(Color.FIREBRICK);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.ORANGE);
-                    shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                            y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-*/
+
+                        shapeRenderer.setColor(Color.FIREBRICK);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.ORANGE);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
                         Label mutatorNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(mutatorNameLabel);
                         volatileLabels.add(mutatorNameLabel);
@@ -983,9 +983,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(mutatorHealthBar);
                         volatileBars.add(mutatorHealthBar);
 
-//                        batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssMutator.png", object, batch, 0.6f);
-//                        batch.end();
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssMutator.png", object, batch, 0.6f);
+
                         break;
                     case SPORE:
                         Color sporeColor = chooseRandomColor(SPORE_COLORS);
@@ -1019,17 +1019,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
                     case POWERUP_SHIELD:
 
-                     /*
-                    shapeRenderer.setColor(Color.RED);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(x, y, radius / 2 + radius / 2);
-                    shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(x, y, radius / 2);
-*/
-//                            batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_shield.png", object, batch, 2f);
-//                            batch.end();
+
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
+                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.circle(x, y, radius / 2);
+
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_shield.png", object, batch, 2f);
+
                         break;
                     case POWERUP_MINION:
                         shapeRenderer.setColor(Color.SKY);
@@ -1041,17 +1041,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
                     case POWERUP_HEALTH:
 
-                    /*
-                    shapeRenderer.setColor(Color.RED);
-                    shapeRenderer.circle(x, y, radius);
-                    shapeRenderer.setColor(Color.GREEN);
-                    shapeRenderer.circle(x, y, radius / 2 + radius / 2);
-                    shapeRenderer.setColor(Color.WHITE);
-                    shapeRenderer.circle(x, y, radius / 2);
-*/
-//                            batch.begin();
-                        SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_health.png", object, batch, 2f);
-//                            batch.end();
+
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
+                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.circle(x, y, radius / 2);
+
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_health.png", object, batch, 2f);
+
                         break;
 //TODO: how to switch colors for different minions
                     case MINION:

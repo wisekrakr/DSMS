@@ -31,10 +31,11 @@ public class SwarmScenario extends Scenario{
 
             for (int i = 0; i < numberOfEnemies; i++){
                 Enemy newObject = factory.apply(GameHelper.randomPosition());
-
+/*
                 spaceEngine.addGameObject(newObject);
                 newObject.setMovingState(Enemy.MovingState.DEFAULT_FORWARDS);
                 newObject.setAggroDistance((float) Double.POSITIVE_INFINITY);
+                */
             }
         }
     }
