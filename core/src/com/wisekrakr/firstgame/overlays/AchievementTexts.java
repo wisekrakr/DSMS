@@ -60,8 +60,8 @@ public class AchievementTexts implements Disposable {
         if(timeCounter != 0) {
             if (myself != null) {
                 distance = (Float) myself.extraProperties().get("distanceTravelled");
-                killerName = (String) myself.killedByProperties().get("killedBy");
-                health = (Float) myself.healthProperties().get("health");
+                killerName = (String) myself.extraProperties().get("killedBy");
+                health = (Float) myself.extraProperties().get("health");
                 if (distance >= 2222) {
                     timeNow += delta;
                     if (timeNow <= 10) {

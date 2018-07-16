@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.*;
@@ -26,6 +27,7 @@ public class SpaceEngine {
 
     public interface GameObjectListener {
         void added();
+
         void removed();
     }
 
@@ -48,10 +50,10 @@ public class SpaceEngine {
             List<GameObject> toRemove = new ArrayList<>();
             object.afterAdd(toAdd, toRemove);
 
-            for (GameObject o: toAdd) {
+            for (GameObject o : toAdd) {
                 addGameObject(o);
             }
-            for (GameObject o: toRemove) {
+            for (GameObject o : toRemove) {
                 removeGameObject(o);
             }
         }
@@ -73,10 +75,10 @@ public class SpaceEngine {
             List<GameObject> toRemove = new ArrayList<>();
             object.afterRemove(toAdd, toRemove);
 
-            for (GameObject o: toAdd) {
+            for (GameObject o : toAdd) {
                 addGameObject(o);
             }
-            for (GameObject o: toRemove) {
+            for (GameObject o : toRemove) {
                 removeGameObject(o);
             }
         }
@@ -212,6 +214,22 @@ public class SpaceEngine {
                     }
                 }
             }
+
+            for (GameObject subject : gameObjects) {
+                // TODO: change into universal behavior
+                if (subject instanceof NonPlayerCharacter) {
+                    List<GameObject> nearby = new ArrayList<>();
+
+                    for (GameObject target : gameObjects) {
+                        //subject.getClosestTarget(target, toDelete, toAdd);
+                        if (target != subject && GameHelper.distanceBetween(target, subject) < 400f) {
+                            nearby.add(target);
+                        }
+                    }
+
+                    subject.nearby(nearby);
+                }
+            }
 /**
  * In this section gameobjects(enemy weaponry ) are Enemy weapons that follow the player(homing weapons).
  */
@@ -220,7 +238,7 @@ public class SpaceEngine {
                 if (subject instanceof Spores || subject instanceof HomingMissile) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
-                            if (target != subject ) {
+                            if (target != subject) {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
@@ -229,7 +247,7 @@ public class SpaceEngine {
  */
                         if (target instanceof Enemy) {
                             if (target != subject) {
-                                subject.attackTarget(target,toDelete,toAdd);
+                                subject.attackTarget(target, toDelete, toAdd);
                             }
                         }
                     }
@@ -270,14 +288,14 @@ public class SpaceEngine {
                 if (player instanceof Player) {
                     for (GameObject enemy : gameObjects) {
                         if (enemy instanceof Enemy) {
-                            for(GameObject subject: gameObjects){
-                                if(subject instanceof Bullet){
+                            for (GameObject subject : gameObjects) {
+                                if (subject instanceof Bullet) {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
-                                if(subject instanceof HomingMissile){
+                                if (subject instanceof HomingMissile) {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
-                                if(subject instanceof SpaceMine){
+                                if (subject instanceof SpaceMine) {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                             }

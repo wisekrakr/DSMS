@@ -1,8 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.powerups;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
@@ -14,7 +13,7 @@ public class PowerUpMissile extends PowerUp{
 
 
     public PowerUpMissile(String name, Vector2 initialPosition) {
-        super(GameObjectType.POWERUP_MISSILE, name, initialPosition);
+        super(GameObjectVisualizationType.POWERUP_MISSILE, name, initialPosition);
         setCollisionRadius(7.5f);
     }
 

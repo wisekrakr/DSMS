@@ -1,6 +1,6 @@
 package com.wisekrakr.firstgame.engine;
 
-public enum GameObjectType {
+public enum GameObjectVisualizationType {
     SPACESHIP,
     ENEMY,
     ASTEROID,

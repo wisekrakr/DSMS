@@ -1,8 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
@@ -27,7 +26,7 @@ public class Bullet extends GameObject {
     private boolean enemyBullet;
 
     public Bullet(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
-        super(GameObjectType.BULLET, name, initialPosition);
+        super(GameObjectVisualizationType.BULLET, name, initialPosition);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
@@ -172,23 +171,7 @@ public class Bullet extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("damage", damage);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getRandomProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("hit", hit);
 
         return result;

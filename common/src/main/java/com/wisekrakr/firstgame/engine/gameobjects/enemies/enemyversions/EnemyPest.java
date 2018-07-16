@@ -1,7 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
@@ -16,7 +17,7 @@ import java.util.Set;
 public class EnemyPest extends Enemy {
 
     public EnemyPest(String name, Vector2 position, int health, float direction, float speed, float radius) {
-        super(GameObjectType.PEST, name, position, health, direction, speed, radius);
+        super(GameObjectVisualizationType.PEST, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);
         setAttackDistance(187.5f);
@@ -40,7 +41,7 @@ public class EnemyPest extends Enemy {
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         super.attackTarget(target, toDelete, toAdd);
         if (target instanceof Player) {
-            if (distanceBetween(this, target) <= getAttackDistance()) {
+            if (GameHelper.distanceBetween(this, target) <= getAttackDistance()) {
                 setAttackState(AttackState.FIRE_BULLETS);
                 setMovingState(MovingState.DEFAULT_FORWARDS);
             }else{

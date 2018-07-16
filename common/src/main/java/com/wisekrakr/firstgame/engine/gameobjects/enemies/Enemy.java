@@ -2,7 +2,8 @@ package com.wisekrakr.firstgame.engine.gameobjects.enemies;
 
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions.EnemyChaser;
@@ -62,7 +63,7 @@ public class Enemy extends GameObject {
     private float updatedAngle;
     private float randomAngle;
 
-    public Enemy(GameObjectType type, String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public Enemy(GameObjectVisualizationType type, String name, Vector2 position, int health, float direction, float speed, float radius) {
         super(type, name, position);
         this.direction = direction;
         this.radius = radius;
@@ -119,7 +120,7 @@ public class Enemy extends GameObject {
         }
         if (subject instanceof Bullet) {
             if (((Bullet) subject).isPlayerBullet()) {
-                float angle = angleBetween(this, subject);
+                float angle = GameHelper.angleBetween(this, subject);
                 setMovingState(MovingState.DEFAULT_FORWARDS);
                 setOrientation(angle);
                 setDirection(angle);
@@ -129,7 +130,7 @@ public class Enemy extends GameObject {
         }
         if (subject instanceof HomingMissile){
             if(((HomingMissile) subject).isPlayerMissile()){
-                float angle = angleBetween(this, subject);
+                float angle = GameHelper.angleBetween(this, subject);
                 setMovingState(MovingState.DEFAULT_FORWARDS);
                 setOrientation(angle);
                 setDirection(angle);
@@ -140,7 +141,7 @@ public class Enemy extends GameObject {
         }
         if (subject instanceof SpaceMine){
             if(((SpaceMine) subject).isPlayerMine()){
-                float angle = angleBetween(this, subject);
+                float angle = GameHelper.angleBetween(this, subject);
                 setMovingState(MovingState.DEFAULT_FORWARDS);
                 setOrientation(angle);
                 setDirection(angle);
@@ -157,8 +158,8 @@ public class Enemy extends GameObject {
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if(subject instanceof Enemy){
-            float angle = angleBetween(this, subject);
-            if(distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
+            float angle = GameHelper.angleBetween(this, subject);
+            if(GameHelper.distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
                 setPosition(new Vector2(getPosition().x -= Math.cos(angle) * random.nextFloat() * 2.5,
                         getPosition().y -= Math.sin(angle) * random.nextFloat() * 2.5));
                 setOrientation(-angle);
@@ -191,8 +192,8 @@ public class Enemy extends GameObject {
     @Override
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (target instanceof Player) {
-            if (distanceBetween(this, target) <= getAggroDistance() && getAggroDistance() >= getCollisionRadius() + target.getCollisionRadius()) {
-                float angle = angleBetween(this, target);
+            if (GameHelper.distanceBetween(this, target) <= getAggroDistance() && getAggroDistance() >= getCollisionRadius() + target.getCollisionRadius()) {
+                float angle = GameHelper.angleBetween(this, target);
                 float angleNoAim = angleBetweenNoAim(this, target);
                 //setPosition(new Vector2(getPosition().x  +=  Math.cos(angle), getPosition().y += Math.sin(angle) ));
                 if (!(getHealth() <= getHealth()*(10f/100f))){
@@ -419,7 +420,7 @@ public class Enemy extends GameObject {
                     float destructTime = 8.0f;
                     time += delta;
                     if(time >= destructTime){
-                        float angle = angleBetween(this, enemyChaser);
+                        float angle = GameHelper.angleBetween(this, enemyChaser);
                         enemyChaser.setPosition(new Vector2(this.getPosition().x +=  Math.cos(angle)  , this.getPosition().y +=  Math.sin(angle) ));
                         enemyChaser.setOrientation(angle);
                         enemyChaser.setDirection(angle);
@@ -648,50 +649,10 @@ public class Enemy extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getHealthProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("health", health);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("healthPercentage", healthInPercentages());
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageTakenProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("damageTaken", damageTaken);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getHitProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("hit", hit);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getMaxHealthProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("maxHealth", maxHealth);
 
         return result;

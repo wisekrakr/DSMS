@@ -23,7 +23,6 @@ public class WildlifeManagement extends Scenario {
         this.factory = factory;
     }
 
-
     public void periodicUpdate(SpaceEngine spaceEngine) {
         if (targetCount > myObjects.size() && lastCreation + minCreationInterval <= spaceEngine.getTime()) {
             lastCreation = spaceEngine.getTime();

@@ -1,8 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
@@ -42,7 +42,7 @@ public class Minion extends GameObject {
     private boolean minionShooter;
 
     public Minion(String name, Vector2 position, int health, float direction, float radius) {
-        super(GameObjectType.MINION, name, position);
+        super(GameObjectVisualizationType.MINION, name, position);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
@@ -113,12 +113,12 @@ public class Minion extends GameObject {
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (playerMinion) {
             if (target instanceof Enemy) {
-                if (distanceBetween(this, target) <= getAggroDistance()) {
+                if (GameHelper.distanceBetween(this, target) <= getAggroDistance()) {
                     if (minionShooter || minionFighter) {
-                        float angle = angleBetween(this, target);
+                        float angle = GameHelper.angleBetween(this, target);
                         setOrientation(angle);
                         setDirection(angle);
-                    }else {
+                    } else {
                         minionAttackState = MinionAttackState.PACIFIST;
                     }
                 }
@@ -127,11 +127,11 @@ public class Minion extends GameObject {
         if (enemyMinion) {
             if (target instanceof Player) {
                 if (minionShooter || minionFighter) {
-                    if (distanceBetween(this, target) <= getAggroDistance()) {
-                        float angle = angleBetween(this, target);
+                    if (GameHelper.distanceBetween(this, target) <= getAggroDistance()) {
+                        float angle = GameHelper.angleBetween(this, target);
                         setOrientation(angle);
                         setDirection(angle);
-                    }else {
+                    } else {
                         minionAttackState = MinionAttackState.PACIFIST;
                     }
                 }
@@ -144,7 +144,7 @@ public class Minion extends GameObject {
 
         if (playerMinion) {
             if (target instanceof Enemy) {
-                if (distanceBetween(this, target) <= getAttackDistance()) {
+                if (GameHelper.distanceBetween(this, target) <= getAttackDistance()) {
                     if (minionShooter) {
                         if (!toDelete.contains(target)) {
                             setMinionAttackState(MinionAttackState.SHOOT);
@@ -152,7 +152,7 @@ public class Minion extends GameObject {
                             setMinionAttackState(MinionAttackState.PACIFIST);
                         }
                     }
-                    if (minionFighter){
+                    if (minionFighter) {
                         if (!toDelete.contains(target)) {
                             setMinionAttackState(MinionAttackState.FIGHT);
                         } else {
@@ -164,9 +164,9 @@ public class Minion extends GameObject {
             }
         }
 
-        if (enemyMinion){
-            if (target instanceof Player){
-                if (distanceBetween(this, target)<= getAttackDistance()){
+        if (enemyMinion) {
+            if (target instanceof Player) {
+                if (GameHelper.distanceBetween(this, target) <= getAttackDistance()) {
                     if (minionShooter) {
                         if (!toDelete.contains(target)) {
                             setMinionAttackState(MinionAttackState.SHOOT);
@@ -184,7 +184,7 @@ public class Minion extends GameObject {
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (health <= 0){
+        if (health <= 0) {
             toDelete.add(this);
         }
 
@@ -196,7 +196,7 @@ public class Minion extends GameObject {
                 destruct = true;
             }
         }
-        switch (minionAttackState){
+        switch (minionAttackState) {
             case SHOOT:
                 ammoCount = getAmmoCount();
 
@@ -219,7 +219,7 @@ public class Minion extends GameObject {
                     if (enemyMinion) {
                         bullet.setEnemyBullet(true);
                     }
-                    if (playerMinion){
+                    if (playerMinion) {
                         bullet.setPlayerBullet(true);
                     }
                 }
@@ -355,36 +355,13 @@ public class Minion extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getHealthProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("health", health);
 
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("damage", damage);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getRandomProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         if (minionShooter) {
             result.put("minionshooter", minionShooter);
         }
-        if (minionFighter){
+        if (minionFighter) {
             result.put("minionfighter", minionFighter);
         }
         return result;

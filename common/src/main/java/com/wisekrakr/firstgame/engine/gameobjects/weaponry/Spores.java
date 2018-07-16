@@ -1,8 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
@@ -20,7 +20,7 @@ public class Spores extends GameObject {
     private float attackDistance;
 
     public Spores(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
-        super(GameObjectType.SPORE, name, initialPosition);
+        super(GameObjectVisualizationType.SPORE, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;
@@ -46,9 +46,9 @@ public class Spores extends GameObject {
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (target instanceof Player) {
-            if (distanceBetween(this, target) <= 500) {
+            if (GameHelper.distanceBetween(this, target) <= 500) {
 
-                float angle = angleBetween(this, target);
+                float angle = GameHelper.angleBetween(this, target);
 
                 // to make the chaser chase the player with less vigilance, divide cos and sin by 2
                 setPosition(new Vector2(getPosition().x += Math.cos(angle), getPosition().y += Math.sin(angle)));
@@ -121,17 +121,8 @@ public class Spores extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("damage", damage);
 
         return result;
     }
-
 }

@@ -9,7 +9,7 @@ import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
@@ -95,6 +95,13 @@ public class ServerRunner {
         //engine.addGameObject(new PowerupGenerator(new Vector2()));
 
 
+        gameEngine.addScenario(new WildlifeManagement(1, 1, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection) {
+                return new CrazilySpawningPassiveAggressiveNPC(initialPosition);
+            }
+        }));
+/*
         gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
         gameEngine.addScenario(new WildlifeManagement(2, 2, ScenarioHelper.PEST_FACTORY));
         gameEngine.addScenario(new WildlifeManagement(2, 4, ScenarioHelper.SHITTER_FACTORY));
@@ -110,6 +117,8 @@ public class ServerRunner {
                         , random.nextFloat() * 5f);
             }
         }));
+
+        */
 
 /*
         gameEngine.addScenario(new Mission(6, QuestGen::new));

@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.overlays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,19 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.MyAssetManager;
-import com.wisekrakr.firstgame.client.ClientConnector;
-import com.wisekrakr.firstgame.engine.GameObjectType;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.scenarios.Scenario;
 
@@ -74,23 +66,23 @@ public class PlayerHud implements Disposable {
     }
 
     private Boolean hit(SpaceSnapshot.GameObjectSnapshot object){
-        return (Boolean) object.hitProperties().get("hit");
+        return (Boolean) object.extraProperties().get("hit");
 
     }
 
     private Float health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.healthProperties().get("health");
+        return (Float) object.extraProperties().get("health");
     }
 
     private Float maxHealth(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.maxHealthProperties().get("maxHealth");
+        return (Float) object.extraProperties().get("maxHealth");
     }
     private Float healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.damageProperties().get("healthPercentage");
+        return (Float) object.extraProperties().get("healthPercentage");
     }
 
     private Float damageTaken(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.damageTakenProperties().get("damageTaken");
+        return (Float) object.extraProperties().get("damageTaken");
     }
 
 

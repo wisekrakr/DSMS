@@ -2,8 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects.powerups;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.server.EngineConstants;
 
@@ -12,7 +11,7 @@ import java.util.Set;
 
 public class PowerupGenerator extends GameObject {
     public PowerupGenerator(Vector2 initialPosition) {
-        super(GameObjectType.POWERUP_GENERATOR, "Powerup generator", initialPosition);
+        super(GameObjectVisualizationType.POWERUP_GENERATOR, "Powerup generator", initialPosition);
     }
 
     private float time;

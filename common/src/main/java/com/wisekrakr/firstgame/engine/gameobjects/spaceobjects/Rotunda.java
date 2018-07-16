@@ -1,8 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.spaceobjects;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 import java.util.HashMap;
@@ -17,7 +16,7 @@ public class Rotunda extends GameObject {
     private float time;
 
     public Rotunda(String name, Vector2 position, float radius, float angle ) {
-        super(GameObjectType.ROTUNDA, name, position);
+        super(GameObjectVisualizationType.ROTUNDA, name, position);
         this.angle = angle;
         this.radius = radius;
         setCollisionRadius(radius);

@@ -1,8 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
@@ -33,7 +33,7 @@ public class HomingMissile extends GameObject {
     private float missileSpeed;
 
     public HomingMissile(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage, boolean canMissile) {
-        super(GameObjectType.MISSILE, name, initialPosition);
+        super(GameObjectVisualizationType.MISSILE, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;
@@ -77,7 +77,7 @@ public class HomingMissile extends GameObject {
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - MissileMechanics.determineMissileDamage());
                     if (((Player) subject).isKilled()) {
-                        ((Player) subject).setKillerName((String) subject.getKilledByProperties().get("killedBy"));
+                        ((Player) subject).setKillerName((String) subject.getExtraSnapshotProperties().get("killedBy"));
                     }
                 }
             }
@@ -93,8 +93,8 @@ public class HomingMissile extends GameObject {
         if (target != null) {
             if (isPlayerMissile()) {
                 if (target instanceof Enemy) {
-                    if (distanceBetween(this, target) <= getAttackDistance()) {
-                        float angle = angleBetween(this, target);
+                    if (GameHelper.distanceBetween(this, target) <= getAttackDistance()) {
+                        float angle = GameHelper.angleBetween(this, target);
                         setOrientation(angle);
                         setDirection(angle);
                     }
@@ -103,8 +103,8 @@ public class HomingMissile extends GameObject {
 
             if (isEnemyMissile()) {
                 if (target instanceof Player) {
-                    if (distanceBetween(this, target) <= getAttackDistance()) {
-                        float angle = angleBetween(this, target);
+                    if (GameHelper.distanceBetween(this, target) <= getAttackDistance()) {
+                        float angle = GameHelper.angleBetween(this, target);
                         setOrientation(angle);
                         setDirection(angle);
                     }
@@ -197,14 +197,6 @@ public class HomingMissile extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("damage", damage);
 
         return result;

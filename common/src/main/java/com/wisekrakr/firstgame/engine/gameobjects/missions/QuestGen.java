@@ -1,10 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects.missions;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
 
 import java.util.HashMap;
@@ -18,7 +16,7 @@ public class QuestGen extends GameObject {
     private float lastQuestPop = -100000f;
 
     public QuestGen(Vector2 initialPosition) {
-        super(GameObjectType.TEST_QUEST, "Quest Generator", initialPosition);
+        super(GameObjectVisualizationType.TEST_QUEST, "Quest Generator", initialPosition);
         setCollisionRadius(20f);
                 
     }

@@ -1,8 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
@@ -21,7 +20,7 @@ public class Shield extends GameObject {
     private float timeActivated;
 
     public Shield(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
-        super(GameObjectType.SHIELD, name, initialPosition);
+        super(GameObjectVisualizationType.SHIELD, name, initialPosition);
         this.direction = direction;
         this.speed = speed;
         this.radius = radius;
@@ -35,21 +34,21 @@ public class Shield extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if(subject instanceof Enemy){
+        if (subject instanceof Enemy) {
             subject.setHealth(subject.getHealth() - getDamage());
-            ((Enemy) subject).setDirection(((Enemy) subject).getDirection() + (float)Math.PI);
+            ((Enemy) subject).setDirection(((Enemy) subject).getDirection() + (float) Math.PI);
             setHealth(getHealth() - 10);
         }
-        if(subject instanceof Bullet){
+        if (subject instanceof Bullet) {
             toDelete.add(subject);
         }
-        if(subject instanceof HomingMissile){
+        if (subject instanceof HomingMissile) {
             toDelete.add(subject);
         }
-        if(subject instanceof Spores){
+        if (subject instanceof Spores) {
             toDelete.add(subject);
         }
-        if(subject instanceof LaserBeam){
+        if (subject instanceof LaserBeam) {
             toDelete.add(subject);
         }
     }
@@ -59,9 +58,9 @@ public class Shield extends GameObject {
 
         time += delta;
 
-        if(time >= timeActivated){
+        if (time >= timeActivated) {
             toDelete.add(this);
-            time =0;
+            time = 0;
         }
 
     }
@@ -111,14 +110,6 @@ public class Shield extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("damage", damage);
 
         return result;

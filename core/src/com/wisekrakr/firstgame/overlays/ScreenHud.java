@@ -153,10 +153,10 @@ public class ScreenHud implements Disposable {
 
                 timeCountLabel.setText(String.format("%s",worldTimer));
                 distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
-                scoreCountLabel.setText(Float.toString((Float) myself.scoreProperties().get("score")));
-                ammoLabel.setText(String.format("%s", myself.randomProperties().get("switchWeaponState")));
-                ammoCountLabel.setText(Integer.toString((Integer) myself.ammoProperties().get("ammoCount")));
-                healthCountLabel.setText(Float.toString((Float) myself.healthProperties().get("health")));
+                scoreCountLabel.setText(Float.toString((Float) myself.extraProperties().get("score")));
+                ammoLabel.setText(String.format("%s", myself.extraProperties().get("switchWeaponState")));
+                ammoCountLabel.setText(Integer.toString((Integer) myself.extraProperties().get("ammoCount")));
+                healthCountLabel.setText(Float.toString((Float) myself.extraProperties().get("health")));
                 nameSetLabel.setText(String.format("%s", getName()));
 
 

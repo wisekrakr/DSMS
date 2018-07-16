@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -26,7 +27,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.ParticleEffectRenderer;
-import com.wisekrakr.firstgame.SpriteHelper;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
@@ -102,7 +102,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Stage backgroundStage;
 
     private int chosenWeapon;
-    private List<Label> volatileLabels = new ArrayList<Label>();
+
+    // this list of actors will be removed before the next render cycle
+    private List<Actor> volatileActors = new ArrayList<Actor>();
+
+
     private List<ProgressBar> volatileBars = new ArrayList<ProgressBar>();
     private Random random = new Random();
     private Float hardSteering;
@@ -607,15 +611,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
     }
 
+    private void registerVolatileActor(Actor actor) {
+        volatileActors.add(actor);
+    }
 
     private void renderGameObjects(float delta) {
-        for (Label label : volatileLabels) {
-            label.remove();
+        for (Actor actor : volatileActors) {
+            actor.remove();
         }
+
         for (ProgressBar progressBar : volatileBars) {
             progressBar.remove();
         }
-        volatileLabels.clear();
+        volatileActors.clear();
         volatileBars.clear();
 
 
@@ -642,7 +650,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 ProgressBar bar = playerHud.healthBar(object);
                 overlayStage.addActor(playerLabel);
                 overlayStage.addActor(bar);
-                volatileLabels.add(playerLabel);
+                registerVolatileActor(playerLabel);
                 volatileBars.add(bar);
 
                 break;
@@ -659,8 +667,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         try {
             for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
                 Float radius = (Float) object.extraProperties().get("radius");
-                Boolean hit = (Boolean) object.hitProperties().get("hit");
-                Boolean pickedUp = (Boolean) object.pickedUpProperties().get("pickedUp");
+                Boolean hit = (Boolean) object.extraProperties().get("hit");
+                Boolean pickedUp = (Boolean) object.extraProperties().get("pickedUp");
 
                 float x = object.getPosition().x;
                 float y = object.getPosition().y;
@@ -668,7 +676,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             /*
             Label swarmWarning = playerHud.swarmWarning();
             overlayStage.addActor(swarmWarning);
-            volatileLabels.add(swarmWarning);
+            volatileActors.add(swarmWarning);
 */
 
                 switch (object.getType()) {
@@ -685,7 +693,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                                 object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                                 (5 / 2));
-                       // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
+                        // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
 
 /*
                         if (introDialogOneTime) {
@@ -719,7 +727,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(blinkingColor);
                         shapeRenderer.circle(x, y, radius);
 
-                        Boolean isDestruct = (Boolean) object.randomProperties().get("isDestruct");
+                        Boolean isDestruct = (Boolean) object.extraProperties().get("isDestruct");
                         if (isDestruct) {
                             Sound boom = myAssetManager.assetManager.get("sound/mine_blowup.mp3", Sound.class);
                             boom.play(1f);
@@ -731,7 +739,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius);
 
 
-                       // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
+                        // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
 
 
                         break;
@@ -742,7 +750,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
 
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
@@ -763,14 +770,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label chaserNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(chaserNameLabel);
-                        volatileLabels.add(chaserNameLabel);
+                        registerVolatileActor(chaserNameLabel);
 
                         Label damageLabel = enemyHud.damageLabel(object);
-                        if (hit) {
-                            overlayStage.addActor(damageLabel);
-                        } else {
-                            damageLabel.remove();
-                        }
+                        if (damageLabel != null) {
+                            if (hit) {
+                                overlayStage.addActor(damageLabel);
+                            } else {
+                                damageLabel.remove();
+                            }
 
 //TODO:: just keeps going and going, so not only when hit, but as soon as something hits, it keeps going====> fixarooni
 /*
@@ -785,8 +793,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         }
                     }
 */
-                        volatileLabels.add(damageLabel);
+                            registerVolatileActor(damageLabel);
 
+                        }
                         ProgressBar chaserHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(chaserHealthBar);
                         volatileBars.add(chaserHealthBar);
@@ -807,7 +816,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label elsNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(elsNameLabel);
-                        volatileLabels.add(elsNameLabel);
+                        registerVolatileActor(elsNameLabel);
 
                         ProgressBar elsHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(elsHealthBar);
@@ -823,7 +832,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label flybyNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(flybyNameLabel);
-                        volatileLabels.add(flybyNameLabel);
+                        registerVolatileActor(flybyNameLabel);
 
                         ProgressBar huggerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(huggerHealthBar);
@@ -839,7 +848,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label shitterNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(shitterNameLabel);
-                        volatileLabels.add(shitterNameLabel);
+                        registerVolatileActor(shitterNameLabel);
 
                         ProgressBar shitterHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shitterHealthBar);
@@ -855,7 +864,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label pestNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(pestNameLabel);
-                        volatileLabels.add(pestNameLabel);
+                        registerVolatileActor(pestNameLabel);
 
                         ProgressBar pestHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(pestHealthBar);
@@ -871,7 +880,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label blinkerNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(blinkerNameLabel);
-                        volatileLabels.add(blinkerNameLabel);
+                        registerVolatileActor(blinkerNameLabel);
 
                         ProgressBar blinkerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(blinkerHealthBar);
@@ -894,7 +903,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label motherNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(motherNameLabel);
-                        volatileLabels.add(motherNameLabel);
+                        registerVolatileActor(motherNameLabel);
 
                         ProgressBar motherHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(motherHealthBar);
@@ -918,7 +927,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label dodgerNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(dodgerNameLabel);
-                        volatileLabels.add(dodgerNameLabel);
+                        registerVolatileActor(dodgerNameLabel);
 
                         ProgressBar dodgerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(dodgerHealthBar);
@@ -939,7 +948,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label homerNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(homerNameLabel);
-                        volatileLabels.add(homerNameLabel);
+                        registerVolatileActor(homerNameLabel);
 
                         ProgressBar homerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(homerHealthBar);
@@ -969,7 +978,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label mutatorNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(mutatorNameLabel);
-                        volatileLabels.add(mutatorNameLabel);
+                        registerVolatileActor(mutatorNameLabel);
 
                         ProgressBar mutatorHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(mutatorHealthBar);
@@ -995,7 +1004,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         Label shottyNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(shottyNameLabel);
-                        volatileLabels.add(shottyNameLabel);
+                        registerVolatileActor(shottyNameLabel);
 
                         ProgressBar shottyHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shottyHealthBar);
@@ -1047,8 +1056,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 //TODO: how to switch colors for different minions
                     case MINION:
-                        Boolean minionShooter = (Boolean) object.randomProperties().get("minionshooter");
-                        Boolean minionFighter = (Boolean) object.randomProperties().get("minionfighter");
+                        Boolean minionShooter = (Boolean) object.extraProperties().get("minionshooter");
+                        Boolean minionFighter = (Boolean) object.extraProperties().get("minionfighter");
 
                         shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(x, y, radius);

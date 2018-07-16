@@ -1,24 +1,26 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
-
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.*;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public class Spaceship extends GameObject {
 
@@ -72,7 +74,7 @@ public class Spaceship extends GameObject {
 
 
     public Spaceship(String name, Vector2 position) {
-        super(GameObjectType.SPACESHIP, name, position);
+        super(GameObjectVisualizationType.SPACESHIP, name, position);
 
         ammoCount = 10000;
         missileAmmoCount = 50;
@@ -120,7 +122,7 @@ public class Spaceship extends GameObject {
 
         private String fieldDescription;
 
-        SwitchWeaponState(String normalText){
+        SwitchWeaponState(String normalText) {
             fieldDescription = normalText;
         }
 
@@ -136,14 +138,14 @@ public class Spaceship extends GameObject {
         // angle = angle + (float) Math.PI;
     }
 
-    private String killedBy(){
-        if (isKilled){
+    private String killedBy() {
+        if (isKilled) {
             return killerName;
         }
         return null;
     }
 
-    private float healthInPercentages(){
+    private float healthInPercentages() {
         if (isHit()) {
             float z = getHealth() - getDamageTaken();
             healthPercentage = z / maxHealth * 100;
@@ -152,7 +154,7 @@ public class Spaceship extends GameObject {
         return healthPercentage;
     }
 
-    private float fireRate(float rateOfFire){
+    private float fireRate(float rateOfFire) {
         return rateOfFire;
     }
 
@@ -171,7 +173,7 @@ public class Spaceship extends GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if (subject instanceof Enemy) {
-            if (isKilled){
+            if (isKilled) {
                 setKillerName(subject.getName());
             }
         }
@@ -181,10 +183,10 @@ public class Spaceship extends GameObject {
             if (((Bullet) subject).isEnemyBullet()) {
                 setHit(true);
                 setDamageTaken(subject.getDamage());
-                if (isKilled){
+                if (isKilled) {
                     setKillerName(subject.getName());
                 }
-            }else {
+            } else {
                 setHit(false);
             }
         }
@@ -193,7 +195,7 @@ public class Spaceship extends GameObject {
                 setHit(true);
                 setDamageTaken(subject.getDamage());
                 setKillerName(subject.getName());
-            }else {
+            } else {
                 setHit(false);
             }
         }
@@ -202,7 +204,7 @@ public class Spaceship extends GameObject {
                 setHit(true);
                 setDamageTaken(subject.getDamage());
                 setKillerName(subject.getName());
-            }else {
+            } else {
                 setHit(false);
             }
         }
@@ -236,7 +238,7 @@ public class Spaceship extends GameObject {
             }
         }
 
-        if (subject instanceof QuestGen){
+        if (subject instanceof QuestGen) {
             pickedUp = true;
             toDelete.add(subject);
         }
@@ -245,22 +247,22 @@ public class Spaceship extends GameObject {
 
     public void scoringSystem(GameObject enemy, GameObject subject) {
 
-        if (enemy instanceof Enemy){
-            if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine){
-                if (collisionDetected(enemy, subject)){
+        if (enemy instanceof Enemy) {
+            if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine) {
+                if (collisionDetected(enemy, subject)) {
                     if (subject instanceof Bullet) {
                         this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 50);
                         }
                     }
-                    if (subject instanceof HomingMissile){
+                    if (subject instanceof HomingMissile) {
                         this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 100);
                         }
                     }
-                    if (subject instanceof SpaceMine){
+                    if (subject instanceof SpaceMine) {
                         this.setScore(this.getScore() + (subject).getDamage());
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 200);
@@ -329,16 +331,16 @@ public class Spaceship extends GameObject {
 
         speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
 
-        if (speed > (defaultSpeed + (defaultSpeed/2))) {
-            speedX = speedX * (defaultSpeed + (defaultSpeed/2)) / speed;
-            speedY = speedY * (defaultSpeed + (defaultSpeed/2)) / speed;
+        if (speed > (defaultSpeed + (defaultSpeed / 2))) {
+            speedX = speedX * (defaultSpeed + (defaultSpeed / 2)) / speed;
+            speedY = speedY * (defaultSpeed + (defaultSpeed / 2)) / speed;
         }
 
 
         switch (powerState) {
             case BOOSTING:
-                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed/2)), maxSpeed);
-                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed/2)), maxSpeed);
+                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
+                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
 
                 speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
                 if (speed > maxSpeed) {
@@ -370,7 +372,7 @@ public class Spaceship extends GameObject {
         ));
 
         //if shieldActivated set shield to player position
-        if (shieldActivated){
+        if (shieldActivated) {
             shield.setPosition(getPosition());
         }
 
@@ -397,14 +399,14 @@ public class Spaceship extends GameObject {
         switch (powerUpState) {
             case MINION:
                 if (randomMinion == 1) {
-                    if (minionShooterActivated){
+                    if (minionShooterActivated) {
                         minionAngle += getMinionRotationSpeed() * delta;
                         minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 80f),
                                 (float) (getPosition().y + Math.sin(minionAngle) * 80f)));
                     }
                 }
                 if (randomMinion == 2) {
-                    if (minionFighterActivated){
+                    if (minionFighterActivated) {
                         if (minionFighterPlayer.getMinionAttackState() != Minion.MinionAttackState.FIGHT) {
                             minionAngle += getMinionRotationSpeed() * delta;
                             minionFighterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 80f),
@@ -488,7 +490,7 @@ public class Spaceship extends GameObject {
         }
     }
 
-    private Minion InitMinionShooter(Set<GameObject> toDelete, Set<GameObject> toAdd){
+    private Minion InitMinionShooter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         minionShooterPlayer = new Minion("minion_shooter", new Vector2(
                 getPosition().x + (getCollisionRadius() * 2),
                 getPosition().y + (getCollisionRadius() * 2)), MinionMechanics.determineHealth(), getAngle(),
@@ -502,7 +504,7 @@ public class Spaceship extends GameObject {
         return minionShooterPlayer;
     }
 
-    private Minion InitMinionFighter(Set<GameObject> toDelete, Set<GameObject> toAdd){
+    private Minion InitMinionFighter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         minionFighterPlayer = new Minion("minion_fighter", new Vector2(
                 getPosition().x + (getCollisionRadius() * 2),
                 getPosition().y + (getCollisionRadius() * 2)),
@@ -622,13 +624,6 @@ public class Spaceship extends GameObject {
 
         result.put("distanceTravelled", distanceTravelled);
 
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getAmmoProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         if (switchWeaponState == SwitchWeaponState.BULLETS) {
             result.put("ammoCount", getAmmoCount());
         } else if (switchWeaponState == SwitchWeaponState.MISSILES) {
@@ -638,86 +633,20 @@ public class Spaceship extends GameObject {
         } else {
             result.put("ammoCount", 0);
         }
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getHealthProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("health", health);
 
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getScoreProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("score", score);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getRandomProperties() {
-        Map<String, Object> result = new HashMap<>();
-
         result.put("switchWeaponState", switchWeaponState.getFieldDescription());
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getKilledByProperties() {
-        Map<String, Object> result = new HashMap<>();
 
         result.put("killedBy", killedBy());
 
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("healthPercentage", healthInPercentages());
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getDamageTakenProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("damageTaken", damageTaken);
 
-        return result;
-    }
-
-
-    @Override
-    public Map<String, Object> getMaxHealthProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("maxHealth", maxHealth);
 
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getHitProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
         result.put("hit", hit);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getPickedUpProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("pickedUp", pickedUp);
 

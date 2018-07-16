@@ -1,8 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
@@ -30,7 +29,7 @@ public class SpaceMine extends GameObject {
      */
 
     public SpaceMine(String name, Vector2 initialPosition, float direction, float speed, float radius, float areaOfEffect, int damage) {
-        super(GameObjectType.SPACE_MINE, name, initialPosition);
+        super(GameObjectVisualizationType.SPACE_MINE, name, initialPosition);
         this.direction = direction;
         this.radius = radius;
         this.speed = speed;
@@ -151,28 +150,13 @@ public class SpaceMine extends GameObject {
         this.areaOfEffect = areaOfEffect;
     }
 
-    @Override
-    public Map<String, Object> getDamageProperties() {
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("damage", damage);
-
-        return result;
-    }
 
     @Override
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-
-        return result;
-    }
-
-    @Override
-    public Map<String, Object> getRandomProperties() {
-        Map<String, Object> result = new HashMap<String, Object>();
-
+        result.put("damage", damage);
         result.put("isDestruct", isDestruct);
 
         return result;

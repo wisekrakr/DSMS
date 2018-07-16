@@ -1,15 +1,14 @@
 package com.wisekrakr.firstgame.engine.gameobjects.powerups;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 import java.util.*;
 
 public class PowerUp extends GameObject {
 
-    public PowerUp(GameObjectType type, String name, Vector2 initialPosition) {
+    public PowerUp(GameObjectVisualizationType type, String name, Vector2 initialPosition) {
         super(type, name, initialPosition);
 
     }

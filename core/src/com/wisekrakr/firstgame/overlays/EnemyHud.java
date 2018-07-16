@@ -71,22 +71,22 @@ public class EnemyHud {
     }
 
     private Float health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.healthProperties().get("health");
+        return (Float) object.extraProperties().get("health");
     }
 
     private Float maxHealth(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.maxHealthProperties().get("maxHealth");
+        return (Float) object.extraProperties().get("maxHealth");
     }
     private Float healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.damageProperties().get("healthPercentage");
+        return (Float) object.extraProperties().get("healthPercentage");
     }
 
     private Float damageTaken(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.damageTakenProperties().get("damageTaken");
+        return (Float) object.extraProperties().get("damageTaken");
     }
 
     private Boolean isHit(SpaceSnapshot.GameObjectSnapshot object){
-        return (Boolean) object.hitProperties().get("hit");
+        return (Boolean) object.extraProperties().get("hit");
     }
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
@@ -138,6 +138,7 @@ public class EnemyHud {
             damageLabel = new Label("" + damageTakenInt, new Label.LabelStyle(font, Color.RED));
             damageLabel.setPosition(projection(object).x + (radius(object) + 10), projection(object).y);
         }
+
         return damageLabel;
     }
 
@@ -153,10 +154,10 @@ public class EnemyHud {
 
         timeCounter += delta;
 
-        if (noHitYet) {
+        if (noHitYet && damageLabel != null) {
             damageLabel.setVisible(false);
            // System.out.println("MISSSSSS");
-            if (isHit(object)) {
+            if (Boolean.TRUE.equals(isHit(object))) {
             //    System.out.println("Hit!");
                 damageLabel.setVisible(true);
                 noHitYet = false;

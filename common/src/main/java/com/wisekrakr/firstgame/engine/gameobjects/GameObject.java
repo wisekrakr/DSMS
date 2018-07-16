@@ -2,8 +2,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 
@@ -22,13 +21,18 @@ public abstract class GameObject {
     private float collisionRadius;
     private float health;
     private int damage;
-    private GameObjectType type;
+    private GameObjectVisualizationType type;
 
-    protected GameObject(GameObjectType type, String name, Vector2 initialPosition) {
+    protected GameObject(GameObjectVisualizationType type, String name, Vector2 initialPosition) {
         this.type = type;
         this.position = initialPosition;
         this.name = name;
     }
+
+    public void nearby(List<GameObject> targets) {
+
+    }
+
     /**
      * update the state taking into account an elapsed time of delta seconds
      */
@@ -48,10 +52,10 @@ public abstract class GameObject {
     public void setOrientation(float newOrientation) {
         this.orientation = newOrientation;
     }
-    public GameObjectType getType() {
+    public GameObjectVisualizationType getType() {
         return type;
     }
-    public void setType(GameObjectType type) {
+    public void setType(GameObjectVisualizationType type) {
         this.type = type;
     }
     public float getEnemyMarginOfError() {
@@ -91,21 +95,6 @@ public abstract class GameObject {
         return random.nextFloat() * 1200;
     }
 
-    public static float distanceBetween(GameObject subject, GameObject target) {
-
-        float attackDistanceX = target.getPosition().x - subject.getPosition().x;
-        float attackDistanceY = target.getPosition().y - subject.getPosition().y;
-
-        return (float) Math.hypot(attackDistanceX, attackDistanceY);
-    }
-
-    public static float angleBetween(GameObject subject, GameObject target) {
-
-        float attackDistanceX = target.getPosition().x - subject.getPosition().x;
-        float attackDistanceY = target.getPosition().y - subject.getPosition().y;
-
-        return (float) Math.atan2(attackDistanceY, attackDistanceX);
-    }
     public float angleBetweenNoAim(GameObject subject, GameObject target) {
         Random random = new Random();
         setEnemyMarginOfError(getCollisionRadius() * 2);
@@ -131,9 +120,7 @@ public abstract class GameObject {
 
     public SpaceSnapshot.GameObjectSnapshot snapshot() {
         return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
-                getExtraSnapshotProperties(), getAmmoProperties(), getHealthProperties(), getMaxHealthProperties(), getScoreProperties(),
-                getDamageProperties(), getDamageTakenProperties(), getRandomProperties(), getKilledByProperties(), getHitProperties(),
-                getPickedUpProperties());
+                getExtraSnapshotProperties());
     }
 
 
@@ -153,37 +140,7 @@ public abstract class GameObject {
     }
 
     public Map<String, Object> getExtraSnapshotProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getAmmoProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getHealthProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getMaxHealthProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getScoreProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getDamageProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getDamageTakenProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getRandomProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getKilledByProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getHitProperties() {
-        return new HashMap<>();
-    }
-    public Map<String, Object> getPickedUpProperties() {
-        return new HashMap<>();
+        return Collections.emptyMap();
     }
 
     public void afterAdd(List<GameObject> toAdd, List<GameObject> toRemove) {

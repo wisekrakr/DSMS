@@ -1,8 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.weaponry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameObjectType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 
@@ -20,7 +19,7 @@ public class LaserBeam extends GameObject {
     private float time;
 
     public LaserBeam(String name, Vector2 initialPosition, float direction, float radius, int damage, float speed) {
-        super(GameObjectType.LASER_BEAM, name, initialPosition);
+        super(GameObjectVisualizationType.LASER_BEAM, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;
@@ -85,7 +84,7 @@ public class LaserBeam extends GameObject {
     }
 
     @Override
-    public Map<String, Object> getDamageProperties() {
+    public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<>();
 
         result.put("damage", damage);
