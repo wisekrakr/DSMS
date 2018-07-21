@@ -10,7 +10,11 @@ public class GameHelper {
     /**
      * Utility methods available to scenarios
      */
-    private static Random randomGenerator = new Random();
+    public static Random randomGenerator = new Random();
+
+    public static float generateRandomNumberBetween(float min, float max){
+        return randomGenerator.nextFloat() * (max - min) + min;
+    }
 
     public static Vector2 randomPosition() {
         return new Vector2(randomGenerator.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
@@ -42,6 +46,10 @@ public class GameHelper {
         float attackDistanceY = target.y - subject.y;
 
         return (float) Math.atan2(attackDistanceY, attackDistanceX);
+    }
+
+    public static float healthBetween75And125(){
+        return randomGenerator.nextInt(125) + 75;
     }
 
 }

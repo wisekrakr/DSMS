@@ -244,6 +244,16 @@ public class Spaceship extends GameObject {
         }
     }
 
+    private boolean collisionDetected(GameObject object1, GameObject object2){
+        return
+                Math.sqrt(
+                        (((object1.getPosition().x) - (object2.getPosition().x)))
+                                * ((object1.getPosition().x) - (object2.getPosition().x))
+                                + ((object1.getPosition().y) - (object2.getPosition().y))
+                                * ((object1.getPosition().y) - (object2.getPosition().y)))
+                        < (object1.getCollisionRadius() + object2.getCollisionRadius());
+
+    }
 
     public void scoringSystem(GameObject enemy, GameObject subject) {
 
@@ -649,6 +659,8 @@ public class Spaceship extends GameObject {
         result.put("hit", hit);
 
         result.put("pickedUp", pickedUp);
+
+        result.put("speed", speed);
 
         return result;
     }

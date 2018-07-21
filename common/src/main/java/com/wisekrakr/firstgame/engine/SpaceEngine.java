@@ -130,16 +130,6 @@ public class SpaceEngine {
                         < (object1.getCollisionRadius() + object2.getCollisionRadius());
     }
 
-    private void nearestTarget(GameObject subject, Set<GameObject> targets, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        for (GameObject target : targets) {
-            if (Math.abs(target.getPosition().x - subject.getPosition().x) < Math.abs(target.getPosition().x - subject.getPosition().x)) {
-                if (Math.abs(target.getPosition().y - subject.getPosition().y) < Math.abs(target.getPosition().y - subject.getPosition().y)) {
-                    subject.attackTarget(target, toDelete, toAdd);
-                }
-            }
-        }
-    }
-
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
             List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
@@ -202,7 +192,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof Enemy) {
+                if (subject instanceof Enemy || subject instanceof NonPlayerCharacter) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
                             //subject.getClosestTarget(target, toDelete, toAdd);
@@ -215,14 +205,14 @@ public class SpaceEngine {
                 }
             }
 
+
             for (GameObject subject : gameObjects) {
                 // TODO: change into universal behavior
                 if (subject instanceof NonPlayerCharacter) {
                     List<GameObject> nearby = new ArrayList<>();
 
                     for (GameObject target : gameObjects) {
-                        //subject.getClosestTarget(target, toDelete, toAdd);
-                        if (target != subject && GameHelper.distanceBetween(target, subject) < 400f) {
+                        if (target != subject && GameHelper.distanceBetween(target, subject) < subject.getActionDistance()) {
                             nearby.add(target);
                         }
                     }
@@ -230,6 +220,8 @@ public class SpaceEngine {
                     subject.nearby(nearby);
                 }
             }
+
+
 /**
  * In this section gameobjects(enemy weaponry ) are Enemy weapons that follow the player(homing weapons).
  */
@@ -245,7 +237,7 @@ public class SpaceEngine {
 /**
  * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
  */
-                        if (target instanceof Enemy) {
+                        if (target instanceof Enemy || target instanceof NonPlayerCharacter) {
                             if (target != subject) {
                                 subject.attackTarget(target, toDelete, toAdd);
                             }

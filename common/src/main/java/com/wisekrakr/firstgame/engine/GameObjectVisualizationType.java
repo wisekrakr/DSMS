@@ -31,5 +31,7 @@ public enum GameObjectVisualizationType {
     POWERUP_HEALTH,
     SHIELD,
     POWERUP_GENERATOR,
-    TEST_QUEST
+    TEST_QUEST,
+    TEST_NPC,
+    TEST_BLINKER
 }

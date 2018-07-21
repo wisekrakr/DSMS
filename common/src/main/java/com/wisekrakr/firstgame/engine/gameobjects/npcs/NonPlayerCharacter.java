@@ -4,8 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.EnemyMechanics;
 
 import java.util.*;
 
@@ -14,10 +12,13 @@ public class NonPlayerCharacter extends GameObject {
     private float direction = 0f;
     private float speed = 0f;
     private List<GameObject> nearby;
+    private float health = 0f;
+    private float actionDistance = 0;
 
     private GameObject cachedNearest;
+    private float distanceInFloats;
 
-    protected NonPlayerCharacter(GameObjectVisualizationType type, String name, Vector2 initialPosition, Behavior initialBehavior) {
+    public NonPlayerCharacter(GameObjectVisualizationType type, String name, Vector2 initialPosition, Behavior initialBehavior) {
         super(type, name, initialPosition);
 
         activeBehaviors.add(initialBehavior);
@@ -27,8 +28,8 @@ public class NonPlayerCharacter extends GameObject {
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        result.put("health", 10f);
-        result.put("maxHealth", 10f);
+        result.put("health", health);
+        result.put("maxHealth", 50f);
         result.put("radius", 4f);
         result.put("healthPercentage", 1f);
 
@@ -84,6 +85,7 @@ public class NonPlayerCharacter extends GameObject {
                     return null;
                 }
 
+
                 @Override
                 public List<GameObject> nearby() {
                     return nearby;
@@ -95,8 +97,18 @@ public class NonPlayerCharacter extends GameObject {
                 }
 
                 @Override
+                public float nearestInFloats() {
+                    return distanceInFloats();
+                }
+
+                @Override
                 public Vector2 getPosition() {
                     return NonPlayerCharacter.this.getPosition();
+                }
+
+                @Override
+                public void setPosition(Vector2 position) {
+
                 }
 
                 @Override
@@ -125,8 +137,28 @@ public class NonPlayerCharacter extends GameObject {
                 }
 
                 @Override
+                public float getHealth() {
+                    return health;
+                }
+
+                @Override
+                public void setHealth(float health) {
+                    NonPlayerCharacter.this.setHealth(health);
+                }
+
+                @Override
+                public float actionDistance() {
+                    return actionDistance;
+                }
+
+                @Override
+                public void setActionDistance(float actionDistance) {
+                    NonPlayerCharacter.this.setActionDistance(actionDistance);
+                }
+
+                @Override
                 public void setSpeed(float speed) {
-                    System.out.println("Speed now: " + speed);
+                    System.out.println("Speed is: " + speed);
                     NonPlayerCharacter.this.speed = speed;
                 }
             });
@@ -139,22 +171,35 @@ public class NonPlayerCharacter extends GameObject {
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * speed * delta,
                 getPosition().y + (float) Math.sin(direction) * speed * delta)
         );
+
     }
 
+    private float distanceInFloats() {
 
+        for (GameObject object: nearby) {
+            distanceInFloats = GameHelper.distanceBetween(this, object);
+        }
+        return distanceInFloats;
+    }
+
+    //changed bestDistance into bestDistance plus
     private GameObject determineNearest() {
         if (cachedNearest == null) {
             float bestDistance = 0f;
 
-            for (GameObject object: nearby) {
-                float distance = GameHelper.distanceBetween(this, object);
-                if (cachedNearest == null || distance < bestDistance) {
-                    bestDistance  = distance;
-                    cachedNearest = object;
+            try {
+                for (GameObject object : nearby) {
+                    float distance = GameHelper.distanceBetween(this, object);
+                    if (cachedNearest == null || distance < bestDistance + (object.getCollisionRadius() * 2)) {
+                        bestDistance = distance;
+                        cachedNearest = object;
+                    }
                 }
+            }catch (Exception e){
+                e.getMessage();
             }
-
         }
         return cachedNearest;
     }
+
 }

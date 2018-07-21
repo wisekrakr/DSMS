@@ -14,7 +14,6 @@ import java.util.*;
  */
 public abstract class GameObject {
 
-    private float enemyMarginOfError;
     private String name;
     private Vector2 position;
     private float orientation;
@@ -22,6 +21,7 @@ public abstract class GameObject {
     private float health;
     private int damage;
     private GameObjectVisualizationType type;
+    private float actionDistance;
 
     protected GameObject(GameObjectVisualizationType type, String name, Vector2 initialPosition) {
         this.type = type;
@@ -58,11 +58,12 @@ public abstract class GameObject {
     public void setType(GameObjectVisualizationType type) {
         this.type = type;
     }
-    public float getEnemyMarginOfError() {
-        return enemyMarginOfError;
+
+    public float getActionDistance() {
+        return actionDistance;
     }
-    public void setEnemyMarginOfError(float enemyMarginOfError) {
-        this.enemyMarginOfError = enemyMarginOfError;
+    public void setActionDistance(float actionDistance) {
+        this.actionDistance = actionDistance;
     }
 
     public String getName() {
@@ -79,32 +80,7 @@ public abstract class GameObject {
 
         }
     }
-    public boolean collisionDetected(GameObject object1, GameObject object2){
-            return
-                    Math.sqrt(
-                            (((object1.getPosition().x) - (object2.getPosition().x)))
-                                    * ((object1.getPosition().x) - (object2.getPosition().x))
-                                    + ((object1.getPosition().y) - (object2.getPosition().y))
-                                    * ((object1.getPosition().y) - (object2.getPosition().y)))
-                            < (object1.getCollisionRadius() + object2.getCollisionRadius());
 
-    }
-
-    public float setRandomDirectionStartScreen(){
-        Random random = new Random();
-        return random.nextFloat() * 1200;
-    }
-
-    public float angleBetweenNoAim(GameObject subject, GameObject target) {
-        Random random = new Random();
-        setEnemyMarginOfError(getCollisionRadius() * 2);
-        float number = random.nextFloat() * enemyMarginOfError;
-
-        float attackDistanceX = (target.getPosition().x + number) - subject.getPosition().x;
-        float attackDistanceY = (target.getPosition().y + number) - subject.getPosition().y;
-
-        return (float) Math.atan2(attackDistanceY, attackDistanceX);
-    }
 
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
 

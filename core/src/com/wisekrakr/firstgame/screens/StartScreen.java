@@ -135,6 +135,10 @@ public class StartScreen extends ScreenAdapter {
         }
     }
 
+    private float setRandomDirectionStartScreen(){
+        Random random = new Random();
+        return random.nextFloat() * 1200;
+    }
 
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
@@ -151,7 +155,7 @@ public class StartScreen extends ScreenAdapter {
 
         time += delta;
         if (time > 3) {
-            spaceship.setOrientation(spaceship.setRandomDirectionStartScreen());
+            spaceship.setOrientation(setRandomDirectionStartScreen());
             setSpaceshipBounds();
             time = 0;
         }

@@ -10,6 +10,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.FollowingChasingNPC;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.TestNPC;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
@@ -98,7 +100,7 @@ public class ServerRunner {
         gameEngine.addScenario(new WildlifeManagement(1, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection) {
-                return new CrazilySpawningPassiveAggressiveNPC(initialPosition);
+                return new TestNPC(initialPosition);
             }
         }));
 /*

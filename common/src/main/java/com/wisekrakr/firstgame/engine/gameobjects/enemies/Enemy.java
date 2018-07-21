@@ -194,12 +194,12 @@ public class Enemy extends GameObject {
         if (target instanceof Player) {
             if (GameHelper.distanceBetween(this, target) <= getAggroDistance() && getAggroDistance() >= getCollisionRadius() + target.getCollisionRadius()) {
                 float angle = GameHelper.angleBetween(this, target);
-                float angleNoAim = angleBetweenNoAim(this, target);
+
                 //setPosition(new Vector2(getPosition().x  +=  Math.cos(angle), getPosition().y += Math.sin(angle) ));
                 if (!(getHealth() <= getHealth()*(10f/100f))){
                     setMovingState(getMovingState());
                     setOrientation(angle);
-                    setDirection(angleNoAim);
+                    setDirection(angle);
                 }else {
                     setMovingState(MovingState.BACKWARDS);
                     setAttackState(AttackState.PACIFIST);

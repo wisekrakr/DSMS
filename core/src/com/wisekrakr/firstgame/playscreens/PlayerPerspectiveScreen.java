@@ -736,7 +736,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     case BULLET:
 
                         shapeRenderer.setColor(Color.CYAN);
-                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.circle(x, y, 0.8f);
 
 
                         // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
@@ -771,7 +771,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label chaserNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(chaserNameLabel);
                         registerVolatileActor(chaserNameLabel);
-
+/*
                         Label damageLabel = enemyHud.damageLabel(object);
                         if (damageLabel != null) {
                             if (hit) {
@@ -781,7 +781,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             }
 
 //TODO:: just keeps going and going, so not only when hit, but as soon as something hits, it keeps going====> fixarooni
-/*
+
                     if (hitDetected) {
                         if (!(hit)) {
                             damageLabel.setText("no hits");
@@ -792,10 +792,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             hitDetected = false;
                         }
                     }
-*/
+
                             registerVolatileActor(damageLabel);
 
                         }
+ */
+
                         ProgressBar chaserHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(chaserHealthBar);
                         volatileBars.add(chaserHealthBar);
@@ -1099,6 +1101,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius);
 
 
+                        break;
+                    case TEST_NPC:
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.BLUE);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
                         break;
                     default:
                         System.out.println("Unknown game object type: " + object.getType());

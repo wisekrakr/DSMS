@@ -7,6 +7,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.HashMap;
@@ -57,11 +58,16 @@ public class HomingMissile extends GameObject {
         }
     }
 
+
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject != null) {
             if (isPlayerMissile()) {
-                if (subject instanceof Enemy) {
+                if (subject instanceof Enemy)  {
+                    toDelete.add(this);
+                    subject.setHealth(subject.getHealth() - getDamage());
+                }
+                if (subject instanceof NonPlayerCharacter){
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - getDamage());
                 }
@@ -92,7 +98,7 @@ public class HomingMissile extends GameObject {
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (target != null) {
             if (isPlayerMissile()) {
-                if (target instanceof Enemy) {
+                if (target instanceof Enemy || target instanceof NonPlayerCharacter) {
                     if (GameHelper.distanceBetween(this, target) <= getAttackDistance()) {
                         float angle = GameHelper.angleBetween(this, target);
                         setOrientation(angle);

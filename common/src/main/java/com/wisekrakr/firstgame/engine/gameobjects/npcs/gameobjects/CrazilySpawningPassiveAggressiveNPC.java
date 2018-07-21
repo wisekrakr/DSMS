@@ -32,6 +32,7 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
+
             int mood = (int) (clock % 60);
 
             switch (mood) {
@@ -60,5 +61,6 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
                     break;
             }
         }
+
     }
 }
