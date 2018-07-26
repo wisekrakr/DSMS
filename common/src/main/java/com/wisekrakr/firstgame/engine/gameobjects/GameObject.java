@@ -23,6 +23,7 @@ public abstract class GameObject {
     private GameObjectVisualizationType type;
     private float actionDistance;
 
+
     protected GameObject(GameObjectVisualizationType type, String name, Vector2 initialPosition) {
         this.type = type;
         this.position = initialPosition;
@@ -32,6 +33,7 @@ public abstract class GameObject {
     public void nearby(List<GameObject> targets) {
 
     }
+
 
     /**
      * update the state taking into account an elapsed time of delta seconds
@@ -80,7 +82,9 @@ public abstract class GameObject {
 
         }
     }
-
+    public GameObject thisGameObject(){
+        return this;
+    }
 
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
 

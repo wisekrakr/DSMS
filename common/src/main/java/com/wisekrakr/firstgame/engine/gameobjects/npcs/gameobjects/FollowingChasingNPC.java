@@ -32,11 +32,12 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
             context.setActionDistance(350f);
+            target = context.nearest();
 
             if (!(context.existingSubBehavior() instanceof IdleBehavior)){
                 context.pushSubBehavior(new IdleBehavior());
             }else if (context.nearest() instanceof Player) {
-                context.pushSubBehavior(new ChasingBehavior());
+                context.pushSubBehavior(new ChasingBehavior(target));
             }else{
                 context.pushSubBehavior(new CruisingBehavior(8f));
             }

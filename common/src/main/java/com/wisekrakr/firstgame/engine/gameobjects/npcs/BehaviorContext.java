@@ -19,8 +19,9 @@ public interface BehaviorContext {
 
     float nearestInFloats();
 
+    GameObject thisGameObject();
+
     Vector2 getPosition();
-    void setPosition(Vector2 position);
 
     float getSpeed();
     float getOrientation();
@@ -33,7 +34,5 @@ public interface BehaviorContext {
     void setSpeed(float speed);
     void setHealth(float health);
     void setActionDistance(float actionDistance);
-
-
 
 }

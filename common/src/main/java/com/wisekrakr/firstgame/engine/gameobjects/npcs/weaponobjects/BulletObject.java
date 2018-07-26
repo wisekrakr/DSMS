@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects;
+package com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
@@ -11,6 +11,7 @@ public class BulletObject extends NonPlayerCharacter {
 
     public BulletObject(Vector2 initialPosition, float initialDirection) {
         super(GameObjectVisualizationType.BULLET, "Bulletito", initialPosition, new MyBehavior(initialPosition, initialDirection));
+
     }
 
     private static class MyBehavior extends Behavior {

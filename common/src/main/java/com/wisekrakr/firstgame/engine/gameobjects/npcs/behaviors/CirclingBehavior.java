@@ -8,7 +8,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
 public class CirclingBehavior extends Behavior{
 
-    private float updatedAngle;
     private Float lastDirectionChange;
     private float changeDirectionInterval;
     private GameObject target;
@@ -21,23 +20,15 @@ public class CirclingBehavior extends Behavior{
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        target = context.nearest();
+        float updatedAngle = (float) (45f * Math.PI * delta);
 
-        if (lastDirectionChange == null){
-            lastDirectionChange = clock;
-        }
+            if (target != null){
+                float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
 
-        if (clock - lastDirectionChange > changeDirectionInterval) {
-            updatedAngle = (float) (45 * Math.PI * delta);
-            lastDirectionChange = clock;
-        }
-        float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
-
-        context.setOrientation(angle);
-        context.setDirection(angle + updatedAngle);
-        context.setSpeed(GameHelper.generateRandomNumberBetween(60f, 90f));
+                context.setOrientation(angle);
+                context.setDirection(angle + updatedAngle);
+                context.setSpeed(GameHelper.generateRandomNumberBetween(60f, 90f));
+            }
 
     }
-
-
 }

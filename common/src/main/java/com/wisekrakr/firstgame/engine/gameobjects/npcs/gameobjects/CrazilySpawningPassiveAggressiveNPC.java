@@ -35,6 +35,7 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
 
             int mood = (int) (clock % 60);
 
+
             switch (mood) {
                 case 0:
                     if (!(context.existingSubBehavior() instanceof IdleBehavior)) {
@@ -43,7 +44,7 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
                     break;
 
                 case 5:
-                    context.pushSubBehavior(new ChasingBehavior());
+                    context.pushSubBehavior(new ChasingBehavior(target));
 
                     break;
 

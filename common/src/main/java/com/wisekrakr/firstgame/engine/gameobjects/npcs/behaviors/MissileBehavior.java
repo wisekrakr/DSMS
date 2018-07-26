@@ -1,42 +1,36 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors;
 
+
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
+public class MissileBehavior extends Behavior {
 
-public class ShootingBehavior extends Behavior {
+    private float initialDirection;
+    private GameObject target;
 
-    private int ammoCount;
-    private float fireRate;
-    private GameObject weapon;
-    private Float lastShot;
-
-    public ShootingBehavior(int ammoCount, float fireRate, GameObject weapon) {
-        this.ammoCount = ammoCount;
-        this.fireRate = fireRate;
-        this.weapon = weapon;
+    public MissileBehavior(float initialDirection, GameObject target) {
+        this.initialDirection = initialDirection;
+        this.target = target;
     }
-
 
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        GameObject target = context.nearest();
+        context.setDirection(initialDirection);
+        context.setOrientation(initialDirection);
+        context.setSpeed(50f);
 
-        if (target != null){
+        if (target != null) {
 
             float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
 
             context.setDirection(angle);
             context.setOrientation(angle);
+            context.setSpeed(100f);
+
         }
-        //TODO: workout why its starts shooting faster when closer to player
-
-
-        context.addGameObject(weapon);
-
-
     }
 }

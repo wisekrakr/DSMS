@@ -468,7 +468,7 @@ public class Spaceship extends GameObject {
             missileLeftOver = 0;
         }
         for (int i = 0; i < exactMissileCount; i++) {
-            HomingMissile currentMissile = new HomingMissile("missilito", getPosition(), getAngle(), getSpeed(),
+            HomingMissile currentMissile = new HomingMissile(getPosition(), getAngle(), getSpeed(),
                     MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
             toAdd.add(currentMissile);
             currentMissile.missileEnable(this);

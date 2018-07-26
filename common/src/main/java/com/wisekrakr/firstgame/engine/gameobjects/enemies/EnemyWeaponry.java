@@ -21,7 +21,7 @@ public class EnemyWeaponry {
     }
 
     public static HomingMissile loadMissile(Enemy subject){
-        HomingMissile missile = new HomingMissile("enemymissile", new Vector2(subject.getPosition().x + subject.getCollisionRadius(),
+        HomingMissile missile = new HomingMissile(new Vector2(subject.getPosition().x + subject.getCollisionRadius(),
                 subject.getPosition().y + subject.getCollisionRadius()),
                 subject.getOrientation(), subject.getSpeed(), MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
         missile.missileEnable(subject);

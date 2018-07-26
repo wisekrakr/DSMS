@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
+
 import java.util.*;
 
 public class NonPlayerCharacter extends GameObject {
@@ -102,13 +103,13 @@ public class NonPlayerCharacter extends GameObject {
                 }
 
                 @Override
-                public Vector2 getPosition() {
-                    return NonPlayerCharacter.this.getPosition();
+                public GameObject thisGameObject() {
+                    return NonPlayerCharacter.this.thisGameObject();
                 }
 
                 @Override
-                public void setPosition(Vector2 position) {
-
+                public Vector2 getPosition() {
+                    return NonPlayerCharacter.this.getPosition();
                 }
 
                 @Override
@@ -174,6 +175,7 @@ public class NonPlayerCharacter extends GameObject {
 
     }
 
+
     private float distanceInFloats() {
 
         for (GameObject object: nearby) {
@@ -182,21 +184,15 @@ public class NonPlayerCharacter extends GameObject {
         return distanceInFloats;
     }
 
-    //changed bestDistance into bestDistance plus
     private GameObject determineNearest() {
         if (cachedNearest == null) {
             float bestDistance = 0f;
-
-            try {
-                for (GameObject object : nearby) {
-                    float distance = GameHelper.distanceBetween(this, object);
-                    if (cachedNearest == null || distance < bestDistance + (object.getCollisionRadius() * 2)) {
-                        bestDistance = distance;
-                        cachedNearest = object;
-                    }
+            for (GameObject object : nearby) {
+                float distance = GameHelper.distanceBetween(this, object);
+                if (cachedNearest == null || distance < bestDistance) {
+                    bestDistance = distance;
+                    cachedNearest = object;
                 }
-            }catch (Exception e){
-                e.getMessage();
             }
         }
         return cachedNearest;

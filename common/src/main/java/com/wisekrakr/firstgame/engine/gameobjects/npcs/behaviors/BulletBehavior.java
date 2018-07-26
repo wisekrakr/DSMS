@@ -19,5 +19,7 @@ public class BulletBehavior extends Behavior {
         context.setDirection(initialDirection);
         context.setOrientation(initialDirection);
 
+
+
     }
 }

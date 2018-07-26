@@ -92,6 +92,7 @@ public class EnemyHud {
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
         if (!(activated)){
             nameLabel.setVisible(false);
+            nameLabel.clear();
         }else {
             name = object.getName();
             nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));

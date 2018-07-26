@@ -192,7 +192,7 @@ public class SpaceEngine {
  */
 
             for (GameObject subject : gameObjects) {
-                if (subject instanceof Enemy || subject instanceof NonPlayerCharacter) {
+                if (subject instanceof Enemy) {
                     for (GameObject target : gameObjects) {
                         if (target instanceof Spaceship) {
                             //subject.getClosestTarget(target, toDelete, toAdd);
@@ -207,14 +207,16 @@ public class SpaceEngine {
 
 
             for (GameObject subject : gameObjects) {
-                // TODO: change into universal behavior
+                // TODO: change into universal behavior// and target should not be instanceof Player (change back)
                 if (subject instanceof NonPlayerCharacter) {
                     List<GameObject> nearby = new ArrayList<>();
 
                     for (GameObject target : gameObjects) {
-                        if (target != subject && GameHelper.distanceBetween(target, subject) < subject.getActionDistance()) {
-                            nearby.add(target);
-                        }
+                        //if (target instanceof Player) {
+                            if (target != subject && GameHelper.distanceBetween(target, subject) < subject.getActionDistance()) {
+                                nearby.add(target);
+                            }
+                        //}
                     }
 
                     subject.nearby(nearby);

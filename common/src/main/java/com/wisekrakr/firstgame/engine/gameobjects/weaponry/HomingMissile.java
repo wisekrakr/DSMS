@@ -33,8 +33,8 @@ public class HomingMissile extends GameObject {
 
     private float missileSpeed;
 
-    public HomingMissile(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage, boolean canMissile) {
-        super(GameObjectVisualizationType.MISSILE, name, initialPosition);
+    public HomingMissile(Vector2 initialPosition, float direction, float speed, float radius, int damage, boolean canMissile) {
+        super(GameObjectVisualizationType.MISSILE, "HomingMissile", initialPosition);
         this.radius = radius;
         this.damage = damage;
         this.direction = direction;
