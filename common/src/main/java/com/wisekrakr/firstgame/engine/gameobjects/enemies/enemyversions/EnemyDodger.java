@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class EnemyDodger extends Enemy {
 
-    public EnemyDodger(String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public EnemyDodger(String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.DODGER, name, position, health, direction, speed, radius);
 
         setAggroDistance(125f);

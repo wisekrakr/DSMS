@@ -14,12 +14,12 @@ public class Shield extends GameObject {
 
     private float speed;
     private float radius;
-    private int damage;
+    private double damage;
     private float direction;
     private float time;
     private float timeActivated;
 
-    public Shield(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
+    public Shield(String name, Vector2 initialPosition, float direction, float speed, float radius, double damage) {
         super(GameObjectVisualizationType.SHIELD, name, initialPosition);
         this.direction = direction;
         this.speed = speed;
@@ -65,11 +65,11 @@ public class Shield extends GameObject {
 
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 

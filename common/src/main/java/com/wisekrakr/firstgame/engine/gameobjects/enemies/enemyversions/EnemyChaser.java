@@ -11,7 +11,7 @@ import java.util.*;
 
 public class EnemyChaser extends Enemy {
 
-    public EnemyChaser(String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public EnemyChaser(String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.ENEMY_CHASER, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);

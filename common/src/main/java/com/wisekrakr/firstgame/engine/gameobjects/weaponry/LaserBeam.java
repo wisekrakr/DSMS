@@ -14,11 +14,11 @@ public class LaserBeam extends GameObject {
     private float direction;
     private float radius;
     private float speed;
-    private int damage;
+    private double damage;
 
     private float time;
 
-    public LaserBeam(String name, Vector2 initialPosition, float direction, float radius, int damage, float speed) {
+    public LaserBeam(String name, Vector2 initialPosition, float direction, float radius, double damage, float speed) {
         super(GameObjectVisualizationType.LASER_BEAM, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
@@ -67,11 +67,11 @@ public class LaserBeam extends GameObject {
         this.speed = speed;
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 

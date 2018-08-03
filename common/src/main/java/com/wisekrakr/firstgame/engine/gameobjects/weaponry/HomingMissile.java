@@ -21,7 +21,7 @@ import java.util.Set;
 public class HomingMissile extends GameObject {
 
     private float radius;
-    private int damage;
+    private double damage;
     private float direction;
     private float speed;
     private float time;
@@ -33,7 +33,7 @@ public class HomingMissile extends GameObject {
 
     private float missileSpeed;
 
-    public HomingMissile(Vector2 initialPosition, float direction, float speed, float radius, int damage, boolean canMissile) {
+    public HomingMissile(Vector2 initialPosition, float direction, float speed, float radius, double damage, boolean canMissile) {
         super(GameObjectVisualizationType.MISSILE, "HomingMissile", initialPosition);
         this.radius = radius;
         this.damage = damage;
@@ -166,11 +166,11 @@ public class HomingMissile extends GameObject {
     public void setRadius(float radius) {
         this.radius = radius;
     }
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 

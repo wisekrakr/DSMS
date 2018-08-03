@@ -70,19 +70,19 @@ public class PlayerHud implements Disposable {
 
     }
 
-    private Float health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("health");
+    private Double health(SpaceSnapshot.GameObjectSnapshot object){
+        return (Double) object.extraProperties().get("health");
     }
 
-    private Float maxHealth(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("maxHealth");
+    private Double maxHealth(SpaceSnapshot.GameObjectSnapshot object){
+        return (Double) object.extraProperties().get("maxHealth");
     }
-    private Float healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("healthPercentage");
+    private Double healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
+        return (Double) object.extraProperties().get("healthPercentage");
     }
 
-    private Float damageTaken(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("damageTaken");
+    private Double damageTaken(SpaceSnapshot.GameObjectSnapshot object){
+        return (Double) object.extraProperties().get("damageTaken");
     }
 
 
@@ -103,10 +103,11 @@ public class PlayerHud implements Disposable {
         ProgressBar.ProgressBarStyle barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
 
-        bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, true, barStyle);
+        bar = new ProgressBar(healthPercentage(object).floatValue(), maxHealth(object).floatValue(), 20f, true, barStyle);
         bar.setSize(5 * 5, 5 * 5);
         bar.setPosition(Gdx.graphics.getWidth() - bar.getWidth()/2, Gdx.graphics.getHeight() - 25, Align.right);
-        bar.setValue(health(object));
+        bar.setValue(health(object).floatValue());
+
         return bar;
     }
 

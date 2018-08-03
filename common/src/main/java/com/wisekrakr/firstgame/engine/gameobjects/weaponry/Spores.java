@@ -14,12 +14,12 @@ public class Spores extends GameObject {
 
     private float time;
     private float radius;
-    private int damage;
+    private double damage;
     private float direction;
     private float speed;
     private float attackDistance;
 
-    public Spores(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
+    public Spores(String name, Vector2 initialPosition, float direction, float speed, float radius, double damage) {
         super(GameObjectVisualizationType.SPORE, name, initialPosition);
         this.radius = radius;
         this.damage = damage;
@@ -84,11 +84,11 @@ public class Spores extends GameObject {
         this.radius = radius;
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 

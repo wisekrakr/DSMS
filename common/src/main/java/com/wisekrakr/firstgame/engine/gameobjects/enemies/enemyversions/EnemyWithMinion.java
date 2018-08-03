@@ -19,7 +19,7 @@ public class EnemyWithMinion extends Enemy {
     private boolean minionActivated = false;
     private float minionRotationSpeed;
 
-    public EnemyWithMinion(String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public EnemyWithMinion(String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.EWM, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);

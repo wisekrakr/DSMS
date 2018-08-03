@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class EnemyPest extends Enemy {
 
-    public EnemyPest(String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public EnemyPest(String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.PEST, name, position, health, direction, speed, radius);
 
         setAggroDistance(237.5f);

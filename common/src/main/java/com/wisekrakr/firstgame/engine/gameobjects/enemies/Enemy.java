@@ -25,7 +25,7 @@ public class Enemy extends GameObject {
 
     private float direction;
     private float radius;
-    private float health;
+    private double health;
     private float speed;
     private float attackDistance;
     private float aggroDistance;
@@ -56,14 +56,14 @@ public class Enemy extends GameObject {
     private float huggerRotationSpeed;
     private float mineAreaOfEffect;
 
-    private float damageTaken = 0;
+    private double damageTaken = 0;
     private boolean hit = false;
-    private float healthPercentage;
-    private float maxHealth;
+    private double healthPercentage;
+    private double maxHealth;
     private float updatedAngle;
     private float randomAngle;
 
-    public Enemy(GameObjectVisualizationType type, String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public Enemy(GameObjectVisualizationType type, String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(type, name, position);
         this.direction = direction;
         this.radius = radius;
@@ -99,9 +99,9 @@ public class Enemy extends GameObject {
 
 
 
-    private float healthInPercentages(){
+    private double healthInPercentages(){
         if (isHit()) {
-            float z = getHealth() - getDamageTaken();
+            double z = getHealth() - getDamageTaken();
             healthPercentage = z / maxHealth * 100;
             healthPercentage /= 100;
         }
@@ -196,7 +196,7 @@ public class Enemy extends GameObject {
                 float angle = GameHelper.angleBetween(this, target);
 
                 //setPosition(new Vector2(getPosition().x  +=  Math.cos(angle), getPosition().y += Math.sin(angle) ));
-                if (!(getHealth() <= getHealth()*(10f/100f))){
+                if (!(getHealth() <= getHealth()*(10/100))){
                     setMovingState(getMovingState());
                     setOrientation(angle);
                     setDirection(angle);
@@ -300,7 +300,7 @@ public class Enemy extends GameObject {
             case FACE_HUGGING:
                 rotationAngle += 3f * delta;
                 setHuggerRotationSpeed(getSpeed()/2);
-                if (getHealth() <= getHealth()*(10f/100f )){
+                if (getHealth() <= getHealth()*(10/100)){
                     setHuggerRotationSpeed(getSpeed());
                 }
                 setPosition(new Vector2((float) (getTargetVector().x + Math.cos(rotationAngle) * getHuggerRotationSpeed()),
@@ -538,16 +538,16 @@ public class Enemy extends GameObject {
     }
 
     @Override
-    public float getHealth() {
+    public double getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(float health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 
-    public float getMaxHealth() {
+    public double getMaxHealth() {
         return maxHealth;
     }
 
@@ -616,11 +616,11 @@ public class Enemy extends GameObject {
     }
 
 
-    public float getDamageTaken() {
+    public double getDamageTaken() {
         return damageTaken;
     }
 
-    public void setDamageTaken(float damageTaken) {
+    public void setDamageTaken(double damageTaken) {
         this.damageTaken = damageTaken;
     }
 

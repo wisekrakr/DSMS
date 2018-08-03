@@ -24,12 +24,12 @@ public class Minion extends GameObject {
 
     private float direction;
     private float radius;
-    private int health;
+    private double health;
     private float speed;
     private Vector2 targetVector;
 
     private float time;
-    private int damage;
+    private double damage;
     private float destructTime;
     private boolean destruct;
 
@@ -277,7 +277,7 @@ public class Minion extends GameObject {
         this.enemyMinion = enemyMinion;
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
@@ -294,7 +294,7 @@ public class Minion extends GameObject {
     }
 
     @Override
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 

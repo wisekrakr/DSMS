@@ -10,25 +10,22 @@ public class CirclingBehavior extends Behavior{
 
     private Float lastDirectionChange;
     private float changeDirectionInterval;
-    private GameObject target;
 
-    public CirclingBehavior(float changeDirectionInterval, GameObject target) {
+    public CirclingBehavior(float changeDirectionInterval) {
         this.changeDirectionInterval = changeDirectionInterval;
-        this.target = target;
+
     }
 
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
         float updatedAngle = (float) (45f * Math.PI * delta);
+        GameObject target = context.nearest();
+        if (target != null){
+            float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
 
-            if (target != null){
-                float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
-
-                context.setOrientation(angle);
-                context.setDirection(angle + updatedAngle);
-                context.setSpeed(GameHelper.generateRandomNumberBetween(60f, 90f));
-            }
-
+            context.setOrientation(angle);
+            context.setDirection(angle + updatedAngle);
+        }
     }
 }

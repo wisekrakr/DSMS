@@ -6,25 +6,26 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.HomingMissileBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.BulletBehavior;
 
 import java.util.Set;
 
-public class MissileObject extends WeaponObjectClass{
-    public MissileObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval, GameObject target) {
-        super(GameObjectVisualizationType.MISSILE, "Misselito", initialPosition,
-                new MyBehavior(initialPosition, initialDirection, destructInterval, target));
-        this.setCollisionRadius(2f);
-        this.setDamage(damage);
+public class LaserObject extends WeaponObjectClass {
 
+    public LaserObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval) {
+        super(GameObjectVisualizationType.LASER_BEAM, "Laserito", initialPosition, new MyBehavior(initialPosition, initialDirection, destructInterval));
+        this.setDamage(damage);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (!(subject instanceof MissileObject)){
-            subject.setHealth(subject.getHealth() - getDamage());
+        if (subject instanceof Player){
             toDelete.add(this);
+        }else {
+            this.signalOutOfBounds(toDelete, toAdd);
         }
+
     }
 
     private static class MyBehavior extends Behavior{
@@ -32,20 +33,17 @@ public class MissileObject extends WeaponObjectClass{
         private Vector2 initialPosition;
         private float initialDirection;
         private double destructInterval;
-        private GameObject target;
 
-        public MyBehavior(Vector2 initialPosition, float initialDirection, double destructInterval, GameObject target) {
+        public MyBehavior(Vector2 initialPosition, float initialDirection, double destructInterval) {
             this.initialPosition = initialPosition;
             this.initialDirection = initialDirection;
             this.destructInterval = destructInterval;
-            this.target = target;
         }
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
-
-            if (!(context.existingSubBehavior() instanceof HomingMissileBehavior)) {
-                context.pushSubBehavior(new HomingMissileBehavior(initialDirection, destructInterval, target));
+            if (!(context.existingSubBehavior() instanceof BulletBehavior)){
+                context.pushSubBehavior(new BulletBehavior(initialDirection, destructInterval));
             }
         }
     }

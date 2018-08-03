@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class EnemyShitter extends Enemy {
 
-    public EnemyShitter(String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public EnemyShitter(String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.SHITTER, name, position, health, direction, speed, radius);
 
         setAggroDistance(100);

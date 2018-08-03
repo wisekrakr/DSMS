@@ -9,17 +9,17 @@ import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 import java.util.*;
 
 
-/**
- * Created by David on 11/6/2017.
- */
+
 public abstract class GameObject {
 
     private String name;
     private Vector2 position;
     private float orientation;
+    private float direction;
     private float collisionRadius;
-    private float health;
-    private int damage;
+    private float width, height;
+    private double health;
+    private double damage;
     private GameObjectVisualizationType type;
     private float actionDistance;
 
@@ -29,11 +29,9 @@ public abstract class GameObject {
         this.position = initialPosition;
         this.name = name;
     }
-
     public void nearby(List<GameObject> targets) {
 
     }
-
 
     /**
      * update the state taking into account an elapsed time of delta seconds
@@ -60,14 +58,18 @@ public abstract class GameObject {
     public void setType(GameObjectVisualizationType type) {
         this.type = type;
     }
-
+    public float getDirection() {
+        return direction;
+    }
+    public void setDirection(float direction) {
+        this.direction = direction;
+    }
     public float getActionDistance() {
         return actionDistance;
     }
     public void setActionDistance(float actionDistance) {
         this.actionDistance = actionDistance;
     }
-
     public String getName() {
         return name;
     }
@@ -89,8 +91,6 @@ public abstract class GameObject {
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
 
     }
-
-
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
     public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd){}
@@ -102,30 +102,36 @@ public abstract class GameObject {
         return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
                 getExtraSnapshotProperties());
     }
-
-
-    public float getHealth() {
-        return health;
-    }
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
     public Map<String, Object> getExtraSnapshotProperties() {
         return Collections.emptyMap();
     }
 
-    public void afterAdd(List<GameObject> toAdd, List<GameObject> toRemove) {
+    public double getHealth() {
+        return health;
+    }
+    public void setHealth(double health) {
+        this.health = health;
+    }
+    public double getDamage() {
+        return damage;
+    }
+    public void setDamage(double damage) {
+        this.damage = damage;
     }
 
+    public void setDimensions(float width, float height){
+        this.width = width;
+        this.height = height;
+    }
+    public float getWidth() {
+        return width;
+    }
+    public float getHeight() {
+        return height;
+    }
+
+    public void afterAdd(List<GameObject> toAdd, List<GameObject> toRemove) {
+    }
     public void afterRemove(List<GameObject> toAdd, List<GameObject> toRemove) {
     }
 }

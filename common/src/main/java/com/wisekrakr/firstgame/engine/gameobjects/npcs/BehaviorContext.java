@@ -19,20 +19,25 @@ public interface BehaviorContext {
 
     float nearestInFloats();
 
-    GameObject thisGameObject();
+    GameObject thisObject();
+
+    boolean collisionDetection(GameObject object);
 
     Vector2 getPosition();
 
     float getSpeed();
     float getOrientation();
     float getDirection();
-    float getHealth();
+    double getHealth();
+    //TODO: change to width/height dimensions, to make different kind of shapes later on (for collision detection)
+    float getRadius();
     float actionDistance();
 
     void setOrientation(float orientation);
     void setDirection(float direction);
     void setSpeed(float speed);
-    void setHealth(float health);
+    void setHealth(double health);
+    void setRadius(float radius);
     void setActionDistance(float actionDistance);
 
 }

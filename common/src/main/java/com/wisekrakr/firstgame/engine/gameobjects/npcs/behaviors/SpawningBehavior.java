@@ -23,10 +23,10 @@ public class SpawningBehavior extends Behavior {
         }
 
         if ((clock - lastCreation) > spawnInterval) {
-            context.addGameObject(factory.create(context.getPosition(), GameHelper.randomDirection()));
+            context.addGameObject(factory.create(context.getPosition(), GameHelper.randomDirection(), context.actionDistance()));
             lastCreation = clock;
         }
 
-        context.addGameObject(factory.create(context.getPosition(), GameHelper.randomDirection()));
+        //context.addGameObject(factory.create(context.getPosition(), GameHelper.randomDirection()));
     }
 }

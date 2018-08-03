@@ -41,7 +41,7 @@ public class Spaceship extends GameObject {
     private int missileAmmoCount;
     private float shotLeftOver;
     private float missileLeftOver;
-    private float health;
+    private double health;
     private float score;
 
     private Minion minionShooterPlayer;
@@ -66,11 +66,11 @@ public class Spaceship extends GameObject {
     private String killerName;
     private boolean shieldActivated;
 
-    private float damageTaken = 0;
+    private double damageTaken = 0;
     private boolean hit = false;
     private boolean pickedUp = false;
-    private float healthPercentage;
-    private float maxHealth;
+    private double healthPercentage;
+    private double maxHealth;
 
 
     public Spaceship(String name, Vector2 position) {
@@ -145,10 +145,10 @@ public class Spaceship extends GameObject {
         return null;
     }
 
-    private float healthInPercentages() {
+    private double healthInPercentages() {
         if (isHit()) {
-            float z = getHealth() - getDamageTaken();
-            healthPercentage = z / maxHealth * 100;
+            double z = (getHealth() - getDamageTaken());
+            healthPercentage = (z / maxHealth * 100);
             healthPercentage /= 100;
         }
         return healthPercentage;
@@ -261,19 +261,19 @@ public class Spaceship extends GameObject {
             if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine) {
                 if (collisionDetected(enemy, subject)) {
                     if (subject instanceof Bullet) {
-                        this.setScore(this.getScore() + (subject).getDamage());
+                        this.setScore((float) (this.getScore() + (subject).getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 50);
                         }
                     }
                     if (subject instanceof HomingMissile) {
-                        this.setScore(this.getScore() + (subject).getDamage());
+                        this.setScore((float) (this.getScore() + (subject).getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 100);
                         }
                     }
                     if (subject instanceof SpaceMine) {
-                        this.setScore(this.getScore() + (subject).getDamage());
+                        this.setScore((float) (this.getScore() + (subject).getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 200);
                         }
@@ -530,12 +530,12 @@ public class Spaceship extends GameObject {
     }
 
     @Override
-    public float getHealth() {
+    public double getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(float health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 
@@ -592,11 +592,11 @@ public class Spaceship extends GameObject {
         this.killerName = killerName;
     }
 
-    public float getDamageTaken() {
+    public double getDamageTaken() {
         return damageTaken;
     }
 
-    public void setDamageTaken(float damageTaken) {
+    public void setDamageTaken(double damageTaken) {
         this.damageTaken = damageTaken;
     }
 
@@ -608,7 +608,7 @@ public class Spaceship extends GameObject {
         this.hit = hit;
     }
 
-    public float getMaxHealth() {
+    public double getMaxHealth() {
         return maxHealth;
     }
 

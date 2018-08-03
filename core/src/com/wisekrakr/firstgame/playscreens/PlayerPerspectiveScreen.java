@@ -28,14 +28,12 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.ParticleEffectRenderer;
 import com.wisekrakr.firstgame.client.ClientConnector;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
-import com.wisekrakr.firstgame.overlays.AchievementTexts;
-import com.wisekrakr.firstgame.overlays.EnemyHud;
-import com.wisekrakr.firstgame.overlays.PlayerHud;
-import com.wisekrakr.firstgame.overlays.ScreenHud;
+import com.wisekrakr.firstgame.overlays.*;
 import com.wisekrakr.firstgame.popups.DialogWindow;
 import com.wisekrakr.firstgame.quests.Quest;
 
@@ -50,13 +48,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private InputMultiplexer inputMultiplexer;
 
-    private Quest testQuest;
+    private StatsForObjects statsForObjects;
 
     private ScreenHud screenHud;
-    private AchievementTexts achievementTexts;
     private EnemyHud enemyHud;
     private PlayerHud playerHud;
-    private DialogWindow dialogWindow;
 
     private SpriteBatch batch;
     private Stage stage;
@@ -86,8 +82,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Spaceship.AimingState aimingState;
     private Spaceship.SwitchWeaponState switchWeaponState;
 
-    //    private GameState gameState = GameState.RUN;
-    private boolean paused = false;
     private SpaceSnapshot.GameObjectSnapshot myself;
     private SpaceSnapshot.GameObjectSnapshot enemy;
 
@@ -108,18 +102,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     private List<ProgressBar> volatileBars = new ArrayList<ProgressBar>();
-    private Random random = new Random();
+    private Random random = GameHelper.randomGenerator;
     private Float hardSteering;
-
-    private ParticleEffectRenderer particleEffectRenderer;
 
     private boolean foundMySelf;
 
-    private boolean introDialogOneTime = true;
     private boolean hitDetected = true;
     private boolean battleViewActivated = false;
-    private boolean questDialogOneTime = true;
-
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -168,11 +157,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-        particleEffectRenderer = new ParticleEffectRenderer(camera, stage);
-
         screenHud = new ScreenHud(myAssetManager);
 
-        achievementTexts = new AchievementTexts(myAssetManager);
         enemyHud = new EnemyHud(camera);
 
         playerHud = new PlayerHud(camera, inputMultiplexer);
@@ -181,10 +167,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         pauseScreenAdapter = new PauseScreenAdapter(inputMultiplexer);
 
-        dialogWindow = new DialogWindow(camera, inputMultiplexer);
-
-        testQuest = new Quest(inputMultiplexer);
-
+        statsForObjects = new StatsForObjects(stage, camera);
 
     }
 
@@ -345,30 +328,20 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             camera.zoom -= 0.08;
         }
 
-        if (inputManager.isKeyDown(Input.Keys.ESCAPE) || inputManager.isKeyDown(Input.Keys.P)) {
-            /*
-            if (paused) {
-                gameState = GameState.RESUME;
-            } else {
-                gameState = GameState.PAUSE;
-            }
-            System.out.println("Paused");
-            */
+        if (inputManager.isKeyDown(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
         }
-        /*
-        if (inputManager.isKeyDown(Input.Keys.BACKSPACE)) {
-            gameState = GameState.STOPPED;
-            System.out.println("Stopped");
-        }*/
 
-        /**
+
+        /*
          * If space is pressed, a minimap is created. No enemyhud, just enemies and Player.
          */
 
         if (inputManager.isKeyDown(Input.Keys.SPACE)) {
             camera.zoom = 2.2f;
-            if (enemyHud.enableEnemyHud()) {
+            if (enemyHud.enableEnemyHud() || statsForObjects.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
+                statsForObjects.disableEnemyHud();
             }
 
         } else {
@@ -376,6 +349,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
+            statsForObjects.enableEnemyHud();
         }
 
 
@@ -727,16 +701,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(blinkingColor);
                         shapeRenderer.circle(x, y, radius);
 
-                        Boolean isDestruct = (Boolean) object.extraProperties().get("isDestruct");
-                        if (isDestruct) {
-                            Sound boom = myAssetManager.assetManager.get("sound/mine_blowup.mp3", Sound.class);
-                            boom.play(1f);
-                        }
+
                         break;
                     case BULLET:
 
                         shapeRenderer.setColor(Color.CYAN);
-                        shapeRenderer.circle(x, y, 0.8f);
+                        shapeRenderer.circle(x, y, radius);
 
 
                         // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
@@ -771,32 +741,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label chaserNameLabel = enemyHud.nameLabel(object);
                         overlayStage.addActor(chaserNameLabel);
                         registerVolatileActor(chaserNameLabel);
-/*
-                        Label damageLabel = enemyHud.damageLabel(object);
-                        if (damageLabel != null) {
-                            if (hit) {
-                                overlayStage.addActor(damageLabel);
-                            } else {
-                                damageLabel.remove();
-                            }
-
-//TODO:: just keeps going and going, so not only when hit, but as soon as something hits, it keeps going====> fixarooni
-
-                    if (hitDetected) {
-                        if (!(hit)) {
-                            damageLabel.setText("no hits");
-
-                        }else{
-                            System.out.println("YEAH!");
-                            overlayStage.addActor(damageLabel);
-                            hitDetected = false;
-                        }
-                    }
-
-                            registerVolatileActor(damageLabel);
-
-                        }
- */
 
                         ProgressBar chaserHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(chaserHealthBar);
@@ -903,13 +847,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label motherNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(motherNameLabel);
-                        registerVolatileActor(motherNameLabel);
-
-                        ProgressBar motherHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(motherHealthBar);
-                        volatileBars.add(motherHealthBar);
+                        //statsForObjects.setAllLabels(object);
 
                         Texture motherTexture = myAssetManager.assetManager.get("sprites/human_mothership.png");
                         Sprite motherSprite = new Sprite(motherTexture);
@@ -1103,11 +1041,29 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case TEST_NPC:
+
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
+
+/*
+                        float width = (Float) object.extraProperties().get("width");
+                        float height = (Float) object.extraProperties().get("height");
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.rect(x, y, width, height);
+*/
+
+                        Label testNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(testNameLabel);
+                        registerVolatileActor(testNameLabel);
+
+                        ProgressBar testHealthBar = enemyHud.healthBar(object);
+                        overlayStage.addActor(testHealthBar);
+                        volatileBars.add(testHealthBar);
+
+                        //statsForObjects.setAllLabels(object);
                         break;
                     default:
                         System.out.println("Unknown game object type: " + object.getType());
@@ -1190,10 +1146,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private void updateHud(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
         screenHud.update(myself, delta);
         screenHud.stage.draw();
-        achievementTexts.update(myself, delta);
-        achievementTexts.stage.draw();
-
-
     }
 
     @Override
@@ -1214,39 +1166,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         updateHud(myself, delta);
 
         updateOverlay();
-        enemyHud.update(enemy, delta);
         playerHud.update();
-        dialogWindow.update();
-        testQuest.update();
-        //particleEffectRenderer.updateEffect(delta);
-
-/*
-break;
-        switch (gameState) {
-            case GAME_READY:
-                break;
-
-            case RUN:
-
-            case PAUSE:
-                paused = true;
-                Gdx.app.getApplicationListener().pause();
-                setPauseScreen();
-                break;
-
-            case RESUME:
-                paused = false;
-                Gdx.app.getApplicationListener().resume();
-                setGameState(GameState.RUN);
-
-                break;
-
-            case STOPPED:
-                Gdx.app.exit();
-                break;
-
-        }
-        */
+        statsForObjects.updateStatLabels();
 
     }
 

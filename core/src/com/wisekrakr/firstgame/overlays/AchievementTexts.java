@@ -21,18 +21,14 @@ public class AchievementTexts implements Disposable {
 
     private MyAssetManager myAssetManager;
     public Stage stage;
-    private Viewport viewport;
 
     private float timeCounter;
     private float timeNow;
-    private Float distance;
-    private String killerName;
-    private Float health;
 
     public AchievementTexts(MyAssetManager myAssetManager) {
         this.myAssetManager = myAssetManager;
 
-        viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
+        Viewport viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
 
         myAssetManager = new MyAssetManager();
@@ -59,9 +55,9 @@ public class AchievementTexts implements Disposable {
         timeCounter += delta;
         if(timeCounter != 0) {
             if (myself != null) {
-                distance = (Float) myself.extraProperties().get("distanceTravelled");
-                killerName = (String) myself.extraProperties().get("killedBy");
-                health = (Float) myself.extraProperties().get("health");
+                Float distance = (Float) myself.extraProperties().get("distanceTravelled");
+                String killerName = (String) myself.extraProperties().get("killedBy");
+                Double health = (Double) myself.extraProperties().get("health");
                 if (distance >= 2222) {
                     timeNow += delta;
                     if (timeNow <= 10) {

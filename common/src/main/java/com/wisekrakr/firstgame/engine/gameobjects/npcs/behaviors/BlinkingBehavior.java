@@ -9,6 +9,6 @@ public class BlinkingBehavior extends Behavior {
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        
+
     }
 }

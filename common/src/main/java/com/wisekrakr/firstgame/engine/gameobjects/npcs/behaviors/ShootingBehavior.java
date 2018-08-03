@@ -4,21 +4,16 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
 
 public class ShootingBehavior extends Behavior {
-
-    private int ammoCount;
-    private float fireRate;
     private GameObject weapon;
-    private Float lastShot;
 
-    public ShootingBehavior(int ammoCount, float fireRate, GameObject weapon) {
-        this.ammoCount = ammoCount;
-        this.fireRate = fireRate;
+    public ShootingBehavior(GameObject weapon) {
         this.weapon = weapon;
-    }
 
+    }
 
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {

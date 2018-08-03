@@ -15,7 +15,7 @@ public class Bullet extends GameObject {
     private float direction;
     private float radius;
     private float speed;
-    private int damage;
+    private double damage;
 
     private float time;
     private boolean hit;
@@ -25,7 +25,7 @@ public class Bullet extends GameObject {
     private boolean playerBullet;
     private boolean enemyBullet;
 
-    public Bullet(String name, Vector2 initialPosition, float direction, float speed, float radius, int damage) {
+    public Bullet(String name, Vector2 initialPosition, float direction, float speed, float radius, double damage) {
         super(GameObjectVisualizationType.BULLET, name, initialPosition);
         this.direction = direction;
         this.radius = radius;
@@ -126,11 +126,11 @@ public class Bullet extends GameObject {
         this.speed = speed;
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 

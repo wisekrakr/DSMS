@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class EnemyMutator extends Enemy {
 
-    public EnemyMutator(String name, Vector2 position, int health, float direction, float speed, float radius) {
+    public EnemyMutator(String name, Vector2 position, double health, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.MUTATOR, name, position, health, direction, speed, radius);
 
         setAggroDistance(250f);
