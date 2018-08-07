@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
@@ -13,19 +14,26 @@ import java.util.Set;
 
 public class BulletObject extends WeaponObjectClass {
 
-    private float distanceTravelled;
+    private GameObject master;
 
-    public BulletObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval) {
+    public BulletObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval, GameObject master) {
         super(GameObjectVisualizationType.BULLET, "Bulletito", initialPosition, new MyBehavior(initialPosition, initialDirection, destructInterval));
+        this.master = master;
         this.setCollisionRadius(1f);
         this.setDamage(damage);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player){
-            toDelete.add(this);
-            subject.setHealth(subject.getHealth() - getDamage());
+        if (subject instanceof NonPlayerCharacter || subject instanceof Player){
+            if (subject != master) {
+                subject.setHealth(subject.getHealth() - this.getDamage());
+                toDelete.add(this);
+                int debrisParts = GameHelper.randomGenerator.nextInt(10)+1;
+                for(int i = 0; i < debrisParts; i++) {
+                    toAdd.add(new WeaponDebris(this.getPosition(), this));
+                }
+            }
         }
     }
 

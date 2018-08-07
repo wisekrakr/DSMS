@@ -102,14 +102,14 @@ public class ServerRunner {
                 return new TestNPC(initialPosition, actionDistance);
             }
         }));
-
+/*
         gameEngine.addScenario(new WildlifeManagement(3, 5, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new CrazilySpawningPassiveAggressiveNPC(initialPosition);
             }
         }));
-/*
+
         gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
         gameEngine.addScenario(new WildlifeManagement(2, 2, ScenarioHelper.PEST_FACTORY));
         gameEngine.addScenario(new WildlifeManagement(2, 4, ScenarioHelper.SHITTER_FACTORY));

@@ -42,12 +42,12 @@ public class FetchLikeADoggyNPC extends NonPlayerCharacter{
             }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
                 if (!(context.existingSubBehavior() instanceof ChasingBehavior)) {
-                    context.pushSubBehavior(new ChasingBehavior());
+                    context.pushSubBehavior(new ChasingBehavior(target));
                 }
             }else if (context.nearest() instanceof Bullet){
                 target = context.nearest();
                 if (!(context.existingSubBehavior() instanceof ChasingBehavior)) {
-                    context.pushSubBehavior(new ChasingBehavior());
+                    context.pushSubBehavior(new ChasingBehavior(target));
                 }
             }
         }

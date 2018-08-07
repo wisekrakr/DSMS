@@ -5,14 +5,14 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 public class CirclingBehavior extends Behavior{
 
-    private Float lastDirectionChange;
-    private float changeDirectionInterval;
+    private GameObject target;
 
-    public CirclingBehavior(float changeDirectionInterval) {
-        this.changeDirectionInterval = changeDirectionInterval;
+    public CirclingBehavior(GameObject target) {
+        this.target = target;
 
     }
 
@@ -20,10 +20,12 @@ public class CirclingBehavior extends Behavior{
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
         float updatedAngle = (float) (45f * Math.PI * delta);
-        GameObject target = context.nearest();
-        if (target != null){
+
+        if (target != null && !(target instanceof WeaponObjectClass)){
+
             float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
 
+            context.setSpeed(GameHelper.generateRandomNumberBetween(50f, 70f));
             context.setOrientation(angle);
             context.setDirection(angle + updatedAngle);
         }

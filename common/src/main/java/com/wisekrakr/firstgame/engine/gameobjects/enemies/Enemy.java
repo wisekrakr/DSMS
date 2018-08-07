@@ -467,7 +467,7 @@ public class Enemy extends GameObject {
                 break;
             case SELF_DESTRUCT:
                 toDelete.add(this);
-                initDebris(toDelete, toAdd);
+                //initDebris(toDelete, toAdd);
                 break;
  //TODO: fix blink
             case BLINK:

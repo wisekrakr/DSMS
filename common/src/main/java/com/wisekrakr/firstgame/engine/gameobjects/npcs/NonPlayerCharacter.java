@@ -194,7 +194,6 @@ public class NonPlayerCharacter extends GameObject {
 
                 @Override
                 public void setSpeed(float speed) {
-                    System.out.println("speed is: " + speed);
                     NonPlayerCharacter.this.speed = speed;
                 }
 

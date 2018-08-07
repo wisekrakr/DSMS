@@ -38,8 +38,9 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
             if (!(context.existingSubBehavior() instanceof IdleBehavior)){
                 context.pushSubBehavior(new IdleBehavior());
             }else if (context.nearest() instanceof Player) {
+                target = context.nearest();
                 if (!(context.existingSubBehavior() instanceof ChasingBehavior)) {
-                    context.pushSubBehavior(new ChasingBehavior());
+                    context.pushSubBehavior(new ChasingBehavior(target));
                 }
             }else{
                 context.pushSubBehavior(new CruisingBehavior(8f));

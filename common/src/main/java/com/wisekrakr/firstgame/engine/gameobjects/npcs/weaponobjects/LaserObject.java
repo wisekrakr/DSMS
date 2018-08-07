@@ -13,17 +13,22 @@ import java.util.Set;
 
 public class LaserObject extends WeaponObjectClass {
 
-    public LaserObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval) {
+    private GameObject master;
+
+    public LaserObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval, GameObject master) {
         super(GameObjectVisualizationType.LASER_BEAM, "Laserito", initialPosition, new MyBehavior(initialPosition, initialDirection, destructInterval));
+        this.master = master;
         this.setDamage(damage);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player){
-            toDelete.add(this);
-        }else {
-            this.signalOutOfBounds(toDelete, toAdd);
+        if (subject instanceof NonPlayerCharacter || subject instanceof Player){
+            if (subject != master) {
+                subject.setHealth(subject.getHealth() - this.getDamage());
+                toDelete.add(this);
+                toAdd.add(new WeaponDebris(this.getPosition(), this));
+            }
         }
 
     }

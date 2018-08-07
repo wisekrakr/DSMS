@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
@@ -14,32 +15,38 @@ import java.util.Map;
 import java.util.Set;
 
 public class SpaceMineObject extends WeaponObjectClass {
-    private float shotLeftOver;
+    private GameObject master;
 
-    public SpaceMineObject(Vector2 initialPosition, float dropMineInterval, double damage, double destructInterval) {
-        super(GameObjectVisualizationType.SPACE_MINE, "BlinkyBoom", initialPosition, new MyBehavior(initialPosition, dropMineInterval, destructInterval));
+    public SpaceMineObject(Vector2 initialPosition, double damage, double destructInterval, GameObject master) {
+        super(GameObjectVisualizationType.SPACE_MINE, "BlinkyBoom", initialPosition, new MyBehavior(initialPosition, destructInterval));
+        this.master = master;
         setCollisionRadius(3f);
         setDamage(damage);
     }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof Player){
-            subject.setHealth(subject.getHealth() - getDamage());
-            toDelete.add(this);
+        if (subject instanceof NonPlayerCharacter || subject instanceof Player){
+            if (subject != master) {
+                subject.setHealth(subject.getHealth() - this.getDamage());
+                toDelete.add(this);
+                int debrisParts = GameHelper.randomGenerator.nextInt(10)+1;
+                for(int i = 0; i < debrisParts; i++) {
+                    toAdd.add(new WeaponDebris(this.getPosition(), this));
+                }
+            }
         }
     }
 
     private static class MyBehavior extends Behavior{
 
         private Vector2 initialPosition;
-        private float dropMineInterval;
+
         private double destructInterval;
         private float lastCreation;
 
-        private MyBehavior(Vector2 initialPosition, float dropMineInterval, double destructInterval) {
+        private MyBehavior(Vector2 initialPosition,  double destructInterval) {
             this.initialPosition = initialPosition;
-            this.dropMineInterval = dropMineInterval;
             this.destructInterval = destructInterval;
         }
 

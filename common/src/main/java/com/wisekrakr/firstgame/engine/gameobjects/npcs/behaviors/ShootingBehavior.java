@@ -6,31 +6,36 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 public class ShootingBehavior extends Behavior {
     private GameObject weapon;
+    private GameObject target;
 
-    public ShootingBehavior(GameObject weapon) {
+    public ShootingBehavior(GameObject weapon, GameObject target) {
         this.weapon = weapon;
-
+        this.target = target;
     }
 
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        GameObject target = context.nearest();
+        if (!(target instanceof WeaponObjectClass)) {
 
-        if (target != null){
-
-            float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
+            float angle = GameHelper.angleBetween(context.getPosition(), context.nearest().getPosition());
 
             context.setDirection(angle);
             context.setOrientation(angle);
+            context.addGameObject(weapon);
+
         }
+
+
+
         //TODO: workout why its starts shooting faster when closer to player
 
 
-        context.addGameObject(weapon);
+
 
 
     }

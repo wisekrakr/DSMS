@@ -9,11 +9,10 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.BulletBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.HomingMissileBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PlasmaBlastObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.TestObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.*;
+import com.wisekrakr.firstgame.server.ScenarioHelper;
 
 import java.util.Set;
 
@@ -48,21 +47,20 @@ public class TestNPC extends NonPlayerCharacter {
             this.initialPosition = initialPosition;
             this.actionDistance = actionDistance;
             this.target = target;
+
         }
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-
             if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
+                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
 
-            }else if (context.nearest() instanceof CrazilySpawningPassiveAggressiveNPC || context.nearest() instanceof Player ) {
-                if (!(context.existingSubBehavior() instanceof ShootingBehavior)){
-                    context.pushSubBehavior(new ShootingBehavior(new TestObject(context.getPosition(), new HomingMissileBehavior(
-                            context.getOrientation(), 6, context.nearest()), context.thisObject()
-                    )));
-                }
+            } else if (context.nearest() instanceof NonPlayerCharacter || context.nearest() instanceof Player) {
+                target = context.nearest();
+
+                context.pushSubBehavior(new MinionBehavior(target));
+
             }
         }
     }

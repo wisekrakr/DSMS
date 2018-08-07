@@ -33,10 +33,13 @@ public class HomingMissileBehavior extends Behavior {
             context.setSpeed(100f);
         }
 
-        lastShot += delta;
-        if (lastShot >= destructInterval) {
+        if (lastShot == 0){
+            lastShot = clock;
+        }
+
+        if (clock - lastShot >= destructInterval) {
             context.removeGameObject(context.thisObject());
-            lastShot = 0f;
+            lastShot = clock;
         }
 
     }

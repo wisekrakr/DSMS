@@ -26,6 +26,7 @@ public class FaceHuggingBehavior extends Behavior {
 
             context.setOrientation(angle );
             context.setDirection(angle + updatedAngle);
+            context.setSpeed(100f);
         }
     }
 }

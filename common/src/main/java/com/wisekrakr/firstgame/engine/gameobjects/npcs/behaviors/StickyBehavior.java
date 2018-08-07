@@ -8,29 +8,31 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
 public class StickyBehavior extends Behavior {
 
+    private GameObject target;
+
+    public StickyBehavior(GameObject target) {
+        this.target = target;
+    }
 
     //TODO: If an object of the same class sticks, it will freak out. Also, a train  must be formed....but how
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        GameObject target = context.nearest();
-        if (target != null) {
+        if (target != null && !(target.getClass() == context.thisObject().getClass())) {
+            context.setSpeed((Float) target.getExtraSnapshotProperties().get("speed"));
 
             float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
+
             context.setOrientation(angle);
             context.setDirection(angle);
-            context.setSpeed(100f);
+            context.setSpeed(context.getSpeed());
 
 
             if (context.collisionDetection(target)) {
-                if (target.getClass() == context.getClass()){
-                    context.removeGameObject(target);
-                }else {
-                    context.getPosition().x = target.getPosition().x + target.getCollisionRadius() * (float) Math.cos(target.getOrientation() + Math.PI);
-                    context.getPosition().y = target.getPosition().y + target.getCollisionRadius() * (float) Math.sin(target.getOrientation() + Math.PI);
 
-                    context.setSpeed((Float) target.getExtraSnapshotProperties().get("speed"));
-                }
+                context.getPosition().x = (target.getPosition().x + target.getCollisionRadius() + context.getRadius());
+                context.getPosition().y = (target.getPosition().y + target.getCollisionRadius() + context.getRadius());
+
             }
         }
     }

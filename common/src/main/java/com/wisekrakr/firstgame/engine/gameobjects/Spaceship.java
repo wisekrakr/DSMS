@@ -314,7 +314,7 @@ public class Spaceship extends GameObject {
             case FORWARDS:
                 speedX = speedX + delta * defaultSpeed * (float) Math.cos(angle);
                 speedY = speedY + delta * defaultSpeed * (float) Math.sin(angle);
-                toAdd.add(new Exhaust("exhaust", this.getPosition(), -this.getOrientation(), getCollisionRadius() / 5));
+                //toAdd.add(new Exhaust("exhaust", this.getPosition(), -this.getOrientation(), getCollisionRadius() / 5));
                 break;
 
             case REVERSE:
@@ -358,7 +358,7 @@ public class Spaceship extends GameObject {
                     speedY = speedY * maxSpeed / speed;
                 }
 
-                toAdd.add(new Exhaust("exhaust", getPosition(), -this.getOrientation(), getCollisionRadius() / 3));
+                //toAdd.add(new Exhaust("exhaust", getPosition(), -this.getOrientation(), getCollisionRadius() / 3));
                 break;
 
             case ULTRA_DODGE:

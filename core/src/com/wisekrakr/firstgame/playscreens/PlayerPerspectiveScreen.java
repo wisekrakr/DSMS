@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.ParticleEffectRenderer;
+import com.wisekrakr.firstgame.SpriteHelper;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
@@ -667,7 +668,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
                                 object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
                                 (5 / 2));
-                        // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
+
+                        if (throttle == Spaceship.ThrottleState.FORWARDS){
+                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_fly.png", object, batch, null);
+                        }else if (powerState == Spaceship.SpecialPowerState.BOOSTING){
+                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
+                        }else {
+                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", object, batch, null);
+                        }
 
 /*
                         if (introDialogOneTime) {

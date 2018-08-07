@@ -53,7 +53,7 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
                         break;
 
                     case 2:
-                        context.pushSubBehavior(new ChasingBehavior());
+                        context.pushSubBehavior(new ChasingBehavior(target));
 
                         break;
 
