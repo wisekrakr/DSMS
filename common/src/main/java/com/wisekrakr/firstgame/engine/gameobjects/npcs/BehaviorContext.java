@@ -31,7 +31,7 @@ public interface BehaviorContext {
     double getHealth();
     //TODO: change to width/height dimensions, to make different kind of shapes later on (for collision detection)
     float getRadius();
-    float actionDistance();
+    float getActionDistance();
 
     void setOrientation(float orientation);
     void setDirection(float direction);

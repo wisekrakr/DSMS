@@ -5,12 +5,12 @@ import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameEngine;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.TestNPC;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
@@ -95,20 +95,44 @@ public class ServerRunner {
 
         //engine.addGameObject(new PowerupGenerator(new Vector2()));
 
+        gameEngine.addScenario(new WildlifeManagement(3, 20, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                return new CrazilySpawningPassiveAggressiveNPC(initialPosition, actionDistance);
+            }
+        }));
 
-        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
+        gameEngine.addScenario(new WildlifeManagement(2, 5, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
+            }
+        }));
+
+        gameEngine.addScenario(new WildlifeManagement(3, 2, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                return new FollowingChasingNPC(initialPosition, actionDistance);
+            }
+        }));
+
+        gameEngine.addScenario(new WildlifeManagement(7, 5, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                return new AsteroidNPC(initialPosition, GameHelper.generateRandomNumberBetween(3f, 20f));
+            }
+        }));
+/*
+        gameEngine.addScenario(new WildlifeManagement(3, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new TestNPC(initialPosition, actionDistance);
             }
         }));
-/*
-        gameEngine.addScenario(new WildlifeManagement(3, 5, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new CrazilySpawningPassiveAggressiveNPC(initialPosition);
-            }
-        }));
+
+
+
+
 
         gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
         gameEngine.addScenario(new WildlifeManagement(2, 2, ScenarioHelper.PEST_FACTORY));

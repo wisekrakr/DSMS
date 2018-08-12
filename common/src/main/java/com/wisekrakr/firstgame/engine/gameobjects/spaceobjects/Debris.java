@@ -16,9 +16,9 @@ public class Debris extends GameObject {
     private float radius;
     private float time;
 
-    public Debris(String name, Vector2 initialPosition, float rotationSpeed, float speed, float direction, float radius) {
+    public Debris(Vector2 initialPosition, float rotationSpeed, float speed, float direction, float radius) {
 
-        super(GameObjectVisualizationType.DEBRIS, name, initialPosition);
+        super(GameObjectVisualizationType.DEBRIS, "Debris", initialPosition);
         this.rotationSpeed = rotationSpeed;
         this.speed = speed;
         this.direction = direction;

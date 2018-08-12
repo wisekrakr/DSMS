@@ -4,8 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.IdleBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
 
 
 import java.util.*;
@@ -15,7 +16,6 @@ public class NonPlayerCharacter extends GameObject {
     private float direction = 0f;
     private float speed = 0f;
     private List<GameObject> nearby;
-    private double health = 100; //health is in percentages....everything starts with 100% health...if not...setHealth can be used
 
     private float actionDistance = 0f;
 
@@ -32,7 +32,7 @@ public class NonPlayerCharacter extends GameObject {
     public Map<String, Object> getExtraSnapshotProperties() {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        result.put("health", health);
+        result.put("health", getHealth());
         result.put("maxHealth", 100);
         result.put("radius", getCollisionRadius());
         result.put("healthPercentage", 1d);
@@ -58,21 +58,21 @@ public class NonPlayerCharacter extends GameObject {
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         setDirection(this.getDirection() + (float) Math.PI);
     }
-/*
+
     @Override
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(!(subject instanceof WeaponObjectClass)){
+        if(!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject)){ //TODO: this is a temp fix.
             float angle = GameHelper.angleBetween(this, subject);
             if(GameHelper.distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
-                setPosition(new Vector2(getPosition().x -= Math.cos(angle) * GameHelper.randomGenerator.nextFloat() * 2.5,
-                        getPosition().y -= Math.sin(angle) * GameHelper.randomGenerator.nextFloat() * 2.5));
+                setPosition(new Vector2(getPosition().x -= Math.cos(angle) * GameHelper.randomGenerator.nextFloat() * 12.5,
+                        getPosition().y -= Math.sin(angle) * GameHelper.randomGenerator.nextFloat() * 12.5));
                 setOrientation(-angle);
                 setDirection(direction + (float) Math.PI);
             }
         }
     }
-*/
+
     @Override
     public final void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         int index = 0;
@@ -164,7 +164,7 @@ public class NonPlayerCharacter extends GameObject {
 
                 @Override
                 public double getHealth() {
-                    return health;
+                    return NonPlayerCharacter.this.getHealth();
                 }
 
                 @Override
@@ -183,7 +183,7 @@ public class NonPlayerCharacter extends GameObject {
                 }
 
                 @Override
-                public float actionDistance() {
+                public float getActionDistance() {
                     return actionDistance;
                 }
 
@@ -217,13 +217,6 @@ public class NonPlayerCharacter extends GameObject {
         setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * speed * delta,
                 getPosition().y + (float) Math.sin(direction) * speed * delta)
         );
-/*
-        if (getHealth() <= 0){
-            toDelete.add(this);
-        }
-*/
-
-
     }
 
 

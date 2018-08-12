@@ -9,35 +9,20 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.BulletBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 
 import java.util.Set;
 
 public class BulletObject extends WeaponObjectClass {
 
-    private GameObject master;
 
-    public BulletObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval, GameObject master) {
-        super(GameObjectVisualizationType.BULLET, "Bulletito", initialPosition, new MyBehavior(initialPosition, initialDirection, destructInterval));
-        this.master = master;
+
+    public BulletObject(Vector2 initialPosition, float initialDirection,  double destructInterval, GameObject master) {
+        super(GameObjectVisualizationType.BULLET, "Bulletito", initialPosition, new MyBehavior(initialPosition, initialDirection, destructInterval), master);
+
         this.setCollisionRadius(1f);
-        this.setDamage(damage);
+        this.setDamage(WeaponObjectMechanics.determineDamage(master, this));
     }
-
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof NonPlayerCharacter || subject instanceof Player){
-            if (subject != master) {
-                subject.setHealth(subject.getHealth() - this.getDamage());
-                toDelete.add(this);
-                int debrisParts = GameHelper.randomGenerator.nextInt(10)+1;
-                for(int i = 0; i < debrisParts; i++) {
-                    toAdd.add(new WeaponDebris(this.getPosition(), this));
-                }
-            }
-        }
-    }
-
-
 
     private static class MyBehavior extends Behavior {
 

@@ -79,7 +79,7 @@ public abstract class GameObject {
         Random random = new Random();
         int debrisParts = random.nextInt(10)+1;
         for(int i = 0; i < debrisParts; i++) {
-            toAdd.add(new Debris("debris", this.getPosition(), random.nextFloat() * 10,
+            toAdd.add(new Debris( this.getPosition(), random.nextFloat() * 10,
                     random.nextFloat() * 60, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getCollisionRadius()));
 
         }

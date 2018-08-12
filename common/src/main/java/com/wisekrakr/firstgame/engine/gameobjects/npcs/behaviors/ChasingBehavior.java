@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 public class ChasingBehavior extends Behavior {
 
@@ -17,11 +18,21 @@ public class ChasingBehavior extends Behavior {
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        if (target != null) {
+        if (target != null && !(target instanceof WeaponObjectClass)) {
             float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
+
             context.setDirection(angle);
             context.setOrientation(angle);
-            context.setSpeed(GameHelper.generateRandomNumberBetween(70f, 80f));
+
+            if (context.getRadius() <= 8f) {
+                context.setSpeed(GameHelper.generateRandomNumberBetween(50f, 75f));
+            }else if (context.getRadius() >= 9f && context.getRadius() <= 15f){
+                context.setSpeed(GameHelper.generateRandomNumberBetween(20f, 50f));
+            }else if (context.getRadius() >= 16f && context.getRadius() <= 25f) {
+                context.setSpeed(GameHelper.generateRandomNumberBetween(10f, 20f));
+            }else {
+                context.setSpeed(GameHelper.generateRandomNumberBetween(1f, 9f));
+            }
         }
     }
 }

@@ -9,45 +9,50 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CirclingBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CruisingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 
-public class FetchLikeADoggyNPC extends NonPlayerCharacter{
+public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
 
-    public FetchLikeADoggyNPC(Vector2 initialPosition) {
-        super(GameObjectVisualizationType.TEST_NPC, "Fetcher", initialPosition, new MyBehavior(initialPosition, null));
+    public AsteroidWatchingMissileShootingNPC(Vector2 initialPosition, float actionDistance) {
+        super(GameObjectVisualizationType.BLINKER, "Missilier", initialPosition, new MyBehavior(initialPosition, actionDistance,null));
         setCollisionRadius(10f);
-
+        setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3));
+        setActionDistance(actionDistance);
     }
 
 
     private static class MyBehavior extends Behavior {
 
         private final Vector2 initialPosition;
+        private float actionDistance;
         private GameObject target;
 
-        public MyBehavior(Vector2 initialPosition, GameObject target) {
+        public MyBehavior(Vector2 initialPosition, float actionDistance, GameObject target) {
             this.initialPosition = initialPosition;
+            this.actionDistance = actionDistance;
             this.target = target;
         }
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-            context.setActionDistance(300f);
-
             if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                 context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
 
             }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
-                if (!(context.existingSubBehavior() instanceof ChasingBehavior)) {
-                    context.pushSubBehavior(new ChasingBehavior(target));
-                }
-            }else if (context.nearest() instanceof Bullet){
+                context.pushSubBehavior(new ShootingBehavior(new MissileObject(context.getPosition(), context.getOrientation(), 6,
+                        target, context.thisObject()), target));
+
+            }else if (context.nearest() instanceof AsteroidNPC){
                 target = context.nearest();
-                if (!(context.existingSubBehavior() instanceof ChasingBehavior)) {
-                    context.pushSubBehavior(new ChasingBehavior(target));
+                if (!(context.existingSubBehavior() instanceof CirclingBehavior)) {
+                    context.pushSubBehavior(new CirclingBehavior(target));
                 }
             }
         }

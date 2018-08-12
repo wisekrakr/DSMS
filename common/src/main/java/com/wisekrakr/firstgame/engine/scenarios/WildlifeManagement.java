@@ -26,7 +26,7 @@ public class WildlifeManagement extends Scenario {
 
             GameObject newObject = factory.create(GameHelper.randomPosition(), GameHelper.randomDirection(),
                     GameHelper.generateRandomNumberBetween(300f, 600f));
-
+//TODO: ActionDistance needs to be set differently
 
             spaceEngine.addGameObject(newObject, new SpaceEngine.GameObjectListener() {
                 @Override

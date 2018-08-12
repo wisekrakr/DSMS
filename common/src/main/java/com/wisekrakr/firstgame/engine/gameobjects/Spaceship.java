@@ -10,6 +10,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
@@ -445,12 +447,14 @@ public class Spaceship extends GameObject {
         }
 
         for (int i = 0; i < exactShotCount; i++) {
-
+/*
             Bullet currentBullet = new Bullet("bullito", getPosition(), getAngle(), getSpeed(),
                     BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
             toAdd.add(currentBullet);
             currentBullet.setPlayerBullet(true);
             currentBullet.setBulletSpeed(defaultSpeed * 3);
+            */
+            toAdd.add(new BulletObject(getPosition(), getAngle(), 5,this));
         }
 
     }
@@ -468,11 +472,15 @@ public class Spaceship extends GameObject {
             missileLeftOver = 0;
         }
         for (int i = 0; i < exactMissileCount; i++) {
+
             HomingMissile currentMissile = new HomingMissile(getPosition(), getAngle(), getSpeed(),
                     MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
             toAdd.add(currentMissile);
             currentMissile.missileEnable(this);
             currentMissile.setMissileSpeed(defaultSpeed * 2);
+
+
+
         }
 
     }

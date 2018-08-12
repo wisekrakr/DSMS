@@ -9,33 +9,17 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.IdleBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class SpaceMineObject extends WeaponObjectClass {
-    private GameObject master;
 
-    public SpaceMineObject(Vector2 initialPosition, double damage, double destructInterval, GameObject master) {
-        super(GameObjectVisualizationType.SPACE_MINE, "BlinkyBoom", initialPosition, new MyBehavior(initialPosition, destructInterval));
-        this.master = master;
+    public SpaceMineObject(Vector2 initialPosition, double destructInterval, GameObject master) {
+        super(GameObjectVisualizationType.SPACE_MINE, "BlinkyBoom", initialPosition, new MyBehavior(initialPosition, destructInterval), master);
+
         setCollisionRadius(3f);
-        setDamage(damage);
-    }
-
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof NonPlayerCharacter || subject instanceof Player){
-            if (subject != master) {
-                subject.setHealth(subject.getHealth() - this.getDamage());
-                toDelete.add(this);
-                int debrisParts = GameHelper.randomGenerator.nextInt(10)+1;
-                for(int i = 0; i < debrisParts; i++) {
-                    toAdd.add(new WeaponDebris(this.getPosition(), this));
-                }
-            }
-        }
+        this.setDamage(WeaponObjectMechanics.determineDamage(master, this));
     }
 
     private static class MyBehavior extends Behavior{

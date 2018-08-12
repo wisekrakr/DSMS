@@ -9,20 +9,17 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.BulletBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.HomingMissileBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.*;
-import com.wisekrakr.firstgame.server.ScenarioHelper;
-
-import java.util.Set;
 
 
 public class TestNPC extends NonPlayerCharacter {
 
     public TestNPC(Vector2 initialPosition, float actionDistance) {
         super(GameObjectVisualizationType.TEST_NPC, "TESTY", initialPosition, new MyBehavior(initialPosition, actionDistance, null));
-        this.setCollisionRadius(10f);
+        this.setCollisionRadius(GameHelper.generateRandomNumberBetween(8f, 15f));
         this.setActionDistance(actionDistance);
+        this.setHealth(getCollisionRadius() * 3);
         //setDimensions(13, 31);
     }
 /*
@@ -53,14 +50,21 @@ public class TestNPC extends NonPlayerCharacter {
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
+
             if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                 context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
 
-            } else if (context.nearest() instanceof NonPlayerCharacter || context.nearest() instanceof Player) {
+            }else if (context.nearest() instanceof NonPlayerCharacter || context.nearest() instanceof Player) {
                 target = context.nearest();
 
-                context.pushSubBehavior(new MinionBehavior(target));
+                context.pushSubBehavior(new ShootingBehavior(new PlasmaBlastObject(context.getPosition(),
+                        context.getOrientation(),
+                        3f,
+                        context.thisObject()), target));
 
+            }
+            if (context.getHealth() <= 0){
+                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }
         }
     }

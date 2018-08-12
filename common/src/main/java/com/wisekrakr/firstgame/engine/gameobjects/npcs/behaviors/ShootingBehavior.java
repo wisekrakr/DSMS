@@ -20,23 +20,15 @@ public class ShootingBehavior extends Behavior {
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-        if (!(target instanceof WeaponObjectClass)) {
+        if (target != null && !(target instanceof WeaponObjectClass)) {
 
-            float angle = GameHelper.angleBetween(context.getPosition(), context.nearest().getPosition());
+            float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
 
             context.setDirection(angle);
             context.setOrientation(angle);
             context.addGameObject(weapon);
 
         }
-
-
-
-        //TODO: workout why its starts shooting faster when closer to player
-
-
-
-
-
+        //TODO: workout why its starts shooting faster when closer to target
     }
 }

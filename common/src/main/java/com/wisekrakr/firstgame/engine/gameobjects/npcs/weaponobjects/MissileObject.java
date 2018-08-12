@@ -1,6 +1,5 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
@@ -10,34 +9,19 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.HomingMissileBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 
 import java.util.Set;
 
 public class MissileObject extends WeaponObjectClass{
 
-    private GameObject master;
-    public MissileObject(Vector2 initialPosition, float initialDirection, double damage, double destructInterval, GameObject target, GameObject master) {
+    public MissileObject(Vector2 initialPosition, float initialDirection, double destructInterval, GameObject target, GameObject master) {
         super(GameObjectVisualizationType.MISSILE, "Misselito", initialPosition,
-                new MyBehavior(initialPosition, initialDirection, destructInterval, target));
-        this.master = master;
-        this.setCollisionRadius(2f);
-        this.setDamage(damage);
+                new MyBehavior(initialPosition, initialDirection, destructInterval, target), master);
 
-    }
+        this.setCollisionRadius(3f);
+        this.setDamage(WeaponObjectMechanics.determineDamage(master, this));
 
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof NonPlayerCharacter || subject instanceof Player){
-            if (subject != master) {
-                subject.setHealth(subject.getHealth() - this.getDamage());
-                toDelete.add(this);
-                int debrisParts = GameHelper.randomGenerator.nextInt(10)+1;
-                for(int i = 0; i < debrisParts; i++) {
-                    toAdd.add(new WeaponDebris(this.getPosition(), this));
-                }
-
-            }
-        }
     }
 
     private static class MyBehavior extends Behavior{
