@@ -12,6 +12,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
+import com.wisekrakr.firstgame.engine.scenarios.ProtectedConvoy;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
 import java.io.IOException;
@@ -94,6 +95,9 @@ public class ServerRunner {
         timeThread.setDaemon(true);
 
         //engine.addGameObject(new PowerupGenerator(new Vector2()));
+
+        gameEngine.addScenario(new ProtectedConvoy(100, 500, 5, 15, 3));
+        gameEngine.addScenario(new ProtectedConvoy(300, 1000, 5, 10, 1));
 
         gameEngine.addScenario(new WildlifeManagement(3, 20, new GameObjectFactory() {
             @Override

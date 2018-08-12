@@ -16,8 +16,9 @@ import java.util.Set;
 public class MissileObject extends WeaponObjectClass{
 
     public MissileObject(Vector2 initialPosition, float initialDirection, double destructInterval, GameObject target, GameObject master) {
-        super(GameObjectVisualizationType.MISSILE, "Misselito", initialPosition,
-                new MyBehavior(initialPosition, initialDirection, destructInterval, target), master);
+        super(GameObjectVisualizationType.MISSILE, "Misselito", initialPosition, master);
+
+        rootBehavior(new MyBehavior(initialPosition, initialDirection, destructInterval, target));
 
         this.setCollisionRadius(3f);
         this.setDamage(WeaponObjectMechanics.determineDamage(master, this));

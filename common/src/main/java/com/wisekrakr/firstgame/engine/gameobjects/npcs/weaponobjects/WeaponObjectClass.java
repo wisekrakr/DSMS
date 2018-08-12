@@ -14,9 +14,32 @@ import java.util.Set;
 public class WeaponObjectClass extends NonPlayerCharacter {
     private GameObject master;
 
-    public WeaponObjectClass(GameObjectVisualizationType type, String name, Vector2 initialPosition, Behavior initialBehavior, GameObject master) {
-        super(type, name, initialPosition, initialBehavior);
+    public WeaponObjectClass(GameObjectVisualizationType type, String name, Vector2 initialPosition, GameObject master) {
+        super(type, name, initialPosition);
         this.master = master;
+    }
+
+    public WeaponObjectClass(GameObjectVisualizationType type, String name, Vector2 initialPosition, Behavior initialBehavior, GameObject master) {
+        this(type, name, initialPosition, master);
+
+        rootBehavior(initialBehavior);
+    }
+
+    public GameObject getMaster() {
+        return master;
+    }
+
+    @Override
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        splode(toDelete, toAdd);
+    }
+
+    private void splode(Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        toDelete.add(this);
+        int debrisParts = GameHelper.randomGenerator.nextInt((int) master.getCollisionRadius())+4;
+        for(int i = 0; i < debrisParts; i++) {
+            toAdd.add(new DebrisObject(this.getPosition(), GameHelper.generateRandomNumberBetween(0, this.getCollisionRadius()* 2)));
+        }
     }
 
     @Override
@@ -24,11 +47,7 @@ public class WeaponObjectClass extends NonPlayerCharacter {
         if (subject instanceof NonPlayerCharacter || subject instanceof Player){
             if (subject != master) {
                 subject.setHealth(subject.getHealth() - this.getDamage());
-                toDelete.add(this);
-                int debrisParts = GameHelper.randomGenerator.nextInt((int) master.getCollisionRadius())+4;
-                for(int i = 0; i < debrisParts; i++) {
-                    toAdd.add(new DebrisObject(this.getPosition(), GameHelper.generateRandomNumberBetween(0, this.getCollisionRadius()* 2)));
-                }
+                splode(toDelete, toAdd);
             }
         }
     }

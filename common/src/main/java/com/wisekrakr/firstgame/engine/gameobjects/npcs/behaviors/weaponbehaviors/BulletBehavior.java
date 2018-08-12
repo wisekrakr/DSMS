@@ -8,21 +8,18 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
 public class BulletBehavior extends Behavior {
-
-    private float initialDirection;
     private float lastShot;
     private double destructInterval;
+    private float speed;
 
-    public BulletBehavior(float initialDirection, double destructInterval) {
-        this.initialDirection = initialDirection;
+    public BulletBehavior(double destructInterval, float speed) {
         this.destructInterval = destructInterval;
+        this.speed = speed;
     }
 
     @Override
     public void elapseTime(float clock, float delta, BehaviorContext context) {
-        context.setSpeed(GameHelper.generateRandomNumberBetween(200f, 220f));
-        context.setDirection(initialDirection);
-        context.setOrientation(initialDirection);
+        context.setSpeed(speed);
 
         lastShot += delta;
 

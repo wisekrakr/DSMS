@@ -4,16 +4,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 
 
 import java.util.*;
 
 public class NonPlayerCharacter extends GameObject {
     private List<Behavior> activeBehaviors = new ArrayList<>();
-    private float direction = 0f;
     private float speed = 0f;
     private List<GameObject> nearby;
 
@@ -22,9 +25,17 @@ public class NonPlayerCharacter extends GameObject {
     private GameObject cachedNearest;
     private float distanceInFloats;
 
-    protected NonPlayerCharacter(GameObjectVisualizationType type, String name, Vector2 initialPosition, Behavior initialBehavior) {
+    protected NonPlayerCharacter(GameObjectVisualizationType type, String name, Vector2 initialPosition) {
         super(type, name, initialPosition);
+    }
 
+    protected NonPlayerCharacter(GameObjectVisualizationType type, String name, Vector2 initialPosition, Behavior initialBehavior) {
+        this(type, name, initialPosition);
+
+        rootBehavior(initialBehavior);
+    }
+
+    protected final void rootBehavior(Behavior initialBehavior) {
         activeBehaviors.add(initialBehavior);
     }
 
@@ -62,13 +73,14 @@ public class NonPlayerCharacter extends GameObject {
     @Override
     public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if(!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject)){ //TODO: this is a temp fix.
+        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject)) { //TODO: this is a temp fix.
             float angle = GameHelper.angleBetween(this, subject);
-            if(GameHelper.distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
+            if (GameHelper.distanceBetween(this, subject) <= getCollisionRadius() + subject.getCollisionRadius()) {
                 setPosition(new Vector2(getPosition().x -= Math.cos(angle) * GameHelper.randomGenerator.nextFloat() * 12.5,
                         getPosition().y -= Math.sin(angle) * GameHelper.randomGenerator.nextFloat() * 12.5));
+
                 setOrientation(-angle);
-                setDirection(direction + (float) Math.PI);
+                setDirection(super.getDirection() + (float) Math.PI);
             }
         }
     }
@@ -149,7 +161,7 @@ public class NonPlayerCharacter extends GameObject {
 
                 @Override
                 public float getDirection() {
-                    return direction;
+                    return NonPlayerCharacter.this.getDirection();
                 }
 
                 @Override
@@ -158,8 +170,8 @@ public class NonPlayerCharacter extends GameObject {
                 }
 
                 @Override
-                public void setDirection(float randomDirection) {
-                    NonPlayerCharacter.this.direction = randomDirection;
+                public void setDirection(float direction) {
+                    NonPlayerCharacter.this.setDirection(direction);
                 }
 
                 @Override
@@ -212,17 +224,21 @@ public class NonPlayerCharacter extends GameObject {
             index = index + 1;
         }
 
+        if (this instanceof BulletObject && (((BulletObject) this).getMaster() instanceof Player)) {
+            System.out.println("Bullet " + getDirection());
+        }
+
 
         // TODO: move towards the general infrastructure
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(direction) * speed * delta,
-                getPosition().y + (float) Math.sin(direction) * speed * delta)
+        setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * speed * delta,
+                getPosition().y + (float) Math.sin(getDirection()) * speed * delta)
         );
     }
 
 
     private float distanceInFloats() {
 
-        for (GameObject object: nearby) {
+        for (GameObject object : nearby) {
             distanceInFloats = GameHelper.distanceBetween(this, object);
         }
         return distanceInFloats;

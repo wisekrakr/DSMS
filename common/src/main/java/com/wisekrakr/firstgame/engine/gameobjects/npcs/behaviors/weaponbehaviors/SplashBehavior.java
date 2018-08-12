@@ -32,7 +32,7 @@ public class SplashBehavior extends Behavior {
         if (clock - timeToSplash >= destructInterval){
             int fragments = GameHelper.randomGenerator.nextInt(10)+1;
             for(int i = 0; i < fragments; i++) {
-                context.addGameObject(new BulletObject(context.getPosition(), GameHelper.randomDirection(), 3f, context.thisObject()));
+                context.addGameObject(new BulletObject(context.getPosition(), GameHelper.randomDirection(), 3f, context.thisObject(), 200));
             }
             context.removeGameObject(context.thisObject());
             timeToSplash = clock;

@@ -17,6 +17,7 @@ public class TestNPC extends NonPlayerCharacter {
 
     public TestNPC(Vector2 initialPosition, float actionDistance) {
         super(GameObjectVisualizationType.TEST_NPC, "TESTY", initialPosition, new MyBehavior(initialPosition, actionDistance, null));
+
         this.setCollisionRadius(GameHelper.generateRandomNumberBetween(8f, 15f));
         this.setActionDistance(actionDistance);
         this.setHealth(getCollisionRadius() * 3);

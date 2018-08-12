@@ -37,7 +37,6 @@ public class Spaceship extends GameObject {
     private Float hardSteering;
     private float speedX = 0;
     private float speedY = 0;
-    private float angle = (float) (Math.PI / 2);
     private float distanceTravelled = 0;
     private int ammoCount;
     private int missileAmmoCount;
@@ -214,7 +213,7 @@ public class Spaceship extends GameObject {
 
         if (subject instanceof PowerUpShield) {
             toDelete.add(subject);
-            shield = new Shield("shield", getPosition(), getAngle(), getSpeed(), this.getCollisionRadius() * 2, MissileMechanics.determineMissileDamage());
+            shield = new Shield("shield", getPosition(), getDirection(), getSpeed(), this.getCollisionRadius() * 2, MissileMechanics.determineMissileDamage());
             toAdd.add(shield);
             shieldActivated = true;
         }
@@ -246,7 +245,7 @@ public class Spaceship extends GameObject {
         }
     }
 
-    private boolean collisionDetected(GameObject object1, GameObject object2){
+    private boolean collisionDetected(GameObject object1, GameObject object2) {
         return
                 Math.sqrt(
                         (((object1.getPosition().x) - (object2.getPosition().x)))
@@ -298,30 +297,29 @@ public class Spaceship extends GameObject {
         if (hardSteering != null) {
             //angle = (float) Math.atan2(Gdx.input.getY()- getPosition().y, Gdx.input.getX()- getPosition().x);
             //angle = angle + hardSteering * delta;
-            angle = hardSteering;
+            setOrientation(hardSteering);
             hardSteering = null;
         } else {
             switch (steering) {
                 case LEFT:
-                    angle = angle + 3f * delta;
+                    setOrientation(getOrientation() + 3f * delta);
                     break;
                 case RIGHT:
-                    angle = angle - 3f * delta;
+                    setOrientation(getOrientation() - 3f * delta);
                     break;
             }
         }
-        setOrientation(angle);
 
         switch (throttle) {
             case FORWARDS:
-                speedX = speedX + delta * defaultSpeed * (float) Math.cos(angle);
-                speedY = speedY + delta * defaultSpeed * (float) Math.sin(angle);
+                speedX = speedX + delta * defaultSpeed * (float) Math.cos(getOrientation());
+                speedY = speedY + delta * defaultSpeed * (float) Math.sin(getOrientation());
                 //toAdd.add(new Exhaust("exhaust", this.getPosition(), -this.getOrientation(), getCollisionRadius() / 5));
                 break;
 
             case REVERSE:
-                speedX = speedX - delta * defaultSpeed * (float) Math.cos(angle);
-                speedY = speedY - delta * defaultSpeed * (float) Math.sin(angle);
+                speedX = speedX - delta * defaultSpeed * (float) Math.cos(getOrientation());
+                speedY = speedY - delta * defaultSpeed * (float) Math.sin(getOrientation());
                 break;
 
             case STATUSQUO:
@@ -351,8 +349,8 @@ public class Spaceship extends GameObject {
 
         switch (powerState) {
             case BOOSTING:
-                speedX = speedX + (float) Math.cos(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
-                speedY = speedY + (float) Math.sin(angle) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
+                speedX = speedX + (float) Math.cos(getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
+                speedY = speedY + (float) Math.sin(getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
 
                 speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
                 if (speed > maxSpeed) {
@@ -382,6 +380,8 @@ public class Spaceship extends GameObject {
                 getPosition().x + delta * speedX,
                 getPosition().y + delta * speedY
         ));
+
+        setDirection((float) Math.atan2((double) speedY, (double) speedX));
 
         //if shieldActivated set shield to player position
         if (shieldActivated) {
@@ -434,7 +434,6 @@ public class Spaceship extends GameObject {
     }
 
     private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
         float shotCount = delta / fireRate(0.2f) + shotLeftOver;
 
         int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
@@ -446,6 +445,16 @@ public class Spaceship extends GameObject {
             shotLeftOver = 0;
         }
 
+        float x = getPosition().x;
+        float y = getPosition().y;
+
+        float bulletSpeed = 200;
+
+        float deltaX = ((float) Math.cos(getOrientation()));
+        float deltaY = ((float) Math.sin(getOrientation()));
+
+        float adaptedAngle = (float) Math.atan2(deltaY * bulletSpeed + speedY, deltaX * bulletSpeed + speedX);
+
         for (int i = 0; i < exactShotCount; i++) {
 /*
             Bullet currentBullet = new Bullet("bullito", getPosition(), getAngle(), getSpeed(),
@@ -454,7 +463,13 @@ public class Spaceship extends GameObject {
             currentBullet.setPlayerBullet(true);
             currentBullet.setBulletSpeed(defaultSpeed * 3);
             */
-            toAdd.add(new BulletObject(getPosition(), getAngle(), 5,this));
+
+
+            BulletObject b = new BulletObject(
+                    new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
+                            y + ((i * 5) + getCollisionRadius()) * deltaY), adaptedAngle, 5, this, getSpeed() + 200);
+
+            toAdd.add(b);
         }
 
     }
@@ -473,12 +488,11 @@ public class Spaceship extends GameObject {
         }
         for (int i = 0; i < exactMissileCount; i++) {
 
-            HomingMissile currentMissile = new HomingMissile(getPosition(), getAngle(), getSpeed(),
+            HomingMissile currentMissile = new HomingMissile(getPosition(), getDirection(), getSpeed(),
                     MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
             toAdd.add(currentMissile);
             currentMissile.missileEnable(this);
             currentMissile.setMissileSpeed(defaultSpeed * 2);
-
 
 
         }
@@ -500,7 +514,7 @@ public class Spaceship extends GameObject {
 
         for (int i = 0; i < exactMineCount; i++) {
             setMineAreaOfEffect(10f);
-            SpaceMine currentSpaceMine = new SpaceMine("mine", getPosition(), getAngle(), getSpeed(),
+            SpaceMine currentSpaceMine = new SpaceMine("mine", getPosition(), getDirection(), getSpeed(),
                     MineMechanics.radius(1), getMineAreaOfEffect(), MineMechanics.determineMineDamage());
             toAdd.add(currentSpaceMine);
             currentSpaceMine.setPlayerMine(true);
@@ -511,7 +525,7 @@ public class Spaceship extends GameObject {
     private Minion InitMinionShooter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         minionShooterPlayer = new Minion("minion_shooter", new Vector2(
                 getPosition().x + (getCollisionRadius() * 2),
-                getPosition().y + (getCollisionRadius() * 2)), MinionMechanics.determineHealth(), getAngle(),
+                getPosition().y + (getCollisionRadius() * 2)), MinionMechanics.determineHealth(), getDirection(),
                 MinionMechanics.radius(1));
         toAdd.add(minionShooterPlayer);
         powerUpState = PowerUpState.MINION;
@@ -527,7 +541,7 @@ public class Spaceship extends GameObject {
                 getPosition().x + (getCollisionRadius() * 2),
                 getPosition().y + (getCollisionRadius() * 2)),
                 MinionMechanics.determineHealth(),
-                getAngle(), MinionMechanics.radius(1));
+                getDirection(), MinionMechanics.radius(1));
         toAdd.add(minionFighterPlayer);
         powerUpState = PowerUpState.MINION;
         minionFighterActivated = true;
@@ -561,10 +575,6 @@ public class Spaceship extends GameObject {
 
     public void setShootingState(ShootingState shootingState) {
         this.shootingState = shootingState;
-    }
-
-    public float getAngle() {
-        return angle;
     }
 
     public int getAmmoCount() {

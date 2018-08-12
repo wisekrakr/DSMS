@@ -4,43 +4,43 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.BulletBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 
 import java.util.Set;
 
 public class BulletObject extends WeaponObjectClass {
+    public BulletObject(Vector2 initialPosition, float initialDirection, double destructInterval, GameObject master, float speed) {
+        super(GameObjectVisualizationType.BULLET, "Bulletito", initialPosition, master);
+
+        this.rootBehavior(new MyBehavior(destructInterval, speed));
 
 
-
-    public BulletObject(Vector2 initialPosition, float initialDirection,  double destructInterval, GameObject master) {
-        super(GameObjectVisualizationType.BULLET, "Bulletito", initialPosition, new MyBehavior(initialPosition, initialDirection, destructInterval), master);
-
+        this.setDirection(initialDirection);
+        this.setOrientation(initialDirection);
         this.setCollisionRadius(1f);
         this.setDamage(WeaponObjectMechanics.determineDamage(master, this));
     }
 
-    private static class MyBehavior extends Behavior {
-
-        private final Vector2 initialPosition;
-        private float initialDirection;
+    private class MyBehavior extends Behavior {
         private double destructInterval;
+        private float speed;
 
-        public MyBehavior(Vector2 initialPosition, float initialDirection, double destructInterval) {
-            this.initialPosition = initialPosition;
-            this.initialDirection = initialDirection;
+        public MyBehavior(double destructInterval, float speed) {
             this.destructInterval = destructInterval;
+            this.speed = speed;
         }
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
-
-            if (!(context.existingSubBehavior() instanceof BulletBehavior)){
-                context.pushSubBehavior(new BulletBehavior(initialDirection, destructInterval));
+            if (!(context.existingSubBehavior() instanceof BulletBehavior)) {
+                if (getMaster() instanceof Spaceship) {
+                    System.out.println("Starting at " + context.getDirection() + " master " + getMaster().getDirection() + " / " + getMaster().getOrientation());
+                }
+                context.pushSubBehavior(new BulletBehavior(destructInterval, speed));
             }
         }
     }

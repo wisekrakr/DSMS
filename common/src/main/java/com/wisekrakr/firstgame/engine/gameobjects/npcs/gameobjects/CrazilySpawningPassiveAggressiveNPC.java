@@ -81,6 +81,10 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
                 }
                 lastChange = clock;
             }
+
+            if (context.getHealth() <= 0){
+                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+            }
         }
     }
 }

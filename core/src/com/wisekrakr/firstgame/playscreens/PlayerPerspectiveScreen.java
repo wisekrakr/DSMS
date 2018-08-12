@@ -633,6 +633,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
         shapeRenderer.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         enemy = null;
@@ -661,7 +662,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case SPACESHIP:
-
                         shapeRenderer.setColor(Color.GOLD);
                         shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 5f); //5f is default radius
                         shapeRenderer.setColor(Color.BLUE);

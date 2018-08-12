@@ -24,10 +24,6 @@ public class SpriteHelper {
         //sprite.setOriginCenter();
 
 
-        if (spritePath.contains("spaceship")) {
-//            System.out.println("SpaceshiP: " + sprite.getX() + " x " + sprite.getY());
-        }
-
         sprite.draw(targetBatch);
     }
 }

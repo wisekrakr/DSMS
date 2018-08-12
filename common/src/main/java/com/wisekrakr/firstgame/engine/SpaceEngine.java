@@ -31,11 +31,11 @@ public class SpaceEngine {
         void removed();
     }
 
-    public void addGameObject(GameObject object) {
-        addGameObject(object, null);
+    public GameObject addGameObject(GameObject object) {
+        return addGameObject(object, null);
     }
 
-    public void addGameObject(GameObject object, GameObjectListener listener) {
+    public GameObject addGameObject(GameObject object, GameObjectListener listener) {
         synchronized (monitor) {
             if (!gameObjects.add(object)) {
                 throw new IllegalArgumentException("Game object already present");
@@ -57,6 +57,8 @@ public class SpaceEngine {
                 removeGameObject(o);
             }
         }
+
+        return object;
     }
 
     public void removeGameObject(GameObject object) {
