@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 
 public class EnemyHud {
 
+    private BitmapFont debugFont;
     private BitmapFont font;
     private OrthographicCamera camera;
 
@@ -30,6 +32,9 @@ public class EnemyHud {
     private boolean activated = true;
     private float timeCounter;
     private boolean noHitYet = true;
+    private Label orientationLabel;
+    private Label speedLabel;
+    private Label positionLabel;
 
     public EnemyHud(OrthographicCamera camera) {
         this.camera = camera;
@@ -40,6 +45,9 @@ public class EnemyHud {
 
         font = myAssetManager.assetManager.get("font/gamerFont.fnt");
         font.getData().setScale(0.4f);
+
+        debugFont = myAssetManager.assetManager.get("font/default.fnt");
+        debugFont.getData().setScale(0.8f);
 
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
         TextureRegion slider = new TextureRegion(healthBar);
@@ -71,14 +79,6 @@ public class EnemyHud {
         return (Double) object.extraProperties().get("healthPercentage");
     }
 
-    private Number damageTaken(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("damageTaken");
-    }
-
-    private Boolean isHit(SpaceSnapshot.GameObjectSnapshot object){
-        return (Boolean) object.extraProperties().get("hit");
-    }
-
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
 
         if (!(activated)){
@@ -108,6 +108,40 @@ public class EnemyHud {
         }
 
         return bar;
+    }
+
+    public Label positionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+
+        Float x = objectSnapshot.getPosition().x;
+        Float y = objectSnapshot.getPosition().y;
+        positionLabel = new Label("X = " + String.valueOf(x) + ", Y = " + String.valueOf(y), new Label.LabelStyle(debugFont, Color.WHITE));
+        positionLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y );
+
+        return orientationLabel;
+    }
+
+    public Label orientationLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+
+        if (!(activated)) {
+            orientationLabel.setVisible(false);
+            orientationLabel.clear();
+        }else {
+            orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
+            orientationLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y -10 );
+        }
+        return orientationLabel;
+    }
+
+    public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+        if (!(activated)) {
+            speedLabel.setVisible(false);
+            speedLabel.clear();
+        }else {
+            Float speed = (Float) objectSnapshot.extraProperties().get("speed");
+            speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
+            speedLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y - 20);
+        }
+        return speedLabel;
     }
 
     public boolean enableEnemyHud(){

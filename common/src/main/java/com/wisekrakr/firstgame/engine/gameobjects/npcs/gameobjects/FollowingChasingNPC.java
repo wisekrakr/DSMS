@@ -22,6 +22,8 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
         setActionDistance(actionDistance);
     }
 
+
+
     private static class MyBehavior extends Behavior {
 
         private final Vector2 initialPosition;
@@ -42,12 +44,13 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
                 if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                     context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 20f)));
                 } else if (context.nearest() instanceof NonPlayerCharacter || context.nearest() instanceof Player) {
-
-                    target = context.nearest();
-                    context.pushSubBehavior(new ChasingBehavior(target));
-                    if (context.nearestInFloats() <= actionDistance / 2) {
-                        context.pushSubBehavior(new ShootingBehavior(new BulletObject(context.getPosition(), context.getOrientation(), 3,
-                                context.thisObject(), 200), target));
+                    if (!(context.nearest() instanceof FollowingChasingNPC)) {
+                        target = context.nearest();
+                        context.pushSubBehavior(new ChasingBehavior(target));
+                        if (context.nearestInFloats() <= actionDistance / 2) {
+                            context.pushSubBehavior(new ShootingBehavior(new BulletObject(context.getPosition(), context.getOrientation(), 3,
+                                    context.thisObject(), 200), target));
+                        }
                     }
                 } else {
                     context.pushSubBehavior(new CruisingBehavior(8f));

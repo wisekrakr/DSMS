@@ -1,5 +1,7 @@
 package com.wisekrakr.firstgame.engine.scenarios;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
@@ -7,6 +9,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.Protector;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
+import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Treasure;
 
 import java.util.*;
 
@@ -35,7 +38,7 @@ public class ProtectedConvoy extends Scenario {
     @Override
     public void periodicUpdate(SpaceEngine spaceEngine) {
         if (booty == null) {
-            booty = spaceEngine.addGameObject(new PowerUpMissile("Booty", GameHelper.randomPosition()), new SpaceEngine.GameObjectListener() {
+            booty = spaceEngine.addGameObject(new Treasure( GameHelper.randomPosition()), new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
 
@@ -46,8 +49,6 @@ public class ProtectedConvoy extends Scenario {
                     booty = null;
                 }
             });
-
-            booty.setDirection(GameHelper.randomDirection());
         }
 
         Set<GameObject> newEnemies = new HashSet<>();
@@ -86,7 +87,6 @@ public class ProtectedConvoy extends Scenario {
     private void updateMinions(SpaceEngine spaceEngine) {
         if (minions.size() < Math.min(minMinions + enemies.size(), maxMinions)) {
             Protector protector = new Protector(booty.getPosition());
-
 
             spaceEngine.addGameObject(protector, new SpaceEngine.GameObjectListener() {
                 @Override

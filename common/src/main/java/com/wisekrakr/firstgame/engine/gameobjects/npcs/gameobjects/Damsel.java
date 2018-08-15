@@ -8,34 +8,44 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CruisingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 
-public class Protector extends NonPlayerCharacter {
+import java.util.Set;
+
+public class Damsel extends NonPlayerCharacter{
+
     private Behavior desiredBehavior;
 
-    public Protector(Vector2 initialPosition) {
-        super(GameObjectVisualizationType.SHITTER, "Protector", initialPosition);
 
-        setCollisionRadius(GameHelper.generateRandomNumberBetween(10f, 15f));
+    public Damsel(Vector2 initialPosition) {
+        super(GameObjectVisualizationType.DODGER, "Damsel", initialPosition);
+
+        setCollisionRadius(GameHelper.generateRandomNumberBetween(5f, 10f));
         setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3));
 
         rootBehavior(new MyBehavior());
     }
 
-    public void aimFor(GameObject target) {
-        desiredBehavior = new ChasingBehavior(target);
+    @Override
+    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        missionComplete();
     }
 
-    public void protect(GameObject target) {
-        desiredBehavior = new ChasingBehavior(target);
+    public void runFrom(GameObject target) {
+        desiredBehavior = new RunningEscapingBehavior(target);
     }
 
-    public void comeHome(Vector2 position) {
+    public void clingOn(GameObject savior) {
+        desiredBehavior = new StickyBehavior(savior);
+    }
+
+    public void missionComplete() {
         desiredBehavior = new ExplodeAndLeaveDebrisBehavior(13);
+    }
+
+    public void lookingForAHero() {
+        desiredBehavior = new CruisingBehavior(4f);
+
     }
 
     private class MyBehavior extends Behavior {

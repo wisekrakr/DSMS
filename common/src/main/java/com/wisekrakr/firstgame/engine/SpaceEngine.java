@@ -3,6 +3,8 @@ package com.wisekrakr.firstgame.engine;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.*;
@@ -180,7 +182,6 @@ public class SpaceEngine {
                             if (target != subject) {
                                 if (collision(target, subject)) {
                                     target.collide(subject, toDelete, toAdd);
-                                    target.overlappingObjects(subject, toDelete, toAdd);
                                 }
                             }
                         }
@@ -218,7 +219,6 @@ public class SpaceEngine {
                             nearby.add(target);
                         }
                     }
-
                     subject.nearby(nearby);
                 }
             }
@@ -283,10 +283,10 @@ public class SpaceEngine {
                     for (GameObject enemy : gameObjects) {
                         if (enemy instanceof Enemy) {
                             for (GameObject subject : gameObjects) {
-                                if (subject instanceof Bullet) {
+                                if (subject instanceof BulletObject) {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
-                                if (subject instanceof HomingMissile) {
+                                if (subject instanceof MissileObject) {
                                     ((Player) player).scoringSystem(enemy, subject);
                                 }
                                 if (subject instanceof SpaceMine) {

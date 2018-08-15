@@ -31,7 +31,7 @@ public class WeaponObjectClass extends NonPlayerCharacter {
 
     @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        splode(toDelete, toAdd);
+        
     }
 
     private void splode(Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -44,6 +44,7 @@ public class WeaponObjectClass extends NonPlayerCharacter {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         if (subject instanceof NonPlayerCharacter || subject instanceof Player){
             if (subject != master) {
                 subject.setHealth(subject.getHealth() - this.getDamage());

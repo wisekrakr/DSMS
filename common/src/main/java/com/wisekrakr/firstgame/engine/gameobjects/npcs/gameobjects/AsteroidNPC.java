@@ -25,6 +25,7 @@ public class AsteroidNPC extends NonPlayerCharacter {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         if (subject.getClass() != this.getClass()){
             if (subject instanceof WeaponObjectClass) {
                 float asteroidParts = GameHelper.randomGenerator.nextInt(2) + 1;

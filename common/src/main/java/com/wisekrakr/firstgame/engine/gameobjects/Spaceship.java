@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
@@ -10,8 +11,10 @@ import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
@@ -19,10 +22,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class Spaceship extends GameObject {
 
@@ -78,7 +78,7 @@ public class Spaceship extends GameObject {
         super(GameObjectVisualizationType.SPACESHIP, name, position);
 
         ammoCount = 10000;
-        missileAmmoCount = 50;
+        missileAmmoCount = 0;
         mineAmmoCount = 20;
         health = 750;
         score = 0;
@@ -259,15 +259,15 @@ public class Spaceship extends GameObject {
     public void scoringSystem(GameObject enemy, GameObject subject) {
 
         if (enemy instanceof Enemy) {
-            if (subject instanceof Bullet || subject instanceof HomingMissile || subject instanceof SpaceMine) {
+            if (subject instanceof BulletObject || subject instanceof MissileObject || subject instanceof SpaceMine) {
                 if (collisionDetected(enemy, subject)) {
-                    if (subject instanceof Bullet) {
+                    if (subject instanceof BulletObject) {
                         this.setScore((float) (this.getScore() + (subject).getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 50);
                         }
                     }
-                    if (subject instanceof HomingMissile) {
+                    if (subject instanceof MissileObject) {
                         this.setScore((float) (this.getScore() + (subject).getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 100);
@@ -456,14 +456,6 @@ public class Spaceship extends GameObject {
         float adaptedAngle = (float) Math.atan2(deltaY * bulletSpeed + speedY, deltaX * bulletSpeed + speedX);
 
         for (int i = 0; i < exactShotCount; i++) {
-/*
-            Bullet currentBullet = new Bullet("bullito", getPosition(), getAngle(), getSpeed(),
-                    BulletMechanics.radius(1), BulletMechanics.determineBulletDamage());
-            toAdd.add(currentBullet);
-            currentBullet.setPlayerBullet(true);
-            currentBullet.setBulletSpeed(defaultSpeed * 3);
-            */
-
 
             BulletObject b = new BulletObject(
                     new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
@@ -486,18 +478,28 @@ public class Spaceship extends GameObject {
         } else {
             missileLeftOver = 0;
         }
+
+        float x = getPosition().x;
+        float y = getPosition().y;
+
+        float deltaX = ((float) Math.cos(getOrientation()));
+        float deltaY = ((float) Math.sin(getOrientation()));
+
+
+
+
+
         for (int i = 0; i < exactMissileCount; i++) {
 
-            HomingMissile currentMissile = new HomingMissile(getPosition(), getDirection(), getSpeed(),
-                    MissileMechanics.radius(1), MissileMechanics.determineMissileDamage(), true);
-            toAdd.add(currentMissile);
-            currentMissile.missileEnable(this);
-            currentMissile.setMissileSpeed(defaultSpeed * 2);
+            MissileObject m = new MissileObject(
+                    new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
+                            y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), 5, null, this);
 
-
+            toAdd.add(m);
         }
 
     }
+
 
     private void activateSpaceMines(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 

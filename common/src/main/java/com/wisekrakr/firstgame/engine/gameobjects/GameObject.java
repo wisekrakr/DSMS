@@ -107,10 +107,6 @@ public abstract class GameObject {
         return this;
     }
 
-    public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-    }
-
     public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 

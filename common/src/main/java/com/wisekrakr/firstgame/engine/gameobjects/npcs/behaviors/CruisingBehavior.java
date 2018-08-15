@@ -32,7 +32,7 @@ public class CruisingBehavior extends Behavior {
         if (clock - lastDirectionChange > changeDirectionInterval) {
             context.setSpeed(speeds.get(GameHelper.randomGenerator.nextInt(speeds.size())));
 
-            float randomDirection = EnemyMechanics.setRandomDirection();
+            float randomDirection = GameHelper.randomDirection();
             context.setDirection(randomDirection);
             context.setOrientation(randomDirection);
             lastDirectionChange = clock;

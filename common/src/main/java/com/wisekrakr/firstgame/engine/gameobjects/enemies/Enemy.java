@@ -149,14 +149,6 @@ public class Enemy extends GameObject {
                 setDamageTaken(subject.getDamage());
             }
         }
-    }
-
-    /*This method counts as a way to prevent enemies from overlapping each other while attacking or flying towards one
-    * another.*/
-
-    @Override
-    public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
         if(subject instanceof Enemy){
             float angle = GameHelper.angleBetween(this, subject);
             if(GameHelper.distanceBetween(this, subject)<= getCollisionRadius() + subject.getCollisionRadius()) {
@@ -169,6 +161,7 @@ public class Enemy extends GameObject {
             }
         }
     }
+
 
     /*Every way to attack a player. Switch and cases are below in the elapsedTime() method
      */

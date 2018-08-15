@@ -23,6 +23,7 @@ import java.util.List;
 
 public class PlayerHud implements Disposable {
 
+    private BitmapFont debugFont;
     private InputMultiplexer inputMultiplexer;
 
     private MyAssetManager myAssetManager;
@@ -36,6 +37,7 @@ public class PlayerHud implements Disposable {
     private ProgressBar bar;
 
     private List<Scenario> scenarios = new ArrayList<Scenario>();
+    private Label orientationLabel;
 
     public PlayerHud(OrthographicCamera camera, InputMultiplexer inputMultiplexer) {
         this.camera = camera;
@@ -50,7 +52,9 @@ public class PlayerHud implements Disposable {
         inputMultiplexer.addProcessor(stage);
 
         font = myAssetManager.assetManager.get("font/myFont.fnt");
-        font.getData().setScale(0.6f);
+        font.getData().setScale(0.4f);
+        debugFont = myAssetManager.assetManager.get("font/default.fnt");
+        font.getData().setScale(0.8f);
 
         skin = myAssetManager.assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
@@ -65,9 +69,9 @@ public class PlayerHud implements Disposable {
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    private Boolean hit(SpaceSnapshot.GameObjectSnapshot object){
-        return (Boolean) object.extraProperties().get("hit");
 
+    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
+        return (Float) object.extraProperties().get("radius");
     }
 
     private Double health(SpaceSnapshot.GameObjectSnapshot object){
@@ -87,7 +91,7 @@ public class PlayerHud implements Disposable {
 
 
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
-        String name = "Wisekrakr";
+        String name = "P1";
         nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
         nameLabel.setPosition(projection(object).x, projection(object).y + 30, Align.center);
         return nameLabel;
@@ -109,6 +113,23 @@ public class PlayerHud implements Disposable {
         bar.setValue(health(object).floatValue());
 
         return bar;
+    }
+
+    public Label orientationLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+
+        orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
+        orientationLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 10);
+
+        return orientationLabel;
+    }
+
+    public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+
+        Float speed = (Float) objectSnapshot.extraProperties().get("speed");
+        Label speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
+        speedLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
+
+        return speedLabel;
     }
 
     public void update() {

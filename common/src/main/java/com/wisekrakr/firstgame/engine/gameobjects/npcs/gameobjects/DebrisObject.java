@@ -37,13 +37,6 @@ public class DebrisObject extends GameObject {
     }
 
     @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        if (subject instanceof NonPlayerCharacter){
-            toDelete.add(this);
-        }
-    }
-
-    @Override
     public void afterAdd(List<GameObject> toAdd, List<GameObject> toRemove) {
         if (getCollisionRadius() <= 0.5f){
             toRemove.add(this);

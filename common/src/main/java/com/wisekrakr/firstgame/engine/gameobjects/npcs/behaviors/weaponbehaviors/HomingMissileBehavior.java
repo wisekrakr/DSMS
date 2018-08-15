@@ -31,12 +31,17 @@ public class HomingMissileBehavior extends Behavior {
 
             context.setDirection(angle);
             context.setOrientation(angle);
+            context.setSpeed(130f);
+        }else {
+            context.setDirection(initialDirection);
+            context.setOrientation(initialDirection);
             context.setSpeed(100f);
         }
 
         if (lastShot == 0){
             lastShot = clock;
         }
+
 
         if (clock - lastShot >= destructInterval) {
             context.removeGameObject(context.thisObject());

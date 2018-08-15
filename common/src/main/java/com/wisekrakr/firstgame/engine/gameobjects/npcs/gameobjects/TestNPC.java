@@ -12,6 +12,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.*;
 
+import java.util.Set;
+
 
 public class TestNPC extends NonPlayerCharacter {
 
@@ -34,6 +36,7 @@ public class TestNPC extends NonPlayerCharacter {
         return result;
     }
 */
+
 
 
     private static class MyBehavior extends Behavior{
@@ -62,6 +65,8 @@ public class TestNPC extends NonPlayerCharacter {
                         context.getOrientation(),
                         3f,
                         context.thisObject()), target));
+
+
 
             }
             if (context.getHealth() <= 0){

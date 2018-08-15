@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -26,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.firstgame.MyAssetManager;
-import com.wisekrakr.firstgame.ParticleEffectRenderer;
 import com.wisekrakr.firstgame.SpriteHelper;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameHelper;
@@ -35,8 +33,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
-import com.wisekrakr.firstgame.popups.DialogWindow;
-import com.wisekrakr.firstgame.quests.Quest;
+import com.wisekrakr.firstgame.server.EngineConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +45,6 @@ import java.util.Random;
 public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private InputMultiplexer inputMultiplexer;
-
-    private StatsForObjects statsForObjects;
 
     private ScreenHud screenHud;
     private EnemyHud enemyHud;
@@ -111,6 +106,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private boolean hitDetected = true;
     private boolean battleViewActivated = false;
 
+
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
         this.mySelf = mySelf;
@@ -138,8 +134,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), batch);
         //stage = new Stage(new ScalingViewport(Scaling.stretch, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera));
-        camera.zoom = 0.6f;
-
 
         backgroundStage = new Stage();
         Texture backgroundTexture = myAssetManager.assetManager.get("background/bg1.png", Texture.class);
@@ -167,8 +161,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         createOverlayHud();
 
         pauseScreenAdapter = new PauseScreenAdapter(inputMultiplexer);
-
-        statsForObjects = new StatsForObjects(stage, camera);
 
     }
 
@@ -340,18 +332,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         if (inputManager.isKeyDown(Input.Keys.SPACE)) {
             camera.zoom = 2.2f;
-            if (enemyHud.enableEnemyHud() || statsForObjects.enableEnemyHud()) {
+            if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
-                statsForObjects.disableEnemyHud();
             }
 
         } else {
-            camera.zoom = 0.6f;
+            camera.zoom = 0.8f;
         }
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
-            statsForObjects.enableEnemyHud();
+        }else if (inputManager.isKeyPressed(Input.Keys.COMMA)){
+            enemyHud.disableEnemyHud();
         }
+
 
 
         //Mouse input
@@ -590,6 +583,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         volatileActors.add(actor);
     }
 
+    private void shapeRendererMode(){
+        if (inputManager.isKeyDown(Input.Keys.PERIOD)){
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        }else {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        }
+    }
+
     private void renderGameObjects(float delta) {
         for (Actor actor : volatileActors) {
             actor.remove();
@@ -628,17 +629,27 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 registerVolatileActor(playerLabel);
                 volatileBars.add(bar);
 
+                Label playerOrientation = playerHud.orientationLabel(object);
+                overlayStage.addActor(playerOrientation);
+                registerVolatileActor(playerOrientation);
+
+                Label playerSpeed = playerHud.speedLabel(object);
+                overlayStage.addActor(playerSpeed);
+                registerVolatileActor(playerSpeed);
+
                 break;
             }
         }
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+       // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRendererMode();
 
         enemy = null;
 
         batch.begin();
+
 
         try {
             for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
@@ -654,6 +665,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             overlayStage.addActor(swarmWarning);
             volatileActors.add(swarmWarning);
 */
+
 
                 switch (object.getType()) {
                     case POWERUP_GENERATOR:
@@ -676,6 +688,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         }else {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", object, batch, null);
                         }
+
+
 
 /*
                         if (introDialogOneTime) {
@@ -712,10 +726,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case BULLET:
+                        enemy = object;
 
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
 
+                        Label bulletOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(bulletOrientation);
+                        registerVolatileActor(bulletOrientation);
+
+                        Label bulletSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(bulletSpeed);
+                        registerVolatileActor(bulletSpeed);
 
                         // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
 
@@ -754,7 +776,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(chaserHealthBar);
                         volatileBars.add(chaserHealthBar);
 
+                        Label chaserPosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(chaserPosition);
+                        registerVolatileActor(chaserPosition);
 
+                        Label chaserOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(chaserOrientation);
+                        registerVolatileActor(chaserOrientation);
+
+                        Label chaserSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(chaserSpeed);
+                        registerVolatileActor(chaserSpeed);
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssEls.png", object, batch, 0.1f); //this is so that every object gets its own sprite
 
 
@@ -807,6 +839,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar shitterHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shitterHealthBar);
                         volatileBars.add(shitterHealthBar);
+
+                        Label shitterOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(shitterOrientation);
+                        registerVolatileActor(shitterOrientation);
+
+                        Label shitterSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(shitterSpeed);
+                        registerVolatileActor(shitterSpeed);
                         break;
                     case PEST:
                         enemy = object;
@@ -823,6 +863,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar pestHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(pestHealthBar);
                         volatileBars.add(pestHealthBar);
+
+                        Label pestOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(pestOrientation);
+                        registerVolatileActor(pestOrientation);
+
+                        Label pestSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(pestSpeed);
+                        registerVolatileActor(pestSpeed);
                         break;
                     case BLINKER:
                         enemy = object;
@@ -839,6 +887,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar blinkerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(blinkerHealthBar);
                         volatileBars.add(blinkerHealthBar);
+
+                        Label blinkerPosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(blinkerPosition);
+                        registerVolatileActor(blinkerPosition);
+
+                        Label blinkerOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(blinkerOrientation);
+                        registerVolatileActor(blinkerOrientation);
+
+                        Label blinkerSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(blinkerSpeed);
+                        registerVolatileActor(blinkerSpeed);
                         break;
                     case LASER_BEAM:
                         Color bulletColor = chooseRandomColor(BULLET_COLORS);
@@ -855,11 +915,25 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        //statsForObjects.setAllLabels(object);
+                        Label motherNameLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(motherNameLabel);
+                        registerVolatileActor(motherNameLabel);
 
-                        Texture motherTexture = myAssetManager.assetManager.get("sprites/human_mothership.png");
-                        Sprite motherSprite = new Sprite(motherTexture);
+                        ProgressBar motherHealthBar = enemyHud.healthBar(object);
+                        overlayStage.addActor(motherHealthBar);
+                        volatileBars.add(motherHealthBar);
 
+                        Label motherPosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(motherPosition);
+                        registerVolatileActor(motherPosition);
+
+                        Label motherOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(motherOrientation);
+                        registerVolatileActor(motherOrientation);
+
+                        Label motherSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(motherSpeed);
+                        registerVolatileActor(motherSpeed);
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/human_mothership.png", object, batch, 0.7f);
 
@@ -880,6 +954,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar dodgerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(dodgerHealthBar);
                         volatileBars.add(dodgerHealthBar);
+
+                        Label dodgerOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(dodgerOrientation);
+                        registerVolatileActor(dodgerOrientation);
+
+                        Label dodgerSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(dodgerSpeed);
+                        registerVolatileActor(dodgerSpeed);
 
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssDodger.png", object, batch, 0.1f); //this is so that every object gets its own sprite
@@ -911,7 +993,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
 
+                        Label missilePosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(missilePosition);
+                        registerVolatileActor(missilePosition);
 
+                        Label missileOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(missileOrientation);
+                        registerVolatileActor(missileOrientation);
+
+                        Label missileSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(missileSpeed);
+                        registerVolatileActor(missileSpeed);
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/missile_default.png", object, batch, null);
 
                         break;
@@ -957,6 +1049,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar shottyHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shottyHealthBar);
                         volatileBars.add(shottyHealthBar);
+
+                        Label shottyOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(shottyOrientation);
+                        registerVolatileActor(shottyOrientation);
+
+                        Label shottySpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(shottySpeed);
+                        registerVolatileActor(shottySpeed);
                         break;
                     case POWERUP_MISSILE:
                         shapeRenderer.setColor(Color.GOLD);
@@ -1002,7 +1102,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_health.png", object, batch, 2f);
 
                         break;
-//TODO: how to switch colors for different minions
+
                     case MINION:
                         Boolean minionShooter = (Boolean) object.extraProperties().get("minionshooter");
                         Boolean minionFighter = (Boolean) object.extraProperties().get("minionfighter");
@@ -1033,7 +1133,21 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(exhaustColor);
                         shapeRenderer.circle(x, y, radius);
 
+                        Label aLabel = enemyHud.nameLabel(object);
+                        overlayStage.addActor(aLabel);
+                        registerVolatileActor(aLabel);
 
+                        ProgressBar aHealthBar = enemyHud.healthBar(object);
+                        overlayStage.addActor(aHealthBar);
+                        volatileBars.add(aHealthBar);
+
+                        Label aOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(aOrientation);
+                        registerVolatileActor(aOrientation);
+
+                        Label aSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(aSpeed);
+                        registerVolatileActor(aSpeed);
                         //particleEffectRenderer.exhaustEffect(object);
 
                         break;
@@ -1070,6 +1184,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar testHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(testHealthBar);
                         volatileBars.add(testHealthBar);
+/*
+                        Label testPosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(testPosition);
+                        registerVolatileActor(testPosition);
+*/
+                        Label testOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(testOrientation);
+                        registerVolatileActor(testOrientation);
+
+                        Label testSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(testSpeed);
+                        registerVolatileActor(testSpeed);
 
                         //statsForObjects.setAllLabels(object);
                         break;
@@ -1081,6 +1207,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             batch.end();
         }
 
+        shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.rect(EngineConstants.MIN_X, EngineConstants.MIN_Y, EngineConstants.ENGINE_WIDTH, EngineConstants.ENGINE_HEIGHT);
         shapeRenderer.end();
     }
 
@@ -1175,7 +1305,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         updateOverlay();
         playerHud.update();
-        statsForObjects.updateStatLabels();
 
     }
 

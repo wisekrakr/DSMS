@@ -11,6 +11,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
+import com.wisekrakr.firstgame.engine.scenarios.DamselInDistress;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 import com.wisekrakr.firstgame.engine.scenarios.ProtectedConvoy;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
@@ -94,22 +95,16 @@ public class ServerRunner {
 
         timeThread.setDaemon(true);
 
-        //engine.addGameObject(new PowerupGenerator(new Vector2()));
 
-        gameEngine.addScenario(new ProtectedConvoy(100, 500, 5, 15, 3));
-        gameEngine.addScenario(new ProtectedConvoy(300, 1000, 5, 10, 1));
+        //gameEngine.addScenario(new ProtectedConvoy(100, 500, 3, 7, 3));
 
+        gameEngine.addScenario(new DamselInDistress(500, 300, 2, 5));
+
+/*
         gameEngine.addScenario(new WildlifeManagement(3, 20, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new CrazilySpawningPassiveAggressiveNPC(initialPosition, actionDistance);
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(2, 5, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
             }
         }));
 
@@ -120,13 +115,6 @@ public class ServerRunner {
             }
         }));
 
-        gameEngine.addScenario(new WildlifeManagement(7, 5, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new AsteroidNPC(initialPosition, GameHelper.generateRandomNumberBetween(3f, 20f));
-            }
-        }));
-/*
         gameEngine.addScenario(new WildlifeManagement(3, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
@@ -134,36 +122,21 @@ public class ServerRunner {
             }
         }));
 
-
-
-
-
-        gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.CHASER_FACTORY));
-        gameEngine.addScenario(new WildlifeManagement(2, 2, ScenarioHelper.PEST_FACTORY));
-        gameEngine.addScenario(new WildlifeManagement(2, 4, ScenarioHelper.SHITTER_FACTORY));
-        gameEngine.addScenario(new WildlifeManagement(4, 3, ScenarioHelper.FACEHUGGER_FACTORY));
-        gameEngine.addScenario(new WildlifeManagement(4, 3, ScenarioHelper.BLINKER_FACTORY));
-        gameEngine.addScenario(new WildlifeManagement(2, 1, ScenarioHelper.HOMER_FACTORY));
-
-        gameEngine.addScenario(new WildlifeManagement(10, 0.01f, new GameObjectFactory() {
+        gameEngine.addScenario(new WildlifeManagement(2, 5, new GameObjectFactory() {
             @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection) {
-                return new Asteroid("Asteroid",
-                        initialPosition, random.nextFloat() * 20, random.nextFloat() * 80, initialDirection
-                        , random.nextFloat() * 5f);
+            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
             }
         }));
 
-        */
+        gameEngine.addScenario(new WildlifeManagement(5, 5, new GameObjectFactory() {
+            @Override
+            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                return new AsteroidNPC(initialPosition, GameHelper.generateRandomNumberBetween(3f, 20f));
+            }
+        }));
 
-/*
-        gameEngine.addScenario(new Mission(6, QuestGen::new));
-
-
-
-        gameEngine.addScenario(ScenarioHelper.CREATE_PEST_SWARM());
 */
-
         timeThread.start();
 
 

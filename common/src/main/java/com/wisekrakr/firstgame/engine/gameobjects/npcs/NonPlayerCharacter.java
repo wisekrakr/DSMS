@@ -6,6 +6,7 @@ import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
@@ -70,19 +71,22 @@ public class NonPlayerCharacter extends GameObject {
         setDirection(this.getDirection() + (float) Math.PI);
     }
 
-    @Override
-    public void overlappingObjects(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject)) { //TODO: this is a temp fix.
+    private void keepObjectsFromOverlapping(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
+        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject)) {
             float angle = GameHelper.angleBetween(this, subject);
             if (GameHelper.distanceBetween(this, subject) <= getCollisionRadius() + subject.getCollisionRadius()) {
                 setPosition(new Vector2(getPosition().x -= Math.cos(angle) * GameHelper.randomGenerator.nextFloat() * 12.5,
                         getPosition().y -= Math.sin(angle) * GameHelper.randomGenerator.nextFloat() * 12.5));
 
                 setOrientation(-angle);
-                setDirection(super.getDirection() + (float) Math.PI);
+                setDirection(getDirection() + (float) Math.PI);
             }
         }
+    }
+
+    @Override
+    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        keepObjectsFromOverlapping(subject, toDelete, toAdd);
     }
 
     @Override
@@ -224,15 +228,12 @@ public class NonPlayerCharacter extends GameObject {
             index = index + 1;
         }
 
-        if (this instanceof BulletObject && (((BulletObject) this).getMaster() instanceof Player)) {
-            System.out.println("Bullet " + getDirection());
-        }
-
-
         // TODO: move towards the general infrastructure
         setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * speed * delta,
                 getPosition().y + (float) Math.sin(getDirection()) * speed * delta)
         );
+
+
     }
 
 
