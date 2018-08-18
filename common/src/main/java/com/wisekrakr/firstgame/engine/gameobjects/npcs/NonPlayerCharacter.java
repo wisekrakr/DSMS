@@ -6,6 +6,7 @@ import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
@@ -45,7 +46,7 @@ public class NonPlayerCharacter extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("health", getHealth());
-        result.put("maxHealth", 100);
+        result.put("maxHealth", getHealth());
         result.put("radius", getCollisionRadius());
         result.put("healthPercentage", 1d);
         result.put("damage", getDamage());
@@ -72,7 +73,7 @@ public class NonPlayerCharacter extends GameObject {
     }
 
     private void keepObjectsFromOverlapping(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
-        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject)) {
+        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject || subject instanceof Mission)) {
             float angle = GameHelper.angleBetween(this, subject);
             if (GameHelper.distanceBetween(this, subject) <= getCollisionRadius() + subject.getCollisionRadius()) {
                 setPosition(new Vector2(getPosition().x -= Math.cos(angle) * GameHelper.randomGenerator.nextFloat() * 12.5,
@@ -232,8 +233,6 @@ public class NonPlayerCharacter extends GameObject {
         setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * speed * delta,
                 getPosition().y + (float) Math.sin(getDirection()) * speed * delta)
         );
-
-
     }
 
 

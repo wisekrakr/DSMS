@@ -281,7 +281,7 @@ public class SpaceEngine {
             for (GameObject player : gameObjects) {
                 if (player instanceof Player) {
                     for (GameObject enemy : gameObjects) {
-                        if (enemy instanceof Enemy) {
+                        if (enemy instanceof NonPlayerCharacter) {
                             for (GameObject subject : gameObjects) {
                                 if (subject instanceof BulletObject) {
                                     ((Player) player).scoringSystem(enemy, subject);

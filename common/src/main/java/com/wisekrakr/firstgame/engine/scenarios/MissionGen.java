@@ -8,14 +8,14 @@ import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
 import java.util.Random;
 import java.util.function.Function;
 
-public class Mission extends Scenario {
+public class MissionGen extends Scenario {
 
     private float lastCreation = 0f;
     private float minCreationInterval;
     private Function<Vector2, QuestGen> factory;
     private Random randomGenerator = new Random();
 
-    public Mission(float minCreationInterval, Function<Vector2, QuestGen> factory) {
+    public MissionGen(float minCreationInterval, Function<Vector2, QuestGen> factory) {
         this.minCreationInterval = minCreationInterval;
         this.factory = factory;
     }

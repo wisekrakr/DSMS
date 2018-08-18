@@ -22,8 +22,6 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
         setActionDistance(actionDistance);
     }
 
-
-
     private static class MyBehavior extends Behavior {
 
         private final Vector2 initialPosition;

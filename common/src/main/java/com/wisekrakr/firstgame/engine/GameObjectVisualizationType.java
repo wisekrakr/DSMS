@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine;
 
 public enum GameObjectVisualizationType {
     SPACESHIP,
-    ENEMY,
     ASTEROID,
     DEBRIS,
     ROTUNDA,
@@ -21,7 +20,6 @@ public enum GameObjectVisualizationType {
     SHITTER,
     SHOTTY,
     FACE_HUGGER,
-    PLANET,
     MISSILE,
     SPORE,
     MINION,
@@ -33,5 +31,5 @@ public enum GameObjectVisualizationType {
     POWERUP_GENERATOR,
     TEST_QUEST,
     TEST_NPC,
-    TEST_BLINKER
+    MISSION_END
 }

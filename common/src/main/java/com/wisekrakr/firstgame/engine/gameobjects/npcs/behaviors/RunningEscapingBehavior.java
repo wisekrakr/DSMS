@@ -6,6 +6,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
+import java.util.Set;
+
 public class RunningEscapingBehavior extends Behavior {
 
     private GameObject target;
@@ -25,4 +27,6 @@ public class RunningEscapingBehavior extends Behavior {
             context.setOrientation(-angle);
         }
     }
+
+
 }

@@ -8,10 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CirclingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CruisingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
@@ -20,9 +17,9 @@ public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
 
     public AsteroidWatchingMissileShootingNPC(Vector2 initialPosition, float actionDistance) {
         super(GameObjectVisualizationType.BLINKER, "Missilier", initialPosition, new MyBehavior(initialPosition, actionDistance,null));
-        setCollisionRadius(10f);
-        setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3));
-        setActionDistance(actionDistance);
+        this.setCollisionRadius(10f);
+        this.setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3));
+        this.setActionDistance(actionDistance);
     }
 
 
@@ -54,6 +51,9 @@ public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
                 if (!(context.existingSubBehavior() instanceof CirclingBehavior)) {
                     context.pushSubBehavior(new CirclingBehavior(target));
                 }
+            }
+            if (context.getHealth() <= 0){
+                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }
         }
     }

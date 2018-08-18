@@ -27,11 +27,11 @@ public class ChasingBehavior extends Behavior {
             if (context.getRadius() <= 8f) {
                 context.setSpeed(GameHelper.generateRandomNumberBetween(50f, 75f));
             }else if (context.getRadius() >= 9f && context.getRadius() <= 15f){
-                context.setSpeed(GameHelper.generateRandomNumberBetween(20f, 50f));
+                context.setSpeed(GameHelper.generateRandomNumberBetween(40f, 50f));
             }else if (context.getRadius() >= 16f && context.getRadius() <= 25f) {
-                context.setSpeed(GameHelper.generateRandomNumberBetween(10f, 20f));
+                context.setSpeed(GameHelper.generateRandomNumberBetween(25f, 40f));
             }else {
-                context.setSpeed(GameHelper.generateRandomNumberBetween(1f, 9f));
+                context.setSpeed(GameHelper.generateRandomNumberBetween(1f, 20f));
             }
         }
     }

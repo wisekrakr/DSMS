@@ -33,6 +33,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
+import com.wisekrakr.firstgame.quests.MissionText;
 import com.wisekrakr.firstgame.server.EngineConstants;
 
 import java.util.ArrayList;
@@ -79,7 +80,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Spaceship.SwitchWeaponState switchWeaponState;
 
     private SpaceSnapshot.GameObjectSnapshot myself;
-    private SpaceSnapshot.GameObjectSnapshot enemy;
 
     /**
      * Stage for labels etc overlayed on the perspective screen, but using a hud-like orientation
@@ -96,15 +96,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     // this list of actors will be removed before the next render cycle
     private List<Actor> volatileActors = new ArrayList<Actor>();
 
-
     private List<ProgressBar> volatileBars = new ArrayList<ProgressBar>();
     private Random random = GameHelper.randomGenerator;
     private Float hardSteering;
 
     private boolean foundMySelf;
 
-    private boolean hitDetected = true;
-    private boolean battleViewActivated = false;
+    private MissionText missionText;
 
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
@@ -161,6 +159,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         createOverlayHud();
 
         pauseScreenAdapter = new PauseScreenAdapter(inputMultiplexer);
+
+        missionText = new MissionText(myAssetManager);
 
     }
 
@@ -646,7 +646,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
        // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRendererMode();
 
-        enemy = null;
 
         batch.begin();
 
@@ -704,17 +703,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         }
 
 
-                        if (questDialogOneTime) {
-                            if (!(pickedUp)) {
-                                questDialogOneTime = true;
-                            } else {
-                                System.out.println("Quest picked up");
-                                testQuest.firstQuestDialog();
-                                questDialogOneTime = false;
-                            }
-                        }
+
 */
-//                            stage.getBatch().end();
+
 
                         break;
 
@@ -726,7 +717,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case BULLET:
-                        enemy = object;
 
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
@@ -760,7 +750,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius);
                         break;
                     case ENEMY_CHASER:
-                        enemy = object;
 
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
@@ -793,7 +782,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case EWM:
-                        enemy = object;
+
                         shapeRenderer.setColor(Color.SKY);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.RED);
@@ -809,7 +798,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         volatileBars.add(elsHealthBar);
                         break;
                     case FACE_HUGGER:
-                        enemy = object;
+
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.YELLOW);
@@ -825,7 +814,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         volatileBars.add(huggerHealthBar);
                         break;
                     case SHITTER:
-                        enemy = object;
+
                         shapeRenderer.setColor(Color.LIGHT_GRAY);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.SLATE);
@@ -849,7 +838,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         registerVolatileActor(shitterSpeed);
                         break;
                     case PEST:
-                        enemy = object;
+
                         shapeRenderer.setColor(Color.FIREBRICK);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.WHITE);
@@ -873,7 +862,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         registerVolatileActor(pestSpeed);
                         break;
                     case BLINKER:
-                        enemy = object;
+
                         shapeRenderer.setColor(Color.GOLDENROD);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.RED);
@@ -887,10 +876,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar blinkerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(blinkerHealthBar);
                         volatileBars.add(blinkerHealthBar);
-
-                        Label blinkerPosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(blinkerPosition);
-                        registerVolatileActor(blinkerPosition);
 
                         Label blinkerOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(blinkerOrientation);
@@ -907,7 +892,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                                 y + 6.25f * (float) Math.sin(object.getOrientation()), 0.5f);
                         break;
                     case MOTHERSHIP:
-                        enemy = object;
 
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
@@ -939,7 +923,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case DODGER:
-                        enemy = object;
 
                         shapeRenderer.setColor(Color.LIME);
                         shapeRenderer.circle(x, y, radius);
@@ -968,7 +951,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case HOMER:
-                        enemy = object;
 
                         shapeRenderer.setColor(Color.ORANGE);
                         shapeRenderer.circle(x, y, radius);
@@ -1008,7 +990,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
                     case MUTATOR:
-                        enemy = object;
 
                         shapeRenderer.setColor(Color.FIREBRICK);
                         shapeRenderer.circle(x, y, radius);
@@ -1035,7 +1016,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
 
                     case SHOTTY:
-                        enemy = object;
+
                         shapeRenderer.setColor(Color.MAROON);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.TEAL);
@@ -1199,6 +1180,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         //statsForObjects.setAllLabels(object);
                         break;
+
+                    case MISSION_END:
+                        shapeRenderer.setColor(new Color(255f, 255f, 255f, 50f));
+                        shapeRenderer.circle(x, y, radius);
+                        break;
                     default:
                         System.out.println("Unknown game object type: " + object.getType());
                 }
@@ -1211,6 +1197,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(EngineConstants.MIN_X, EngineConstants.MIN_Y, EngineConstants.ENGINE_WIDTH, EngineConstants.ENGINE_HEIGHT);
+
         shapeRenderer.end();
     }
 
@@ -1305,7 +1292,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         updateOverlay();
         playerHud.update();
-
+        missionText.showMission(myself, delta);
     }
 
     public void setSwitchWeaponState(Spaceship.SwitchWeaponState switchWeaponState) {

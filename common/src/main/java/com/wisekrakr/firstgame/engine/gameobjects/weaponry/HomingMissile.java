@@ -82,9 +82,6 @@ public class HomingMissile extends GameObject {
                 if (subject instanceof Player) {
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - MissileMechanics.determineMissileDamage());
-                    if (((Player) subject).isKilled()) {
-                        ((Player) subject).setKillerName((String) subject.getExtraSnapshotProperties().get("killedBy"));
-                    }
                 }
             }
             if (subject instanceof Asteroid) {

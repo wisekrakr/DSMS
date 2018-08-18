@@ -11,10 +11,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
-import com.wisekrakr.firstgame.engine.scenarios.DamselInDistress;
-import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
-import com.wisekrakr.firstgame.engine.scenarios.ProtectedConvoy;
-import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
+import com.wisekrakr.firstgame.engine.scenarios.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -98,7 +95,9 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new ProtectedConvoy(100, 500, 3, 7, 3));
 
-        gameEngine.addScenario(new DamselInDistress(500, 300, 2, 5));
+        //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
+
+        gameEngine.addScenario(new TravellerWithMission(300f));
 
 /*
         gameEngine.addScenario(new WildlifeManagement(3, 20, new GameObjectFactory() {
@@ -122,7 +121,7 @@ public class ServerRunner {
             }
         }));
 
-        gameEngine.addScenario(new WildlifeManagement(2, 5, new GameObjectFactory() {
+        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);

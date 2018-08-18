@@ -11,11 +11,11 @@ public class WeaponObjectMechanics {
         float masterRadius = master.getCollisionRadius();
         float radius = subject.getCollisionRadius();
 
-        if (radius == 0){
-            subject.setCollisionRadius(2f);
+        if (radius == 1){
+            radius = 1.2f;
         }
 
-        return (int) (radius * (masterRadius / 5));
+        return (int) (radius * (masterRadius / 3));
     }
 
 

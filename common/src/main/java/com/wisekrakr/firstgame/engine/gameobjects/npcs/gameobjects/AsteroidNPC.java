@@ -62,10 +62,6 @@ public class AsteroidNPC extends NonPlayerCharacter {
             }else if (context.getHealth() <= 0){
                 context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(7f));
             }
-
-            if (context.getHealth() <= 0){
-                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
-            }
         }
     }
 }

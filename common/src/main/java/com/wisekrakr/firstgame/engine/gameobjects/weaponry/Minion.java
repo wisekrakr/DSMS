@@ -89,9 +89,6 @@ public class Minion extends GameObject {
             if (minionAttackState == MinionAttackState.SHOOT || minionAttackState == MinionAttackState.FIGHT) {
                 if (subject instanceof Player) {
                     subject.setHealth(subject.getHealth() - getDamage());
-                    if (((Player) subject).isKilled()) {
-                        ((Player) subject).setKillerName(this.getName());
-                    }
                 }
                 if (subject instanceof Bullet) {
                     setHealth(getHealth() - BulletMechanics.determineBulletDamage());

@@ -113,9 +113,6 @@ public class Enemy extends GameObject {
         if(subject instanceof Player){
             subject.setHealth(subject.getHealth() - 15);
             setMovingState(MovingState.BACKWARDS);
-            if (((Player) subject).isKilled()){
-                ((Player) subject).setKillerName(this.getName());
-            }
 
         }
         if (subject instanceof Bullet) {

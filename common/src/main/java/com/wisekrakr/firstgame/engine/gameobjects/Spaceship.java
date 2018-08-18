@@ -10,10 +10,12 @@ import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
@@ -63,8 +65,6 @@ public class Spaceship extends GameObject {
     private float defaultSpeed = 60f;
     private float maxSpeed = 125f;
 
-    private boolean isKilled;
-    private String killerName;
     private boolean shieldActivated;
 
     private double damageTaken = 0;
@@ -73,12 +73,11 @@ public class Spaceship extends GameObject {
     private double healthPercentage;
     private double maxHealth;
 
-
     public Spaceship(String name, Vector2 position) {
         super(GameObjectVisualizationType.SPACESHIP, name, position);
 
         ammoCount = 10000;
-        missileAmmoCount = 0;
+        missileAmmoCount = 20;
         mineAmmoCount = 20;
         health = 750;
         score = 0;
@@ -139,13 +138,6 @@ public class Spaceship extends GameObject {
         // angle = angle + (float) Math.PI;
     }
 
-    private String killedBy() {
-        if (isKilled) {
-            return killerName;
-        }
-        return null;
-    }
-
     private double healthInPercentages() {
         if (isHit()) {
             double z = (getHealth() - getDamageTaken());
@@ -173,20 +165,10 @@ public class Spaceship extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Enemy) {
-            if (isKilled) {
-                setKillerName(subject.getName());
-            }
-        }
-
-
         if (subject instanceof Bullet) {
             if (((Bullet) subject).isEnemyBullet()) {
                 setHit(true);
                 setDamageTaken(subject.getDamage());
-                if (isKilled) {
-                    setKillerName(subject.getName());
-                }
             } else {
                 setHit(false);
             }
@@ -195,7 +177,6 @@ public class Spaceship extends GameObject {
             if (((HomingMissile) subject).isEnemyMissile()) {
                 setHit(true);
                 setDamageTaken(subject.getDamage());
-                setKillerName(subject.getName());
             } else {
                 setHit(false);
             }
@@ -204,7 +185,6 @@ public class Spaceship extends GameObject {
             if (((SpaceMine) subject).isEnemyMine()) {
                 setHit(true);
                 setDamageTaken(subject.getDamage());
-                setKillerName(subject.getName());
             } else {
                 setHit(false);
             }
@@ -239,9 +219,8 @@ public class Spaceship extends GameObject {
             }
         }
 
-        if (subject instanceof QuestGen) {
+        if (subject instanceof Mission) {
             pickedUp = true;
-            toDelete.add(subject);
         }
     }
 
@@ -258,23 +237,23 @@ public class Spaceship extends GameObject {
 
     public void scoringSystem(GameObject enemy, GameObject subject) {
 
-        if (enemy instanceof Enemy) {
+        if (enemy instanceof NonPlayerCharacter && !(enemy instanceof WeaponObjectClass)) {
             if (subject instanceof BulletObject || subject instanceof MissileObject || subject instanceof SpaceMine) {
                 if (collisionDetected(enemy, subject)) {
                     if (subject instanceof BulletObject) {
-                        this.setScore((float) (this.getScore() + (subject).getDamage()));
+                        this.setScore((float) (this.getScore() + subject.getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 50);
                         }
                     }
                     if (subject instanceof MissileObject) {
-                        this.setScore((float) (this.getScore() + (subject).getDamage()));
+                        this.setScore((float) (this.getScore() + subject.getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 100);
                         }
                     }
                     if (subject instanceof SpaceMine) {
-                        this.setScore((float) (this.getScore() + (subject).getDamage()));
+                        this.setScore((float) (this.getScore() + subject.getDamage()));
                         if (enemy.getHealth() <= 0) {
                             this.setScore(this.getScore() + 200);
                         }
@@ -291,7 +270,6 @@ public class Spaceship extends GameObject {
         //Player gets deleted when health is 0
         if (health <= 0) {
             toDelete.add(this);
-            isKilled = true;
         }
 
         if (hardSteering != null) {
@@ -486,11 +464,7 @@ public class Spaceship extends GameObject {
         float deltaY = ((float) Math.sin(getOrientation()));
 
 
-
-
-
         for (int i = 0; i < exactMissileCount; i++) {
-
             MissileObject m = new MissileObject(
                     new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
                             y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), 5, null, this);
@@ -499,7 +473,6 @@ public class Spaceship extends GameObject {
         }
 
     }
-
 
     private void activateSpaceMines(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
@@ -515,12 +488,7 @@ public class Spaceship extends GameObject {
         }
 
         for (int i = 0; i < exactMineCount; i++) {
-            setMineAreaOfEffect(10f);
-            SpaceMine currentSpaceMine = new SpaceMine("mine", getPosition(), getDirection(), getSpeed(),
-                    MineMechanics.radius(1), getMineAreaOfEffect(), MineMechanics.determineMineDamage());
-            toAdd.add(currentSpaceMine);
-            currentSpaceMine.setPlayerMine(true);
-
+            toAdd.add(new SpaceMineObject(getPosition(), 8f, this));
         }
     }
 
@@ -604,13 +572,6 @@ public class Spaceship extends GameObject {
         return speed;
     }
 
-    public boolean isKilled() {
-        return isKilled;
-    }
-
-    public void setKillerName(String killerName) {
-        this.killerName = killerName;
-    }
 
     public double getDamageTaken() {
         return damageTaken;
@@ -667,8 +628,6 @@ public class Spaceship extends GameObject {
 
         result.put("score", score);
         result.put("switchWeaponState", switchWeaponState.getFieldDescription());
-
-        result.put("killedBy", killedBy());
 
         result.put("healthPercentage", healthInPercentages());
 
