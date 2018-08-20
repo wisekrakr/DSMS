@@ -8,7 +8,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Asteroid;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,10 +82,6 @@ public class HomingMissile extends GameObject {
                     toDelete.add(this);
                     subject.setHealth(subject.getHealth() - MissileMechanics.determineMissileDamage());
                 }
-            }
-            if (subject instanceof Asteroid) {
-                toDelete.add(this);
-                toDelete.add(subject);
             }
         }
     }

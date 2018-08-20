@@ -2,10 +2,10 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 
 import java.util.*;
 
@@ -97,8 +97,7 @@ public abstract class GameObject {
         Random random = new Random();
         int debrisParts = random.nextInt(10) + 1;
         for (int i = 0; i < debrisParts; i++) {
-            toAdd.add(new Debris(this.getPosition(), random.nextFloat() * 10,
-                    random.nextFloat() * 60, random.nextFloat() * 2 * (float) Math.PI, random.nextFloat() * getCollisionRadius()));
+            toAdd.add(new DebrisObject(getPosition(), GameHelper.randomDirection()));
 
         }
     }

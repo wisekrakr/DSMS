@@ -9,30 +9,37 @@ import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.WearyTravellerFriendlyNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class TravellerWithMission extends Scenario {
 
-    private GameObject traveller;
+    private final int initialNumTargets;
+    private WearyTravellerFriendlyNPC traveller;
     private Set<Mission> missions = new HashSet<>();
-    private Set<GameObject> enemies = new HashSet<>();
+    private Set<GameObject> targets = new HashSet<>();
+    private int numTargets;
     private float chaseDistance;
-    private GameObject target;
+    private boolean missionDropped;
+    private int numOfMissions = 1;
+    private Iterator<GameObject> iterator;
 
-    public TravellerWithMission(float chaseDistance) {
+    public TravellerWithMission(float chaseDistance, int numTargets) {
         this.chaseDistance = chaseDistance;
+        this.numTargets = numTargets;
+        initialNumTargets = numTargets;
+
     }
 
     @Override
     public void periodicUpdate(SpaceEngine spaceEngine) {
 
         if (traveller == null){
-            traveller = spaceEngine.addGameObject(new WearyTravellerFriendlyNPC(GameHelper.randomPosition()), new SpaceEngine.GameObjectListener() {
+            traveller = new WearyTravellerFriendlyNPC(GameHelper.randomPosition());
+            spaceEngine.addGameObject(traveller, new SpaceEngine.GameObjectListener()  {
                 @Override
                 public void added() {
 
@@ -43,10 +50,11 @@ public class TravellerWithMission extends Scenario {
                     traveller = null;
                 }
             });
-
+            traveller.lookingForAHero();
         }
 
         updateMission(spaceEngine);
+
     }
 
 
@@ -55,43 +63,23 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                if (traveller instanceof WearyTravellerFriendlyNPC) {
-                    if (target instanceof Player) {
+                if (target instanceof Player) {
+                    if (GameHelper.distanceBetween(traveller, target) < chaseDistance){
+                        traveller.chaseToGiveMission(target);
                         if (GameHelper.distanceBetween(traveller, target) < chaseDistance / 2) {
-                            dropMission(spaceEngine);
-                            System.out.println("DROPPED MISSION   " + enemies.size());
-                            if (enemies.size() == 0){
-                                ((WearyTravellerFriendlyNPC) traveller).missionIsComplete();
-                            }
-                        }else {
-                            ((WearyTravellerFriendlyNPC) traveller).chaseToGiveMission(target);
+                            missionDropped = true;
+
+                        }else if(missionDropped){
+                            traveller.lookingForAHero();
                         }
                     }
                 }
             }
         });
-    }
 
-    private void dropMission(SpaceEngine spaceEngine){
+        System.out.println("DROPPED MISSION  " + missions.size() + "  DROPPED ENEMIES  " + targets.size());
 
-        if (enemies.size() < 4){
-            NonPlayerCharacter npc = new CrazilySpawningPassiveAggressiveNPC(GameHelper.randomPosition(), GameHelper.generateRandomNumberBetween(200f, 400f));
-
-            spaceEngine.addGameObject(npc, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
-                    enemies.add(npc);
-                }
-
-                @Override
-                public void removed() {
-
-                }
-            });
-            target = npc;
-        }
-
-        if (missions.size() < 1 && traveller != null){
+        if (missions.size() < numOfMissions && traveller != null && missionDropped){
 
             float x = traveller.getPosition().x;
             float y = traveller.getPosition().y;
@@ -106,15 +94,45 @@ public class TravellerWithMission extends Scenario {
                 @Override
                 public void added() {
                     missions.add(mission);
+
                 }
 
                 @Override
                 public void removed() {
-                    
+                    missions.remove(mission);
+                    numOfMissions--;
+                }
+            });
+        }
+
+        if (missionDropped && missions.size() == 0){
+            dropTargets(spaceEngine);
+            if (targets.size() == 0){
+                traveller.missionIsComplete();
+                missionDropped = false;
+                numOfMissions++;
+                numTargets = initialNumTargets;
+            }
+        }
+    }
+
+    private void dropTargets(SpaceEngine spaceEngine){
+
+        if (targets.size() < numTargets){
+            NonPlayerCharacter npc = new CrazilySpawningPassiveAggressiveNPC(GameHelper.randomPosition(), GameHelper.generateRandomNumberBetween(200f, 400f));
+
+            spaceEngine.addGameObject(npc, new SpaceEngine.GameObjectListener() {
+                @Override
+                public void added() {
+                    targets.add(npc);
+                }
+
+                @Override
+                public void removed() {
+                    targets.remove(npc);
+                    numTargets--;
                 }
             });
         }
     }
-
-
 }

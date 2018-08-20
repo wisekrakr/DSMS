@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.overlays;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -30,6 +31,7 @@ public class EnemyHud {
 
     private ArrayList<DamageAnimation>damageAnimations;
     private boolean activated = true;
+    private boolean activatedData = true;
     private float timeCounter;
     private boolean noHitYet = true;
     private Label orientationLabel;
@@ -102,7 +104,7 @@ public class EnemyHud {
 
             bar = new ProgressBar(healthPercentage(object).floatValue(), 100, 20f, false, barStyle);
             bar.setSize(radius(object) * 3, radius(object) * 3);
-            bar.setPosition(projection(object).x, projection(object).y - (radius(object) * 5), Align.center);
+            bar.setPosition(projection(object).x, projection(object).y - (radius(object) +10), Align.center);
             bar.setValue(health(object).floatValue());
 
         }
@@ -114,15 +116,20 @@ public class EnemyHud {
 
         Float x = objectSnapshot.getPosition().x;
         Float y = objectSnapshot.getPosition().y;
-        positionLabel = new Label("X = " + String.valueOf(x) + ", Y = " + String.valueOf(y), new Label.LabelStyle(debugFont, Color.WHITE));
-        positionLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y );
 
-        return orientationLabel;
+        if (!(activatedData)) {
+            positionLabel.setVisible(false);
+            positionLabel.clear();
+        }else {
+            positionLabel = new Label("X = " + String.valueOf(x) + ", Y = " + String.valueOf(y), new Label.LabelStyle(debugFont, Color.WHITE));
+            positionLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) + 5, projection(objectSnapshot).y);
+        }
+        return positionLabel;
     }
 
     public Label orientationLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
 
-        if (!(activated)) {
+        if (!(activatedData)) {
             orientationLabel.setVisible(false);
             orientationLabel.clear();
         }else {
@@ -133,7 +140,7 @@ public class EnemyHud {
     }
 
     public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
-        if (!(activated)) {
+        if (!(activatedData)) {
             speedLabel.setVisible(false);
             speedLabel.clear();
         }else {
@@ -149,5 +156,13 @@ public class EnemyHud {
     }
     public boolean disableEnemyHud() {
         return activated = !activated;
+    }
+
+    public boolean enableMetaData(){
+        return activatedData = true;
+    }
+
+    public boolean disableMetaData(){
+        return activatedData = !activated;
     }
 }

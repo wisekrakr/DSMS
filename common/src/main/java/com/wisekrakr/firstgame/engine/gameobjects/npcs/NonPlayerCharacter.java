@@ -4,15 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Debris;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
 
 
 import java.util.*;

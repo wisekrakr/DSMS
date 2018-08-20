@@ -493,7 +493,7 @@ public class Spaceship extends GameObject {
     }
 
     private Minion InitMinionShooter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        minionShooterPlayer = new Minion("minion_shooter", new Vector2(
+        minionShooterPlayer = new Minion( new Vector2(
                 getPosition().x + (getCollisionRadius() * 2),
                 getPosition().y + (getCollisionRadius() * 2)), MinionMechanics.determineHealth(), getDirection(),
                 MinionMechanics.radius(1));
@@ -507,7 +507,7 @@ public class Spaceship extends GameObject {
     }
 
     private Minion InitMinionFighter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        minionFighterPlayer = new Minion("minion_fighter", new Vector2(
+        minionFighterPlayer = new Minion( new Vector2(
                 getPosition().x + (getCollisionRadius() * 2),
                 getPosition().y + (getCollisionRadius() * 2)),
                 MinionMechanics.determineHealth(),

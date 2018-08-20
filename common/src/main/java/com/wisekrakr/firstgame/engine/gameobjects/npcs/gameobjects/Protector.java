@@ -8,10 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CruisingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 
 public class Protector extends NonPlayerCharacter {
@@ -30,12 +27,24 @@ public class Protector extends NonPlayerCharacter {
         desiredBehavior = new ChasingBehavior(target);
     }
 
+    public void shootAt(GameObject target){
+        desiredBehavior = new ShootingBehavior(new BulletObject(getPosition(), getOrientation(), 3f, this, 200f), target);
+    }
+
     public void protect(GameObject target) {
-        desiredBehavior = new ChasingBehavior(target);
+        desiredBehavior = new StickyBehavior(target);
     }
 
     public void comeHome(Vector2 position) {
         desiredBehavior = new ExplodeAndLeaveDebrisBehavior(13);
+    }
+
+    public void selfDestruct(){
+        desiredBehavior = new ExplodeAndLeaveDebrisBehavior(13);
+    }
+
+    public void setDesiredBehavior(Behavior desiredBehavior) {
+        this.desiredBehavior = desiredBehavior;
     }
 
     private class MyBehavior extends Behavior {

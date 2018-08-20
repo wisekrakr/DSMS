@@ -97,7 +97,11 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
 
-        gameEngine.addScenario(new TravellerWithMission(300f));
+        gameEngine.addScenario(new TravellerWithMission(300f, 2));
+
+        //gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
+
+
 
 /*
         gameEngine.addScenario(new WildlifeManagement(3, 20, new GameObjectFactory() {
@@ -120,7 +124,7 @@ public class ServerRunner {
                 return new TestNPC(initialPosition, actionDistance);
             }
         }));
-
+*/
         gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
@@ -135,7 +139,7 @@ public class ServerRunner {
             }
         }));
 
-*/
+
         timeThread.start();
 
 

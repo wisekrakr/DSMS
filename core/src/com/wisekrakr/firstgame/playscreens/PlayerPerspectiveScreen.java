@@ -335,6 +335,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
+            if (enemyHud.enableMetaData()){
+                enemyHud.disableMetaData();
+            }
 
         } else {
             camera.zoom = 0.8f;
@@ -342,7 +345,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
         }else if (inputManager.isKeyPressed(Input.Keys.COMMA)){
-            enemyHud.disableEnemyHud();
+            enemyHud.disableMetaData();
         }
 
 
@@ -828,6 +831,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar shitterHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shitterHealthBar);
                         volatileBars.add(shitterHealthBar);
+
+                        Label shitterPosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(shitterPosition);
+                        registerVolatileActor(shitterPosition);
 
                         Label shitterOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(shitterOrientation);

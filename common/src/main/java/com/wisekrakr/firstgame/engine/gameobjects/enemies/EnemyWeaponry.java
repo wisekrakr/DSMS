@@ -52,7 +52,7 @@ public class EnemyWeaponry {
     }
 
     public static Minion initMinion(EnemyWithMinion subject){
-        Minion minionShooter = new Minion("Shooter Minion", new Vector2(subject.getPosition().x + subject.getCollisionRadius() * 2,
+        Minion minionShooter = new Minion(new Vector2(subject.getPosition().x + subject.getCollisionRadius() * 2,
                 subject.getPosition().y + subject.getCollisionRadius() * 2),
                 (int) (subject.getMaxHealth()/3),
                 subject.getOrientation(),

@@ -41,8 +41,8 @@ public class Minion extends GameObject {
     private boolean minionFighter;
     private boolean minionShooter;
 
-    public Minion(String name, Vector2 position, int health, float direction, float radius) {
-        super(GameObjectVisualizationType.MINION, name, position);
+    public Minion(Vector2 position, int health, float direction, float radius) {
+        super(GameObjectVisualizationType.MINION, "Minion", position);
         this.direction = direction;
         this.radius = radius;
         this.health = health;
