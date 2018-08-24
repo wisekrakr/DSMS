@@ -22,7 +22,7 @@ public class RunningEscapingBehavior extends Behavior {
         if (target != null && !(target instanceof WeaponObjectClass)){
             float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
 
-            context.setSpeed((Float) target.getExtraSnapshotProperties().get("speed") + 10f);
+            context.setSpeed(40f);
             context.setDirection(-angle);
             context.setOrientation(-angle);
         }

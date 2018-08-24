@@ -97,7 +97,7 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
 
-        gameEngine.addScenario(new TravellerWithMission(300f, 2));
+        gameEngine.addScenario(new TravellerWithMission(300f, 5));
 
         //gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
 
@@ -124,14 +124,14 @@ public class ServerRunner {
                 return new TestNPC(initialPosition, actionDistance);
             }
         }));
-*/
+
         gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
             }
         }));
-
+*/
         gameEngine.addScenario(new WildlifeManagement(5, 5, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {

@@ -27,7 +27,7 @@ public class MissionGivingBehavior extends Behavior {
 
         if (target != null) {
             if (!(missionActive)) {
-                mission = new KillMission(new Vector2(context.getPosition().x + 20, context.getPosition().y + 20));
+                //mission = new KillMission(new Vector2(context.getPosition().x + 20, context.getPosition().y + 20));
                 context.addGameObject(mission);
                 missionActive = true;
                 if (clock - time > 5f) {

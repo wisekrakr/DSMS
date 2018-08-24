@@ -25,8 +25,6 @@ public class StickyBehavior extends Behavior {
 
             context.setOrientation(angle);
             context.setDirection(angle);
-            context.setSpeed(context.getSpeed());
-
 
             if (context.collisionDetection(target)) {
 

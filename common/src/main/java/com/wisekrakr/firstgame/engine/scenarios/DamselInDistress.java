@@ -8,30 +8,31 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 import java.util.*;
 
 public class DamselInDistress extends Scenario {
-    private GameObject missionEnd;
-    private GameObject damsel;
-    private boolean damselCanBeRescued = false;
-    private Set<GameObject> enemies = new HashSet<>();
+
+    private Damsel damsel;
+    private Set<Pervert> perverts = new HashSet<>();
     private float runToDistance;
     private float escapeDistance;
-    private final int maxMinions;
+    private final int maxPerverts;
+    private Set<MissionEnding> missionEndings = new HashSet<>();
+    private int numOfEndings = 1;
 
-    public DamselInDistress(float runToDistance, float escapeDistance, int maxMinions) {
+    public DamselInDistress(float runToDistance, float escapeDistance, int maxPerverts) {
         this.runToDistance = runToDistance;
         this.escapeDistance = escapeDistance;
-        this.maxMinions = maxMinions;
+        this.maxPerverts = maxPerverts;
 
     }
 
     @Override
     public void periodicUpdate(SpaceEngine spaceEngine) {
         if (damsel == null) {
-            damsel = spaceEngine.addGameObject(new Damsel( GameHelper.randomPosition()), new SpaceEngine.GameObjectListener() {
+            damsel = new Damsel( GameHelper.randomPosition());
+            spaceEngine.addGameObject(damsel, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
 
@@ -39,59 +40,58 @@ public class DamselInDistress extends Scenario {
 
                 @Override
                 public void removed() {
-                    //damsel = null;
+                    damsel = null;
+
                 }
+
             });
+            damsel.lookingForAHero();
         }
-
-
         updateDamsel(spaceEngine);
-        if (missionEnd == null) {
+        if (damsel.isClingingOn()) {
             bringDamselToSafeLocation(spaceEngine);
         }
+
     }
 
     private void updateDamsel(SpaceEngine spaceEngine){
 
-        if (enemies.size() <  maxMinions){
+        if (perverts.size() < maxPerverts){
             Pervert pervert = new Pervert(GameHelper.randomPosition());
 
             spaceEngine.addGameObject(pervert, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
-                    enemies.add(pervert);
+                    perverts.add(pervert);
                 }
 
                 @Override
                 public void removed() {
-
+                    perverts.remove(pervert);
                 }
             });
+            pervert.lookingForADamsel();
         }
 
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                for (GameObject object: enemies){
-                    if (target != object && !(target instanceof DebrisObject) && !(target instanceof WeaponObjectClass) && !enemies.contains(target)) {
-                        if (GameHelper.distanceBetween(object.getPosition(), target.getPosition()) < escapeDistance) {
-                            if (target instanceof Damsel){
-                                damsel = target;
-                                if (!((Damsel) damsel).isClingingOn()) {
-                                    ((Damsel) damsel).runFrom(object);
-                                }
-                            }else {
-                                ((Damsel) damsel).lookingForAHero();
+                for (Pervert pervert: perverts){
+                    if (target == damsel) {
+                        if (GameHelper.distanceBetween(pervert.getPosition(), target.getPosition()) < escapeDistance) {
+                            pervert.chaseAfter(target);
+                            if (!damsel.isClingingOn()) {
+                                damsel.runFrom(pervert);
                             }
+                        }
+                        if (GameHelper.distanceBetween(pervert.getPosition(), target.getPosition()) < escapeDistance/3) {
+                            pervert.cirkelingDamsel(target);
                         }
                     }
                 }
-                if (target instanceof Player && damsel instanceof Damsel){
+                if (target instanceof Player){
                     if (GameHelper.distanceBetween(damsel.getPosition(), target.getPosition()) < runToDistance) {
-                        ((Damsel) damsel).clingOn(target);
-                        damselCanBeRescued = true;
-                    }else {
-                        ((Damsel) damsel).lookingForAHero();
+                        damsel.clingOn(target);
                     }
                 }
             }
@@ -99,29 +99,30 @@ public class DamselInDistress extends Scenario {
     }
 
     private void bringDamselToSafeLocation(SpaceEngine spaceEngine){
-        if (damselCanBeRescued){
-            if (missionEnd == null){
-                missionEnd = spaceEngine.addGameObject(new MissionEnding(GameHelper.randomPosition()), new SpaceEngine.GameObjectListener() {
-                    @Override
-                    public void added() {
 
-                    }
+        if (missionEndings.size() < numOfEndings){
 
-                    @Override
-                    public void removed() {
-                        if (((Damsel) damsel).isClingingOn()) {
-                            ((Damsel) damsel).missionComplete();
-                        }
-                    }
-                });
+            MissionEnding missionEnd = new MissionEnding(GameHelper.randomPosition());
 
-            }
+            spaceEngine.addGameObject(missionEnd, new SpaceEngine.GameObjectListener() {
+                @Override
+                public void added() {
+                    missionEndings.add(missionEnd);
+                }
+
+                @Override
+                public void removed() {
+                    damsel.missionComplete();
+                    numOfEndings++;
+
+                }
+            });
         }
     }
 
     private class MissionEnding extends Mission{
 
-        public MissionEnding(Vector2 initialPosition) {
+        private MissionEnding(Vector2 initialPosition) {
             super(GameObjectVisualizationType.MISSION_END, "End of Mission", initialPosition);
             setCollisionRadius(40f);
         }
@@ -137,12 +138,15 @@ public class DamselInDistress extends Scenario {
 
         @Override
         public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-            if (subject instanceof Damsel){
+            if (subject == damsel){
                 toDelete.add(this);
             }
+
+        }
+
+        @Override
+        public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+
         }
     }
-
-
-
 }

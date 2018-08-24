@@ -17,11 +17,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 
 public class MissionText implements Disposable{
 
 
     private Label missionLabel;
+    private Label missionSortLabel;
     private MyAssetManager myAssetManager;
     private Stage stage;
     private float time;
@@ -36,18 +38,26 @@ public class MissionText implements Disposable{
         myAssetManager.loadFonts();
 
         Table table = new Table();
-        table.center().right().padRight(10f);
+        table.center().left().padLeft(5f);
         table.setFillParent(true);
 
         BitmapFont font = myAssetManager.assetManager.get("font/myFont.fnt");
         font.getData().setScale(0.3f);
 
-        missionLabel = new Label(null, new Label.LabelStyle(font, Color.GOLD));
+        missionLabel = new Label("MISSION:", new Label.LabelStyle(font, Color.GOLD));
+        missionSortLabel = new Label(null, new Label.LabelStyle(font, Color.WHITE));
+        missionSortLabel.setFontScale(0.5f);
 
-        table.add(missionLabel).width(100).pad(10);
+        table.add(missionLabel).center();
+        table.row();
+        table.add(missionSortLabel).width(100).pad(5);
 
         stage.addActor(table);
 
+    }
+
+    private String name(SpaceSnapshot.GameObjectSnapshot object){
+        return object.getName();
     }
 
 
@@ -56,15 +66,18 @@ public class MissionText implements Disposable{
         stage.draw();
 
         Boolean pickedUpMission = (Boolean) object.extraProperties().get("pickedUp");
+
         if (!(pickedUpMission)){
             missionLabel.setVisible(false);
+            missionSortLabel.setVisible(false);
         }else {
             missionLabel.setVisible(true);
-            missionLabel.setText("Kill some bastard");
+            missionSortLabel.setVisible(true);
+            missionSortLabel.setText(name(object));
             time += delta;
             if (time >= 5f){
-                missionLabel.clear();
-                missionLabel.setText("");
+                missionLabel.setVisible(false);
+                missionSortLabel.setVisible(false);
             }
         }
     }

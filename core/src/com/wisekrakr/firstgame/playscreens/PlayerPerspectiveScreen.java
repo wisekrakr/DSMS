@@ -80,7 +80,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Spaceship.SwitchWeaponState switchWeaponState;
 
     private SpaceSnapshot.GameObjectSnapshot myself;
-
+    private SpaceSnapshot.GameObjectSnapshot mission;
     /**
      * Stage for labels etc overlayed on the perspective screen, but using a hud-like orientation
      */
@@ -103,6 +103,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private boolean foundMySelf;
 
     private MissionText missionText;
+
 
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
@@ -344,29 +345,19 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
+            enemyHud.enableMetaData();
         }else if (inputManager.isKeyPressed(Input.Keys.COMMA)){
             enemyHud.disableMetaData();
         }
 
 
-
+/*
         //Mouse input
         inputManager.getTouchState(0);
 
         if (inputManager.isTouchPressed(0)) {
             System.out.println("PRESSED");
 
-            Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
-            //float touchCoordinates = (float) Math.sqrt(inputManager.touchCoordX(0) + inputManager.touchCoordY(0));
-            //this.hardSteering = (float) Math.atan2(inputManager.touchCoordX(0) - mouseProjection.x, inputManager.touchCoordY(0) - mouseProjection.y);
-
-            float mouseX = Gdx.input.getX();
-            float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-            this.hardSteering = (float) Math.atan2(mouseY - myself.getPosition().y, mouseX - myself.getPosition().y);
-            if (this.hardSteering < 0) {
-                hardSteering += 360;
-            }
         }
 
         if (inputManager.isTouchDown(0)) {
@@ -374,12 +365,22 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
             System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
 
+            Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
+            //this.hardSteering = (float) Math.atan2(inputManager.touchCoordX(0) + mouseProjection.x, inputManager.touchCoordY(0) + mouseProjection.y);
+
+            float mouseX = Gdx.input.getX();
+            float mouseY = EngineConstants.ENGINE_HEIGHT - Gdx.input.getY();
+
+            this.hardSteering = (float) Math.atan2(mouseY - myself.getPosition().y, mouseX - myself.getPosition().y);
+            if (this.hardSteering < 0) {
+                hardSteering += 180;
+            }
         }
 
         if (inputManager.isTouchReleased(0)) {
             System.out.println("RELEASED");
         }
-
+*/
         inputManager.update();
     }
 
@@ -1145,9 +1146,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius);
                         break;
                     case TEST_QUEST:
+                        mission = object;
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x, y, radius);
-
 
                         break;
                     case TEST_NPC:
@@ -1299,10 +1300,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         updateOverlay();
         playerHud.update();
-        missionText.showMission(myself, delta);
+        if (mission != null) {
+            missionText.showMission(mission, delta);
+        }
+
     }
 
-    public void setSwitchWeaponState(Spaceship.SwitchWeaponState switchWeaponState) {
+    private void setSwitchWeaponState(Spaceship.SwitchWeaponState switchWeaponState) {
         this.switchWeaponState = switchWeaponState;
     }
 

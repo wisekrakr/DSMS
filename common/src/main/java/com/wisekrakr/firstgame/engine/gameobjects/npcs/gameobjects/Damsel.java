@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
@@ -17,7 +18,7 @@ import java.util.Set;
 public class Damsel extends NonPlayerCharacter{
 
     private Behavior desiredBehavior;
-    private boolean clingingOn = false;
+    private boolean clingingOn;
 
     public Damsel(Vector2 initialPosition) {
         super(GameObjectVisualizationType.DODGER, "Damsel", initialPosition);
@@ -43,7 +44,6 @@ public class Damsel extends NonPlayerCharacter{
 
     public void lookingForAHero() {
         desiredBehavior = new CruisingBehavior(4f);
-
     }
 
     public boolean isClingingOn() {
@@ -51,6 +51,7 @@ public class Damsel extends NonPlayerCharacter{
     }
 
     private class MyBehavior extends Behavior {
+
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
             if (desiredBehavior != null) {

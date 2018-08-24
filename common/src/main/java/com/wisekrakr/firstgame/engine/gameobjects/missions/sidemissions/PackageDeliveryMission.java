@@ -5,19 +5,16 @@ import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class KillMission extends Mission {
-
+public class PackageDeliveryMission extends Mission {
     private boolean pickedUp;
 
-    public KillMission(Vector2 initialPosition, String targets) {
-        super(GameObjectVisualizationType.TEST_QUEST, targets, initialPosition);
+    public PackageDeliveryMission(Vector2 initialPosition, String packageSender) {
+        super(GameObjectVisualizationType.TEST_QUEST, packageSender, initialPosition);
         setCollisionRadius(3f);
 
     }
@@ -41,9 +38,6 @@ public class KillMission extends Mission {
             }else {
                 toDelete.add(this);
             }
-
         }
     }
-
-
 }

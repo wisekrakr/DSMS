@@ -18,7 +18,7 @@ import java.util.List;
 public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
 
     public CrazilySpawningPassiveAggressiveNPC(Vector2 initialPosition, float actionDistance) {
-        super(GameObjectVisualizationType.MOTHERSHIP, "Passive aggressive", initialPosition, new MyBehavior(initialPosition, actionDistance,  null));
+        super(GameObjectVisualizationType.MOTHERSHIP, "Passive aggressive NPC", initialPosition, new MyBehavior(initialPosition, actionDistance,  null));
         setCollisionRadius(20f);
         setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3));
         setActionDistance(actionDistance);

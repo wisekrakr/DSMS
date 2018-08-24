@@ -31,6 +31,10 @@ public class WearyTravellerFriendlyNPC extends NonPlayerCharacter {
         desiredBehavior = new ChasingBehavior(target);
     }
 
+    public void fullStop(){
+        desiredBehavior = new FullStopBehavior();
+    }
+
     public void missionIsComplete() {
         desiredBehavior = new ExplodeAndLeaveDebrisBehavior(8f);
     }

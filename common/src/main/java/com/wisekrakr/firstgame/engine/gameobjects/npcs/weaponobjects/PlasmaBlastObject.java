@@ -1,17 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.TestBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.SplashBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
-
-import java.util.Set;
 
 public class PlasmaBlastObject extends WeaponObjectClass {
 

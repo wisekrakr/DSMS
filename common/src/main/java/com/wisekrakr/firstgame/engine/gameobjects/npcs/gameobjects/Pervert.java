@@ -7,36 +7,46 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.CruisingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.RotatingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 
 public class Pervert extends NonPlayerCharacter {
 
+    private Behavior desiredBehavior;
+
     public Pervert(Vector2 initialPosition) {
-        super(GameObjectVisualizationType.EXHAUST, "Pervert", initialPosition, new MyBehavior(null));
+        super(GameObjectVisualizationType.EXHAUST, "Pervert", initialPosition);
 
         setCollisionRadius(6f);
         setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3f));
-        setActionDistance(300f);
+
+        rootBehavior(new MyBehavior());
+
     }
 
-    private static class MyBehavior extends Behavior{
+    public void lookingForADamsel(){
+        desiredBehavior = new CruisingBehavior(10f);
+    }
 
-        private GameObject target;
+    public void chaseAfter(GameObject target) {
+        desiredBehavior = new ChasingBehavior(target);
+    }
 
-        public MyBehavior(GameObject target) {
-            this.target = target;
-        }
+    public void cirkelingDamsel(GameObject target){
+        desiredBehavior = new CirclingBehavior(target);
+    }
+
+    private class MyBehavior extends Behavior{
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-            if (!(context.existingSubBehavior() instanceof CruisingBehavior)){
-                context.pushSubBehavior(new CruisingBehavior(5f));
-            }else if (context.nearest() instanceof Damsel){
-                target = context.nearest();
-                context.pushSubBehavior(new ChasingBehavior(target));
+            if (desiredBehavior != null) {
+                context.pushSubBehavior(desiredBehavior);
+                desiredBehavior = null;
+            }
+
+            if (context.getHealth() <= 0){
+                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }
         }
     }
