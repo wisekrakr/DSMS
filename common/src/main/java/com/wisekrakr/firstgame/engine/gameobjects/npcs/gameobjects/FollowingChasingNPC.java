@@ -46,7 +46,7 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
                         target = context.nearest();
                         context.pushSubBehavior(new ChasingBehavior(target));
                         if (context.nearestInFloats() <= actionDistance / 2) {
-                            context.pushSubBehavior(new ShootingBehavior(new BulletObject(context.getPosition(), context.getOrientation(), 3,
+                            context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new BulletObject(initialPosition, initialDirection, 3,
                                     context.thisObject(), 200), target));
                         }
                     }

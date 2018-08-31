@@ -32,7 +32,7 @@ public class FactionWaveNPC extends NonPlayerCharacter {
     }
 
     public void shootAt(GameObject target){
-        desiredBehavior = new ShootingBehavior(new BulletObject(getPosition(), getOrientation(), 3f, this, 200f), target);
+        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new BulletObject(initialPosition, initialDirection, 3f, this, 200f), target);
     }
 
     private class MyBehavior extends Behavior {

@@ -30,7 +30,7 @@ public class MutatorNPC extends NonPlayerCharacter {
     }
 
     public void attackWithSpores(GameObject target){
-        desiredBehavior = new ShootingBehavior(new PlasmaBlastObject(getPosition(), getOrientation(), 2f, this), target);
+        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new PlasmaBlastObject(initialPosition, initialDirection, 2f, this), target);
     }
 
     private class MyBehavior extends Behavior {

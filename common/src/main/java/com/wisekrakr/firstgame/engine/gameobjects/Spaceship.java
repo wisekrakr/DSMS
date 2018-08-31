@@ -85,6 +85,7 @@ public class Spaceship extends GameObject {
         maxHealth = health;
 
         setCollisionRadius(5f);
+        setActionDistance(400f);
 
     }
 
@@ -264,6 +265,18 @@ public class Spaceship extends GameObject {
         }
     }
 
+    private GameObject missileTarget = null;
+
+    @Override
+    public void nearby(List<GameObject> targets) {
+        if (!targets.isEmpty()) {
+            missileTarget = targets.get(0);
+        }
+        else {
+            missileTarget = null;
+        }
+        System.out.println("Targeting : " + missileTarget);
+    }
 
     @Override
     public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -377,6 +390,7 @@ public class Spaceship extends GameObject {
                 activateBullets(delta, toDelete, toAdd);
                 break;
             case MISSILE_FIRING:
+
                 activateMissiles(delta, toDelete, toAdd);
                 break;
             case PLACE_MINE:
@@ -470,7 +484,7 @@ public class Spaceship extends GameObject {
         for (int i = 0; i < exactMissileCount; i++) {
             MissileObject m = new MissileObject(
                     new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
-                            y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), 5, null, this);
+                            y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), 5, missileTarget, this);
 
             toAdd.add(m);
         }

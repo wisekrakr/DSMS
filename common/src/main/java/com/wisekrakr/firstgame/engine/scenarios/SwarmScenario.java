@@ -10,7 +10,15 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjec
 
 import java.util.*;
 
-public class SwarmScenario extends Scenario{
+public class SwarmScenario extends Scenario {
+    enum ScenarioState {
+        INITIATION,
+        LEADER,
+        SWARM1,
+        SWARM2
+    }
+
+    private ScenarioState state = ScenarioState.INITIATION;
 
     private MultifacetedNPC factionLeader;
     private Set<Protector> protectors = new HashSet<>();
@@ -30,121 +38,139 @@ public class SwarmScenario extends Scenario{
         this.escapeDistance = escapeDistance;
         this.numberOfProtectors = numberOfProtectors;
         this.numberOfWaves = numberOfWaves;
-
     }
 
-    @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
+    private void initiate(SpaceEngine spaceEngine) {
+        factionLeader = new MultifacetedNPC(GameHelper.randomPosition());
+        spaceEngine.addGameObject(factionLeader, new SpaceEngine.GameObjectListener() {
+            @Override
+            public void added() {
+            }
 
-        if (!leaderIsAlive){
-            factionLeader = new MultifacetedNPC(GameHelper.randomPosition());
-            spaceEngine.addGameObject(factionLeader, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
-                    leaderIsAlive = true;
-                }
+            @Override
+            public void removed() {
+                state = ScenarioState.SWARM1;
+            }
+        });
+        factionLeader.cruising();
+        state = ScenarioState.LEADER;
+    }
 
-                @Override
-                public void removed() {
-                    factionLeader = null;
-                }
-            });
-            factionLeader.cruising();
-        }
-
+    private void updateWithLeader(SpaceEngine spaceEngine) {
         Set<GameObject> newEnemies = new HashSet<>();
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                if (factionLeader != null) {
-                    if (target != factionLeader && !(target instanceof DebrisObject) && !(target instanceof WeaponObjectClass) && !protectors.contains(target)) {
-                        if (GameHelper.distanceBetween(target.getPosition(), factionLeader.getPosition()) < aggressionDistance) {
-                            if (enemies.add(target)) {
-                                newEnemies.add(target);
-                            }
+                if (target != factionLeader && !(target instanceof DebrisObject) && !(target instanceof WeaponObjectClass) && !protectors.contains(target)) {
+                    if (GameHelper.distanceBetween(target.getPosition(), factionLeader.getPosition()) < aggressionDistance) {
+                        if (enemies.add(target)) {
+                            newEnemies.add(target);
                         }
                     }
-                }else{
-                    if (target instanceof Player){
-                        enemies.add(target);
-                    }
                 }
-
             }
         });
 
         Set<GameObject> escapedEnemies = new HashSet<>();
-        if (factionLeader != null) {
-            for (GameObject enemy : enemies) {
-                if (GameHelper.distanceBetween(enemy.getPosition(), factionLeader.getPosition()) > escapeDistance) {
-                    escapedEnemies.add(enemy);
-                }
+        for (GameObject enemy : enemies) {
+            if (GameHelper.distanceBetween(enemy.getPosition(), factionLeader.getPosition()) > escapeDistance) {
+                escapedEnemies.add(enemy);
             }
         }
+
         enemies.removeAll(escapedEnemies);
         targeted.removeAll(escapedEnemies);
 
         updateProtectors(spaceEngine);
-        if (factionLeader == null) {
-            wave(spaceEngine);
-        }
+    }
 
+    private void swarm(SpaceEngine spaceEngine) {
+        Set<GameObject> newEnemies = new HashSet<>();
+        spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
+            @Override
+            public void doIt(GameObject target) {
+                if (target instanceof Player) {
+                    enemies.add(target);
+                }
+            }
+        });
+
+        wave(spaceEngine);
+    }
+
+    @Override
+    public void periodicUpdate(SpaceEngine spaceEngine) {
+        switch (state) {
+            case INITIATION:
+                initiate(spaceEngine);
+                break;
+            case LEADER:
+                updateWithLeader(spaceEngine);
+                break;
+            case SWARM1:
+                swarm(spaceEngine);
+                break;
+            case SWARM2:
+                swarm(spaceEngine);
+                break;
+
+            default:
+                throw new IllegalStateException("Unknown: " + state);
+        }
     }
 
     private void updateProtectors(SpaceEngine spaceEngine) {
+        if (protectors.size() < numberOfProtectors) {
+            Protector protector = new Protector(factionLeader.getPosition());
 
-        if (factionLeader != null) {
-            if (protectors.size() < numberOfProtectors) {
-                Protector protector = new Protector(factionLeader.getPosition());
+            spaceEngine.addGameObject(protector, new SpaceEngine.GameObjectListener() {
+                @Override
+                public void added() {
+                    protectors.add(protector);
 
-                spaceEngine.addGameObject(protector, new SpaceEngine.GameObjectListener() {
-                    @Override
-                    public void added() {
-                        protectors.add(protector);
+                }
 
-                    }
+                @Override
+                public void removed() {
+                    protectors.remove(protector);
+                }
+            });
 
-                    @Override
-                    public void removed() {
-                        protectors.remove(protector);
-                    }
-                });
+            protector.protect(factionLeader);
+        }
 
-                protector.protect(factionLeader);
+        for (Protector protector : protectors) {
+            protector.protect(factionLeader);
+        }
+
+        if (enemies.size() > 0) {
+            for (GameObject enemy : enemies) {
+                if (targeted.size() >= 3) {
+                    break;
+                }
+
+                targeted.add(enemy);
             }
 
+            int index = 0;
+            List<GameObject> inList = new ArrayList<>(targeted);
             for (Protector protector : protectors) {
-                protector.protect(factionLeader);
+                protector.aimFor(inList.get(index));
+                index = (index + 1) % inList.size();
             }
+        }
+    }
 
-            if (enemies.size() > 0) {
-                for (GameObject enemy : enemies) {
-                    if (targeted.size() >= 3) {
-                        break;
-                    }
 
-                    targeted.add(enemy);
-                }
-
-                int index = 0;
-                List<GameObject> inList = new ArrayList<>(targeted);
-                for (Protector protector : protectors) {
-                    protector.aimFor(inList.get(index));
-                    index = (index + 1) % inList.size();
-                }
-            }
-        }else {
-            Set<Protector>removedProtectors = new HashSet<>();
-            for (Protector protector: protectors){
+    private void wave(SpaceEngine spaceEngine) {
+        if (!protectors.isEmpty()) {
+            Set<Protector> removedProtectors = new HashSet<>();
+            for (Protector protector : protectors) {
                 protector.selfDestruct();
                 removedProtectors.add(protector);
             }
             protectors.removeAll(removedProtectors);
         }
-    }
-
-
-    private void wave(SpaceEngine spaceEngine){
 
         if (waveMinions.size() < numberOfWaveMinions) {
             FactionWaveNPC waveMinion = new FactionWaveNPC(new Vector2(100, 100));
@@ -156,13 +182,11 @@ public class SwarmScenario extends Scenario{
 
                 @Override
                 public void removed() {
-
                 }
             });
-            List<GameObject>list = new ArrayList<>(enemies);
-            for (FactionWaveNPC factionWaveNPC: waveMinions) {
-                //factionWaveNPC.shootAt(list.get(0));
-            }
+
+            GameObject target = enemies.iterator().next();
+            waveMinion.shootAt(target);
             //waveMinion.cruising();
         }
 /*

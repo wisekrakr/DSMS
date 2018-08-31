@@ -98,9 +98,9 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new TravellerWithMission(300f, 5));
 
-        //gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
+        gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
 
-        gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
+        //gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
 
 /*
         gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {

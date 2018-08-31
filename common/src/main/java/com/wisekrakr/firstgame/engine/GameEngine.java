@@ -1,11 +1,9 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.wisekrakr.firstgame.engine.scenarios.Scenario;
-import com.wisekrakr.firstgame.engine.scenarios.SwarmScenario;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GameEngine {
     private SpaceEngine space;
@@ -19,6 +17,8 @@ public class GameEngine {
 
     public void addScenario(Scenario scenario) {
         scenarios.add(scenario);
+
+        scenario.initialUpdate(space);
     }
 
     public void start() {
@@ -34,7 +34,7 @@ public class GameEngine {
     }
 
     private void periodicUpdate() {
-        for(Scenario scenario: scenarios) {
+        for (Scenario scenario : scenarios) {
             scenario.periodicUpdate(space);
         }
     }

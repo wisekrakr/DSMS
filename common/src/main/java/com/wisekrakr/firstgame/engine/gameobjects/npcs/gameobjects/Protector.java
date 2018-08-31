@@ -28,7 +28,7 @@ public class Protector extends NonPlayerCharacter {
     }
 
     public void shootAt(GameObject target){
-        desiredBehavior = new ShootingBehavior(new BulletObject(getPosition(), getOrientation(), 3f, this, 200f), target);
+        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new BulletObject(initialPosition, initialDirection, 3f, this, 200f), target);
     }
 
     public void protect(GameObject target) {

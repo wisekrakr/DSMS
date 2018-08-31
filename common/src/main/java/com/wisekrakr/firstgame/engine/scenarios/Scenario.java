@@ -7,6 +7,12 @@ import com.wisekrakr.firstgame.server.EngineConstants;
 import java.util.Random;
 
 public class Scenario {
+    public void finalUpdate(SpaceEngine spaceEngine) {
+    }
+
+    public void initialUpdate(SpaceEngine spaceEngine) {
+    }
+
     public void periodicUpdate(SpaceEngine spaceEngine) {
     }
 }

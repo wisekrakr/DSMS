@@ -7,12 +7,13 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
+import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 
 public class ShootingBehavior extends Behavior {
-    private GameObject weapon;
+    private GameObjectFactory<?> weapon;
     private GameObject target;
 
-    public ShootingBehavior(GameObject weapon, GameObject target) {
+    public ShootingBehavior(GameObjectFactory<?> weapon, GameObject target) {
         this.weapon = weapon;
         this.target = target;
     }
@@ -27,7 +28,7 @@ public class ShootingBehavior extends Behavior {
             context.setDirection(angle);
             context.setOrientation(angle);
             context.setSpeed(GameHelper.generateRandomNumberBetween(context.getSpeed(), 75f));
-            context.addGameObject(weapon);
+            context.addGameObject(weapon.create(context.getPosition(), context.getOrientation(), 1));
 
         }
     }

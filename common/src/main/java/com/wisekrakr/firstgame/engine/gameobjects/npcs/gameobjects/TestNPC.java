@@ -62,7 +62,7 @@ public class TestNPC extends NonPlayerCharacter {
             }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
 
-                context.pushSubBehavior(new ShootingBehavior(new PackageObject(context.getPosition(), context.thisObject()), target));
+                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new PackageObject(initialPosition, context.thisObject()), target));
 
             }
             if (context.getHealth() <= 0){

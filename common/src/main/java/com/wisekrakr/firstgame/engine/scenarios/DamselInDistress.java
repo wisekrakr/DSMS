@@ -101,6 +101,7 @@ public class DamselInDistress extends Scenario {
     private void bringDamselToSafeLocation(SpaceEngine spaceEngine){
 
         if (missionEndings.size() < numOfEndings){
+            System.out.println("Adding a mission end");
 
             MissionEnding missionEnd = new MissionEnding(GameHelper.randomPosition());
 
@@ -112,6 +113,7 @@ public class DamselInDistress extends Scenario {
 
                 @Override
                 public void removed() {
+                    System.out.println("Mission end removed");
                     damsel.missionComplete();
                     numOfEndings++;
 
@@ -138,7 +140,9 @@ public class DamselInDistress extends Scenario {
 
         @Override
         public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+            System.out.println("Collide with " + subject);
             if (subject == damsel){
+                System.out.println("  its the damsel");
                 toDelete.add(this);
             }
 

@@ -12,10 +12,17 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatch
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.FollowingChasingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.MultifacetedNPC;
+import com.wisekrakr.firstgame.server.ScenarioHelper;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TravellerWithMission extends Scenario {
+    private static GameObjectFactory<?>[] POSSIBLE_ENEMIES = {
+            ScenarioHelper.CRAZY_SPAWNER_FACTORY,
+            ScenarioHelper.CHASING_SHOOTING_FACTORY,
+            ScenarioHelper.MISSILE_SHOOTER_FACTORY
+    };
 
     private final int initialNumTargets;
     private MultifacetedNPC traveller;
@@ -25,8 +32,8 @@ public class TravellerWithMission extends Scenario {
     private float chaseDistance;
     private boolean missionDropped;
     private int numOfMissions = 1;
-    private String targetName;
     private int p = 0;
+    private GameObjectFactory<?> targetFactory;
 
     public TravellerWithMission(float chaseDistance, int numTargets) {
         this.chaseDistance = chaseDistance;
@@ -35,11 +42,18 @@ public class TravellerWithMission extends Scenario {
     }
 
     @Override
+    public void initialUpdate(SpaceEngine spaceEngine) {
+        int target = GameHelper.randomGenerator.nextInt(POSSIBLE_ENEMIES.length);
+
+        targetFactory = POSSIBLE_ENEMIES[target];
+    }
+
+    @Override
     public void periodicUpdate(SpaceEngine spaceEngine) {
 
-        if (traveller == null){
+        if (traveller == null) {
             traveller = new MultifacetedNPC(GameHelper.randomPosition());
-            spaceEngine.addGameObject(traveller, new SpaceEngine.GameObjectListener()  {
+            spaceEngine.addGameObject(traveller, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
 
@@ -58,18 +72,17 @@ public class TravellerWithMission extends Scenario {
     }
 
 
-    private void updateMission(SpaceEngine spaceEngine){
-
+    private void updateMission(SpaceEngine spaceEngine) {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
                 if (target instanceof Player) {
-                    if (GameHelper.distanceBetween(traveller, target) < chaseDistance){
+                    if (GameHelper.distanceBetween(traveller, target) < chaseDistance) {
                         traveller.chasing(target);
                         if (GameHelper.distanceBetween(traveller, target) < chaseDistance / 2) {
                             missionDropped = true;
                             traveller.fullStop();
-                        }else if(missionDropped){
+                        } else if (missionDropped) {
                             traveller.cruising();
                         }
                     }
@@ -77,26 +90,23 @@ public class TravellerWithMission extends Scenario {
             }
         });
 
-        if (targetName == null) {
-            preLoadTargets();
-        }
-
-        if (missions.size() < numOfMissions && traveller != null && missionDropped){
-
+        if (missions.size() < numOfMissions && traveller != null && missionDropped) {
             float x = traveller.getPosition().x;
             float y = traveller.getPosition().y;
 
             float deltaX = (float) Math.cos(traveller.getOrientation());
             float deltaY = (float) Math.sin(traveller.getOrientation());
 
+            String name = targetFactory.create(new Vector2(0, 0), 0f, 0f).getName();
+
             Mission mission = new KillMission(new Vector2(x + traveller.getCollisionRadius() * deltaX,
-                    y + traveller.getCollisionRadius() * deltaY), targetName);
+                    y + traveller.getCollisionRadius() * deltaY), name);
 
             spaceEngine.addGameObject(mission, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
                     missions.add(mission);
-                    System.out.println("MISSION NAME  " + targetName);
+                    System.out.println("MISSION NAME  " + name);
                 }
 
                 @Override
@@ -107,10 +117,10 @@ public class TravellerWithMission extends Scenario {
             });
         }
 
-        if (missionDropped && missions.size() == 0){
+        if (missionDropped && missions.size() == 0) {
             dropTargets(spaceEngine);
             System.out.println("Number of missions= " + numOfMissions + " ,Number of Enemies= " + targets.size());
-            if (targets.size() == 0){
+            if (targets.size() == 0) {
                 traveller.missionComplete();
                 missionDropped = false;
                 numTargets = initialNumTargets;
@@ -119,16 +129,9 @@ public class TravellerWithMission extends Scenario {
         }
     }
 
-    private void preLoadTargets(){
-
-        if (targets.size() < 1){
-            targetName = chosenTarget().getName();
-        }
-    }
-
-    private void dropTargets(SpaceEngine spaceEngine){
-        GameObject npc = chosenTarget();
+    private void dropTargets(SpaceEngine spaceEngine) {
         if (targets.size() < numTargets) {
+            GameObject npc = targetFactory.create(GameHelper.randomPosition(), 0, GameHelper.generateRandomNumberBetween(200f, 400f));
 
             spaceEngine.addGameObject(npc, new SpaceEngine.GameObjectListener() {
                 @Override
@@ -143,9 +146,8 @@ public class TravellerWithMission extends Scenario {
                 }
             });
         }
-
     }
-
+/*
     private GameObject chosenTarget(){
         int randomNPC = MathUtils.random(1,3);
 
@@ -163,4 +165,5 @@ public class TravellerWithMission extends Scenario {
         }
         return n;
     }
+    */
 }

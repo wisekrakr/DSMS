@@ -162,4 +162,21 @@ public abstract class GameObject {
 
     public void afterRemove(List<GameObject> toAdd, List<GameObject> toRemove) {
     }
+
+    @Override
+    public String toString() {
+        return "GameObject{" +
+                "name='" + name + '\'' +
+                ", position=" + position +
+                ", orientation=" + orientation +
+                ", direction=" + direction +
+                ", collisionRadius=" + collisionRadius +
+                ", width=" + width +
+                ", height=" + height +
+                ", health=" + health +
+                ", damage=" + damage +
+                ", type=" + type +
+                ", actionDistance=" + actionDistance +
+                '}';
+    }
 }

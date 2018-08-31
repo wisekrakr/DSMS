@@ -40,7 +40,7 @@ public class SpaceEngine {
     public GameObject addGameObject(GameObject object, GameObjectListener listener) {
         synchronized (monitor) {
             if (!gameObjects.add(object)) {
-                throw new IllegalArgumentException("Game object already present");
+                throw new IllegalArgumentException("Game object already present: " + object);
             }
 
             if (listener != null) {
@@ -211,7 +211,7 @@ public class SpaceEngine {
 
             for (GameObject subject : gameObjects) {
                 // TODO: change into universal behavior
-                if (subject instanceof NonPlayerCharacter) {
+                if (subject instanceof NonPlayerCharacter || subject instanceof Player) {
                     List<GameObject> nearby = new ArrayList<>();
 
                     for (GameObject target : gameObjects) {
