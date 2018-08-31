@@ -46,6 +46,7 @@ public class NonPlayerCharacter extends GameObject {
         result.put("damage", getDamage());
         result.put("actionDistance", actionDistance);
         result.put("speed", speed);
+        result.put("direction", getDirection());
 
         return result;
     }

@@ -26,6 +26,7 @@ public class ShootingBehavior extends Behavior {
 
             context.setDirection(angle);
             context.setOrientation(angle);
+            context.setSpeed(GameHelper.generateRandomNumberBetween(context.getSpeed(), 75f));
             context.addGameObject(weapon);
 
         }

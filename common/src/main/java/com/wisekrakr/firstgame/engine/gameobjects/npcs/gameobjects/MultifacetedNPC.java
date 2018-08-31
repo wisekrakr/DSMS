@@ -4,36 +4,42 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PlasmaBlastObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
+import com.wisekrakr.firstgame.engine.scenarios.MissionGen;
 
 import java.util.Set;
 
-public class BossMommaNPC extends NonPlayerCharacter {
+public class MultifacetedNPC extends NonPlayerCharacter {
 
     private Behavior desiredBehavior;
 
-    public BossMommaNPC(Vector2 initialPosition) {
-        super(GameObjectVisualizationType.MOTHERSHIP, "Boss Momma", initialPosition);
+    public MultifacetedNPC(Vector2 initialPosition) {
+        super(GameObjectVisualizationType.SHOTTY, "Weary Space Traveller", initialPosition);
 
-        setCollisionRadius(100f);
-        setHealth(getCollisionRadius() * 3);
-
+        setCollisionRadius(GameHelper.generateRandomNumberBetween(15f, 20f));
+        setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3f));
         rootBehavior(new MyBehavior());
     }
 
+    public void cruising() {
+        desiredBehavior = new CruisingBehavior(4f);
+    }
 
-    public void aimFor(GameObject target) {
+    public void chasing(GameObject target) {
         desiredBehavior = new ChasingBehavior(target);
     }
 
-    public void secondaryAttack(GameObject target){
-        desiredBehavior = new ShootingBehavior(new PlasmaBlastObject(getPosition(), getOrientation(), 2f, this), target);
+    public void fullStop(){
+        desiredBehavior = new FullStopBehavior();
+    }
+
+    public void missionComplete() {
+        desiredBehavior = new ExplodeAndLeaveDebrisBehavior(8f);
     }
 
     private class MyBehavior extends Behavior {

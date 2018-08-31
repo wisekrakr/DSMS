@@ -1,35 +1,28 @@
 package com.wisekrakr.firstgame.engine.scenarios;
 
-import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
+import com.badlogic.gdx.math.MathUtils;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 
-import java.util.Random;
-import java.util.function.Function;
+public class MissionGen  {
 
-public class MissionGen extends Scenario {
+    private static Mission mission;
 
-    private float lastCreation = 0f;
-    private float minCreationInterval;
-    private Function<Vector2, QuestGen> factory;
-    private Random randomGenerator = new Random();
+    public static Mission missionSetter(GameObject object){
 
-    public MissionGen(float minCreationInterval, Function<Vector2, QuestGen> factory) {
-        this.minCreationInterval = minCreationInterval;
-        this.factory = factory;
-    }
+        int randomMission = MathUtils.random(1,2);
 
-    @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
-        if (lastCreation + minCreationInterval <= spaceEngine.getTime()) {
-            lastCreation = spaceEngine.getTime();
+        switch (randomMission){
+            case 1:
+                mission = new KillMission(object.getPosition(), null);
+                break;
+            case 2:
+                mission = new PackageDeliveryMission(object.getPosition());
+                break;
 
-            QuestGen quest = factory.apply(GameHelper.randomPosition());
-
-            spaceEngine.addGameObject(quest);
         }
+        return mission;
     }
-
-
 }

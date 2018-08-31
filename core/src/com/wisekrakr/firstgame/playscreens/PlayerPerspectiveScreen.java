@@ -1,23 +1,18 @@
 package com.wisekrakr.firstgame.playscreens;
 
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -35,6 +30,11 @@ import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
 import com.wisekrakr.firstgame.quests.MissionText;
 import com.wisekrakr.firstgame.server.EngineConstants;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.shape.QuadCurve;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +53,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
     private Stage stage;
+
     private PauseScreenAdapter pauseScreenAdapter;
     private BackgroundStars backgroundStars;
 
@@ -128,11 +129,18 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         myAssetManager.loadTextures();
         myAssetManager.loadSkins();
 
+        Pixmap pixmap = new Pixmap(Gdx.files.internal("texture/cursor.png"));
+        Cursor customCursor = Gdx.graphics.newCursor(pixmap, pixmap.getWidth() - pixmap.getWidth()/2,
+                pixmap.getHeight() - pixmap.getHeight()/2);
+        Gdx.graphics.setCursor(customCursor);
+        //Gdx.input.setCursorCatched(true);
+
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera), batch);
         //stage = new Stage(new ScalingViewport(Scaling.stretch, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera));
+
 
         backgroundStage = new Stage();
         Texture backgroundTexture = myAssetManager.assetManager.get("background/bg1.png", Texture.class);
@@ -332,7 +340,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
          */
 
         if (inputManager.isKeyDown(Input.Keys.SPACE)) {
-            camera.zoom = 2.2f;
+            camera.zoom = 1.8f;
             if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
@@ -341,7 +349,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
 
         } else {
-            camera.zoom = 0.8f;
+            camera.zoom = 0.6f;
         }
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
@@ -351,9 +359,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         }
 
 
-/*
+
         //Mouse input
         inputManager.getTouchState(0);
+
 
         if (inputManager.isTouchPressed(0)) {
             System.out.println("PRESSED");
@@ -363,24 +372,26 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (inputManager.isTouchDown(0)) {
             System.out.println("DOWN");
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
-            System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
+            //System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
+
+            float mouseX = inputManager.touchCoordX(0);
+            float mouseY = inputManager.touchCoordY(0);
 
             Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
-            //this.hardSteering = (float) Math.atan2(inputManager.touchCoordX(0) + mouseProjection.x, inputManager.touchCoordY(0) + mouseProjection.y);
 
-            float mouseX = Gdx.input.getX();
-            float mouseY = EngineConstants.ENGINE_HEIGHT - Gdx.input.getY();
+            this.hardSteering = (float)Math.atan2(mouseY - myself.getPosition().y,
+                    mouseX - myself.getPosition().x) ;
 
-            this.hardSteering = (float) Math.atan2(mouseY - myself.getPosition().y, mouseX - myself.getPosition().y);
-            if (this.hardSteering < 0) {
-                hardSteering += 180;
-            }
+            System.out.println("hardsteering = " + hardSteering);
+            //if (hardSteering < 0){
+            //    hardSteering += 1.8f;
+            //}
         }
 
         if (inputManager.isTouchReleased(0)) {
             System.out.println("RELEASED");
         }
-*/
+
         inputManager.update();
     }
 
@@ -641,6 +652,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 overlayStage.addActor(playerSpeed);
                 registerVolatileActor(playerSpeed);
 
+                Label playerDirection = playerHud.directionLabel(object);
+                overlayStage.addActor(playerDirection);
+                registerVolatileActor(playerDirection);
+
+
                 break;
             }
         }
@@ -669,7 +685,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             volatileActors.add(swarmWarning);
 */
 
-
                 switch (object.getType()) {
                     case POWERUP_GENERATOR:
                         // TODO: remove the need for the power up generator
@@ -678,11 +693,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     case SPACESHIP:
                         shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 5f); //5f is default radius
+                        shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 7f); //5f is default radius
                         shapeRenderer.setColor(Color.BLUE);
-                        shapeRenderer.circle(object.getPosition().x + 4 * (float) Math.cos(object.getOrientation()),
-                                object.getPosition().y + 4 * (float) Math.sin(object.getOrientation()),
-                                (5 / 2));
+                        shapeRenderer.circle(object.getPosition().x + 4f * (float) Math.cos(object.getOrientation()),
+                                object.getPosition().y + 4f * (float) Math.sin(object.getOrientation()),
+                                (7f / 2f));
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.rectLine(object.getPosition().x + 7f * (float) Math.cos(object.getOrientation()),
+                                object.getPosition().y + 7f * (float) Math.sin(object.getOrientation()),
+                                object.getPosition().x + 20f * (float) Math.cos(object.getOrientation()),
+                                object.getPosition().y + 20f * (float) Math.sin(object.getOrientation()), 2f);
 
                         if (throttle == Spaceship.ThrottleState.FORWARDS){
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_fly.png", object, batch, null);
@@ -733,6 +753,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(bulletSpeed);
                         registerVolatileActor(bulletSpeed);
 
+                        Label bulletDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(bulletDirection);
+                        registerVolatileActor(bulletDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
 
 
@@ -780,6 +808,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label chaserSpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(chaserSpeed);
                         registerVolatileActor(chaserSpeed);
+
+                        Label chaserDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(chaserDirection);
+                        registerVolatileActor(chaserDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssEls.png", object, batch, 0.1f); //this is so that every object gets its own sprite
 
 
@@ -844,6 +881,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label shitterSpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(shitterSpeed);
                         registerVolatileActor(shitterSpeed);
+
+                        Label shitterDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(shitterDirection);
+                        registerVolatileActor(shitterDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         break;
                     case PEST:
 
@@ -868,6 +914,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label pestSpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(pestSpeed);
                         registerVolatileActor(pestSpeed);
+
+                        Label pestDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(pestDirection);
+                        registerVolatileActor(pestDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         break;
                     case BLINKER:
 
@@ -892,6 +947,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label blinkerSpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(blinkerSpeed);
                         registerVolatileActor(blinkerSpeed);
+
+                        Label blinkerDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(blinkerDirection);
+                        registerVolatileActor(blinkerDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         break;
                     case LASER_BEAM:
                         Color bulletColor = chooseRandomColor(BULLET_COLORS);
@@ -927,6 +991,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(motherSpeed);
                         registerVolatileActor(motherSpeed);
 
+                        Label motherDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(motherDirection);
+                        registerVolatileActor(motherDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/human_mothership.png", object, batch, 0.7f);
 
                         break;
@@ -954,7 +1026,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(dodgerSpeed);
                         registerVolatileActor(dodgerSpeed);
 
+                        Label dodgerDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(dodgerDirection);
+                        registerVolatileActor(dodgerDirection);
 
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssDodger.png", object, batch, 0.1f); //this is so that every object gets its own sprite
 
                         break;
@@ -994,6 +1073,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label missileSpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(missileSpeed);
                         registerVolatileActor(missileSpeed);
+
+                        Label missileDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(missileDirection);
+                        registerVolatileActor(missileDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/missile_default.png", object, batch, null);
 
                         break;
@@ -1020,9 +1108,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     case SPORE:
                         Color sporeColor = chooseRandomColor(SPORE_COLORS);
                         shapeRenderer.setColor(sporeColor);
-                        shapeRenderer.circle(x, y, radius);
-                        break;
+                        //shapeRenderer.circle(x, y, radius);
 
+                        Float width = (Float) object.extraProperties().get("width");
+                        Float height = (Float) object.extraProperties().get("height");
+
+                        shapeRenderer.rectLine(x, y, (float) (x + height * Math.cos(object.getOrientation())),
+                                (float) (y + height * Math.sin(object.getOrientation())), width);
+
+                        break;
                     case SHOTTY:
 
                         shapeRenderer.setColor(Color.MAROON);
@@ -1046,6 +1140,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label shottySpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(shottySpeed);
                         registerVolatileActor(shottySpeed);
+
+                        Label shottyDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(shottyDirection);
+                        registerVolatileActor(shottyDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         break;
                     case POWERUP_MISSILE:
                         shapeRenderer.setColor(Color.GOLD);
@@ -1137,6 +1240,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label aSpeed = enemyHud.speedLabel(object);
                         overlayStage.addActor(aSpeed);
                         registerVolatileActor(aSpeed);
+
+                        Label aDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(aDirection);
+                        registerVolatileActor(aDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         //particleEffectRenderer.exhaustEffect(object);
 
                         break;
@@ -1186,6 +1298,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(testSpeed);
                         registerVolatileActor(testSpeed);
 
+                        Label testDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(testDirection);
+                        registerVolatileActor(testDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
+
                         //statsForObjects.setAllLabels(object);
                         break;
 
@@ -1198,6 +1319,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }
             }
         } finally {
+
             batch.end();
         }
 

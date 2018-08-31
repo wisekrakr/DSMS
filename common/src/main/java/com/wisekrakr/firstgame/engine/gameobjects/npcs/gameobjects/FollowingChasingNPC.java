@@ -41,7 +41,7 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
             } else {
                 if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                     context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 20f)));
-                } else if (context.nearest() instanceof NonPlayerCharacter || context.nearest() instanceof Player) {
+                } else if (!(context.nearest() instanceof DebrisObject || !(context.nearest() instanceof WeaponObjectClass))) {
                     if (!(context.nearest() instanceof FollowingChasingNPC)) {
                         target = context.nearest();
                         context.pushSubBehavior(new ChasingBehavior(target));

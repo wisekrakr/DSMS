@@ -37,6 +37,7 @@ public class EnemyHud {
     private Label orientationLabel;
     private Label speedLabel;
     private Label positionLabel;
+    private Label directionLabel;
 
     public EnemyHud(OrthographicCamera camera) {
         this.camera = camera;
@@ -139,6 +140,18 @@ public class EnemyHud {
         return orientationLabel;
     }
 
+    public Label directionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+
+        if (!(activatedData)) {
+            directionLabel.setVisible(false);
+            directionLabel.clear();
+        }else {
+            directionLabel = new Label("direction = " + String.valueOf(objectSnapshot.extraProperties().get("direction")), new Label.LabelStyle(debugFont, Color.WHITE));
+            directionLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y -20 );
+        }
+        return directionLabel;
+    }
+
     public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
         if (!(activatedData)) {
             speedLabel.setVisible(false);
@@ -146,7 +159,7 @@ public class EnemyHud {
         }else {
             Float speed = (Float) objectSnapshot.extraProperties().get("speed");
             speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
-            speedLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y - 20);
+            speedLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y - 30);
         }
         return speedLabel;
     }

@@ -13,12 +13,6 @@ import com.wisekrakr.firstgame.engine.scenarios.SwarmScenario;
 import static com.badlogic.gdx.math.MathUtils.random;
 
 public class ScenarioHelper {
-    public static SwarmScenario CREATE_PEST_SWARM() {
-        return new SwarmScenario(6, 20,
-                position -> new EnemyPest("Pest", position,
-                        20, random.nextFloat() * 2000,
-                        50f, 3.5f));
-    }
 
 
     public static final GameObjectFactory CHASER_FACTORY =

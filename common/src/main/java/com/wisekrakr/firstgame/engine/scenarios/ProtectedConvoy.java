@@ -109,7 +109,7 @@ public class ProtectedConvoy extends Scenario {
         for (int i = 0; i < toRemove; i++) {
             Protector p = iterator.next();
             iterator.remove();
-            p.comeHome(booty.getPosition());
+            p.comeHome(booty);
         }
 
         for (Protector protector: minions) {

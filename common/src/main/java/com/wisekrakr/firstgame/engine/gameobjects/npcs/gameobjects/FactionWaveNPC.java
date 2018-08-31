@@ -11,43 +11,32 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 
-public class Protector extends NonPlayerCharacter {
+public class FactionWaveNPC extends NonPlayerCharacter {
     private Behavior desiredBehavior;
 
-    public Protector(Vector2 initialPosition) {
-        super(GameObjectVisualizationType.SHITTER, "Protector", initialPosition);
+    public FactionWaveNPC(Vector2 initialPosition) {
+        super(GameObjectVisualizationType.ENEMY_CHASER, "Wave Minion", initialPosition);
 
-        setCollisionRadius(GameHelper.generateRandomNumberBetween(10f, 15f));
+        setCollisionRadius(GameHelper.generateRandomNumberBetween(5f, 8f));
         setHealth(GameHelper.generateRandomNumberBetween(getCollisionRadius(), getCollisionRadius() * 3));
 
         rootBehavior(new MyBehavior());
     }
 
-    public void aimFor(GameObject target) {
-        desiredBehavior = new ChasingBehavior(target);
-    }
-
-    public void shootAt(GameObject target){
-        desiredBehavior = new ShootingBehavior(new BulletObject(getPosition(), getOrientation(), 3f, this, 200f), target);
-    }
-
-    public void protect(GameObject target) {
-        desiredBehavior = new CirclingBehavior(target);
-    }
-
-    public void comeHome(GameObject target) {
-        desiredBehavior = new StickyBehavior(target);
+    public void cruising() {
+        desiredBehavior = new CruisingBehavior(4f);
     }
 
     public void selfDestruct(){
         desiredBehavior = new ExplodeAndLeaveDebrisBehavior(13);
     }
 
-    public void setDesiredBehavior(Behavior desiredBehavior) {
-        this.desiredBehavior = desiredBehavior;
+    public void shootAt(GameObject target){
+        desiredBehavior = new ShootingBehavior(new BulletObject(getPosition(), getOrientation(), 3f, this, 200f), target);
     }
 
     private class MyBehavior extends Behavior {
+
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
             if (desiredBehavior != null) {

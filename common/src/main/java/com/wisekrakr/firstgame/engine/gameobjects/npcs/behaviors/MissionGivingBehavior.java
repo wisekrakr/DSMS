@@ -14,8 +14,9 @@ public class MissionGivingBehavior extends Behavior {
     private Mission mission;
     private float time;
 
-    public MissionGivingBehavior(GameObject target) {
+    public MissionGivingBehavior(GameObject target, Mission mission) {
         this.target = target;
+        this.mission = mission;
     }
 
     @Override
@@ -32,6 +33,7 @@ public class MissionGivingBehavior extends Behavior {
                 missionActive = true;
                 if (clock - time > 5f) {
                     context.removeGameObject(mission);
+                    missionActive = false;
                     time = clock;
                 }
             }

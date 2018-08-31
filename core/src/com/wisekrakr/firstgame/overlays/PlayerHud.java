@@ -38,6 +38,7 @@ public class PlayerHud implements Disposable {
 
     private List<Scenario> scenarios = new ArrayList<Scenario>();
     private Label orientationLabel;
+    private Label directionLabel;
 
     public PlayerHud(OrthographicCamera camera, InputMultiplexer inputMultiplexer) {
         this.camera = camera;
@@ -90,6 +91,7 @@ public class PlayerHud implements Disposable {
     }
 
 
+
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
         String name = "P1";
         nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
@@ -123,11 +125,20 @@ public class PlayerHud implements Disposable {
         return orientationLabel;
     }
 
+    public Label directionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+
+        Float direction = (Float) objectSnapshot.extraProperties().get("direction");
+        directionLabel = new Label("direction = " + String.valueOf(direction), new Label.LabelStyle(debugFont, Color.WHITE));
+        directionLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
+
+        return directionLabel;
+    }
+
     public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
 
         Float speed = (Float) objectSnapshot.extraProperties().get("speed");
         Label speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
-        speedLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
+        speedLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 30);
 
         return speedLabel;
     }

@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
@@ -58,15 +59,10 @@ public class TestNPC extends NonPlayerCharacter {
             if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                 context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
 
-            }else if (context.nearest() instanceof NonPlayerCharacter || context.nearest() instanceof Player) {
+            }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
 
-                context.pushSubBehavior(new ShootingBehavior(new PlasmaBlastObject(context.getPosition(),
-                        context.getOrientation(),
-                        3f,
-                        context.thisObject()), target));
-
-
+                context.pushSubBehavior(new ShootingBehavior(new PackageObject(context.getPosition(), context.thisObject()), target));
 
             }
             if (context.getHealth() <= 0){

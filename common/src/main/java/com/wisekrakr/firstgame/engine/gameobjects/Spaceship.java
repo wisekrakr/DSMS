@@ -72,6 +72,7 @@ public class Spaceship extends GameObject {
     private boolean pickedUp = false;
     private double healthPercentage;
     private double maxHealth;
+    private float angle;
 
     public Spaceship(String name, Vector2 position) {
         super(GameObjectVisualizationType.SPACESHIP, name, position);
@@ -280,10 +281,12 @@ public class Spaceship extends GameObject {
         } else {
             switch (steering) {
                 case LEFT:
-                    setOrientation(getOrientation() + 3f * delta);
+                    angle = angle + 3f * delta;
+                    setOrientation(angle);
                     break;
                 case RIGHT:
-                    setOrientation(getOrientation() - 3f * delta);
+                    angle = angle - 3f * delta;
+                    setOrientation(angle);
                     break;
             }
         }
@@ -640,6 +643,8 @@ public class Spaceship extends GameObject {
         result.put("pickedUp", pickedUp);
 
         result.put("speed", speed);
+
+        result.put("direction", getDirection());
 
         return result;
     }

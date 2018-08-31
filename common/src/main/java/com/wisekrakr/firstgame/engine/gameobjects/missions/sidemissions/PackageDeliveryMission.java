@@ -13,8 +13,8 @@ import java.util.Set;
 public class PackageDeliveryMission extends Mission {
     private boolean pickedUp;
 
-    public PackageDeliveryMission(Vector2 initialPosition, String packageSender) {
-        super(GameObjectVisualizationType.TEST_QUEST, packageSender, initialPosition);
+    public PackageDeliveryMission(Vector2 initialPosition) {
+        super(GameObjectVisualizationType.TEST_QUEST, "Deliver Package Mission", initialPosition);
         setCollisionRadius(3f);
 
     }
