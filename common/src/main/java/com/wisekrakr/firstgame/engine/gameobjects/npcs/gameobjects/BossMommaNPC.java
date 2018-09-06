@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
@@ -11,8 +10,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PlasmaBlastObject;
-
-import java.util.Set;
 
 public class BossMommaNPC extends NonPlayerCharacter {
 
@@ -33,7 +30,8 @@ public class BossMommaNPC extends NonPlayerCharacter {
     }
 
     public void secondaryAttack(GameObject target){
-        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new PlasmaBlastObject(initialPosition, initialDirection, 2f, this), target);
+        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                new PlasmaBlastObject(initialPosition, initialDirection, 2f, this), 3f, target);
     }
 
     private class MyBehavior extends Behavior {

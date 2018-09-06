@@ -13,13 +13,21 @@ import java.util.*;
 
 public class DamselInDistress extends Scenario {
 
+    enum ScenarioState {
+        INITIATION,
+        PERVERTS,
+        ESCORT
+    }
+
+    private ScenarioState state = ScenarioState.INITIATION;
+
     private Damsel damsel;
     private Set<Pervert> perverts = new HashSet<>();
     private float runToDistance;
     private float escapeDistance;
     private final int maxPerverts;
     private Set<MissionEnding> missionEndings = new HashSet<>();
-    private int numOfEndings = 1;
+    private int numOfEndings = 0;
 
     public DamselInDistress(float runToDistance, float escapeDistance, int maxPerverts) {
         this.runToDistance = runToDistance;
@@ -28,33 +36,25 @@ public class DamselInDistress extends Scenario {
 
     }
 
-    @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
-        if (damsel == null) {
-            damsel = new Damsel( GameHelper.randomPosition());
-            spaceEngine.addGameObject(damsel, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
+    private void initiate(SpaceEngine spaceEngine){
 
-                }
+        damsel = new Damsel( GameHelper.randomPosition());
+        spaceEngine.addGameObject(damsel, new SpaceEngine.GameObjectListener() {
+            @Override
+            public void added() {
+            }
 
-                @Override
-                public void removed() {
-                    damsel = null;
-
-                }
-
-            });
-            damsel.lookingForAHero();
-        }
-        updateDamsel(spaceEngine);
-        if (damsel.isClingingOn()) {
-            bringDamselToSafeLocation(spaceEngine);
-        }
-
+            @Override
+            public void removed() {
+            }
+        });
+        damsel.lookingForAHero();
+        state = ScenarioState.PERVERTS;
     }
 
-    private void updateDamsel(SpaceEngine spaceEngine){
+
+
+    private void updatePervertsAndDamsel(SpaceEngine spaceEngine){
 
         if (perverts.size() < maxPerverts){
             Pervert pervert = new Pervert(GameHelper.randomPosition());
@@ -92,6 +92,9 @@ public class DamselInDistress extends Scenario {
                 if (target instanceof Player){
                     if (GameHelper.distanceBetween(damsel.getPosition(), target.getPosition()) < runToDistance) {
                         damsel.clingOn(target);
+                        if (damsel.isClingingOn()) {
+                            state = ScenarioState.ESCORT;
+                        }
                     }
                 }
             }
@@ -99,6 +102,9 @@ public class DamselInDistress extends Scenario {
     }
 
     private void bringDamselToSafeLocation(SpaceEngine spaceEngine){
+        if (numOfEndings == 0){
+            numOfEndings++;
+        }
 
         if (missionEndings.size() < numOfEndings){
             System.out.println("Adding a mission end");
@@ -115,11 +121,28 @@ public class DamselInDistress extends Scenario {
                 public void removed() {
                     System.out.println("Mission end removed");
                     damsel.missionComplete();
-                    numOfEndings++;
-
+                    numOfEndings--;
                 }
             });
         }
+    }
+
+    @Override
+    public void periodicUpdate(SpaceEngine spaceEngine) {
+        switch (state) {
+            case INITIATION:
+                initiate(spaceEngine);
+                break;
+            case PERVERTS:
+                updatePervertsAndDamsel(spaceEngine);
+                break;
+            case ESCORT:
+                bringDamselToSafeLocation(spaceEngine);
+                break;
+            default:
+                throw new IllegalStateException("Unknown: " + state);
+        }
+
     }
 
     private class MissionEnding extends Mission{

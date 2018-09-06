@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
@@ -28,7 +27,8 @@ public class Protector extends NonPlayerCharacter {
     }
 
     public void shootAt(GameObject target){
-        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new BulletObject(initialPosition, initialDirection, 3f, this, 200f), target);
+        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                new BulletObject(initialPosition, initialDirection, this), 0.8f, target);
     }
 
     public void protect(GameObject target) {

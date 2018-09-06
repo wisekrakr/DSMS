@@ -3,15 +3,9 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.BulletMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MineMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MissileMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.QuestGen;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
@@ -21,7 +15,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceshipparts.Exhaust;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.*;
@@ -33,7 +26,6 @@ public class Spaceship extends GameObject {
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
     private AimingState aimingState = AimingState.NONE;
-    private PowerUpState powerUpState = PowerUpState.NONE;
     private SwitchWeaponState switchWeaponState = SwitchWeaponState.NONE;
 
     private Float hardSteering;
@@ -47,9 +39,6 @@ public class Spaceship extends GameObject {
     private double health;
     private float score;
 
-    private Minion minionShooterPlayer;
-    private Minion minionFighterPlayer;
-    private Shield shield;
 
     private float lastDodge = -100000f;
     private float time;
@@ -115,9 +104,7 @@ public class Spaceship extends GameObject {
         LEFT_BEAM_ANGLE, RIGHT_BEAM_ANGLE, NONE
     }
 
-    public enum PowerUpState {
-        MINION, NONE
-    }
+
 
     public enum SwitchWeaponState {
         NONE("Peace 4 All, man"), BULLETS("Bullitos"), MISSILES("Homers"), SPACE_MINES("Blinky Boom");
@@ -192,35 +179,6 @@ public class Spaceship extends GameObject {
             }
         }
 
-
-        if (subject instanceof PowerUpShield) {
-            toDelete.add(subject);
-            shield = new Shield("shield", getPosition(), getDirection(), getSpeed(), this.getCollisionRadius() * 2, MissileMechanics.determineMissileDamage());
-            toAdd.add(shield);
-            shieldActivated = true;
-        }
-        if (subject instanceof PowerUpMissile) {
-            toDelete.add(subject);
-            this.setMissileAmmoCount(this.getMissileAmmoCount() + 20);
-        }
-        if (subject instanceof PowerUpHealth) {
-            toDelete.add(subject);
-            this.setHealth(this.getHealth() + 100);
-        }
-        if (subject instanceof PowerUpMinion) {
-            toDelete.add(subject);
-            randomMinion = MathUtils.random(1, 2);
-            switch (randomMinion) {
-                case 1:
-                    InitMinionShooter(toDelete, toAdd);
-                    break;
-                case 2:
-                    InitMinionFighter(toDelete, toAdd);
-                    break;
-
-            }
-        }
-
         if (subject instanceof Mission) {
             pickedUp = true;
         }
@@ -275,7 +233,7 @@ public class Spaceship extends GameObject {
         else {
             missileTarget = null;
         }
-        System.out.println("Targeting : " + missileTarget);
+        //System.out.println("Targeting : " + missileTarget);
     }
 
     @Override
@@ -377,11 +335,6 @@ public class Spaceship extends GameObject {
 
         setDirection((float) Math.atan2((double) speedY, (double) speedX));
 
-        //if shieldActivated set shield to player position
-        if (shieldActivated) {
-            shield.setPosition(getPosition());
-        }
-
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
 
@@ -401,30 +354,6 @@ public class Spaceship extends GameObject {
                 missileLeftOver = 0;
                 minesLeftOver = 0;
                 break;
-        }
-        setMinionRotationSpeed(getSpeed() / 100);
-        switch (powerUpState) {
-            case MINION:
-                if (randomMinion == 1) {
-                    if (minionShooterActivated) {
-                        minionAngle += getMinionRotationSpeed() * delta;
-                        minionShooterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 80f),
-                                (float) (getPosition().y + Math.sin(minionAngle) * 80f)));
-                    }
-                }
-                if (randomMinion == 2) {
-                    if (minionFighterActivated) {
-                        if (minionFighterPlayer.getMinionAttackState() != Minion.MinionAttackState.FIGHT) {
-                            minionAngle += getMinionRotationSpeed() * delta;
-                            minionFighterPlayer.setPosition(new Vector2((float) (getPosition().x + Math.cos(minionAngle) * 80f),
-                                    (float) (getPosition().y + Math.sin(minionAngle) * 80f)));
-                        }
-                    }
-                }
-                break;
-            case NONE:
-                break;
-
         }
     }
 
@@ -454,7 +383,7 @@ public class Spaceship extends GameObject {
 
             BulletObject b = new BulletObject(
                     new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
-                            y + ((i * 5) + getCollisionRadius()) * deltaY), adaptedAngle, 5, this, getSpeed() + 200);
+                            y + ((i * 5) + getCollisionRadius()) * deltaY), adaptedAngle, this);
 
             toAdd.add(b);
         }
@@ -484,7 +413,7 @@ public class Spaceship extends GameObject {
         for (int i = 0; i < exactMissileCount; i++) {
             MissileObject m = new MissileObject(
                     new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
-                            y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), 5, missileTarget, this);
+                            y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), missileTarget, this);
 
             toAdd.add(m);
         }
@@ -509,34 +438,6 @@ public class Spaceship extends GameObject {
         }
     }
 
-    private Minion InitMinionShooter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        minionShooterPlayer = new Minion( new Vector2(
-                getPosition().x + (getCollisionRadius() * 2),
-                getPosition().y + (getCollisionRadius() * 2)), MinionMechanics.determineHealth(), getDirection(),
-                MinionMechanics.radius(1));
-        toAdd.add(minionShooterPlayer);
-        powerUpState = PowerUpState.MINION;
-        minionShooterActivated = true;
-        minionShooterPlayer.setMinionShooter(true);
-        minionShooterPlayer.setPlayerMinion(true);
-
-        return minionShooterPlayer;
-    }
-
-    private Minion InitMinionFighter(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        minionFighterPlayer = new Minion( new Vector2(
-                getPosition().x + (getCollisionRadius() * 2),
-                getPosition().y + (getCollisionRadius() * 2)),
-                MinionMechanics.determineHealth(),
-                getDirection(), MinionMechanics.radius(1));
-        toAdd.add(minionFighterPlayer);
-        powerUpState = PowerUpState.MINION;
-        minionFighterActivated = true;
-        minionFighterPlayer.setMinionFighter(true);
-        minionFighterPlayer.setPlayerMinion(true);
-        minionFighterPlayer.setTargetVector(this.getPosition());
-        return minionFighterPlayer;
-    }
 
     @Override
     public double getHealth() {
@@ -556,20 +457,12 @@ public class Spaceship extends GameObject {
         this.missileAmmoCount = missileAmmoCount;
     }
 
-    public ShootingState getShootingState() {
-        return shootingState;
-    }
-
-    public void setShootingState(ShootingState shootingState) {
-        this.shootingState = shootingState;
+    public void setMineAmmoCount(int mineAmmoCount) {
+        this.mineAmmoCount = mineAmmoCount;
     }
 
     public int getAmmoCount() {
         return ammoCount;
-    }
-
-    public float getDistanceTravelled() {
-        return distanceTravelled;
     }
 
     public float getScore() {
@@ -580,7 +473,6 @@ public class Spaceship extends GameObject {
         this.score = score;
     }
 
-
     public int getMineAmmoCount() {
         return mineAmmoCount;
     }
@@ -588,7 +480,6 @@ public class Spaceship extends GameObject {
     public float getSpeed() {
         return speed;
     }
-
 
     public double getDamageTaken() {
         return damageTaken;
@@ -604,26 +495,6 @@ public class Spaceship extends GameObject {
 
     public void setHit(boolean hit) {
         this.hit = hit;
-    }
-
-    public double getMaxHealth() {
-        return maxHealth;
-    }
-
-    public float getMineAreaOfEffect() {
-        return mineAreaOfEffect;
-    }
-
-    public void setMineAreaOfEffect(float mineAreaOfEffect) {
-        this.mineAreaOfEffect = mineAreaOfEffect;
-    }
-
-    public float getMinionRotationSpeed() {
-        return minionRotationSpeed;
-    }
-
-    public void setMinionRotationSpeed(float minionRotationSpeed) {
-        this.minionRotationSpeed = minionRotationSpeed;
     }
 
     @Override
@@ -644,6 +515,7 @@ public class Spaceship extends GameObject {
         result.put("health", health);
 
         result.put("score", score);
+
         result.put("switchWeaponState", switchWeaponState.getFieldDescription());
 
         result.put("healthPercentage", healthInPercentages());

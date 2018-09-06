@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,17 +15,15 @@ public class Shield extends GameObject {
 
     private float speed;
     private float radius;
-    private double damage;
     private float direction;
     private float time;
     private float timeActivated;
 
-    public Shield(String name, Vector2 initialPosition, float direction, float speed, float radius, double damage) {
+    public Shield(String name, Vector2 initialPosition, float direction, float speed, float radius) {
         super(GameObjectVisualizationType.SHIELD, name, initialPosition);
         this.direction = direction;
         this.speed = speed;
         this.radius = radius;
-        this.damage = damage;
 
         setCollisionRadius(radius);
         setHealth(100);
@@ -36,19 +35,9 @@ public class Shield extends GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (subject instanceof Enemy) {
             subject.setHealth(subject.getHealth() - getDamage());
-            ((Enemy) subject).setDirection(((Enemy) subject).getDirection() + (float) Math.PI);
             setHealth(getHealth() - 10);
         }
-        if (subject instanceof Bullet) {
-            toDelete.add(subject);
-        }
-        if (subject instanceof HomingMissile) {
-            toDelete.add(subject);
-        }
-        if (subject instanceof Spores) {
-            toDelete.add(subject);
-        }
-        if (subject instanceof LaserBeam) {
+        if (subject instanceof WeaponObjectClass) {
             toDelete.add(subject);
         }
     }
@@ -65,38 +54,6 @@ public class Shield extends GameObject {
 
     }
 
-    public double getDamage() {
-        return damage;
-    }
-
-    public void setDamage(double damage) {
-        this.damage = damage;
-    }
-
-    public float getRadius() {
-        return radius;
-    }
-
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
-
-    public float getDirection() {
-        return direction;
-    }
-
-    public void setDirection(float direction) {
-        this.direction = direction;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
     public float getTimeActivated() {
         return timeActivated;
     }
@@ -110,7 +67,6 @@ public class Shield extends GameObject {
         Map<String, Object> result = new HashMap<String, Object>();
 
         result.put("radius", radius);
-        result.put("damage", damage);
 
         return result;
     }

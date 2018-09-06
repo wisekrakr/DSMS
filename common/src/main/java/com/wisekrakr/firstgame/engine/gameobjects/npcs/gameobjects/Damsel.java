@@ -34,7 +34,7 @@ public class Damsel extends NonPlayerCharacter{
     }
 
     public void clingOn(GameObject savior) {
-        desiredBehavior = new StickyBehavior(savior);
+        desiredBehavior = new ChasingBehavior(savior);
         clingingOn = true;
     }
 

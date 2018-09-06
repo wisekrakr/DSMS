@@ -30,7 +30,7 @@ public class StickyBehavior extends Behavior {
 
                 context.getPosition().x = (target.getPosition().x + target.getCollisionRadius() + context.getRadius());
                 context.getPosition().y = (target.getPosition().y + target.getCollisionRadius() + context.getRadius());
-
+                context.setOrientation(target.getOrientation());
             }
         }
     }

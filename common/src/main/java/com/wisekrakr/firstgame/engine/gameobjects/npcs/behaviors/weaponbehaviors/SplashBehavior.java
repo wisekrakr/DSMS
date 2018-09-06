@@ -1,11 +1,8 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors;
 
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 
 public class SplashBehavior extends Behavior {
@@ -32,7 +29,7 @@ public class SplashBehavior extends Behavior {
         if (clock - timeToSplash >= destructInterval){
             int fragments = GameHelper.randomGenerator.nextInt(10)+1;
             for(int i = 0; i < fragments; i++) {
-                context.addGameObject(new BulletObject(context.getPosition(), GameHelper.randomDirection(), 3f, context.thisObject(), 200));
+                context.addGameObject(new BulletObject(context.getPosition(), GameHelper.randomDirection(), context.thisObject()));
             }
             context.removeGameObject(context.thisObject());
             timeToSplash = clock;

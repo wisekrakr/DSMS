@@ -30,8 +30,7 @@ public class SwarmScenario extends Scenario {
     private float escapeDistance;
     private int numberOfProtectors;
     private int numberOfWaves;
-    private int numberOfWaveMinions = 10;
-    private boolean leaderIsAlive = false;
+    private int numberOfWaveMinions = 15;
 
     public SwarmScenario(float aggressionDistance, float escapeDistance, int numberOfProtectors, int numberOfWaves) {
         this.aggressionDistance = aggressionDistance;
@@ -173,7 +172,7 @@ public class SwarmScenario extends Scenario {
         }
 
         if (waveMinions.size() < numberOfWaveMinions) {
-            FactionWaveNPC waveMinion = new FactionWaveNPC(new Vector2(100, 100));
+            FactionWaveNPC waveMinion = new FactionWaveNPC(GameHelper.randomPosition());
             spaceEngine.addGameObject(waveMinion, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
@@ -182,6 +181,7 @@ public class SwarmScenario extends Scenario {
 
                 @Override
                 public void removed() {
+                    numberOfWaveMinions--;
                 }
             });
 
@@ -189,12 +189,13 @@ public class SwarmScenario extends Scenario {
             waveMinion.shootAt(target);
             //waveMinion.cruising();
         }
-/*
-        List<GameObject>list = new ArrayList<>(enemies);
-        for (FactionWaveNPC factionWaveNPC: waveMinions){
-            //factionWaveNPC.shootAt(list.get(0)); //TODO: Exception in thread "Thread-1" java.lang.IllegalArgumentException: Game object already present
-            factionWaveNPC.cruising();
+
+        if (numberOfWaveMinions == 0){
+            numberOfWaveMinions = 20;
+            state = ScenarioState.SWARM2;
         }
-        */
+
     }
+
+
 }

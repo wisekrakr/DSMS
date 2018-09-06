@@ -32,6 +32,7 @@ import com.wisekrakr.firstgame.quests.MissionText;
 import com.wisekrakr.firstgame.server.EngineConstants;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.QuadCurve;
 
 
@@ -1327,7 +1328,25 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(EngineConstants.MIN_X, EngineConstants.MIN_Y, EngineConstants.ENGINE_WIDTH, EngineConstants.ENGINE_HEIGHT);
+        shapeRenderer.end();
 
+
+        //Testing Ellipses
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
+            Float radius = (Float) object.extraProperties().get("radius");
+
+            switch (object.getType()){
+                case SHIELD:
+                    String lightBlue = "8EE2EC";
+                    shapeRenderer.setColor(Color.valueOf(lightBlue));
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius*2);
+
+                    break;
+            }
+        }
         shapeRenderer.end();
     }
 

@@ -6,8 +6,8 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.FaceHuggingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.Protector;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.ShieldObject;
+import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +33,12 @@ public class Treasure extends GameObject {
         return result;
     }
 
-
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
         if(subject instanceof Player){
             toDelete.add(this);
-            int treasure = MathUtils.random(3,3);
+            int treasure = MathUtils.random(4,4);
             switch (treasure){
                 case 1:
                     ((Player) subject).setMissileAmmoCount(((Player) subject).getMissileAmmoCount() + 10);
@@ -48,11 +47,10 @@ public class Treasure extends GameObject {
                     subject.setHealth(subject.getHealth() + 20);
                     break;
                 case 3:
-                    Protector protector = new Protector(new Vector2(
-                            subject.getPosition().x + (subject.getCollisionRadius() * 2),
-                            subject.getPosition().y + (subject.getCollisionRadius() * 2)));
-                    protector.setDesiredBehavior(new FaceHuggingBehavior(6f, subject));
-                    toAdd.add(protector);
+                    ((Player) subject).setMineAmmoCount(((Player) subject).getMineAmmoCount() + 10);
+                    break;
+                case 4:
+                    toAdd.add(new ShieldObject(subject.getPosition(), subject));
                     break;
             }
         }

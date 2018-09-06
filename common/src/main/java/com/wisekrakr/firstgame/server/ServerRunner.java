@@ -92,13 +92,13 @@ public class ServerRunner {
 
         timeThread.setDaemon(true);
 
-        //gameEngine.addScenario(new ProtectedConvoy(100, 500, 3, 7, 3));
+        gameEngine.addScenario(new ProtectedConvoy(100, 500, 1, 4, 3));
 
         //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
 
         //gameEngine.addScenario(new TravellerWithMission(300f, 5));
 
-        gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
+        //gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
 
         //gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
 

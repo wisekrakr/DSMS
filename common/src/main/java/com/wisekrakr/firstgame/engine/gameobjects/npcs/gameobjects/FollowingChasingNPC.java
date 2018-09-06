@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
@@ -46,8 +45,8 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
                         target = context.nearest();
                         context.pushSubBehavior(new ChasingBehavior(target));
                         if (context.nearestInFloats() <= actionDistance / 2) {
-                            context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new BulletObject(initialPosition, initialDirection, 3,
-                                    context.thisObject(), 200), target));
+                            context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                                    new BulletObject(initialPosition, initialDirection, context.thisObject()), 0.7f, target));
                         }
                     }
                 } else {

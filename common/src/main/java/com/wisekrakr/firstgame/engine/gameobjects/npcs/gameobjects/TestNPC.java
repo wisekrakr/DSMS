@@ -5,15 +5,12 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.*;
-
-import java.util.Set;
 
 
 public class TestNPC extends NonPlayerCharacter {
@@ -62,7 +59,9 @@ public class TestNPC extends NonPlayerCharacter {
             }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
 
-                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new PackageObject(initialPosition, context.thisObject()), target));
+                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                        new BulletObject(initialPosition, initialDirection, context.thisObject()), null,
+                        target));
 
             }
             if (context.getHealth() <= 0){

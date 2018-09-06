@@ -10,9 +10,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Bullet;
-import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 
 public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
 
@@ -45,8 +42,8 @@ public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
             }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
 
-                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) -> new MissileObject(initialPosition, initialDirection, 6,
-                        target, context.thisObject()), target));
+                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                        new MissileObject(initialPosition, initialDirection, target, context.thisObject()), 2f, target));
 
             }else if (context.nearest() instanceof AsteroidNPC){
                 target = context.nearest();
