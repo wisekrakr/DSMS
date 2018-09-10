@@ -6,10 +6,13 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ShootingBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.LaserObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PlasmaBlastObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BossMommaNPC extends NonPlayerCharacter {
 
@@ -19,19 +22,35 @@ public class BossMommaNPC extends NonPlayerCharacter {
         super(GameObjectVisualizationType.MOTHERSHIP, "Boss Momma", initialPosition);
 
         setCollisionRadius(100f);
-        setHealth(getCollisionRadius() * 3);
+        setHealth(20);
 
         rootBehavior(new MyBehavior());
     }
 
+    public void announcePresence(){
+        desiredBehavior = new CruisingBehavior(5f); //Change to something ominous.
+    }
 
     public void aimFor(GameObject target) {
         desiredBehavior = new ChasingBehavior(target);
     }
 
-    public void secondaryAttack(GameObject target){
+    public void primaryAttack(GameObject target){
+
         desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                new PlasmaBlastObject(initialPosition, initialDirection, 2f, this), 3f, target);
+                new PlasmaBlastObject(new Vector2(getPosition().x + getCollisionRadius() * (float)Math.cos(getOrientation()),
+                        getPosition().y + getCollisionRadius() * (float)Math.sin(getOrientation())),
+                        getOrientation(), 3f, this), 3f, target);
+
+    }
+
+    public void secondaryAttack(GameObject target){
+
+        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                new LaserObject(new Vector2(getPosition().x + getCollisionRadius() * (float)Math.cos(getOrientation()),
+                        getPosition().y + getCollisionRadius() * (float)Math.sin(getOrientation())),
+                        getOrientation(), 3f, this), 1f, target);
+
     }
 
     private class MyBehavior extends Behavior {

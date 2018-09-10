@@ -43,7 +43,7 @@ public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
                 target = context.nearest();
 
                 context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                        new MissileObject(initialPosition, initialDirection, target, context.thisObject()), 2f, target));
+                        new MissileObject(initialPosition, initialDirection, target, context.thisObject()), null, target));
 
             }else if (context.nearest() instanceof AsteroidNPC){
                 target = context.nearest();

@@ -5,6 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
@@ -69,7 +70,7 @@ public class NonPlayerCharacter extends GameObject {
     }
 
     private void keepObjectsFromOverlapping(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd){
-        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject || subject instanceof Mission)) {
+        if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject || subject instanceof Mission || subject instanceof AsteroidNPC)) {
             float angle = GameHelper.angleBetween(this, subject);
             if (GameHelper.distanceBetween(this, subject) <= getCollisionRadius() + subject.getCollisionRadius()) {
                 setPosition(new Vector2(getPosition().x -= Math.cos(angle) * GameHelper.randomGenerator.nextFloat() * 12.5,

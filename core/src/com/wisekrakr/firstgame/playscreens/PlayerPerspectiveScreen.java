@@ -7,7 +7,6 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,11 +29,6 @@ import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
 import com.wisekrakr.firstgame.quests.MissionText;
 import com.wisekrakr.firstgame.server.EngineConstants;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.QuadCurve;
-
 
 
 import java.util.ArrayList;
@@ -78,7 +72,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Spaceship.ThrottleState throttle;
     private Spaceship.ShootingState shootingState;
     private Spaceship.SpecialPowerState powerState;
-    private Spaceship.AimingState aimingState;
+    private Float mouseAiming;
     private Spaceship.SwitchWeaponState switchWeaponState;
 
     private SpaceSnapshot.GameObjectSnapshot myself;
@@ -367,30 +361,23 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         if (inputManager.isTouchPressed(0)) {
             System.out.println("PRESSED");
-
-        }
-
-        if (inputManager.isTouchDown(0)) {
-            System.out.println("DOWN");
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
             //System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
-
+            //System.out.println("Mouse aim: " + mouseAiming);
             float mouseX = inputManager.touchCoordX(0);
             float mouseY = inputManager.touchCoordY(0);
 
-            Vector3 mouseProjection = camera.project(new Vector3(0, 0, 100));
+            this.mouseAiming = (float)Math.atan2(mouseY, mouseX) - MathUtils.PI/2;
+        }
 
-            this.hardSteering = (float)Math.atan2(mouseY - myself.getPosition().y,
-                    mouseX - myself.getPosition().x) ;
+        if (inputManager.isTouchDown(0)) {
+            //System.out.println("DOWN");
 
-            System.out.println("hardsteering = " + hardSteering);
-            //if (hardSteering < 0){
-            //    hardSteering += 1.8f;
-            //}
         }
 
         if (inputManager.isTouchReleased(0)) {
             System.out.println("RELEASED");
+            this.mouseAiming = null;
         }
 
         inputManager.update();
@@ -568,9 +555,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             connector.setPaused(false);
         }
 
-        aimingState = Spaceship.AimingState.NONE;
-
-        connector.controlSpaceship(target, throttle, steering, powerState, shootingState, aimingState, switchWeaponState, hardSteering);
+        connector.controlSpaceship(target, throttle, steering, powerState, shootingState, mouseAiming, switchWeaponState, hardSteering);
 
         hardSteering = null;
     }

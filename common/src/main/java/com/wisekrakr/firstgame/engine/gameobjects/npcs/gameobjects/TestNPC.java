@@ -52,17 +52,22 @@ public class TestNPC extends NonPlayerCharacter {
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-
+            System.out.println(context.existingSubBehavior());
             if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                 context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
 
             }else if (context.nearest() instanceof Player) {
                 target = context.nearest();
-
+                context.pushSubBehavior(new ChasingBehavior(target));
+                if (context.nearestInFloats() <= actionDistance / 2) {
+                    context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                            new BulletObject(initialPosition, initialDirection, context.thisObject()), null, target));
+                }
+           /*
                 context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
                         new BulletObject(initialPosition, initialDirection, context.thisObject()), null,
                         target));
-
+*/
             }
             if (context.getHealth() <= 0){
                 context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));

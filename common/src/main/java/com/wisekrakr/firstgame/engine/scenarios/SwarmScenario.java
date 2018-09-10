@@ -39,6 +39,27 @@ public class SwarmScenario extends Scenario {
         this.numberOfWaves = numberOfWaves;
     }
 
+    @Override
+    public void periodicUpdate(SpaceEngine spaceEngine) {
+        switch (state) {
+            case INITIATION:
+                initiate(spaceEngine);
+                break;
+            case LEADER:
+                updateWithLeader(spaceEngine);
+                break;
+            case SWARM1:
+                swarm(spaceEngine);
+                break;
+            case SWARM2:
+                swarm(spaceEngine);
+                break;
+
+            default:
+                throw new IllegalStateException("Unknown: " + state);
+        }
+    }
+
     private void initiate(SpaceEngine spaceEngine) {
         factionLeader = new MultifacetedNPC(GameHelper.randomPosition());
         spaceEngine.addGameObject(factionLeader, new SpaceEngine.GameObjectListener() {
@@ -97,26 +118,7 @@ public class SwarmScenario extends Scenario {
         wave(spaceEngine);
     }
 
-    @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
-        switch (state) {
-            case INITIATION:
-                initiate(spaceEngine);
-                break;
-            case LEADER:
-                updateWithLeader(spaceEngine);
-                break;
-            case SWARM1:
-                swarm(spaceEngine);
-                break;
-            case SWARM2:
-                swarm(spaceEngine);
-                break;
 
-            default:
-                throw new IllegalStateException("Unknown: " + state);
-        }
-    }
 
     private void updateProtectors(SpaceEngine spaceEngine) {
         if (protectors.size() < numberOfProtectors) {

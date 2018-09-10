@@ -13,7 +13,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjec
 
 public class FollowingChasingNPC extends NonPlayerCharacter {
 
-
     public FollowingChasingNPC(Vector2 initialPosition, float actionDistance) {
         super(GameObjectVisualizationType.PEST, "Chasey", initialPosition, new MyBehavior(initialPosition, actionDistance, null));
         setCollisionRadius(14f);
@@ -35,26 +34,22 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
+            System.out.println(context.existingSubBehavior());
             if (context.getHealth() <= 0) {
                 context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
-            } else {
+            }else {
                 if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
                     context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 20f)));
-                } else if (!(context.nearest() instanceof DebrisObject || !(context.nearest() instanceof WeaponObjectClass))) {
-                    if (!(context.nearest() instanceof FollowingChasingNPC)) {
-                        target = context.nearest();
-                        context.pushSubBehavior(new ChasingBehavior(target));
-                        if (context.nearestInFloats() <= actionDistance / 2) {
-                            context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                                    new BulletObject(initialPosition, initialDirection, context.thisObject()), 0.7f, target));
-                        }
+                } else if (!(context.nearest() instanceof DebrisObject || !(context.nearest() instanceof WeaponObjectClass ||
+                        !(context.nearest() instanceof FollowingChasingNPC)))) {
+                    target = context.nearest();
+                    context.pushSubBehavior(new ChasingBehavior(target));
+                    if (context.nearestInFloats() <= actionDistance / 2) {
+                        context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                                new BulletObject(initialPosition, initialDirection, context.thisObject()), null, target));
                     }
-                } else {
-                    context.pushSubBehavior(new CruisingBehavior(8f));
                 }
-
             }
-
         }
     }
 }

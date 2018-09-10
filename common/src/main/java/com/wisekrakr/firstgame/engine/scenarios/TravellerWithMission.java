@@ -1,16 +1,14 @@
 package com.wisekrakr.firstgame.engine.scenarios;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.FollowingChasingNPC;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.MultifacetedNPC;
 import com.wisekrakr.firstgame.server.ScenarioHelper;
 
@@ -18,13 +16,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TravellerWithMission extends Scenario {
-    private static GameObjectFactory<?>[] POSSIBLE_ENEMIES = {
+
+    public static GameObjectFactory<?>[] POSSIBLE_ENEMIES = {
             ScenarioHelper.CRAZY_SPAWNER_FACTORY,
             ScenarioHelper.CHASING_SHOOTING_FACTORY,
             ScenarioHelper.MISSILE_SHOOTER_FACTORY
     };
 
+    enum ScenarioState {
+        INITIATION,
+        TRAVELLER,
+        MISSION_START,
+        MISSION_STAGE_KILL,
+        MISSION_STAGE_DELIVERY,
+        MISSION_END
+    }
+
+    private ScenarioState state = ScenarioState.INITIATION;
+
     private final int initialNumTargets;
+    private float spawnInterval;
     private MultifacetedNPC traveller;
     private Set<Mission> missions = new HashSet<>();
     private Set<GameObject> targets = new HashSet<>();
@@ -32,13 +43,15 @@ public class TravellerWithMission extends Scenario {
     private float chaseDistance;
     private boolean missionDropped;
     private int numOfMissions = 1;
-    private int p = 0;
     private GameObjectFactory<?> targetFactory;
+    private GameObjectFactory<?> missionFactory;
+    private float lastTravellerSpawned;
 
-    public TravellerWithMission(float chaseDistance, int numTargets) {
+    public TravellerWithMission(float chaseDistance, int numTargets, float spawnInterval) {
         this.chaseDistance = chaseDistance;
         this.numTargets = numTargets;
         initialNumTargets = numTargets;
+        this.spawnInterval = spawnInterval;
     }
 
     @Override
@@ -48,31 +61,58 @@ public class TravellerWithMission extends Scenario {
         targetFactory = POSSIBLE_ENEMIES[target];
     }
 
-    @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
+    private void initiate(SpaceEngine spaceEngine){
+        if (lastTravellerSpawned == 0){
+            lastTravellerSpawned = spaceEngine.getTime();
+        }
 
-        if (traveller == null) {
+        if (spaceEngine.getTime() - lastTravellerSpawned > spawnInterval) {
             traveller = new MultifacetedNPC(GameHelper.randomPosition());
             spaceEngine.addGameObject(traveller, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
-
+                    state = ScenarioState.TRAVELLER;
+                    System.out.println("Traveller spawned: " + traveller.getPosition());
                 }
 
                 @Override
                 public void removed() {
-                    traveller = null;
+
                 }
             });
             traveller.cruising();
         }
+    }
 
-        updateMission(spaceEngine);
+    @Override
+    public void periodicUpdate(SpaceEngine spaceEngine) {
+        switch (state) {
+            case INITIATION:
+                initiate(spaceEngine);
+                break;
+            case TRAVELLER:
+                updateTraveller(spaceEngine);
+                break;
+            case MISSION_START:
+                updateMission(spaceEngine);
+                break;
+            case MISSION_STAGE_KILL:
+                dropTargets(spaceEngine);
+                break;
+            case MISSION_STAGE_DELIVERY:
+
+                break;
+            case MISSION_END:
+                missionEnd();
+                break;
+
+            default:
+                throw new IllegalStateException("Unknown: " + state);
+        }
 
     }
 
-
-    private void updateMission(SpaceEngine spaceEngine) {
+    private void updateTraveller(SpaceEngine spaceEngine){
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
@@ -80,17 +120,18 @@ public class TravellerWithMission extends Scenario {
                     if (GameHelper.distanceBetween(traveller, target) < chaseDistance) {
                         traveller.chasing(target);
                         if (GameHelper.distanceBetween(traveller, target) < chaseDistance / 2) {
-                            missionDropped = true;
                             traveller.fullStop();
-                        } else if (missionDropped) {
-                            traveller.cruising();
+                            state = ScenarioState.MISSION_START;
                         }
                     }
                 }
             }
         });
+    }
 
-        if (missions.size() < numOfMissions && traveller != null && missionDropped) {
+    private void updateMission(SpaceEngine spaceEngine) {
+
+        if (missions.size() < numOfMissions && traveller != null) {
             float x = traveller.getPosition().x;
             float y = traveller.getPosition().y;
 
@@ -99,71 +140,67 @@ public class TravellerWithMission extends Scenario {
 
             String name = targetFactory.create(new Vector2(0, 0), 0f, 0f).getName();
 
-            Mission mission = new KillMission(new Vector2(x + traveller.getCollisionRadius() * deltaX,
-                    y + traveller.getCollisionRadius() * deltaY), name);
+            Mission mission = new Mission(name ,new Vector2(x + traveller.getCollisionRadius() * deltaX,
+                    y + traveller.getCollisionRadius() * deltaY));
 
             spaceEngine.addGameObject(mission, new SpaceEngine.GameObjectListener() {
                 @Override
                 public void added() {
                     missions.add(mission);
-                    System.out.println("MISSION NAME  " + name);
+                    System.out.println("MISSION ADDED: " + mission.getClass() + " ,Target: " + name);
+
                 }
 
                 @Override
                 public void removed() {
                     missions.remove(mission);
+                    traveller.cruising();
                     numOfMissions--;
+                    if (mission.isPickedUp()) {
+
+                            state = ScenarioState.MISSION_STAGE_KILL;
+
+                    }
                 }
             });
-        }
-
-        if (missionDropped && missions.size() == 0) {
-            dropTargets(spaceEngine);
-            System.out.println("Number of missions= " + numOfMissions + " ,Number of Enemies= " + targets.size());
-            if (targets.size() == 0) {
-                traveller.missionComplete();
-                missionDropped = false;
-                numTargets = initialNumTargets;
-                numOfMissions++;
-            }
         }
     }
 
     private void dropTargets(SpaceEngine spaceEngine) {
-        if (targets.size() < numTargets) {
-            GameObject npc = targetFactory.create(GameHelper.randomPosition(), 0, GameHelper.generateRandomNumberBetween(200f, 400f));
 
-            spaceEngine.addGameObject(npc, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
-                    targets.add(npc);
-                }
+        if (initialNumTargets != 0) {
+            if (targets.size() < numTargets) {
 
-                @Override
-                public void removed() {
-                    targets.remove(npc);
-                    numTargets--;
-                }
-            });
+                GameObject npc = targetFactory.create(GameHelper.randomPosition(), GameHelper.randomDirection(),
+                        GameHelper.generateRandomNumberBetween(200f, 400f));
+                spaceEngine.addGameObject(npc, new SpaceEngine.GameObjectListener() {
+                    @Override
+                    public void added() {
+                        targets.add(npc);
+                    }
+
+                    @Override
+                    public void removed() {
+                        targets.remove(npc);
+                        numTargets--;
+
+                    }
+                });
+            }else if (targets.size() == 0) {
+                state = ScenarioState.MISSION_END;
+            }
+            System.out.println("Number of missions= " + numOfMissions + " ,Number of Targets= " + targets.size());
         }
     }
-/*
-    private GameObject chosenTarget(){
-        int randomNPC = MathUtils.random(1,3);
 
-        GameObject n = null;
-        switch (randomNPC) {
-            case 1:
-                n = new CrazilySpawningPassiveAggressiveNPC(GameHelper.randomPosition(), GameHelper.generateRandomNumberBetween(200f, 400f));
-                break;
-            case 2:
-                n = new FollowingChasingNPC(GameHelper.randomPosition(), GameHelper.generateRandomNumberBetween(200f, 400f));
-                break;
-            case 3:
-                n = new AsteroidWatchingMissileShootingNPC(GameHelper.randomPosition(), GameHelper.generateRandomNumberBetween(200f, 400f));
-                break;
-        }
-        return n;
+    private void missionEnd(){
+        traveller.missionComplete();
+        numTargets = initialNumTargets;
+        numOfMissions++;
+        lastTravellerSpawned = 0;
+
+        System.out.println("Mission Complete! Number of new Missions: " + numOfMissions);
+
+        state = ScenarioState.INITIATION;
     }
-    */
 }

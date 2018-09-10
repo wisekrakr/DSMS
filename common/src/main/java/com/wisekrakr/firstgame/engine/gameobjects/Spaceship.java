@@ -1,20 +1,14 @@
 package com.wisekrakr.firstgame.engine.gameobjects;
 
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
-import com.wisekrakr.firstgame.engine.gameobjects.mechanics.MinionMechanics;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpHealth;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMinion;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpShield;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.*;
@@ -25,7 +19,7 @@ public class Spaceship extends GameObject {
     private SteeringState steering = SteeringState.CENTER;
     private SpecialPowerState powerState = SpecialPowerState.NO_POWER;
     private ShootingState shootingState = ShootingState.PACIFIST;
-    private AimingState aimingState = AimingState.NONE;
+    private Float mouseAiming;
     private SwitchWeaponState switchWeaponState = SwitchWeaponState.NONE;
 
     private Float hardSteering;
@@ -62,6 +56,8 @@ public class Spaceship extends GameObject {
     private double healthPercentage;
     private double maxHealth;
     private float angle;
+    private float adaptedAngle;
+    private float shootTime = 0.001f;
 
     public Spaceship(String name, Vector2 position) {
         super(GameObjectVisualizationType.SPACESHIP, name, position);
@@ -101,7 +97,7 @@ public class Spaceship extends GameObject {
     }
 
     public enum AimingState {
-        LEFT_BEAM_ANGLE, RIGHT_BEAM_ANGLE, NONE
+        ON, NONE
     }
 
 
@@ -141,12 +137,12 @@ public class Spaceship extends GameObject {
     }
 
     public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
-                        AimingState aimingState, SwitchWeaponState switchWeaponState, Float hardSteering) {
+                        Float aimingState, SwitchWeaponState switchWeaponState, Float hardSteering) {
         this.throttle = throttle;
         this.steering = steering;
         this.powerState = powerState;
         this.shootingState = shootingState;
-        this.aimingState = aimingState;
+        this.mouseAiming = aimingState;
         this.switchWeaponState = switchWeaponState;
         this.hardSteering = hardSteering;
     }
@@ -355,6 +351,38 @@ public class Spaceship extends GameObject {
                 minesLeftOver = 0;
                 break;
         }
+
+        if (mouseAiming != null){
+            shootTime -= delta * 0.5f;
+
+            float x = getPosition().x;
+            float y = getPosition().y;
+
+            float deltaX = ((float) Math.cos(getOrientation()));
+            float deltaY = ((float) Math.sin(getOrientation()));
+
+            adaptedAngle = (float) Math.atan2(deltaY * 200 + speedY, deltaX * 200 + speedX);
+
+            if (shootTime < 0) {
+                if (switchWeaponState == SwitchWeaponState.BULLETS){
+                    BulletObject b = new BulletObject(
+                            new Vector2(x + getCollisionRadius() * deltaX,
+                                    y + getCollisionRadius() * deltaY), adaptedAngle + mouseAiming, this);
+
+                    toAdd.add(b);
+                    ammoCount--;
+                }else if (switchWeaponState == SwitchWeaponState.MISSILES){
+                    MissileObject m = new MissileObject(
+                            new Vector2(x + getCollisionRadius(),y + getCollisionRadius()),
+                            adaptedAngle + mouseAiming, missileTarget, this);
+
+                    toAdd.add(m);
+                    missileAmmoCount--;
+                }
+                shootTime = 0.001f;
+            }
+            mouseAiming = null;
+        }
     }
 
     private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -377,7 +405,7 @@ public class Spaceship extends GameObject {
         float deltaX = ((float) Math.cos(getOrientation()));
         float deltaY = ((float) Math.sin(getOrientation()));
 
-        float adaptedAngle = (float) Math.atan2(deltaY * bulletSpeed + speedY, deltaX * bulletSpeed + speedX);
+        adaptedAngle = (float) Math.atan2(deltaY * bulletSpeed + speedY, deltaX * bulletSpeed + speedX);
 
         for (int i = 0; i < exactShotCount; i++) {
 

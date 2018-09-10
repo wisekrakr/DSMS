@@ -92,18 +92,20 @@ public class ServerRunner {
 
         timeThread.setDaemon(true);
 
-        gameEngine.addScenario(new ProtectedConvoy(100, 500, 1, 4, 3));
+        //gameEngine.addScenario(new ProtectedConvoy(100, 500, 1, 4, 3));
 
         //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
 
-        //gameEngine.addScenario(new TravellerWithMission(300f, 5));
+        gameEngine.addScenario(new TravellerWithMission(300f, 2, 1));
 
-        //gameEngine.addScenario(new BossMommaFight(600f, 10, 3));
+        //gameEngine.addScenario(new BossMommaFight(600f, 1, 3));
 
         //gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
 
+
+
 /*
-        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
+        gameEngine.addScenario(new WildlifeManagement(5, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new TestNPC(initialPosition, actionDistance);
@@ -118,20 +120,20 @@ public class ServerRunner {
             }
         }));
 
-        gameEngine.addScenario(new WildlifeManagement(3, 2, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new FollowingChasingNPC(initialPosition, actionDistance);
-            }
-        }));
-
+        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
+                    @Override
+                    public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                        return new FollowingChasingNPC(initialPosition, actionDistance);
+                    }
+                }));
 
         gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
-            }
-        }));
+                    @Override
+                    public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
+                        return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
+                    }
+                }));
+
 */
         gameEngine.addScenario(new WildlifeManagement(5, 5, new GameObjectFactory() {
             @Override
@@ -193,7 +195,7 @@ public class ServerRunner {
                                         public void doIt(GameObject target) {
                                             ship.control(request.getThrottleState(), request.getSteeringState(),
                                                     request.getSpecialPowerState(), request.getShootingState(),
-                                                    request.getAimingState(), request.getSwitchWeaponState(),
+                                                    request.getMouseAiming(), request.getSwitchWeaponState(),
                                                     request.getHardSteering());
                                         }
                                     });

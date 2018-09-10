@@ -92,7 +92,7 @@ public class ClientConnector {
 
     public void controlSpaceship(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
                                  Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState,
-                                 Spaceship.AimingState aimingState, Spaceship.SwitchWeaponState switchWeaponState, Float hardSteering) {
+                                 Float aimingState, Spaceship.SwitchWeaponState switchWeaponState, Float hardSteering) {
         SpaceshipControlRequest controlRequest =
                 new SpaceshipControlRequest(name, throttleState, steeringState, specialPowerState, shootingState, aimingState, switchWeaponState, hardSteering);
 

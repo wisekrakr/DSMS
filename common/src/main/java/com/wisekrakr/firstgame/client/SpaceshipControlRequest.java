@@ -11,22 +11,21 @@ public class SpaceshipControlRequest implements Serializable {
     private Spaceship.SteeringState steeringState;
     private Spaceship.SpecialPowerState specialPowerState;
     private Spaceship.ShootingState shootingState;
-    private Spaceship.AimingState aimingState;
+    private Float mouseAiming;
     private Spaceship.SwitchWeaponState switchWeaponState;
     private Float hardSteering;
 
 
     public SpaceshipControlRequest(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,
                                    Spaceship.SpecialPowerState specialPowerState, Spaceship.ShootingState shootingState,
-                                   Spaceship.AimingState aimingState, Spaceship.SwitchWeaponState switchWeaponState, Float hardSteering) {
+                                   Float mouseAiming, Spaceship.SwitchWeaponState switchWeaponState, Float hardSteering) {
         this.name = name;
         this.throttleState = throttleState;
         this.steeringState = steeringState;
         this.specialPowerState = specialPowerState;
         this.shootingState = shootingState;
-        this.aimingState = aimingState;
+        this.mouseAiming = mouseAiming;
         this.switchWeaponState = switchWeaponState;
-
         this.hardSteering = hardSteering;
     }
 /*
@@ -48,8 +47,8 @@ public class SpaceshipControlRequest implements Serializable {
         return shootingState;
     }
 
-    public Spaceship.AimingState getAimingState() {
-        return aimingState;
+    public Float getMouseAiming() {
+        return mouseAiming;
     }
 
     public Spaceship.SwitchWeaponState getSwitchWeaponState() {
@@ -74,7 +73,7 @@ public class SpaceshipControlRequest implements Serializable {
                 steeringState == that.steeringState &&
                 specialPowerState == that.specialPowerState &&
                 shootingState == that.shootingState &&
-                aimingState == that.aimingState &&
+                Objects.equals(mouseAiming, that.mouseAiming) &&
                 switchWeaponState == that.switchWeaponState &&
                 Objects.equals(hardSteering, that.hardSteering);
     }
@@ -82,6 +81,6 @@ public class SpaceshipControlRequest implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(name, throttleState, steeringState, specialPowerState, shootingState, aimingState, switchWeaponState, hardSteering);
+        return Objects.hash(name, throttleState, steeringState, specialPowerState, shootingState, mouseAiming, switchWeaponState, hardSteering);
     }
 }

@@ -36,6 +36,24 @@ public class DamselInDistress extends Scenario {
 
     }
 
+    @Override
+    public void periodicUpdate(SpaceEngine spaceEngine) {
+        switch (state) {
+            case INITIATION:
+                initiate(spaceEngine);
+                break;
+            case PERVERTS:
+                updatePervertsAndDamsel(spaceEngine);
+                break;
+            case ESCORT:
+                bringDamselToSafeLocation(spaceEngine);
+                break;
+            default:
+                throw new IllegalStateException("Unknown: " + state);
+        }
+
+    }
+
     private void initiate(SpaceEngine spaceEngine){
 
         damsel = new Damsel( GameHelper.randomPosition());
@@ -127,23 +145,6 @@ public class DamselInDistress extends Scenario {
         }
     }
 
-    @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
-        switch (state) {
-            case INITIATION:
-                initiate(spaceEngine);
-                break;
-            case PERVERTS:
-                updatePervertsAndDamsel(spaceEngine);
-                break;
-            case ESCORT:
-                bringDamselToSafeLocation(spaceEngine);
-                break;
-            default:
-                throw new IllegalStateException("Unknown: " + state);
-        }
-
-    }
 
     private class MissionEnding extends Mission{
 
