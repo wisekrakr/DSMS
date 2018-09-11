@@ -73,6 +73,7 @@ public class MyAssetManager implements Disposable {
         assetManager.load("texture/healthbarFore.png", Texture.class);
         assetManager.load("texture/healthbarBack.png", Texture.class);
         assetManager.load("texture/healthbarBorder.png", Texture.class);
+        assetManager.load("texture/compass.png", Texture.class);
         assetManager.load("sprites/spaceship.png", Texture.class);
         assetManager.load("sprites/spaceship_fly.png", Texture.class);
         assetManager.load("sprites/spaceship_boost.png", Texture.class);
@@ -89,6 +90,7 @@ public class MyAssetManager implements Disposable {
         assetManager.load("sprites/ssHomer.png", Texture.class);
         assetManager.load("sprites/ssMutator.png", Texture.class);
         assetManager.load("sprites/ssPlane.png", Texture.class);
+        assetManager.load("sprites/compass_small.png", Texture.class);
 
         assetManager.finishLoading();
     }

@@ -34,7 +34,7 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
-            System.out.println(context.existingSubBehavior());
+
             if (context.getHealth() <= 0) {
                 context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }else {
@@ -47,6 +47,11 @@ public class FollowingChasingNPC extends NonPlayerCharacter {
                     if (context.nearestInFloats() <= actionDistance / 2) {
                         context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
                                 new BulletObject(initialPosition, initialDirection, context.thisObject()), null, target));
+                    }
+                } else if (context.nearest() instanceof WeaponObjectClass){
+                    target = context.nearest();
+                    if (context.collisionDetection(target)){
+                        context.pushSubBehavior(new ReactiveBehavior(((WeaponObjectClass) target).getMaster()));
                     }
                 }
             }

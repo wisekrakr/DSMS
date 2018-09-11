@@ -10,6 +10,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 
 public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
 
@@ -35,24 +36,29 @@ public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
 
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
-
-            if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
-
-            }else if (context.nearest() instanceof Player) {
-                target = context.nearest();
-
-                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                        new MissileObject(initialPosition, initialDirection, target, context.thisObject()), null, target));
-
-            }else if (context.nearest() instanceof AsteroidNPC){
-                target = context.nearest();
-                if (!(context.existingSubBehavior() instanceof CirclingBehavior)) {
-                    context.pushSubBehavior(new CirclingBehavior(target));
-                }
-            }
             if (context.getHealth() <= 0){
                 context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+            }else {
+                if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
+                    context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
+
+                } else if (context.nearest() instanceof Player) {
+                    target = context.nearest();
+
+                    context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                            new MissileObject(initialPosition, initialDirection, target, context.thisObject()), null, target));
+
+                } else if (context.nearest() instanceof AsteroidNPC) {
+                    target = context.nearest();
+                    if (!(context.existingSubBehavior() instanceof CirclingBehavior)) {
+                        context.pushSubBehavior(new CirclingBehavior(target));
+                    }
+                } else if (context.nearest() instanceof WeaponObjectClass){
+                    target = context.nearest();
+                    if (context.collisionDetection(target)){
+                        context.pushSubBehavior(new ReactiveBehavior(((WeaponObjectClass) target).getMaster()));
+                    }
+                }
             }
         }
     }

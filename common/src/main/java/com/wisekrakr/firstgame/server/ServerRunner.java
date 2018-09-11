@@ -105,7 +105,7 @@ public class ServerRunner {
 
 
 /*
-        gameEngine.addScenario(new WildlifeManagement(5, 1, new GameObjectFactory() {
+        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new TestNPC(initialPosition, actionDistance);

@@ -18,9 +18,9 @@ public class PackageObject extends WeaponObjectClass{
     public PackageObject(Vector2 initialPosition, GameObject master) {
         super(GameObjectVisualizationType.SPORE, "Package", initialPosition, master);
 
-        this.rootBehavior(new RotatingBehavior(GameHelper.generateRandomNumberBetween(5f, 20f)));
+        this.rootBehavior(new RotatingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f)));
 
-        this.setDimensions(6f, 14f);
+        this.setDimensions(14f, 14f);
     }
 
     @Override

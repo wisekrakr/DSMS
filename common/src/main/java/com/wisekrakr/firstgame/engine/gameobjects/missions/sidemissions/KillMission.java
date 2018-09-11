@@ -13,12 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class KillMission extends Mission {
-
-    private boolean pickedUp;
-
     public KillMission(Vector2 initialPosition, String targets) {
         super(GameObjectVisualizationType.TEST_QUEST, targets, initialPosition);
 
     }
-
 }

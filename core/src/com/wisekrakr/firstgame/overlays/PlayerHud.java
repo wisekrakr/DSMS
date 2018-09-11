@@ -27,18 +27,11 @@ public class PlayerHud implements Disposable {
     private InputMultiplexer inputMultiplexer;
 
     private MyAssetManager myAssetManager;
-    private TextureRegionDrawable healthBarTexture;
     private Skin skin;
 
     private BitmapFont font;
     private OrthographicCamera camera;
     public Stage stage;
-    private Label nameLabel;
-    private ProgressBar bar;
-
-    private List<Scenario> scenarios = new ArrayList<Scenario>();
-    private Label orientationLabel;
-    private Label directionLabel;
 
     public PlayerHud(OrthographicCamera camera, InputMultiplexer inputMultiplexer) {
         this.camera = camera;
@@ -70,11 +63,6 @@ public class PlayerHud implements Disposable {
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-
-    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("radius");
-    }
-
     private Double health(SpaceSnapshot.GameObjectSnapshot object){
         return (Double) object.extraProperties().get("health");
     }
@@ -86,15 +74,9 @@ public class PlayerHud implements Disposable {
         return (Double) object.extraProperties().get("healthPercentage");
     }
 
-    private Double damageTaken(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("damageTaken");
-    }
-
-
-
     public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
         String name = "P1";
-        nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
+        Label nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
         nameLabel.setPosition(projection(object).x, projection(object).y + 30, Align.center);
         return nameLabel;
     }
@@ -104,12 +86,12 @@ public class PlayerHud implements Disposable {
         TextureRegion slider = new TextureRegion(healthBar);
         slider.setRegionWidth(3);
         slider.setRegionHeight(1);
-        healthBarTexture = new TextureRegionDrawable(slider);
+        TextureRegionDrawable healthBarTexture = new TextureRegionDrawable(slider);
 
         ProgressBar.ProgressBarStyle barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
 
-        bar = new ProgressBar(healthPercentage(object).floatValue(), maxHealth(object).floatValue(), 20f, true, barStyle);
+        ProgressBar bar = new ProgressBar(healthPercentage(object).floatValue(), maxHealth(object).floatValue(), 20f, true, barStyle);
         bar.setSize(5 * 5, 5 * 5);
         bar.setPosition(Gdx.graphics.getWidth() - bar.getWidth()/2, Gdx.graphics.getHeight() - 25, Align.right);
         bar.setValue(health(object).floatValue());
@@ -119,7 +101,7 @@ public class PlayerHud implements Disposable {
 
     public Label orientationLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
 
-        orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
+        Label orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
         orientationLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 10);
 
         return orientationLabel;
@@ -128,7 +110,7 @@ public class PlayerHud implements Disposable {
     public Label directionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
 
         Float direction = (Float) objectSnapshot.extraProperties().get("direction");
-        directionLabel = new Label("direction = " + String.valueOf(direction), new Label.LabelStyle(debugFont, Color.WHITE));
+        Label directionLabel = new Label("direction = " + String.valueOf(direction), new Label.LabelStyle(debugFont, Color.WHITE));
         directionLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
 
         return directionLabel;

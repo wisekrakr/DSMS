@@ -12,6 +12,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.ExplodeAndLeaveDebrisBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.*;
 
+import java.util.Set;
+
 
 public class TestNPC extends NonPlayerCharacter {
 
@@ -36,7 +38,6 @@ public class TestNPC extends NonPlayerCharacter {
 */
 
 
-
     private static class MyBehavior extends Behavior{
         private final Vector2 initialPosition;
         private float actionDistance;
@@ -52,26 +53,28 @@ public class TestNPC extends NonPlayerCharacter {
         @Override
         public void elapseTime(float clock, float delta, BehaviorContext context) {
 
-            System.out.println(context.existingSubBehavior());
-            if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
-
-            }else if (context.nearest() instanceof Player) {
-                target = context.nearest();
-                context.pushSubBehavior(new ChasingBehavior(target));
-                if (context.nearestInFloats() <= actionDistance / 2) {
-                    context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                            new BulletObject(initialPosition, initialDirection, context.thisObject()), null, target));
-                }
-           /*
-                context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                        new BulletObject(initialPosition, initialDirection, context.thisObject()), null,
-                        target));
-*/
-            }
             if (context.getHealth() <= 0){
                 context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+            }else {
+                if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
+                    context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
+
+                } else if (context.nearest() instanceof Player) {
+                    target = context.nearest();
+                    context.pushSubBehavior(new ChasingBehavior(target));
+                    if (context.nearestInFloats() <= actionDistance / 2) {
+                        context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                                new BulletObject(initialPosition, initialDirection, context.thisObject()), null, target));
+                    }
+
+                } else if (context.nearest() instanceof WeaponObjectClass){
+                    target = context.nearest();
+                    if (context.collisionDetection(target)){
+                        context.pushSubBehavior(new ReactiveBehavior(((WeaponObjectClass) target).getMaster()));
+                    }
+                }
             }
+
         }
     }
 }

@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
+import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +14,6 @@ import java.util.Set;
 
 public class Mission extends GameObject {
 
-    private float timeCounter;
     private boolean pickedUp;
 
     public Mission(String name, Vector2 initialPosition) {
@@ -23,6 +24,16 @@ public class Mission extends GameObject {
     public Mission(GameObjectVisualizationType type, String name, Vector2 initialPosition) {
         this(name, initialPosition);
 
+    }
+
+    public String className(){
+        String name = "";
+        if (this instanceof KillMission){
+            name = KillMission.class.getName();
+        }else if (this instanceof PackageDeliveryMission){
+            name = PackageDeliveryMission.class.getName();
+        }
+        return name;
     }
 
     @Override

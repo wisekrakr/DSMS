@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class PackageDeliveryMission extends Mission {
-    private boolean pickedUp;
 
     public PackageDeliveryMission(Vector2 initialPosition, String targetName) {
         super(GameObjectVisualizationType.TEST_QUEST, targetName, initialPosition);

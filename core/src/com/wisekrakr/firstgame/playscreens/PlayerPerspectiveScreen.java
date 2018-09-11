@@ -100,7 +100,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     private MissionText missionText;
 
-
+    private Compass compass;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -165,6 +165,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         pauseScreenAdapter = new PauseScreenAdapter(inputMultiplexer);
 
         missionText = new MissionText(myAssetManager);
+
+        compass = new Compass();
+
+
 
     }
 
@@ -414,6 +418,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 throttle = Spaceship.ThrottleState.FORWARDS;
             } else if (inputManager.isKeyDown(Input.Keys.S)) {
                 throttle = Spaceship.ThrottleState.REVERSE;
+            }else if (inputManager.isKeyDown(Input.Keys.R)){
+                throttle = Spaceship.ThrottleState.FULL_STOP;
             }
         }
 
@@ -554,6 +560,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (inputManager.isKeyPressed(Input.Keys.R)) {
             connector.setPaused(false);
         }
+        if (inputManager.isKeyPressed(Input.Keys.TAB)){
+
+        }
 
         connector.controlSpaceship(target, throttle, steering, powerState, shootingState, mouseAiming, switchWeaponState, hardSteering);
 
@@ -641,6 +650,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 Label playerDirection = playerHud.directionLabel(object);
                 overlayStage.addActor(playerDirection);
                 registerVolatileActor(playerDirection);
+
 
 
                 break;
@@ -1430,16 +1440,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             missionText.showMission(mission, delta);
         }
 
+        compass.updateCompass(myself);
+
     }
 
     private void setSwitchWeaponState(Spaceship.SwitchWeaponState switchWeaponState) {
         this.switchWeaponState = switchWeaponState;
     }
-
-    public Spaceship.ShootingState getShootingState() {
-        return shootingState;
-    }
-
 
     @Override
     public void resize(int width, int height) {

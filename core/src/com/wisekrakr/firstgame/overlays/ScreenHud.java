@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -20,15 +21,17 @@ import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import javafx.scene.control.Menu;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabBuilder;
+import javafx.scene.control.TabPane;
+import javafx.scene.shape.Rectangle;
 
 /**
- * Created by David on 12/1/2017.
+ * Created by David on 12/1/2018.
  */
 public class ScreenHud implements Disposable {
 
-    private ProgressBar bar;
-    private ProgressBar.ProgressBarStyle barStyle;
-    private Skin skin;
     private Spaceship.SwitchWeaponState switchWeaponState = Spaceship.SwitchWeaponState.NONE;
 
     private final MyAssetManager myAssetManager;
@@ -77,6 +80,7 @@ public class ScreenHud implements Disposable {
         myAssetManager = new MyAssetManager();
         myAssetManager.loadFonts();
         myAssetManager.loadTextures();
+        myAssetManager.loadSkins();
 
         Table table = new Table();
         table.top();
@@ -98,10 +102,6 @@ public class ScreenHud implements Disposable {
         nameSetLabel = new Label(String.format("%s", getNameSetLabel()), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
         healthLabel = new Label("HP", new Label.LabelStyle(font, Color.WHITE));
         healthCountLabel = new Label(String.format("%06d", healthCounter), new Label.LabelStyle(new BitmapFont(), Color.GOLDENROD));
-
-        Table infoTable = new Table();
-        infoTable.bottom();
-        infoTable.setFillParent(true);
 
         table.add(timeLabel).expandX().padTop(10);
         table.add(distanceLabel).expandX().padTop(10);
@@ -174,11 +174,6 @@ public class ScreenHud implements Disposable {
         }
 
 
-    }
-
-
-    public ProgressBar getBar() {
-        return bar;
     }
 
     @Override
