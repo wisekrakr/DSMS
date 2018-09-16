@@ -8,6 +8,7 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
 public class BlinkingBehavior extends Behavior {
 
+    //TODO: make this a jump through portal behavior or something
     private GameObject target;
     private float blinkInterval;
     private float blinkingTime;

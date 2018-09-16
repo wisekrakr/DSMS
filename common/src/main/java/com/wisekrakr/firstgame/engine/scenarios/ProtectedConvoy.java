@@ -116,7 +116,6 @@ public class ProtectedConvoy extends Scenario {
             protector.protect(booty);
         }
 
-
         if (enemies.size() > 0) {
             for (GameObject enemy: enemies) {
                 if (targeted.size() >= targetedEnemies) {

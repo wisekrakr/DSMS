@@ -59,11 +59,6 @@ public class NonPlayerCharacter extends GameObject {
     }
 
     @Override
-    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        super.targetSpotted(target, toDelete, toAdd);
-    }
-
-    @Override
     public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
         setDirection(this.getDirection() + (float) Math.PI);
         setOrientation(this.getDirection());

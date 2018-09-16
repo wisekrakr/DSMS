@@ -833,6 +833,27 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         ProgressBar elsHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(elsHealthBar);
                         volatileBars.add(elsHealthBar);
+
+                        Label elsPosition = enemyHud.positionLabel(object);
+                        overlayStage.addActor(elsPosition);
+                        registerVolatileActor(elsPosition);
+
+                        Label elsOrientation = enemyHud.orientationLabel(object);
+                        overlayStage.addActor(elsOrientation);
+                        registerVolatileActor(elsOrientation);
+
+                        Label elsSpeed = enemyHud.speedLabel(object);
+                        overlayStage.addActor(elsSpeed);
+                        registerVolatileActor(elsSpeed);
+
+                        Label elsDirection = enemyHud.directionLabel(object);
+                        overlayStage.addActor(elsDirection);
+                        registerVolatileActor(elsDirection);
+
+                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
+                                y + radius * (float) Math.sin(object.getOrientation()),
+                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
+                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         break;
                     case FACE_HUGGER:
 

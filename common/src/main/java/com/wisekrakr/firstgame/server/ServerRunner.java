@@ -96,11 +96,13 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
 
-        gameEngine.addScenario(new TravellerWithMission(300f, 2, 1));
+        //gameEngine.addScenario(new TravellerWithMission(300f, 2, 1));
 
         //gameEngine.addScenario(new BossMommaFight(600f, 1, 3));
 
         //gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
+
+        gameEngine.addScenario(new RetrieveThePackagesInTime(400f, 3, 40));
 
 
 
