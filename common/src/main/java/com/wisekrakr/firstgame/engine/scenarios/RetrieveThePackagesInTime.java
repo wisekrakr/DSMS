@@ -154,7 +154,7 @@ public class RetrieveThePackagesInTime extends Scenario {
             }
 
         }else if (clock == timeToRetrieve && packages.size() > 0) {
-            System.out.println("Mission Failed: " + (packages.size() - toBeRemovedPackages.size()) + " packages still floating around!");
+            System.out.println("Mission Failed: " + packages.size() + " packages still floating around!");
             state = ScenarioState.MISSION_END;
         }
 
