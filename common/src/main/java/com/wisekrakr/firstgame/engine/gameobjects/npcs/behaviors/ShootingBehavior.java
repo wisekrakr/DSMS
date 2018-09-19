@@ -2,12 +2,12 @@ package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 
-public class ShootingBehavior extends Behavior {
+public class ShootingBehavior extends AbstractBehavior {
 
     private GameObjectFactory<?> weapon;
     private Float fireRate;
@@ -21,15 +21,15 @@ public class ShootingBehavior extends Behavior {
     }
 
     @Override
-    public void elapseTime(float clock, float delta, BehaviorContext context) {
+    public void elapseTime(float clock, float delta) {
 
         if (target != null && !(target instanceof WeaponObjectClass)) {
 
-            float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
+            float angle = GameHelper.angleBetween(getContext().getPosition(), target.getPosition());
 
-            context.setDirection(angle);
-            context.setOrientation(angle);
-            context.setSpeed(context.getSpeed());
+            getContext().setDirection(angle);
+            getContext().setOrientation(angle);
+            getContext().setSpeed(getContext().getSpeed());
 
             if (lastShot == 0){
                 lastShot = clock;
@@ -37,11 +37,11 @@ public class ShootingBehavior extends Behavior {
 
             if (fireRate != null) {
                 if (clock - lastShot > fireRate) {
-                    context.addGameObject(weapon.create(context.getPosition(), context.getOrientation(), 1f));
+                    getContext().addGameObject(weapon.create(getContext().getPosition(), getContext().getOrientation(), 1f));
                     lastShot = clock;
                 }
             }else {
-                context.addGameObject(weapon.create(context.getPosition(), context.getOrientation(), 1f));
+                getContext().addGameObject(weapon.create(getContext().getPosition(), getContext().getOrientation(), 1f));
             }
         }
     }

@@ -1,12 +1,12 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.scenarios.Scenario;
 import com.wisekrakr.firstgame.server.ScenarioHelper;
 
-public class RotatingBehavior extends Behavior {
+public class RotatingBehavior extends AbstractBehavior {
 
     private float rotatingSpeed;
     private float rotatingAngle;
@@ -17,14 +17,14 @@ public class RotatingBehavior extends Behavior {
     }
 
     @Override
-    public void elapseTime(float clock, float delta, BehaviorContext context) {
+    public void elapseTime(float clock, float delta) {
 
         rotatingAngle += rotatingSpeed * delta;
-        context.setOrientation(rotatingAngle);
+        getContext().setOrientation(rotatingAngle);
 
         if (!initialize) {
-            context.setSpeed(GameHelper.generateRandomNumberBetween(1f, 100f));
-            context.setDirection(GameHelper.randomDirection());
+            getContext().setSpeed(GameHelper.generateRandomNumberBetween(1f, 100f));
+            getContext().setDirection(GameHelper.randomDirection());
 
             initialize = true;
         }

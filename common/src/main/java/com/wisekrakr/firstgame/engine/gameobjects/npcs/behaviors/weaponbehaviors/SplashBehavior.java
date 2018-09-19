@@ -1,11 +1,11 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 
-public class SplashBehavior extends Behavior {
+public class SplashBehavior extends AbstractBehavior {
     private float timeToSplash;
     private float initialDirection;
     private double destructInterval;
@@ -16,22 +16,22 @@ public class SplashBehavior extends Behavior {
     }
 
     @Override
-    public void elapseTime(float clock, float delta, BehaviorContext context) {
+    public void elapseTime(float clock, float delta) {
 
         if (timeToSplash == 0){
             timeToSplash = clock;
         }
 
-        context.setSpeed(GameHelper.generateRandomNumberBetween(150f, 180f));
-        context.setDirection(initialDirection);
-        context.setOrientation(initialDirection);
+        getContext().setSpeed(GameHelper.generateRandomNumberBetween(150f, 180f));
+        getContext().setDirection(initialDirection);
+        getContext().setOrientation(initialDirection);
 
         if (clock - timeToSplash >= destructInterval){
             int fragments = GameHelper.randomGenerator.nextInt(10)+1;
             for(int i = 0; i < fragments; i++) {
-                context.addGameObject(new BulletObject(context.getPosition(), GameHelper.randomDirection(), context.thisObject()));
+                getContext().addGameObject(new BulletObject(getContext().getPosition(), GameHelper.randomDirection(), getContext().thisObject()));
             }
-            context.removeGameObject(context.thisObject());
+            getContext().removeGameObject(getContext().thisObject());
             timeToSplash = clock;
         }
     }

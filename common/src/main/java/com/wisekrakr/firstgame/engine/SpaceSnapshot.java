@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,14 +11,16 @@ public class SpaceSnapshot implements Serializable {
     private String name;
     private float time;
     private List<GameObjectSnapshot> gameObjects;
+    private List<PhysicalObjectSnapshot> physicalObjects;
 
     public SpaceSnapshot() {
     }
 
-    public SpaceSnapshot(String name, float time, List<GameObjectSnapshot> gameObjects) {
+    public SpaceSnapshot(String name, float time, List<GameObjectSnapshot> gameObjects, List<PhysicalObjectSnapshot> physicalObjects) {
         this.name = name;
         this.time = time;
         this.gameObjects = gameObjects;
+        this.physicalObjects = physicalObjects;
     }
 
     public String getName() {
@@ -30,6 +33,10 @@ public class SpaceSnapshot implements Serializable {
 
     public List<GameObjectSnapshot> getGameObjects() {
         return gameObjects;
+    }
+
+    public List<PhysicalObjectSnapshot> getPhysicalObjects() {
+        return physicalObjects;
     }
 
     public static class GameObjectSnapshot implements Serializable {

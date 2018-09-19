@@ -5,7 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
@@ -38,7 +38,7 @@ public class TestNPC extends NonPlayerCharacter {
 */
 
 
-    private static class MyBehavior extends Behavior{
+    private static class MyBehavior extends AbstractBehavior{
         private final Vector2 initialPosition;
         private float actionDistance;
         private GameObject target;
@@ -51,26 +51,26 @@ public class TestNPC extends NonPlayerCharacter {
         }
 
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
+        public void elapseTime(float clock, float delta) {
 
-            if (context.getHealth() <= 0){
-                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+            if (getContext().getHealth() <= 0){
+                getContext().pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }else {
-                if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                    context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
+                if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
+                    getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
 
-                } else if (context.nearest() instanceof Player) {
-                    target = context.nearest();
-                    context.pushSubBehavior(new ChasingBehavior(target));
-                    if (context.nearestInFloats() <= actionDistance / 2) {
-                        context.pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                                new BulletObject(initialPosition, initialDirection, context.thisObject()), null, target));
+                } else if (getContext().nearest() instanceof Player) {
+                    target = getContext().nearest();
+                    getContext().pushSubBehavior(new ChasingBehavior(target));
+                    if (getContext().nearestInFloats() <= actionDistance / 2) {
+                        getContext().pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+                                new BulletObject(initialPosition, initialDirection, getContext().thisObject()), null, target));
                     }
 
-                } else if (context.nearest() instanceof WeaponObjectClass){
-                    target = context.nearest();
-                    if (context.collisionDetection(target)){
-                        context.pushSubBehavior(new ReactiveBehavior(((WeaponObjectClass) target).getMaster()));
+                } else if (getContext().nearest() instanceof WeaponObjectClass){
+                    target = getContext().nearest();
+                    if (getContext().collisionDetection(target)){
+                        getContext().pushSubBehavior(new ReactiveBehavior(((WeaponObjectClass) target).getMaster()));
                     }
                 }
             }
@@ -83,50 +83,50 @@ public class TestNPC extends NonPlayerCharacter {
 /*
 //Cruising -> Chasing & Shooting
 
-            context.setActionDistance(500f);
+            getContext().setActionDistance(500f);
 
-            if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
-            }else if (context.nearest() instanceof Player){
-                context.pushSubBehavior(new ChasingBehavior());
-                if (context.nearestInFloats() <= 200f) {
-                    context.pushSubBehavior(new ShootingBehavior(200, 0.5f, new BulletObject(context.getPosition(), context.getOrientation())));
+            if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
+                getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
+            }else if (getContext().nearest() instanceof Player){
+                getContext().pushSubBehavior(new ChasingBehavior());
+                if (getContext().nearestInFloats() <= 200f) {
+                    getContext().pushSubBehavior(new ShootingBehavior(200, 0.5f, new BulletObject(getContext().getPosition(), getContext().getOrientation())));
                 }
             }
 
 
 //Cruising -> Chasing & HomingMissile
-            context.setActionDistance(600f);
+            getContext().setActionDistance(600f);
 
-            if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
+            if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
+                getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
 
-            }else if (context.nearest() instanceof Player) {
-                target = context.nearest();
-                context.pushSubBehavior(new ChasingBehavior());
-                if (context.nearestInFloats() <= 300f) {
-                    if (!(context.existingSubBehavior() instanceof ShootingBehavior)) {
-                        context.pushSubBehavior(new ShootingBehavior(1, 0.5f, new MissileObject(context.getPosition(), context.getOrientation(), target)));
+            }else if (getContext().nearest() instanceof Player) {
+                target = getContext().nearest();
+                getContext().pushSubBehavior(new ChasingBehavior());
+                if (getContext().nearestInFloats() <= 300f) {
+                    if (!(getContext().existingSubBehavior() instanceof ShootingBehavior)) {
+                        getContext().pushSubBehavior(new ShootingBehavior(1, 0.5f, new MissileObject(getContext().getPosition(), getContext().getOrientation(), target)));
                     }
                 }
             }
 
  //Cruising -> shooting in different ways
-            if (!(context.existingSubBehavior() instanceof CruisingBehavior)) {
-                context.pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
+            if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
+                getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
 
-            }else if (context.nearest() instanceof Player) {
-                target = context.nearest();
+            }else if (getContext().nearest() instanceof Player) {
+                target = getContext().nearest();
 
                 int shootingMood = (int) (clock % 6);
                 switch (shootingMood) {
                     case 1:
-                        context.pushSubBehavior(new ShootingBehavior(new BulletObject(
-                                context.getPosition(), context.getOrientation(), 200, 0.5f)));
+                        getContext().pushSubBehavior(new ShootingBehavior(new BulletObject(
+                                getContext().getPosition(), getContext().getOrientation(), 200, 0.5f)));
                         break;
                     case 4:
-                        context.pushSubBehavior(new ShootingBehavior(new MissileObject(
-                                context.getPosition(), context.getOrientation(), target)));
+                        getContext().pushSubBehavior(new ShootingBehavior(new MissileObject(
+                                getContext().getPosition(), getContext().getOrientation(), target)));
                         break;
                 }
             }

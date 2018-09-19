@@ -6,7 +6,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
@@ -24,7 +24,7 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
         setActionDistance(actionDistance);
     }
 
-    private static class MyBehavior extends Behavior {
+    private static class MyBehavior extends AbstractBehavior {
         private final Vector2 initialPosition;
         private float actionDistance;
         private GameObject target;
@@ -37,7 +37,7 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
         }
 
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
+        public void elapseTime(float clock, float delta) {
 
             if (lastChange == 0){
                 lastChange = clock;
@@ -48,31 +48,31 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
                 int mood = MathUtils.random(1, 3);
                 switch (mood) {
                     case 1:
-                        if (!(context.existingSubBehavior() instanceof RotatingBehavior)) {
-                            context.pushSubBehavior(new RotatingBehavior(25f));
+                        if (!(getContext().existingSubBehavior() instanceof RotatingBehavior)) {
+                            getContext().pushSubBehavior(new RotatingBehavior(25f));
                         }
 
                         break;
 
                     case 2:
-                        if (!(context.nearest() instanceof WeaponObjectClass)) {
-                            target = context.nearest();
-                            context.pushSubBehavior(new ChasingBehavior(target));
+                        if (!(getContext().nearest() instanceof WeaponObjectClass)) {
+                            target = getContext().nearest();
+                            getContext().pushSubBehavior(new ChasingBehavior(target));
                         }else {
-                            context.pushSubBehavior(new CruisingBehavior(4f));
+                            getContext().pushSubBehavior(new CruisingBehavior(4f));
                         }
 
                         break;
 
                     case 3:
-                        if (!(context.existingSubBehavior() instanceof SpawningBehavior)) {
+                        if (!(getContext().existingSubBehavior() instanceof SpawningBehavior)) {
                             int npcType = MathUtils.random(1, 2);
                             switch (npcType){
                                 case 1:
-                                    context.pushSubBehavior(new SpawningBehavior(ScenarioHelper.MISSILE_SHOOTER_FACTORY, 10f));
+                                    getContext().pushSubBehavior(new SpawningBehavior(ScenarioHelper.MISSILE_SHOOTER_FACTORY, 10f));
                                     break;
                                 case 2:
-                                    context.pushSubBehavior(new SpawningBehavior(ScenarioHelper.CHASING_SHOOTING_FACTORY, 10f));
+                                    getContext().pushSubBehavior(new SpawningBehavior(ScenarioHelper.CHASING_SHOOTING_FACTORY, 10f));
                                     break;
                             }
                         }
@@ -82,8 +82,8 @@ public class CrazilySpawningPassiveAggressiveNPC extends NonPlayerCharacter {
                 lastChange = clock;
             }
 
-            if (context.getHealth() <= 0){
-                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+            if (getContext().getHealth() <= 0){
+                getContext().pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }
         }
     }

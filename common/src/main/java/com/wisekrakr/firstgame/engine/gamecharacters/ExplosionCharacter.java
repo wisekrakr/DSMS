@@ -1,0 +1,59 @@
+package com.wisekrakr.firstgame.engine.gamecharacters;
+
+import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ExplosionCharacter extends AbstractGameCharacter {
+
+    private final Vector2 position;
+    private final float speedMagnitude;
+    private final float speedDirection;
+    private int debrisParts;
+    private float debrisMass;
+    private float debrisAge;
+    private List<PhysicalObject> bits = new ArrayList<>();
+
+    public ExplosionCharacter(Vector2 position, float speedMagnitude, float speedDirection, int debrisParts, float debrisMass, float debrisAge) {
+        this.position = position;
+        this.speedMagnitude = speedMagnitude;
+        this.speedDirection = speedDirection;
+        this.debrisParts = debrisParts;
+        this.debrisMass = debrisMass;
+        this.debrisAge = debrisAge;
+    }
+
+    @Override
+    public void start() {
+        float bitSize = (float) Math.sqrt((debrisMass * debrisMass) / debrisParts);
+        for (int i = 0; i < debrisParts; i++) {
+            PhysicalObject bit = getContext().addPhysicalObject("debris",
+                    position,
+                    GameHelper.randomDirection(),
+                    GameHelper.generateRandomNumberBetween(1f, 4f),
+                    GameHelper.randomDirection(),
+                    Visualizations.BOULDER,
+                    bitSize,
+                    null);
+
+            getContext().updatePhysicalObjectExtra(bit, "radius", bitSize);
+            bits.add(bit);
+        }
+    }
+
+    @Override
+    public void elapseTime(float delta) {
+        debrisAge = debrisAge - delta;
+        if (debrisAge < 0) {
+            for (PhysicalObject object: bits) {
+                getContext().removePhysicalObject(object);
+            }
+
+            getContext().removeMyself();
+        }
+    }
+}

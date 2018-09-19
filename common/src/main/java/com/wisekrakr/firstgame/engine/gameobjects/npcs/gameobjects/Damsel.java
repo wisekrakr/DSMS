@@ -6,6 +6,7 @@ import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
@@ -50,17 +51,17 @@ public class Damsel extends NonPlayerCharacter{
         return clingingOn;
     }
 
-    private class MyBehavior extends Behavior {
+    private class MyBehavior extends AbstractBehavior {
 
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
+        public void elapseTime(float clock, float delta) {
             if (desiredBehavior != null) {
-                context.pushSubBehavior(desiredBehavior);
+                getContext().pushSubBehavior(desiredBehavior);
                 desiredBehavior = null;
             }
 
-            if (context.getHealth() <= 0){
-                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+            if (getContext().getHealth() <= 0){
+                getContext().pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }
         }
     }

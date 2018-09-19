@@ -1,4 +1,4 @@
-package com.wisekrakr.firstgame.engine.gameobjects.npcs;
+package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 public interface Behavior {
     void init(BehaviorContext context);
@@ -7,6 +7,7 @@ public interface Behavior {
 
     void stop();
 
+    // TODO: ditch clock?
     void elapseTime(float clock, float delta);
 
 }

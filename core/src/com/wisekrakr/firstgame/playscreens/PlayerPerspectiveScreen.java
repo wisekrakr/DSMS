@@ -24,6 +24,8 @@ import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
@@ -92,7 +94,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     // this list of actors will be removed before the next render cycle
     private List<Actor> volatileActors = new ArrayList<Actor>();
 
-    private List<ProgressBar> volatileBars = new ArrayList<ProgressBar>();
     private Random random = GameHelper.randomGenerator;
     private Float hardSteering;
 
@@ -125,8 +126,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         myAssetManager.loadSkins();
 
         Pixmap pixmap = new Pixmap(Gdx.files.internal("texture/cursor.png"));
-        Cursor customCursor = Gdx.graphics.newCursor(pixmap, pixmap.getWidth() - pixmap.getWidth()/2,
-                pixmap.getHeight() - pixmap.getHeight()/2);
+        Cursor customCursor = Gdx.graphics.newCursor(pixmap, pixmap.getWidth() - pixmap.getWidth() / 2,
+                pixmap.getHeight() - pixmap.getHeight() / 2);
         Gdx.graphics.setCursor(customCursor);
         //Gdx.input.setCursorCatched(true);
 
@@ -167,7 +168,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         missionText = new MissionText(myAssetManager);
 
         compass = new Compass();
-
 
 
     }
@@ -343,7 +343,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
-            if (enemyHud.enableMetaData()){
+            if (enemyHud.enableMetaData()) {
                 enemyHud.disableMetaData();
             }
 
@@ -353,10 +353,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
             enemyHud.enableMetaData();
-        }else if (inputManager.isKeyPressed(Input.Keys.COMMA)){
+        } else if (inputManager.isKeyPressed(Input.Keys.COMMA)) {
             enemyHud.disableMetaData();
         }
-
 
 
         //Mouse input
@@ -371,7 +370,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             float mouseX = inputManager.touchCoordX(0);
             float mouseY = inputManager.touchCoordY(0);
 
-            this.mouseAiming = (float)Math.atan2(mouseY, mouseX) - MathUtils.PI/2;
+            this.mouseAiming = (float) Math.atan2(mouseY, mouseX) - MathUtils.PI / 2;
         }
 
         if (inputManager.isTouchDown(0)) {
@@ -418,7 +417,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 throttle = Spaceship.ThrottleState.FORWARDS;
             } else if (inputManager.isKeyDown(Input.Keys.S)) {
                 throttle = Spaceship.ThrottleState.REVERSE;
-            }else if (inputManager.isKeyDown(Input.Keys.R)){
+            } else if (inputManager.isKeyDown(Input.Keys.R)) {
                 throttle = Spaceship.ThrottleState.FULL_STOP;
             }
         }
@@ -560,7 +559,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         if (inputManager.isKeyPressed(Input.Keys.R)) {
             connector.setPaused(false);
         }
-        if (inputManager.isKeyPressed(Input.Keys.TAB)){
+        if (inputManager.isKeyPressed(Input.Keys.TAB)) {
 
         }
 
@@ -593,10 +592,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         volatileActors.add(actor);
     }
 
-    private void shapeRendererMode(){
-        if (inputManager.isKeyDown(Input.Keys.PERIOD)){
+    private void shapeRendererMode() {
+        if (inputManager.isKeyDown(Input.Keys.PERIOD)) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        }else {
+        } else {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         }
     }
@@ -606,14 +605,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             actor.remove();
         }
 
-        for (ProgressBar progressBar : volatileBars) {
-            progressBar.remove();
-        }
         volatileActors.clear();
-        volatileBars.clear();
-
 
         SpaceSnapshot snapshot = connector.latestSnapshot();
+
 
         foundMySelf = false;
         for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
@@ -637,7 +632,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 overlayStage.addActor(playerLabel);
                 overlayStage.addActor(bar);
                 registerVolatileActor(playerLabel);
-                volatileBars.add(bar);
+                registerVolatileActor(bar);
 
                 Label playerOrientation = playerHud.orientationLabel(object);
                 overlayStage.addActor(playerOrientation);
@@ -652,14 +647,13 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 registerVolatileActor(playerDirection);
 
 
-
                 break;
             }
         }
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
-       // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRendererMode();
 
 
@@ -667,6 +661,32 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
         try {
+            System.out.println(snapshot.getPhysicalObjects().size() + " physical objects");
+
+            for (PhysicalObjectSnapshot physicalObject : snapshot.getPhysicalObjects()) {
+                float x = physicalObject.getPosition().x;
+                float y = physicalObject.getPosition().y;
+
+                switch (physicalObject.getVisualization()) {
+                    case BOULDER:
+                        float radius = ((Number) physicalObject.getExtra().get("radius")).floatValue();
+
+                        shapeRenderer.setColor(Color.BROWN);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
+
+                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
+
+                        break;
+
+                    default:
+                        System.out.println("Unsupported visualization: " + physicalObject.getVisualization());
+                }
+            }
+
+
             for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
                 Float radius = (Float) object.extraProperties().get("radius");
                 Boolean hit = (Boolean) object.extraProperties().get("hit");
@@ -678,7 +698,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             /*
             Label swarmWarning = playerHud.swarmWarning();
             overlayStage.addActor(swarmWarning);
-            volatileActors.add(swarmWarning);
+            registerVolatileActor(swarmWarning);
 */
 
                 switch (object.getType()) {
@@ -700,11 +720,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                                 object.getPosition().x + 20f * (float) Math.cos(object.getOrientation()),
                                 object.getPosition().y + 20f * (float) Math.sin(object.getOrientation()), 2f);
 
-                        if (throttle == Spaceship.ThrottleState.FORWARDS){
+                        if (throttle == Spaceship.ThrottleState.FORWARDS) {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_fly.png", object, batch, null);
-                        }else if (powerState == Spaceship.SpecialPowerState.BOOSTING){
+                        } else if (powerState == Spaceship.SpecialPowerState.BOOSTING) {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
-                        }else {
+                        } else {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", object, batch, null);
                         }
 
@@ -791,7 +811,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar chaserHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(chaserHealthBar);
-                        volatileBars.add(chaserHealthBar);
+                        registerVolatileActor(chaserHealthBar);
 
                         Label chaserPosition = enemyHud.positionLabel(object);
                         overlayStage.addActor(chaserPosition);
@@ -832,7 +852,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar elsHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(elsHealthBar);
-                        volatileBars.add(elsHealthBar);
+                        registerVolatileActor(elsHealthBar);
 
                         Label elsPosition = enemyHud.positionLabel(object);
                         overlayStage.addActor(elsPosition);
@@ -869,7 +889,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar huggerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(huggerHealthBar);
-                        volatileBars.add(huggerHealthBar);
+                        registerVolatileActor(huggerHealthBar);
                         break;
                     case SHITTER:
 
@@ -885,7 +905,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar shitterHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shitterHealthBar);
-                        volatileBars.add(shitterHealthBar);
+                        registerVolatileActor(shitterHealthBar);
 
                         Label shitterPosition = enemyHud.positionLabel(object);
                         overlayStage.addActor(shitterPosition);
@@ -922,7 +942,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar pestHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(pestHealthBar);
-                        volatileBars.add(pestHealthBar);
+                        registerVolatileActor(pestHealthBar);
 
                         Label pestOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(pestOrientation);
@@ -955,7 +975,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar blinkerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(blinkerHealthBar);
-                        volatileBars.add(blinkerHealthBar);
+                        registerVolatileActor(blinkerHealthBar);
 
                         Label blinkerOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(blinkerOrientation);
@@ -994,7 +1014,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar motherHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(motherHealthBar);
-                        volatileBars.add(motherHealthBar);
+                        registerVolatileActor(motherHealthBar);
 
                         Label motherPosition = enemyHud.positionLabel(object);
                         overlayStage.addActor(motherPosition);
@@ -1033,7 +1053,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar dodgerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(dodgerHealthBar);
-                        volatileBars.add(dodgerHealthBar);
+                        registerVolatileActor(dodgerHealthBar);
 
                         Label dodgerOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(dodgerOrientation);
@@ -1068,7 +1088,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar homerHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(homerHealthBar);
-                        volatileBars.add(homerHealthBar);
+                        registerVolatileActor(homerHealthBar);
 
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssHomer.png", object, batch, 0.3f);
@@ -1116,7 +1136,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar mutatorHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(mutatorHealthBar);
-                        volatileBars.add(mutatorHealthBar);
+                        registerVolatileActor(mutatorHealthBar);
 
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssMutator.png", object, batch, 0.6f);
@@ -1148,7 +1168,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar shottyHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(shottyHealthBar);
-                        volatileBars.add(shottyHealthBar);
+                        registerVolatileActor(shottyHealthBar);
 
                         Label shottyOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(shottyOrientation);
@@ -1248,7 +1268,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar aHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(aHealthBar);
-                        volatileBars.add(aHealthBar);
+                        registerVolatileActor(aHealthBar);
 
                         Label aOrientation = enemyHud.orientationLabel(object);
                         overlayStage.addActor(aOrientation);
@@ -1301,7 +1321,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         ProgressBar testHealthBar = enemyHud.healthBar(object);
                         overlayStage.addActor(testHealthBar);
-                        volatileBars.add(testHealthBar);
+                        registerVolatileActor(testHealthBar);
 /*
                         Label testPosition = enemyHud.positionLabel(object);
                         overlayStage.addActor(testPosition);
@@ -1354,11 +1374,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
             Float radius = (Float) object.extraProperties().get("radius");
 
-            switch (object.getType()){
+            switch (object.getType()) {
                 case SHIELD:
                     String lightBlue = "8EE2EC";
                     shapeRenderer.setColor(Color.valueOf(lightBlue));
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius*2);
+                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius * 2);
 
                     break;
             }

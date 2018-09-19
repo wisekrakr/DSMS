@@ -2,11 +2,12 @@ package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors;
 
 
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 
-public class SpawningBehavior extends Behavior {
+public class SpawningBehavior extends AbstractBehavior {
     private Float lastCreation;
     private GameObjectFactory factory;
     private float spawnInterval;
@@ -17,16 +18,16 @@ public class SpawningBehavior extends Behavior {
     }
 
     @Override
-    public void elapseTime(float clock, float delta, BehaviorContext context) {
+    public void elapseTime(float clock, float delta) {
         if (lastCreation == null) {
             lastCreation = clock;
         }
 
         if ((clock - lastCreation) > spawnInterval) {
-            context.addGameObject(factory.create(context.getPosition(), GameHelper.randomDirection(), context.getActionDistance()));
+            getContext().addGameObject(factory.create(getContext().getPosition(), GameHelper.randomDirection(), getContext().getActionDistance()));
             lastCreation = clock;
         }
 
-        //context.addGameObject(factory.create(context.getPosition(), GameHelper.randomDirection()));
+        //getContext().addGameObject(factory.create(getContext().getPosition(), GameHelper.randomDirection()));
     }
 }

@@ -1,11 +1,13 @@
 package com.wisekrakr.firstgame.engine;
 
+import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
 import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
+import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.*;
 
@@ -20,11 +22,46 @@ public class SpaceEngine {
     private float clock = 0f;
     private boolean paused = false;
 
+    private Set<PhysicalObjectRunner> physicalObjects = new HashSet<>();
+
     public SpaceEngine(float minX, float minY, float width, float height) {
         this.minX = minX;
         this.minY = minY;
         this.width = width;
         this.height = height;
+    }
+
+    public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
+        PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, Collections.emptyMap(), collisionRadius, listener);
+
+        physicalObjects.add(result);
+
+        return result;
+    }
+
+    public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
+        PhysicalObjectRunner runner = getPhysicalObject(target);
+
+        runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+
+    }
+
+    private PhysicalObjectRunner getPhysicalObject(PhysicalObject target) {
+        if (target instanceof PhysicalObjectRunner && physicalObjects.contains(target)) {
+            return (PhysicalObjectRunner) target;
+        }
+
+        throw new IllegalArgumentException("Unknown physical object");
+    }
+
+    public void updatePhysicalObjectExtra(PhysicalObject target, String key, Object value) {
+        getPhysicalObject(target).updateExtra(key, value);
+    }
+
+    public void removePhysicalObject(PhysicalObject object) {
+        if (!physicalObjects.remove(object)) {
+            throw new IllegalArgumentException("Unknown physical object:" + object);
+        }
     }
 
     public interface GameObjectListener {
@@ -124,6 +161,29 @@ public class SpaceEngine {
         void doIt(GameObject target);
     }
 
+    private Collision collisionDetection(PhysicalObject object1, PhysicalObject object2) {
+        if (Math.sqrt(
+                (((object1.getPosition().x) - (object2.getPosition().x)))
+                        * ((object1.getPosition().x) - (object2.getPosition().x))
+                        + ((object1.getPosition().y) - (object2.getPosition().y))
+                        * ((object1.getPosition().y) - (object2.getPosition().y)))
+                < (object1.getCollisionRadius() + object2.getCollisionRadius())) {
+
+            float epicenterX = (object1.getCollisionRadius() * object1.getPosition().x + object2.getCollisionRadius() * object2.getPosition().x) / (
+                    object1.getCollisionRadius() + object2.getCollisionRadius()
+            );
+
+            float epicenterY = (object1.getCollisionRadius() * object1.getPosition().y + object2.getCollisionRadius() * object2.getPosition().y) / (
+                    object1.getCollisionRadius() + object2.getCollisionRadius()
+            );
+
+            // TODO: implement impact
+            return new Collision(object1, object2, new Vector2(epicenterX, epicenterY), clock, 1);
+        } else {
+            return null;
+        }
+    }
+
     private boolean collision(GameObject object1, GameObject object2) {
         return
                 Math.sqrt(
@@ -136,18 +196,70 @@ public class SpaceEngine {
 
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
-            List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<SpaceSnapshot.GameObjectSnapshot>();
+            List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<>();
 
             for (GameObject object : gameObjects) {
                 gameObjectSnapshots.add(object.snapshot());
             }
 
-            return new SpaceSnapshot("Bla", 1235, gameObjectSnapshots);
+            List<PhysicalObjectSnapshot> physicalObjectSnapshots = new ArrayList<>();
+
+            for (PhysicalObjectRunner object : physicalObjects) {
+                physicalObjectSnapshots.add(object.snapshot());
+            }
+
+            return new SpaceSnapshot("Bla", clock, gameObjectSnapshots, physicalObjectSnapshots);
         }
     }
 
     public float getTime() {
         return clock;
+    }
+
+    private void physicalElapseTime(float delta) {
+        // apply physics:
+        //    A. apply movement
+        for (PhysicalObjectRunner target : physicalObjects) {
+
+            float speedX = (float) Math.cos(target.getSpeedDirection()) * target.getSpeedMagnitude() * delta;
+            float speedY = (float) Math.sin(target.getSpeedDirection()) * target.getSpeedMagnitude() * delta;
+
+            target.update(
+                    null,
+                    new Vector2(target.getPosition().x + speedX, target.getPosition().y + speedY),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            // TODO: distanceTravelled = distanceTravelled + Math.abs(target.getSpeedMagnitude() * delta);    ?
+        }
+
+        //    B. detect collisions
+
+        List<Collision> collisions = new ArrayList<>();
+        Set<PhysicalObjectRunner> processed = new HashSet<>();
+
+        for (PhysicalObjectRunner target : physicalObjects) {
+            processed.add(target);
+            for (PhysicalObjectRunner subject : physicalObjects) {
+                if (!processed.contains(subject)) {
+                    Collision collision = collisionDetection(target, subject);
+
+                    if (collision != null) {
+                        collisions.add(collision);
+                    }
+                }
+            }
+        }
+
+        //    C. report to the owners
+
+        for (Collision collision : collisions) {
+            getPhysicalObject(collision.getOne()).getListener().collision(collision.getTwo(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
+            getPhysicalObject(collision.getTwo()).getListener().collision(collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
+        }
     }
 
     public void elapseTime(float delta) {
@@ -157,6 +269,11 @@ public class SpaceEngine {
             }
 
             clock = clock + delta;
+
+
+            physicalElapseTime(delta);
+
+
             Set<GameObject> toDelete = new HashSet<GameObject>();
             Set<GameObject> toAdd = new HashSet<GameObject>();
 

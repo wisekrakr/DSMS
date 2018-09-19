@@ -7,6 +7,7 @@ import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
@@ -144,6 +145,9 @@ public class ServerRunner {
             }
         }));
 
+
+        gameEngine.addGameCharacter(new AsteroidCharacter(new Vector2(300, 100), 60f, 0, 1));
+        gameEngine.addGameCharacter(new AsteroidCharacter(new Vector2(0, 100), 60f, 0, 50));
 
         timeThread.start();
 

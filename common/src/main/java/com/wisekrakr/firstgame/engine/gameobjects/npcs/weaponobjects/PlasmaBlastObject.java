@@ -3,7 +3,7 @@ package com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehaviors.SplashBehavior;
 
@@ -16,7 +16,7 @@ public class PlasmaBlastObject extends WeaponObjectClass {
         this.setDamage(WeaponObjectMechanics.determineDamage(master, this));
     }
 
-    private static class MyBehavior extends Behavior {
+    private static class MyBehavior extends AbstractBehavior {
 
         private final Vector2 initialPosition;
         private float initialDirection;
@@ -29,10 +29,10 @@ public class PlasmaBlastObject extends WeaponObjectClass {
         }
 
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
+        public void elapseTime(float clock, float delta) {
 
-            if (!(context.existingSubBehavior() instanceof SplashBehavior)){
-                context.pushSubBehavior(new SplashBehavior(initialDirection, destructInterval));
+            if (!(getContext().existingSubBehavior() instanceof SplashBehavior)){
+                getContext().pushSubBehavior(new SplashBehavior(initialDirection, destructInterval));
             }
         }
     }

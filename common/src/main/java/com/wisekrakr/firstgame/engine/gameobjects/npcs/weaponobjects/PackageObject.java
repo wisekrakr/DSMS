@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.*;
@@ -63,11 +64,11 @@ public class PackageObject extends WeaponObjectClass{
         desiredBehavior = new ExplodeAndLeaveDebrisBehavior(8f);
     }
 
-    private class MyBehavior extends Behavior {
+    private class MyBehavior extends AbstractBehavior {
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
+        public void elapseTime(float clock, float delta) {
             if (desiredBehavior != null) {
-                context.pushSubBehavior(desiredBehavior);
+                getContext().pushSubBehavior(desiredBehavior);
                 desiredBehavior = null;
             }
         }

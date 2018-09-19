@@ -2,15 +2,15 @@ package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.mechanics.EnemyMechanics;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
-public class IdleBehavior extends Behavior {
+public class IdleBehavior extends AbstractBehavior {
 
     private Float lastDirectionChange;
 
     @Override
-    public void elapseTime(float clock, float delta, BehaviorContext context) {
+    public void elapseTime(float clock, float delta) {
 
         if (lastDirectionChange == null) {
             lastDirectionChange = clock;
@@ -18,11 +18,11 @@ public class IdleBehavior extends Behavior {
 
         if (clock - lastDirectionChange > 3f) {
             float randomDirection = EnemyMechanics.setRandomDirection();
-            context.setDirection(randomDirection);
-            context.setOrientation(randomDirection);
+            getContext().setDirection(randomDirection);
+            getContext().setOrientation(randomDirection);
             lastDirectionChange = clock;
         }
-        //context.setSpeed(50f);
+        //getContext().setSpeed(50f);
 
 
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
@@ -43,14 +44,14 @@ public class FrigateNPC extends NonPlayerCharacter {
         desiredBehavior = new ExplodeAndLeaveDebrisBehavior(5f);
     }
 
-    private class MyBehavior extends Behavior {
+    private class MyBehavior extends AbstractBehavior {
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
-            if (context.getHealth() <= 0){
-                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
+        public void elapseTime(float clock, float delta) {
+            if (getContext().getHealth() <= 0){
+                getContext().pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(8f));
             }else {
                 if (desiredBehavior != null) {
-                    context.pushSubBehavior(desiredBehavior);
+                    getContext().pushSubBehavior(desiredBehavior);
                     desiredBehavior = null;
                 }
             }

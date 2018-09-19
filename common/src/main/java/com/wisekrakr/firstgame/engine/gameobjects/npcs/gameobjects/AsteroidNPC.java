@@ -5,7 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.RotatingBehavior;
@@ -39,7 +39,7 @@ public class AsteroidNPC extends NonPlayerCharacter {
         }
     }
 
-    private static class MyBehavior extends Behavior{
+    private static class MyBehavior extends AbstractBehavior{
 
         private Vector2 initialPosition;
         private float initialRadius;
@@ -50,17 +50,17 @@ public class AsteroidNPC extends NonPlayerCharacter {
         }
 
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
+        public void elapseTime(float clock, float delta) {
 
-            if (context.getRadius() <= 0.5f){
-                context.removeGameObject(context.thisObject());
+            if (getContext().getRadius() <= 0.5f){
+                getContext().removeGameObject(getContext().thisObject());
             }
 
-            if (!(context.existingSubBehavior() instanceof RotatingBehavior)){
-                context.pushSubBehavior(new RotatingBehavior(GameHelper.generateRandomNumberBetween(5f, 25f)));
+            if (!(getContext().existingSubBehavior() instanceof RotatingBehavior)){
+                getContext().pushSubBehavior(new RotatingBehavior(GameHelper.generateRandomNumberBetween(5f, 25f)));
 
-            }else if (context.getHealth() <= 0){
-                context.pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(7f));
+            }else if (getContext().getHealth() <= 0){
+                getContext().pushSubBehavior(new ExplodeAndLeaveDebrisBehavior(7f));
             }
         }
     }

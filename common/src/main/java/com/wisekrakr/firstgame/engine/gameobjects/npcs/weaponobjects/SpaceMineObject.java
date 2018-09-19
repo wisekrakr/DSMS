@@ -5,7 +5,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.IdleBehavior;
@@ -22,7 +22,7 @@ public class SpaceMineObject extends WeaponObjectClass {
         this.setDamage(WeaponObjectMechanics.determineDamage(master, this));
     }
 
-    private static class MyBehavior extends Behavior{
+    private static class MyBehavior extends AbstractBehavior{
 
         private Vector2 initialPosition;
 
@@ -35,12 +35,12 @@ public class SpaceMineObject extends WeaponObjectClass {
         }
 
         @Override
-        public void elapseTime(float clock, float delta, BehaviorContext context) {
-            context.pushSubBehavior(new IdleBehavior());
+        public void elapseTime(float clock, float delta) {
+            getContext().pushSubBehavior(new IdleBehavior());
 
             lastCreation += delta;
             if (lastCreation >= destructInterval){
-                context.removeGameObject(context.thisObject());
+                getContext().removeGameObject(getContext().thisObject());
             }
         }
     }

@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior;
+import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
 
-public class FaceHuggingBehavior extends Behavior {
+public class FaceHuggingBehavior extends AbstractBehavior {
     private float rotationAngle;
     private GameObject target;
     private float updatedAngle;
@@ -18,20 +18,20 @@ public class FaceHuggingBehavior extends Behavior {
     }
 
     @Override
-    public void elapseTime(float clock, float delta, BehaviorContext context) {
+    public void elapseTime(float clock, float delta) {
 
         if (target != null){
 
-            float angle = GameHelper.angleBetween(context.getPosition(), target.getPosition());
+            float angle = GameHelper.angleBetween(getContext().getPosition(), target.getPosition());
             rotationAngle += 45f *  delta;
 
-            context.setOrientation(angle );
-            context.setDirection(angle);
-            context.setSpeed((Float) target.getExtraSnapshotProperties().get("speed"));
+            getContext().setOrientation(angle );
+            getContext().setDirection(angle);
+            getContext().setSpeed((Float) target.getExtraSnapshotProperties().get("speed"));
 
-            context.getPosition().x = (float) (target.getPosition().x + target.getCollisionRadius() + context.getRadius() +
+            getContext().getPosition().x = (float) (target.getPosition().x + target.getCollisionRadius() + getContext().getRadius() +
                         Math.cos(rotationAngle) * delta);
-            context.getPosition().y = (float) (target.getPosition().y + target.getCollisionRadius() + context.getRadius() +
+            getContext().getPosition().y = (float) (target.getPosition().y + target.getCollisionRadius() + getContext().getRadius() +
                         Math.sin(rotationAngle) * delta);
         }
     }
