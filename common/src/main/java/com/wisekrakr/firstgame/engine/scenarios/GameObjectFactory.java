@@ -5,4 +5,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 public interface GameObjectFactory<GameObjectT extends GameObject> {
     GameObjectT create(Vector2 initialPosition, float initialDirection, float actionDistance);
+
+
 }

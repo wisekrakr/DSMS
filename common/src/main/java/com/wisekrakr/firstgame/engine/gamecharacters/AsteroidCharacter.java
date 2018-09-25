@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.ChasingBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.RotatingBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
@@ -21,23 +22,6 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
         this.initialSpeedMagnitude = initialSpeedMagnitude;
     }
 
-    /*
-    @Override
-    public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        if (subject.getClass() != this.getClass()) {
-            if (subject instanceof WeaponObjectClass) {
-                float asteroidParts = GameHelper.randomGenerator.nextInt(2) + 1;
-                for (int i = 0; i < asteroidParts; i++) {
-                    toAdd.add(new AsteroidCharacter(this.getPosition(), GameHelper.generateRandomNumberBetween(0f, getCollisionRadius())));
-                }
-                toDelete.add(this);
-            } else if (subject instanceof NonPlayerCharacter || subject instanceof Player) {
-                this.setDirection((float) (this.getDirection() + Math.PI));
-            }
-        }
-    }
-*/
     @Override
     public void start() {
         rootBehavior(new AbstractBehavior() {
@@ -59,31 +43,39 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                                 getContext().addCharacter(new ExplosionCharacter(physicalObject.getPosition(),
                                         physicalObject.getSpeedMagnitude(),
                                         physicalObject.getSpeedDirection(),
-                                        20,
+                                        10,
                                         initialRadius,
-                                        20f));
+                                        10f,
+                                        Visualizations.BOULDER));
 
                                 // TODO: should happen automatically
                                 getContext().removePhysicalObject(physicalObject);
                                 AsteroidCharacter.this.getContext().removeMyself();
+
+                            }
+
+                            @Override
+                            public void nearby(PhysicalObject target, float time, Vector2 position) {
+
                             }
                         });
 
                 getContext().updatePhysicalObjectExtra(physicalObject, "radius", initialRadius);
 
-                getContext().pushSubBehavior(new RotatingBehavior(physicalObject, GameHelper.generateRandomNumberBetween(5f, 25f)));
+                rootBehavior(new RotatingBehavior(physicalObject, 25f));
+
+
             }
 
             @Override
             public void elapseTime(float clock, float delta) {
-//                getContext().updatePhysicalObject(physicalObject, null, null, null, Math.min(100f, 10 * clock), Math.min(clock, 1000f), null, null);
+                //getContext().updatePhysicalObject(physicalObject, null, null, null, Math.min(100f, 10 * clock), Math.min(clock, 1000f), null, null);
 
-                /*
-                if (getContext().getRadius() <= 0.5f) {
-                    getContext().removeGameObject(getContext().thisObject());
+                //getContext().pushSubBehavior(new RotatingBehavior(physicalObject, GameHelper.generateRandomNumberBetween(5f, 25f)));
+
+                if (this.physicalObject.getCollisionRadius() <= 0.5f) {
+                    getContext().removePhysicalObject(physicalObject);
                 }
-
-                */
             }
         });
     }

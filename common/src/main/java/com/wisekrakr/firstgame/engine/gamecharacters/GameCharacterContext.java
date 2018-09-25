@@ -9,7 +9,6 @@ import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 public interface GameCharacterContext {
     SpaceEngine getSpaceEngine();
 
-
     /**
      * Create a character that will live independently from this character
      */

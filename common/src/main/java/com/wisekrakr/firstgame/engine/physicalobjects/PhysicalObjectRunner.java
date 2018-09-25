@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.physicalobjects;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PhysicalObjectRunner implements PhysicalObject {
@@ -33,6 +34,11 @@ public class PhysicalObjectRunner implements PhysicalObject {
             this.listener = new PhysicalObjectListener() {
                 @Override
                 public void collision(PhysicalObject two, float time, Vector2 epicentre, float impact) {
+
+                }
+
+                @Override
+                public void nearby(PhysicalObject target, float time, Vector2 position) {
 
                 }
             };
@@ -70,6 +76,15 @@ public class PhysicalObjectRunner implements PhysicalObject {
     @Override
     public float getCollisionRadius() {
         return collisionRadius;
+    }
+
+    /*
+    david was here
+     */
+    @Override
+    public void signalOutOfBounds() {
+        speedDirection = (float) (speedDirection + Math.PI);
+        orientation = speedDirection;
     }
 
     public PhysicalObjectSnapshot snapshot() {
@@ -124,4 +139,6 @@ public class PhysicalObjectRunner implements PhysicalObject {
     public PhysicalObjectListener getListener() {
         return listener;
     }
+
+
 }

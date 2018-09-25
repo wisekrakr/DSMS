@@ -16,15 +16,17 @@ public class ExplosionCharacter extends AbstractGameCharacter {
     private int debrisParts;
     private float debrisMass;
     private float debrisAge;
+    private Visualizations visualizations;
     private List<PhysicalObject> bits = new ArrayList<>();
 
-    public ExplosionCharacter(Vector2 position, float speedMagnitude, float speedDirection, int debrisParts, float debrisMass, float debrisAge) {
+    public ExplosionCharacter(Vector2 position, float speedMagnitude, float speedDirection, int debrisParts, float debrisMass, float debrisAge, Visualizations visualizations) {
         this.position = position;
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
         this.debrisParts = debrisParts;
         this.debrisMass = debrisMass;
         this.debrisAge = debrisAge;
+        this.visualizations = visualizations;
     }
 
     @Override
@@ -36,11 +38,12 @@ public class ExplosionCharacter extends AbstractGameCharacter {
                     GameHelper.randomDirection(),
                     GameHelper.generateRandomNumberBetween(1f, 4f),
                     GameHelper.randomDirection(),
-                    Visualizations.BOULDER,
+                    visualizations,
                     bitSize,
                     null);
 
             getContext().updatePhysicalObjectExtra(bit, "radius", bitSize);
+
             bits.add(bit);
         }
     }
@@ -56,4 +59,6 @@ public class ExplosionCharacter extends AbstractGameCharacter {
             getContext().removeMyself();
         }
     }
+
+
 }

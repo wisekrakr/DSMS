@@ -64,6 +64,8 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
             public void removePhysicalObject(PhysicalObject object) {
                 AbstractNonPlayerGameCharacter.this.getContext().removePhysicalObject(object);
             }
+
+
         });
 
         b.start();
@@ -72,6 +74,8 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
     private void cancelBehavior(com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior remove) {
         remove.stop();
     }
+
+
 
     @Override
     public void elapseTime(float delta) {

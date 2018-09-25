@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.server.EngineConstants;
 
 import java.util.Random;
@@ -25,6 +26,9 @@ public class GameHelper {
         return randomGenerator.nextFloat() * 2000 - 1000;
     }
 
+    public static float distanceBetweenPhysicals(PhysicalObject subject, PhysicalObject target) {
+        return distanceBetween(subject.getPosition(), target.getPosition());
+    }
 
     public static float distanceBetween(GameObject subject, GameObject target) {
         return distanceBetween(subject.getPosition(), target.getPosition());

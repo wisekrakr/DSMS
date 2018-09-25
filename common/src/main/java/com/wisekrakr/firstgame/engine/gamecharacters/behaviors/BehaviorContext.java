@@ -11,7 +11,6 @@ public interface BehaviorContext {
 
     Behavior existingSubBehavior();
 
-
     void addCharacter(GameCharacter newObject);
 
     PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, float collisionRadius, PhysicalObjectListener alistener);

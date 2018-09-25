@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.io.Serializable;
 
-public class GameObjectCreationRequest  implements Serializable {
+public class GameObjectCreationRequest implements Serializable {
     private String name;
     private String type;
     private Vector2 initialPosition;

@@ -1,6 +1,8 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.*;
 import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
@@ -51,7 +53,7 @@ public class SpaceEngine {
             return (PhysicalObjectRunner) target;
         }
 
-        throw new IllegalArgumentException("Unknown physical object");
+        throw new IllegalArgumentException("Unknown physical object: " + target.getName());
     }
 
     public void updatePhysicalObjectExtra(PhysicalObject target, String key, Object value) {
@@ -184,6 +186,18 @@ public class SpaceEngine {
         }
     }
 
+    private NearestPhysicalObject nearestPhysicalObject(PhysicalObject subject, PhysicalObject target){
+        //TODO: Change distance value
+
+        if (GameHelper.distanceBetweenPhysicals(subject, target) < 500) {
+            return new NearestPhysicalObject(subject, target, clock);
+        } else {
+            return null;
+        }
+
+
+    }
+
     private boolean collision(GameObject object1, GameObject object2) {
         return
                 Math.sqrt(
@@ -260,6 +274,37 @@ public class SpaceEngine {
             getPhysicalObject(collision.getOne()).getListener().collision(collision.getTwo(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
             getPhysicalObject(collision.getTwo()).getListener().collision(collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
         }
+
+        //    D.  out of bounds
+
+        for (PhysicalObjectRunner target : physicalObjects) {
+
+            if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
+                    target.getPosition().y < minY || target.getPosition().y - minY > height) {
+                target.signalOutOfBounds();
+            }
+        }
+
+        //    E.  recognize other physicalObjects
+        List<NearestPhysicalObject> nearby = new ArrayList<>();
+        Set<PhysicalObjectRunner> targeted = new HashSet<>();
+        for (PhysicalObjectRunner target : physicalObjects) {
+            targeted.add(target);
+            for (PhysicalObjectRunner subject : physicalObjects) {
+                if (!targeted.contains(subject)) {
+                    NearestPhysicalObject nearestPhysicalObject = nearestPhysicalObject(subject, target);
+
+                    if (nearestPhysicalObject != null) {
+                        nearby.add(nearestPhysicalObject);
+                    }
+                }
+            }
+        }
+
+        for (NearestPhysicalObject nearestPhysicalObject: nearby){
+            getPhysicalObject(nearestPhysicalObject.getOne()).getListener().nearby(nearestPhysicalObject.getTwo(), nearestPhysicalObject.getTime(), nearestPhysicalObject.getTwo().getPosition());
+            getPhysicalObject(nearestPhysicalObject.getTwo()).getListener().nearby(nearestPhysicalObject.getOne(), nearestPhysicalObject.getTime(), nearestPhysicalObject.getOne().getPosition());
+        }
     }
 
     public void elapseTime(float delta) {
@@ -270,9 +315,7 @@ public class SpaceEngine {
 
             clock = clock + delta;
 
-
             physicalElapseTime(delta);
-
 
             Set<GameObject> toDelete = new HashSet<GameObject>();
             Set<GameObject> toAdd = new HashSet<GameObject>();

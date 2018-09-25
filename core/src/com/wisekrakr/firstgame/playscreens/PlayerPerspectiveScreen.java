@@ -661,23 +661,56 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
         try {
-            System.out.println(snapshot.getPhysicalObjects().size() + " physical objects");
+            //System.out.println(snapshot.getPhysicalObjects().size() + " physical objects");
 
             for (PhysicalObjectSnapshot physicalObject : snapshot.getPhysicalObjects()) {
                 float x = physicalObject.getPosition().x;
                 float y = physicalObject.getPosition().y;
+                float radius = ((Number) physicalObject.getExtra().get("radius")).floatValue();
 
                 switch (physicalObject.getVisualization()) {
-                    case BOULDER:
-                        float radius = ((Number) physicalObject.getExtra().get("radius")).floatValue();
 
+                    case PLAYER:
+                        shapeRenderer.setColor(Color.GOLD);
+                        shapeRenderer.circle(physicalObject.getPosition().x, physicalObject.getPosition().y, 7f); //5f is default radius
+                        shapeRenderer.setColor(Color.BLUE);
+                        shapeRenderer.circle(physicalObject.getPosition().x + 4f * (float) Math.cos(physicalObject.getOrientation()),
+                                physicalObject.getPosition().y + 4f * (float) Math.sin(physicalObject.getOrientation()),
+                                (7f / 2f));
+                        break;
+                    case REAR_BOOSTER:
+                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.DARK_GRAY);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
+                        break;
+                    case COCKPIT:
+                        shapeRenderer.setColor(Color.GOLD);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.BLACK);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
+                        break;
+                    case BOULDER:
                         shapeRenderer.setColor(Color.BROWN);
                         shapeRenderer.circle(x, y, radius);
                         shapeRenderer.setColor(Color.GREEN);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
-
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
+                        break;
+                    case EXPLOSION:
+                        Color debrisColor = chooseRandomColor(DEBRIS_COLORS);
+                        shapeRenderer.setColor(debrisColor);
+                        shapeRenderer.circle(x, y, radius);
+                        break;
+                    case TEST:
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.BLUE);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
 
                         break;
 

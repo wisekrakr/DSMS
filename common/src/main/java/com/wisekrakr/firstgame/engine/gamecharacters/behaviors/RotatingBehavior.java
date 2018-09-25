@@ -15,7 +15,7 @@ public class RotatingBehavior extends AbstractBehavior {
 
     @Override
     public void start() {
-        getContext().updatePhysicalObject(subject, null, null, null, GameHelper.generateRandomNumberBetween(1f, 100f), GameHelper.randomDirection(), null, null);
+        getContext().updatePhysicalObject(subject, null, null, null, GameHelper.generateRandomNumberBetween(1f, 25f), GameHelper.randomDirection(), null, null);
 
         rotatingAngle = subject.getOrientation();
     }

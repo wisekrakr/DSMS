@@ -8,11 +8,12 @@ import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.SnakeCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.SpaceshipCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.XCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
-import com.wisekrakr.firstgame.engine.scenarios.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -103,7 +104,7 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
 
-        gameEngine.addScenario(new RetrieveThePackagesInTime(400f, 3, 40));
+        //gameEngine.addScenario(new RetrieveThePackagesInTime(400f, 3, 40));
 
 
 
@@ -137,17 +138,40 @@ public class ServerRunner {
                     }
                 }));
 
-*/
+
         gameEngine.addScenario(new WildlifeManagement(5, 5, new GameObjectFactory() {
             @Override
             public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
                 return new AsteroidNPC(initialPosition, GameHelper.generateRandomNumberBetween(3f, 20f));
             }
         }));
+ */
+
+        for (int i = 0; i < 5; i++) {
+            gameEngine.addGameCharacter(new XCharacter(GameHelper.randomPosition(),
+                    GameHelper.generateRandomNumberBetween(15f, 25f),
+                    GameHelper.randomDirection(),
+                    GameHelper.generateRandomNumberBetween(10f, 20f)));
+        }
 
 
-        gameEngine.addGameCharacter(new AsteroidCharacter(new Vector2(300, 100), 60f, 0, 1));
-        gameEngine.addGameCharacter(new AsteroidCharacter(new Vector2(0, 100), 60f, 0, 50));
+
+/*
+        for (int j = 0; j < 2  ; j++){
+            gameEngine.addGameCharacter(new SnakeCharacter(GameHelper.randomPosition(),
+                    GameHelper.generateRandomNumberBetween(15f, 25f),
+                    GameHelper.randomDirection(),
+                    GameHelper.generateRandomNumberBetween(30f, 50f),
+                    8));
+        }
+*/
+        for (int i = 0; i < 2; i++){
+            gameEngine.addGameCharacter(new AsteroidCharacter(GameHelper.randomPosition(),
+                    GameHelper.generateRandomNumberBetween(5f, 20f),
+                    GameHelper.randomDirection(),
+                    GameHelper.generateRandomNumberBetween(5f, 60f)));
+
+        }
 
         timeThread.start();
 

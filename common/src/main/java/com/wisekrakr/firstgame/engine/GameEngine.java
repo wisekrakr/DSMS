@@ -13,12 +13,11 @@ import java.util.*;
 public class GameEngine {
     private SpaceEngine space;
     private float previousUpdate = -1f;
-    private float updateFrequence = 0.1f;
+    private float updateFrequency = 0.1f;
 
     private List<Scenario> scenarios = new ArrayList<>();
 
     private Set<GameCharacter> characters = new HashSet<>();
-
 
     public GameEngine(SpaceEngine space) {
         this.space = space;
@@ -89,7 +88,7 @@ public class GameEngine {
             c.elapseTime(delta);
         }
 
-        if (space.getTime() > previousUpdate + updateFrequence) {
+        if (space.getTime() > previousUpdate + updateFrequency) {
             previousUpdate = space.getTime();
 
             periodicUpdate();
