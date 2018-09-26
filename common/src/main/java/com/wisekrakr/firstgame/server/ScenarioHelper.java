@@ -1,9 +1,7 @@
 package com.wisekrakr.firstgame.server;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.enemyversions.*;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
@@ -11,9 +9,6 @@ import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawni
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.FollowingChasingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.TestNPC;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
-import com.wisekrakr.firstgame.engine.scenarios.SwarmScenario;
-
-import static com.badlogic.gdx.math.MathUtils.random;
 
 public class ScenarioHelper {
 

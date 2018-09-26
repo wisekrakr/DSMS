@@ -2,11 +2,11 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
-import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class XCharacter extends AbstractNonPlayerGameCharacter {
@@ -14,7 +14,7 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
-    private Set<PhysicalObject>parts = new HashSet<>();
+    private Set<PhysicalObject> parts = new HashSet<>();
     private int numOfParts = 8;
 
     public XCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude) {
@@ -26,39 +26,32 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
 
     @Override
     public void start() {
-        rootBehavior(new AbstractBehavior(){
+        BehavedObject middle = introduceBehavedObject("Middle",
+                initialPosition,
+                initialDirection,
+                initialSpeedMagnitude,
+                initialDirection,
+                Visualizations.TEST,
+                initialRadius);
 
-            private PhysicalObject x;
-
-            @Override
-            public void start() {
-                x = getContext().addPhysicalObject("Middle",
-                        initialPosition,
-                        initialDirection,
-                        initialSpeedMagnitude,
-                        initialDirection,
-                        Visualizations.TEST,
-                        initialRadius,
-                        new PhysicalObjectListener() {
+        middle.behave(
+                Arrays.asList(
+                        new AbstractBehavior() {
                             @Override
-                            public void collision(PhysicalObject two, float time, Vector2 epicentre, float impact) {
-                                rootBehavior(new TurnBackBehavior(x, two, initialSpeedMagnitude));
-
+                            public void start() {
+                                getContext().updatePhysicalObjectExtra("radius", initialRadius);
                             }
 
                             @Override
-                            public void nearby(PhysicalObject target, float time, Vector2 position) {
+                            public void elapseTime(float clock, float delta) {
+                                List<NearPhysicalObject> nearbyPhysicalObjects = XCharacter.this.getContext().findNearbyPhysicalObjects(getContext().getSubject(), 2000f);
 
-                            }
-                        });
+                                if (!nearbyPhysicalObjects.isEmpty()) {
+                                    System.out.println("Boom (TODO)");
+//                                    rootBehavior(new ExplodeAndLeaveDebrisBehavior(x, 20, 5, 50));
+                                }
 
-                getContext().updatePhysicalObjectExtra(x, "radius", initialRadius);
-                rootBehavior(new CruisingBehavior(x, 5f));
-
-            }
-
-            @Override
-            public void elapseTime(float clock, float delta) {
+  //                              x = null;
 
 
 
@@ -88,8 +81,10 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
                 }
                 */
 
-            }
-        });
+                            }
+                        }, new CruisingBehavior(5f))
+        );
+
 
     }
 

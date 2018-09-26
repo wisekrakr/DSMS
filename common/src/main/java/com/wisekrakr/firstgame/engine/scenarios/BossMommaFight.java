@@ -87,10 +87,12 @@ public class BossMommaFight extends Scenario {
 
     }
 
+
     private void updateBossMomma(SpaceEngine spaceEngine){
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(bossMomma.getPosition(), target.getPosition()) < aggressionDistance && initialNumberOfMinions == maxMinions) {
                         bossMomma.primaryAttack(target);
@@ -99,6 +101,7 @@ public class BossMommaFight extends Scenario {
                         System.out.println("Primary Attack on target: " + target);
                     }
                 }
+                */
             }
         });
     }
@@ -168,6 +171,7 @@ public class BossMommaFight extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(bossMomma.getPosition(), target.getPosition()) < aggressionDistance) {
                         bossMomma.secondaryAttack(target);
@@ -178,6 +182,7 @@ public class BossMommaFight extends Scenario {
                         }
                     }
                 }
+                */
             }
         });
     }

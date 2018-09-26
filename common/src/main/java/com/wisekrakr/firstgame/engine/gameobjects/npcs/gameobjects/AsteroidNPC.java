@@ -33,7 +33,8 @@ public class AsteroidNPC extends NonPlayerCharacter {
                     toAdd.add(new AsteroidNPC(this.getPosition(), GameHelper.generateRandomNumberBetween(0f, getCollisionRadius())));
                 }
                 toDelete.add(this);
-            }else if (subject instanceof NonPlayerCharacter || subject instanceof Player){
+            }
+            else if (subject instanceof NonPlayerCharacter ){ // || subject instanceof Player
                 this.setDirection((float) (this.getDirection() + Math.PI));
             }
         }

@@ -130,6 +130,7 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(traveller, target) < chaseDistance) {
                         traveller.chasing(target);
@@ -140,6 +141,7 @@ public class TravellerWithMission extends Scenario {
                         }
                     }
                 }
+                */
             }
         });
     }
@@ -258,6 +260,7 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player){
                     if (GameHelper.distanceBetween(packageObject, target) < 80f){
                         packageObject.inPostmanCare(target);
@@ -265,6 +268,7 @@ public class TravellerWithMission extends Scenario {
                         System.out.println("Package with player, send to: " + packageReceiver.getName());
                     }
                 }
+                */
             }
         });
     }

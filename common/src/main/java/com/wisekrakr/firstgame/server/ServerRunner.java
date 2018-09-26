@@ -1,15 +1,12 @@
 package com.wisekrakr.firstgame.server;
 
-import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.client.GameObjectCreationRequest;
+import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.SnakeCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.SpaceshipCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.XCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
@@ -44,6 +41,8 @@ public class ServerRunner {
                     listen();
                 } catch (Exception e) {
                     System.out.println("Error while listening: " + e.getMessage());
+
+                    e.printStackTrace();
                 }
             }
         });
@@ -201,34 +200,25 @@ public class ServerRunner {
 
                         Object incoming = null;
 
-                        Map<String, Spaceship> myFleet = new HashMap<>();
+                        Map<String, Player> myFleet = new HashMap<>();
 
                         while ((incoming = input.readObject()) != null) {
-                            if (incoming instanceof GameObjectCreationRequest) {
-                                GameObjectCreationRequest request = (GameObjectCreationRequest) incoming;
+                            if (incoming instanceof PlayerCreationRequest) {
+                                PlayerCreationRequest request = (PlayerCreationRequest) incoming;
 
-                                Player result = new Player(request.getName(), request.getInitialPosition());
-
-                                engine.addGameObject(result);
-
+                                Player result = new Player(request.getName());
+                                gameEngine.addGameCharacter(result);
                                 myFleet.put(request.getName(), result);
+
                             } else if (incoming instanceof SpaceshipControlRequest) {
                                 SpaceshipControlRequest request = (SpaceshipControlRequest) incoming;
 
-                                Spaceship ship = myFleet.get(request.getName());
+                                Player player = myFleet.get(request.getName());
 
-                                if (ship == null) {
+                                if (player == null) {
                                     System.out.println("Unknown ship: " + request.getName());
                                 } else {
-                                    engine.forObject(ship, new SpaceEngine.GameObjectHandler() {
-                                        @Override
-                                        public void doIt(GameObject target) {
-                                            ship.control(request.getThrottleState(), request.getSteeringState(),
-                                                    request.getSpecialPowerState(), request.getShootingState(),
-                                                    request.getMouseAiming(), request.getSwitchWeaponState(),
-                                                    request.getHardSteering());
-                                        }
-                                    });
+                                    player.control(request);
                                 }
                             } else if (incoming instanceof PauseUnPauseRequest) {
                                 PauseUnPauseRequest pauseRequest = (PauseUnPauseRequest) incoming;

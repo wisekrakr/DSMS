@@ -7,94 +7,118 @@ import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
-    private List<Behavior> activeBehaviors = new ArrayList<>();
+    private Map<PhysicalObject, List<Behavior>> behavedObjects = new HashMap<>();
+    private Set<PhysicalObject> deleted = new HashSet<>();
 
-    protected final void rootBehavior(Behavior initialBehavior) {
-        addBehavior(initialBehavior);
+    interface BehavedObject {
+        void behave(List<Behavior> behaviors);
     }
 
-    private void addBehavior(Behavior b) {
-        int myIndex = activeBehaviors.size();
-
-        activeBehaviors.add(b);
-
-        b.init(new BehaviorContext() {
+    protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius) {
+        PhysicalObject subject = getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
             @Override
-            public void pushSubBehavior(Behavior b) {
+            public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
+                List<Behavior> behaviors = behavedObjects.get(myself);
 
-            }
-
-            @Override
-            public Behavior existingSubBehavior() {
-                if (activeBehaviors.size() > myIndex + 1) {
-                    return activeBehaviors.get(myIndex + 1);
+                for (Behavior behavior : behaviors) {
+                    if (!deleted.contains(myself)) {
+                        behavior.collide(two, epicentre, impact);
+                    }
                 }
-
-                return null;
             }
 
+            @Override
+            public void removed(PhysicalObject target) {
+                List<Behavior> behaviors = behavedObjects.remove(target);
+
+                if (behaviors != null) {
+                    for (Behavior behavior: behaviors) {
+                        removedBehavior(behavior);
+                    }
+                }
+            }
+        });
+
+        behavedObjects.put(subject, null);
+
+        return new BehavedObject() {
+            @Override
+            public void behave(List<Behavior> behaviors) {
+                if (behavedObjects.containsKey(subject)) {
+                    List<Behavior> old = behavedObjects.put(subject, behaviors);
+                    if (old != null) {
+                        for (Behavior o : old) {
+                            removedBehavior(o);
+                        }
+                    }
+
+                    if (behaviors != null) {
+                        for (Behavior n : behaviors) {
+                            addedBehavior(subject, n);
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private void removedBehavior(Behavior b) {
+        b.stop();
+    }
+
+    private void addedBehavior(PhysicalObject subject, Behavior b) {
+        b.init(new BehaviorContext() {
             @Override
             public void addCharacter(GameCharacter newObject) {
                 getContext().addCharacter(newObject);
             }
 
             @Override
-            public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener alistener) {
-                // TODO: keep track of physical objects created by this behavior?
-
-                return AbstractNonPlayerGameCharacter.this.getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, alistener);
+            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
+                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
             }
 
             @Override
-            public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
-                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(target, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
-            }
-
-            @Override
-            public void updatePhysicalObjectExtra(PhysicalObject target, String key, Object value) {
-                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObjectExtra(target, key, value);
+            public void updatePhysicalObjectExtra(String key, Object value) {
+                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObjectExtra(subject, key, value);
             }
 
 
             @Override
-            public void removePhysicalObject(PhysicalObject object) {
-                AbstractNonPlayerGameCharacter.this.getContext().removePhysicalObject(object);
+            public void removePhysicalObject() {
+                deleted.add(subject);
             }
 
-
+            @Override
+            public PhysicalObject getSubject() {
+                return subject;
+            }
         });
 
         b.start();
     }
 
-    private void cancelBehavior(com.wisekrakr.firstgame.engine.gameobjects.npcs.Behavior remove) {
-        remove.stop();
-    }
-
-
-
     @Override
-    public void elapseTime(float delta) {
-        int index = 0;
+    public final void elapseTime(float delta) {
+        for (Map.Entry<PhysicalObject, List<Behavior>> entry : behavedObjects.entrySet()) {
+            if (!deleted.contains(entry.getKey())) {
+                for (Behavior b : entry.getValue()) {
+                    b.elapseTime(getContext().getSpaceEngine().getTime(), delta);
 
-        while (index < activeBehaviors.size()) {
-            Behavior b = activeBehaviors.get(index);
-
-            int myIndex = index;
-
-            b.elapseTime(getContext().getSpaceEngine().getTime(), delta);
-
-            index = index + 1;
+                    if (deleted.contains(entry.getKey())) {
+                        break;
+                    }
+                }
+            }
         }
-/*
-        // TODO: move towards the general infrastructure
-        setPosition(new Vector2(getPosition().x + (float) Math.cos(getDirection()) * speed * delta,
-                getPosition().y + (float) Math.sin(getDirection()) * speed * delta)
-        );
-        */
+
+        for (PhysicalObject object : deleted) {
+            getContext().removePhysicalObject(object);
+        }
+
+        deleted.clear();
     }
 }

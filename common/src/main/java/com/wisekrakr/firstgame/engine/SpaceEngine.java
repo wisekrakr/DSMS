@@ -1,14 +1,8 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.*;
-import com.wisekrakr.firstgame.engine.gameobjects.enemies.Enemy;
+import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.*;
@@ -34,17 +28,21 @@ public class SpaceEngine {
     }
 
     public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
-        PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, Collections.emptyMap(), collisionRadius, listener);
+        synchronized (monitor) {
+            PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, Collections.emptyMap(), collisionRadius, listener);
 
-        physicalObjects.add(result);
+            physicalObjects.add(result);
 
-        return result;
+            return result;
+        }
     }
 
     public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
-        PhysicalObjectRunner runner = getPhysicalObject(target);
+        synchronized (monitor) {
+            PhysicalObjectRunner runner = getPhysicalObject(target);
 
-        runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+            runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+        }
 
     }
 
@@ -64,6 +62,25 @@ public class SpaceEngine {
         if (!physicalObjects.remove(object)) {
             throw new IllegalArgumentException("Unknown physical object:" + object);
         }
+
+        ((PhysicalObjectRunner) object).getListener().removed(object);
+    }
+
+    public List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float maxDistance) {
+        List<NearPhysicalObject> result = new ArrayList<>();
+
+        for (PhysicalObjectRunner target : physicalObjects) {
+            if (target != reference) {
+                float distance = GameHelper.distanceBetweenPhysicals(reference, target);
+                if (distance < maxDistance) {
+                    result.add(new NearPhysicalObject(target, distance));
+                }
+            }
+        }
+
+        Collections.sort(result, (o1, o2) -> Float.compare(o1.getDistance(), o2.getDistance()));
+
+        return result;
     }
 
     public interface GameObjectListener {
@@ -72,10 +89,12 @@ public class SpaceEngine {
         void removed();
     }
 
+    @Deprecated
     public GameObject addGameObject(GameObject object) {
         return addGameObject(object, null);
     }
 
+    @Deprecated
     public GameObject addGameObject(GameObject object, GameObjectListener listener) {
         synchronized (monitor) {
             if (!gameObjects.add(object)) {
@@ -102,6 +121,7 @@ public class SpaceEngine {
         return object;
     }
 
+    @Deprecated
     public void removeGameObject(GameObject object) {
         synchronized (monitor) {
             if (!gameObjects.remove(object)) {
@@ -186,18 +206,6 @@ public class SpaceEngine {
         }
     }
 
-    private NearestPhysicalObject nearestPhysicalObject(PhysicalObject subject, PhysicalObject target){
-        //TODO: Change distance value
-
-        if (GameHelper.distanceBetweenPhysicals(subject, target) < 500) {
-            return new NearestPhysicalObject(subject, target, clock);
-        } else {
-            return null;
-        }
-
-
-    }
-
     private boolean collision(GameObject object1, GameObject object2) {
         return
                 Math.sqrt(
@@ -271,8 +279,8 @@ public class SpaceEngine {
         //    C. report to the owners
 
         for (Collision collision : collisions) {
-            getPhysicalObject(collision.getOne()).getListener().collision(collision.getTwo(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
-            getPhysicalObject(collision.getTwo()).getListener().collision(collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
+            getPhysicalObject(collision.getOne()).getListener().collision(collision.getOne(), collision.getTwo(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
+            getPhysicalObject(collision.getTwo()).getListener().collision(collision.getTwo(), collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
         }
 
         //    D.  out of bounds
@@ -283,27 +291,6 @@ public class SpaceEngine {
                     target.getPosition().y < minY || target.getPosition().y - minY > height) {
                 target.signalOutOfBounds();
             }
-        }
-
-        //    E.  recognize other physicalObjects
-        List<NearestPhysicalObject> nearby = new ArrayList<>();
-        Set<PhysicalObjectRunner> targeted = new HashSet<>();
-        for (PhysicalObjectRunner target : physicalObjects) {
-            targeted.add(target);
-            for (PhysicalObjectRunner subject : physicalObjects) {
-                if (!targeted.contains(subject)) {
-                    NearestPhysicalObject nearestPhysicalObject = nearestPhysicalObject(subject, target);
-
-                    if (nearestPhysicalObject != null) {
-                        nearby.add(nearestPhysicalObject);
-                    }
-                }
-            }
-        }
-
-        for (NearestPhysicalObject nearestPhysicalObject: nearby){
-            getPhysicalObject(nearestPhysicalObject.getOne()).getListener().nearby(nearestPhysicalObject.getTwo(), nearestPhysicalObject.getTime(), nearestPhysicalObject.getTwo().getPosition());
-            getPhysicalObject(nearestPhysicalObject.getTwo()).getListener().nearby(nearestPhysicalObject.getOne(), nearestPhysicalObject.getTime(), nearestPhysicalObject.getOne().getPosition());
         }
     }
 
@@ -350,28 +337,9 @@ public class SpaceEngine {
             }
 
 
-/**
- * In this section gameobjects(enemy package) calculate how far they are of each other and they attack in their different ways
- */
-
-            for (GameObject subject : gameObjects) {
-                if (subject instanceof Enemy) {
-                    for (GameObject target : gameObjects) {
-                        if (target instanceof Spaceship) {
-                            //subject.getClosestTarget(target, toDelete, toAdd);
-                            if (target != subject) {
-                                subject.targetSpotted(target, toDelete, toAdd);
-                                subject.attackTarget(target, toDelete, toAdd);
-                            }
-                        }
-                    }
-                }
-            }
-
-
             for (GameObject subject : gameObjects) {
                 // TODO: change into universal behavior
-                if (subject instanceof NonPlayerCharacter || subject instanceof Player) {
+                if (subject instanceof NonPlayerCharacter) {
                     List<GameObject> nearby = new ArrayList<>();
 
                     for (GameObject target : gameObjects) {
@@ -388,56 +356,11 @@ public class SpaceEngine {
  * In this section gameobjects(enemy weaponry ) are Enemy weapons that follow the player(homing weapons).
  */
 
-            for (GameObject subject : gameObjects) {
-                if (subject instanceof Spores || subject instanceof HomingMissile) {
-                    for (GameObject target : gameObjects) {
-                        if (target instanceof Spaceship) {
-                            if (target != subject) {
-                                subject.attackTarget(target, toDelete, toAdd);
-                            }
-                        }
-/**
- * In this section gameobjects( player weaponry ) calculate how far they are of each other and they attack in their different ways
- */
-                        if (target instanceof Enemy || target instanceof NonPlayerCharacter) {
-                            if (target != subject) {
-                                subject.attackTarget(target, toDelete, toAdd);
-                            }
-                        }
-                    }
-                }
-            }
-
-
-/**
- * In this section gameobjects( minions of Player ) calculate how far they are of each other and they attack in their different ways
- */
-            for (GameObject subject : gameObjects) {
-                if (subject instanceof Minion) {
-                    for (GameObject target : gameObjects) {
-                        if (target instanceof Enemy) {
-                            if (target != subject) {
-                                subject.getClosestTarget(target, toDelete, toAdd);
-                                subject.attackTarget(target, toDelete, toAdd);
-                            }
-                        }
-/**
- * In this section gameobjects( minions of Enemy ) calculate how far they are of each other and they attack in their different ways
- */
-                        if (target instanceof Player) {
-                            if (target != subject) {
-                                subject.getClosestTarget(target, toDelete, toAdd);
-                                subject.attackTarget(target, toDelete, toAdd);
-                            }
-                        }
-                    }
-                }
-            }
 
 /**
  * Scoring system
  */
-
+/*
             for (GameObject player : gameObjects) {
                 if (player instanceof Player) {
                     for (GameObject enemy : gameObjects) {
@@ -458,7 +381,7 @@ public class SpaceEngine {
                 }
             }
 
-
+*/
             for (GameObject gameObject : toDelete) {
                 removeGameObject(gameObject);
             }

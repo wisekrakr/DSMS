@@ -87,7 +87,7 @@ public class ClientConnector {
 
     public void createSpaceship(String name, float startX, float startY) {
 
-        queue.add(new GameObjectCreationRequest(name, "SpaceShip", new Vector2(startX, startY)));
+        queue.add(new PlayerCreationRequest(name, "SpaceShip", new Vector2(startX, startY)));
     }
 
     public void controlSpaceship(String name, Spaceship.ThrottleState throttleState, Spaceship.SteeringState steeringState,

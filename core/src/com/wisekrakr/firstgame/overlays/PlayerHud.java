@@ -16,10 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.scenarios.Scenario;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 public class PlayerHud implements Disposable {
 
@@ -63,25 +60,29 @@ public class PlayerHud implements Disposable {
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    private Double health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("health");
+    private Vector3 projection(PhysicalObjectSnapshot object){
+        return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    private Double maxHealth(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("maxHealth");
-    }
-    private Double healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("healthPercentage");
+    private Double health(PhysicalObjectSnapshot object){
+        return (Double) object.getExtra().get("health");
     }
 
-    public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
+    private Double maxHealth(PhysicalObjectSnapshot object){
+        return (Double) object.getExtra().get("maxHealth");
+    }
+    private Double healthPercentage(PhysicalObjectSnapshot object){
+        return (Double) object.getExtra().get("healthPercentage");
+    }
+
+    public Label nameLabel(PhysicalObjectSnapshot object){
         String name = "P1";
         Label nameLabel = new Label(name, new Label.LabelStyle(font, Color.RED));
         nameLabel.setPosition(projection(object).x, projection(object).y + 30, Align.center);
         return nameLabel;
     }
 
-    public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
+    public ProgressBar healthBar(PhysicalObjectSnapshot object){
         Texture healthBar = myAssetManager.assetManager.get("texture/healthbar.png");
         TextureRegion slider = new TextureRegion(healthBar);
         slider.setRegionWidth(3);
@@ -99,7 +100,7 @@ public class PlayerHud implements Disposable {
         return bar;
     }
 
-    public Label orientationLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label orientationLabel(PhysicalObjectSnapshot objectSnapshot){
 
         Label orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
         orientationLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 10);
@@ -107,18 +108,18 @@ public class PlayerHud implements Disposable {
         return orientationLabel;
     }
 
-    public Label directionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label directionLabel(PhysicalObjectSnapshot  objectSnapshot){
 
-        Float direction = (Float) objectSnapshot.extraProperties().get("direction");
+        Float direction = (Float) objectSnapshot.getExtra().get("direction");
         Label directionLabel = new Label("direction = " + String.valueOf(direction), new Label.LabelStyle(debugFont, Color.WHITE));
         directionLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
 
         return directionLabel;
     }
 
-    public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label speedLabel(PhysicalObjectSnapshot objectSnapshot){
 
-        Float speed = (Float) objectSnapshot.extraProperties().get("speed");
+        Float speed = (Float) objectSnapshot.getExtra().get("speed");
         Label speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
         speedLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 30);
 

@@ -21,6 +21,7 @@ import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 import javafx.scene.control.Menu;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabBuilder;
@@ -142,7 +143,7 @@ public class ScreenHud implements Disposable {
         this.name = name;
     }
 
-    public void update(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
+    public void update(PhysicalObjectSnapshot myself, float delta) {
         timeCounter += delta;
         if (timeCounter >= 1) {
             if (myself != null) {
@@ -152,11 +153,11 @@ public class ScreenHud implements Disposable {
                 setName("Wisekrakr");
 
                 timeCountLabel.setText(String.format("%s",worldTimer));
-                distanceCountLabel.setText(Float.toString((Float) myself.extraProperties().get("distanceTravelled")));
-                scoreCountLabel.setText(Float.toString((Float) myself.extraProperties().get("score")));
-                ammoLabel.setText(String.format("%s", myself.extraProperties().get("switchWeaponState")));
-                ammoCountLabel.setText(Integer.toString((Integer) myself.extraProperties().get("ammoCount")));
-                healthCountLabel.setText(Double.toString((Double) myself.extraProperties().get("health")));
+                distanceCountLabel.setText(Float.toString((Float) myself.getExtra().get("distanceTravelled")));
+                scoreCountLabel.setText(Float.toString((Float) myself.getExtra().get("score")));
+                ammoLabel.setText(String.format("%s", myself.getExtra().get("switchWeaponState")));
+                ammoCountLabel.setText(Integer.toString((Integer) myself.getExtra().get("ammoCount")));
+                healthCountLabel.setText(Double.toString((Double) myself.getExtra().get("health")));
                 nameSetLabel.setText(String.format("%s", getName()));
 
 

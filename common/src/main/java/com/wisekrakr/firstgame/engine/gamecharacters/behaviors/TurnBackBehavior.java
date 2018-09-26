@@ -4,15 +4,11 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 
 public class TurnBackBehavior extends AbstractBehavior {
-
-
-    private final PhysicalObject subject;
     private final PhysicalObject target;
     private final float speedMagnitude;
 
-    public TurnBackBehavior(PhysicalObject subject, PhysicalObject target, float speedMagnitude) {
+    public TurnBackBehavior(PhysicalObject target, float speedMagnitude) {
 
-        this.subject = subject;
         this.target = target;
         this.speedMagnitude = speedMagnitude;
     }
@@ -20,10 +16,10 @@ public class TurnBackBehavior extends AbstractBehavior {
     @Override
     public void elapseTime(float clock, float delta) {
 
-        if (target != null){
-            float angle = GameHelper.angleBetween(subject.getPosition(), target.getPosition());
+        if (target != null) {
+            float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), target.getPosition());
 
-            getContext().updatePhysicalObject(subject,
+            getContext().updatePhysicalObject(
                     null,
                     null,
                     -angle,

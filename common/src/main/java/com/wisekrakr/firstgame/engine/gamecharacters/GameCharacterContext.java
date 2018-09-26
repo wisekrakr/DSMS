@@ -2,9 +2,12 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
+import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+
+import java.util.List;
 
 public interface GameCharacterContext {
     SpaceEngine getSpaceEngine();
@@ -21,4 +24,6 @@ public interface GameCharacterContext {
     void removePhysicalObject(PhysicalObject object);
 
     void removeMyself();
+
+    List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float radius);
 }

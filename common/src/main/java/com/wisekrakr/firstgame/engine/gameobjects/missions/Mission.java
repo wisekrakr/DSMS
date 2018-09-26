@@ -49,6 +49,7 @@ public class Mission extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+        /*
         if (subject instanceof Player){
             if (!pickedUp) {
                 pickedUp = true;
@@ -57,6 +58,7 @@ public class Mission extends GameObject {
             }
 
         }
+        */
     }
 
     public boolean isPickedUp() {

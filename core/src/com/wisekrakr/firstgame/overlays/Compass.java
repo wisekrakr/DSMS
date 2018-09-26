@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 public class Compass implements Disposable{
 
@@ -27,7 +28,7 @@ public class Compass implements Disposable{
 
     }
 
-    public void updateCompass(SpaceSnapshot.GameObjectSnapshot object){
+    public void updateCompass(PhysicalObjectSnapshot object){
         if (object != null){
 
             stage.getBatch().begin();

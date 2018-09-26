@@ -51,12 +51,14 @@ public class MutatorAttack extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(mutator.getPosition(), target.getPosition()) < aggressionDistance) {
                         ((BossMommaNPC) mutator).aimFor(target);
                         targeted.add(target);
                     }
                 }
+                */
             }
         });
 

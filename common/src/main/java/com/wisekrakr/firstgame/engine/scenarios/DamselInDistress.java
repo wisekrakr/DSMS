@@ -107,6 +107,7 @@ public class DamselInDistress extends Scenario {
                         }
                     }
                 }
+                /*
                 if (target instanceof Player){
                     if (GameHelper.distanceBetween(damsel.getPosition(), target.getPosition()) < runToDistance) {
                         damsel.clingOn(target);
@@ -115,6 +116,7 @@ public class DamselInDistress extends Scenario {
                         }
                     }
                 }
+                */
             }
         });
     }

@@ -31,16 +31,7 @@ public class PhysicalObjectRunner implements PhysicalObject {
         this.collisionRadius = collisionRadius;
         this.listener = listener;
         if (listener == null) {
-            this.listener = new PhysicalObjectListener() {
-                @Override
-                public void collision(PhysicalObject two, float time, Vector2 epicentre, float impact) {
-
-                }
-
-                @Override
-                public void nearby(PhysicalObject target, float time, Vector2 position) {
-
-                }
+            this.listener = new AbstractPhysicalObjectListener() {
             };
         }
     }

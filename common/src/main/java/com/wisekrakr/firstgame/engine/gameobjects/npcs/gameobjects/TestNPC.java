@@ -59,7 +59,7 @@ public class TestNPC extends NonPlayerCharacter {
                 if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
                     getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 7f)));
 
-                } else if (getContext().nearest() instanceof Player) {
+                } else if (false) { // (getContext().nearest() instanceof Player) {
                     target = getContext().nearest();
                     getContext().pushSubBehavior(new ChasingBehavior(target));
                     if (getContext().nearestInFloats() <= actionDistance / 2) {

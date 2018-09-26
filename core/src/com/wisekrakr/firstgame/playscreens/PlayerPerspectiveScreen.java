@@ -24,8 +24,8 @@ import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
-import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
@@ -77,7 +77,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Float mouseAiming;
     private Spaceship.SwitchWeaponState switchWeaponState;
 
-    private SpaceSnapshot.GameObjectSnapshot myself;
+    private PhysicalObjectSnapshot myself;
     private SpaceSnapshot.GameObjectSnapshot mission;
     /**
      * Stage for labels etc overlayed on the perspective screen, but using a hud-like orientation
@@ -611,7 +611,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
         foundMySelf = false;
-        for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
+        for (PhysicalObjectSnapshot object : snapshot.getPhysicalObjects()) {
             if (mySelf.equals(object.getName())) {
                 myself = object;
 
@@ -666,11 +666,17 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             for (PhysicalObjectSnapshot physicalObject : snapshot.getPhysicalObjects()) {
                 float x = physicalObject.getPosition().x;
                 float y = physicalObject.getPosition().y;
-                float radius = ((Number) physicalObject.getExtra().get("radius")).floatValue();
+                Number radiusRaw = ((Number) physicalObject.getExtra().get("radius"));
+
+                if (radiusRaw == null) {
+                    radiusRaw = 1f;
+                }
+
+                float radius = radiusRaw.floatValue();
 
                 switch (physicalObject.getVisualization()) {
 
-                    case PLAYER:
+                    case SPACESHIP:
                         shapeRenderer.setColor(Color.GOLD);
                         shapeRenderer.circle(physicalObject.getPosition().x, physicalObject.getPosition().y, 7f); //5f is default radius
                         shapeRenderer.setColor(Color.BLUE);
@@ -1486,7 +1492,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         overlayStage.draw();
     }
 
-    private void updateHud(SpaceSnapshot.GameObjectSnapshot myself, float delta) {
+    private void updateHud(PhysicalObjectSnapshot myself, float delta) {
         screenHud.update(myself, delta);
         screenHud.stage.draw();
     }

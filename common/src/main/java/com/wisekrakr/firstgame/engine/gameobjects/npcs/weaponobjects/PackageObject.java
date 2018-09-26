@@ -77,9 +77,11 @@ public class PackageObject extends WeaponObjectClass{
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (timedMission){
+            /*
             if (subject instanceof Player){
                 toDelete.remove(this);
             }
+            */
         }
     }
 

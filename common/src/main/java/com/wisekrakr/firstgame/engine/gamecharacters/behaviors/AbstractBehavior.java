@@ -1,5 +1,8 @@
 package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
+import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+
 public class AbstractBehavior implements Behavior {
     private BehaviorContext context;
 
@@ -24,5 +27,10 @@ public class AbstractBehavior implements Behavior {
 
     @Override
     public void elapseTime(float clock, float delta) {
+    }
+
+    @Override
+    public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
+
     }
 }

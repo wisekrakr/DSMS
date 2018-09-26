@@ -1,14 +1,11 @@
 package com.wisekrakr.firstgame.engine.scenarios;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.Protector;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
-import com.wisekrakr.firstgame.engine.gameobjects.powerups.PowerUpMissile;
 import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Treasure;
 
 import java.util.*;

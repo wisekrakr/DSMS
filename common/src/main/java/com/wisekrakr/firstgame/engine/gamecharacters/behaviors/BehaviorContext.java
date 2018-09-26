@@ -7,16 +7,19 @@ import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 public interface BehaviorContext {
-    void pushSubBehavior(Behavior b);
+//    void pushSubBehavior(Behavior b);
 
-    Behavior existingSubBehavior();
+//    Behavior existingSubBehavior();
 
     void addCharacter(GameCharacter newObject);
 
-    PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, float collisionRadius, PhysicalObjectListener alistener);
-    void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius);
-    void updatePhysicalObjectExtra(PhysicalObject target, String key, Object value);
-    void removePhysicalObject(PhysicalObject object);
+//    PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, float collisionRadius, PhysicalObjectListener alistener);
+
+    void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius);
+    void updatePhysicalObjectExtra(String key, Object value);
+    void removePhysicalObject();
+
+    PhysicalObject getSubject();
 
 
 

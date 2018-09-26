@@ -109,9 +109,11 @@ public class SwarmScenario extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player) {
                     enemies.add(target);
                 }
+                */
             }
         });
 

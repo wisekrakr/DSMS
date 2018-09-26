@@ -1,13 +1,9 @@
 package com.wisekrakr.firstgame.engine.gameobjects.spaceobjects;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.ShieldObject;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.Shield;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +31,7 @@ public class Treasure extends GameObject {
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+/*
         if(subject instanceof Player){
             toDelete.add(this);
             int treasure = MathUtils.random(4,4);
@@ -54,6 +50,7 @@ public class Treasure extends GameObject {
                     break;
             }
         }
+        */
     }
 
     @Override

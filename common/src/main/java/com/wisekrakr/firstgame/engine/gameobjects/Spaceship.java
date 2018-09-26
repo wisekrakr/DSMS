@@ -4,12 +4,9 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
-import com.wisekrakr.firstgame.engine.gameobjects.weaponry.*;
 
 import java.util.*;
 
@@ -150,31 +147,6 @@ public class Spaceship extends GameObject {
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
 
-        if (subject instanceof Bullet) {
-            if (((Bullet) subject).isEnemyBullet()) {
-                setHit(true);
-                setDamageTaken(subject.getDamage());
-            } else {
-                setHit(false);
-            }
-        }
-        if (subject instanceof HomingMissile) {
-            if (((HomingMissile) subject).isEnemyMissile()) {
-                setHit(true);
-                setDamageTaken(subject.getDamage());
-            } else {
-                setHit(false);
-            }
-        }
-        if (subject instanceof SpaceMine) {
-            if (((SpaceMine) subject).isEnemyMine()) {
-                setHit(true);
-                setDamageTaken(subject.getDamage());
-            } else {
-                setHit(false);
-            }
-        }
-
         if (subject instanceof Mission) {
             pickedUp = true;
         }
@@ -189,34 +161,6 @@ public class Spaceship extends GameObject {
                                 * ((object1.getPosition().y) - (object2.getPosition().y)))
                         < (object1.getCollisionRadius() + object2.getCollisionRadius());
 
-    }
-
-    public void scoringSystem(GameObject enemy, GameObject subject) {
-
-        if (enemy instanceof NonPlayerCharacter && !(enemy instanceof WeaponObjectClass)) {
-            if (subject instanceof BulletObject || subject instanceof MissileObject || subject instanceof SpaceMine) {
-                if (collisionDetected(enemy, subject)) {
-                    if (subject instanceof BulletObject) {
-                        this.setScore((float) (this.getScore() + subject.getDamage()));
-                        if (enemy.getHealth() <= 0) {
-                            this.setScore(this.getScore() + 50);
-                        }
-                    }
-                    if (subject instanceof MissileObject) {
-                        this.setScore((float) (this.getScore() + subject.getDamage()));
-                        if (enemy.getHealth() <= 0) {
-                            this.setScore(this.getScore() + 100);
-                        }
-                    }
-                    if (subject instanceof SpaceMine) {
-                        this.setScore((float) (this.getScore() + subject.getDamage()));
-                        if (enemy.getHealth() <= 0) {
-                            this.setScore(this.getScore() + 200);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private GameObject missileTarget = null;

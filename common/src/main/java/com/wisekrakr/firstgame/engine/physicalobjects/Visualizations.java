@@ -1,7 +1,7 @@
 package com.wisekrakr.firstgame.engine.physicalobjects;
 
 public enum Visualizations {
-    PLAYER,
+    SPACESHIP,
     BOULDER,
     EXPLOSION,
     COCKPIT,

@@ -87,6 +87,7 @@ public class RetrieveThePackagesInTime extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(target.getPosition(), shipWithLotsOfCrapOnIt.getPosition()) < escapeDistance) {
                         shipWithLotsOfCrapOnIt.escaping(target);
@@ -94,6 +95,7 @@ public class RetrieveThePackagesInTime extends Scenario {
                         System.out.println("Frigate is running from: " + target);
                     }
                 }
+                */
             }
         });
     }
@@ -139,10 +141,12 @@ public class RetrieveThePackagesInTime extends Scenario {
                     @Override
                     public void doIt(GameObject target) {
                         if (GameHelper.distanceBetween(p, target) < 100) {
+                            /*
                             if (target instanceof Player) {
                                 p.timedMissionInProgress(target);
                                 toBeRemovedPackages.add(p);
                             }
+                            */
                         }
                     }
                 });

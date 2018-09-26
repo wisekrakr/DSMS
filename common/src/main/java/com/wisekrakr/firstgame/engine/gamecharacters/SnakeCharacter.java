@@ -1,15 +1,7 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.ChasingBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.CruisingBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.RotatingBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.HashSet;
@@ -45,7 +37,7 @@ public class SnakeCharacter extends AbstractNonPlayerGameCharacter {
 
         getContext().updatePhysicalObjectExtra(x, "radius", initialRadius);
     }
-
+/*
     @Override
     public void elapseTime(float delta) {
         //rootBehavior(new CruisingBehavior(x, 5f));
@@ -57,7 +49,7 @@ public class SnakeCharacter extends AbstractNonPlayerGameCharacter {
                     x.getOrientation(),
                     x.getSpeedMagnitude(),
                     x.getSpeedDirection(),
-                    Visualizations.PLAYER,
+                    Visualizations.SPACESHIP,
                     x.getCollisionRadius(),
                     null);
             parts.add(physicalObject);
@@ -66,4 +58,5 @@ public class SnakeCharacter extends AbstractNonPlayerGameCharacter {
         }
 
     }
+    */
 }

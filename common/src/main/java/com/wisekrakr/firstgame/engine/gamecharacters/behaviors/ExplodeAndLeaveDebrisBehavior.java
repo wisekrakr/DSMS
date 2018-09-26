@@ -14,8 +14,7 @@ public class ExplodeAndLeaveDebrisBehavior extends AbstractBehavior {
     private float debrisAge;
     private List<PhysicalObject> bits = new ArrayList<>();
 
-    public ExplodeAndLeaveDebrisBehavior(PhysicalObject subject, int debrisParts, float debrisMass, float debrisAge) {
-        this.subject = subject;
+    public ExplodeAndLeaveDebrisBehavior(int debrisParts, float debrisMass, float debrisAge) {
         this.debrisParts = debrisParts;
         this.debrisMass = debrisMass;
         this.debrisAge = debrisAge;
@@ -24,6 +23,7 @@ public class ExplodeAndLeaveDebrisBehavior extends AbstractBehavior {
     @Override
     public void start() {
         for (int i = 0; i < debrisParts; i++) {
+            /*
             bits.add(getContext().addPhysicalObject("debris",
                     subject.getPosition(),
                     GameHelper.randomDirection(),
@@ -32,18 +32,21 @@ public class ExplodeAndLeaveDebrisBehavior extends AbstractBehavior {
                     Visualizations.BOULDER,
                     (float) Math.sqrt((debrisMass * debrisMass) / debrisParts),
                     null));
+                    */
         }
 
-        getContext().removePhysicalObject(subject);
+        getContext().removePhysicalObject();
     }
 
     @Override
     public void elapseTime(float clock, float delta) {
+        /*
         debrisAge = debrisAge - delta;
         if (debrisAge < 0) {
             for (PhysicalObject object: bits) {
                 getContext().removePhysicalObject(object);
             }
         }
+        */
     }
 }

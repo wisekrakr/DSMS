@@ -42,7 +42,7 @@ public class AsteroidWatchingMissileShootingNPC extends NonPlayerCharacter{
                 if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
                     getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
 
-                } else if (getContext().nearest() instanceof Player) {
+                } else if (false) { // getContext().nearest() instanceof Player) {
                     target = getContext().nearest();
 
                     getContext().pushSubBehavior(new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
