@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 import java.util.ArrayList;
 
@@ -67,22 +68,22 @@ public class EnemyHud {
 
     }
 
-    private Vector3 projection(SpaceSnapshot.GameObjectSnapshot object){
+    private Vector3 projection(PhysicalObjectSnapshot  object){
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("radius");
+    private Float radius(PhysicalObjectSnapshot  object){
+        return (Float) object.getExtra().get("radius");
     }
 
-    private Number health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("health");
+    private Number health(PhysicalObjectSnapshot object){
+        return (Double) object.getExtra().get("health");
     }
-    private Number healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("healthPercentage");
+    private Number healthPercentage(PhysicalObjectSnapshot  object){
+        return (Double) object.getExtra().get("healthPercentage");
     }
 
-    public Label nameLabel(SpaceSnapshot.GameObjectSnapshot object){
+    public Label nameLabel(PhysicalObjectSnapshot  object){
 
         if (!(activated)){
             nameLabel.setVisible(false);
@@ -96,7 +97,7 @@ public class EnemyHud {
         return nameLabel;
     }
 
-    public ProgressBar healthBar(SpaceSnapshot.GameObjectSnapshot object){
+    public ProgressBar healthBar(PhysicalObjectSnapshot  object){
         if (!(activated)){
             bar.setVisible(false);
         }else{
@@ -113,7 +114,7 @@ public class EnemyHud {
         return bar;
     }
 
-    public Label positionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label positionLabel(PhysicalObjectSnapshot  objectSnapshot){
 
         Float x = objectSnapshot.getPosition().x;
         Float y = objectSnapshot.getPosition().y;
@@ -128,37 +129,37 @@ public class EnemyHud {
         return positionLabel;
     }
 
-    public Label orientationLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label orientationLabel(PhysicalObjectSnapshot  objectSnapshot){
 
         if (!(activatedData)) {
             orientationLabel.setVisible(false);
             orientationLabel.clear();
         }else {
-            orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
+            orientationLabel = new Label("orientation = " + objectSnapshot.getOrientation(), new Label.LabelStyle(debugFont, Color.WHITE));
             orientationLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y -10 );
         }
         return orientationLabel;
     }
 
-    public Label directionLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label directionLabel(PhysicalObjectSnapshot  objectSnapshot){
 
         if (!(activatedData)) {
             directionLabel.setVisible(false);
             directionLabel.clear();
         }else {
-            directionLabel = new Label("direction = " + String.valueOf(objectSnapshot.extraProperties().get("direction")), new Label.LabelStyle(debugFont, Color.WHITE));
+            directionLabel = new Label("direction = " + objectSnapshot.getSpeedDirection(), new Label.LabelStyle(debugFont, Color.WHITE));
             directionLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y -20 );
         }
         return directionLabel;
     }
 
-    public Label speedLabel(SpaceSnapshot.GameObjectSnapshot objectSnapshot){
+    public Label speedLabel(PhysicalObjectSnapshot  objectSnapshot){
         if (!(activatedData)) {
             speedLabel.setVisible(false);
             speedLabel.clear();
         }else {
-            Float speed = (Float) objectSnapshot.extraProperties().get("speed");
-            speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
+            Float speed = objectSnapshot.getSpeedMagnitude();
+            speedLabel = new Label("speed = " + speed, new Label.LabelStyle(debugFont, Color.WHITE));
             speedLabel.setPosition(projection(objectSnapshot).x + radius(objectSnapshot) +5, projection(objectSnapshot).y - 30);
         }
         return speedLabel;

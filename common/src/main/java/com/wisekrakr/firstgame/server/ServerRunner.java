@@ -146,7 +146,7 @@ public class ServerRunner {
         }));
  */
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             gameEngine.addGameCharacter(new XCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(15f, 25f),
                     GameHelper.randomDirection(),
@@ -164,7 +164,7 @@ public class ServerRunner {
                     8));
         }
 */
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 5; i++){
             gameEngine.addGameCharacter(new AsteroidCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(5f, 20f),
                     GameHelper.randomDirection(),

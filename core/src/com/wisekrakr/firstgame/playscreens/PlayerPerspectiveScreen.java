@@ -634,6 +634,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 registerVolatileActor(playerLabel);
                 registerVolatileActor(bar);
 
+                Label playerPosition = playerHud.positionLabel(object);
+                overlayStage.addActor(playerPosition);
+                registerVolatileActor(playerPosition);
+
                 Label playerOrientation = playerHud.orientationLabel(object);
                 overlayStage.addActor(playerOrientation);
                 registerVolatileActor(playerOrientation);
@@ -718,6 +722,22 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
 
+                        Label chaserPosition = enemyHud.positionLabel(physicalObject);
+                        overlayStage.addActor(chaserPosition);
+                        registerVolatileActor(chaserPosition);
+
+                        Label chaserOrientation = enemyHud.orientationLabel(physicalObject);
+                        overlayStage.addActor(chaserOrientation);
+                        registerVolatileActor(chaserOrientation);
+
+                        Label chaserSpeed = enemyHud.speedLabel(physicalObject);
+                        overlayStage.addActor(chaserSpeed);
+                        registerVolatileActor(chaserSpeed);
+
+                        Label chaserDirection = enemyHud.directionLabel(physicalObject);
+                        overlayStage.addActor(chaserDirection);
+                        registerVolatileActor(chaserDirection);
+
                         break;
 
                     default:
@@ -800,17 +820,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
 
-                        Label bulletOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(bulletOrientation);
-                        registerVolatileActor(bulletOrientation);
-
-                        Label bulletSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(bulletSpeed);
-                        registerVolatileActor(bulletSpeed);
-
-                        Label bulletDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(bulletDirection);
-                        registerVolatileActor(bulletDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -844,30 +853,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label chaserNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(chaserNameLabel);
-                        registerVolatileActor(chaserNameLabel);
-
-                        ProgressBar chaserHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(chaserHealthBar);
-                        registerVolatileActor(chaserHealthBar);
-
-                        Label chaserPosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(chaserPosition);
-                        registerVolatileActor(chaserPosition);
-
-                        Label chaserOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(chaserOrientation);
-                        registerVolatileActor(chaserOrientation);
-
-                        Label chaserSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(chaserSpeed);
-                        registerVolatileActor(chaserSpeed);
-
-                        Label chaserDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(chaserDirection);
-                        registerVolatileActor(chaserDirection);
-
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
                                 x + (radius * 2) * (float) Math.cos(object.getOrientation()),
@@ -885,29 +870,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label elsNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(elsNameLabel);
-                        registerVolatileActor(elsNameLabel);
 
-                        ProgressBar elsHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(elsHealthBar);
-                        registerVolatileActor(elsHealthBar);
-
-                        Label elsPosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(elsPosition);
-                        registerVolatileActor(elsPosition);
-
-                        Label elsOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(elsOrientation);
-                        registerVolatileActor(elsOrientation);
-
-                        Label elsSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(elsSpeed);
-                        registerVolatileActor(elsSpeed);
-
-                        Label elsDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(elsDirection);
-                        registerVolatileActor(elsDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -922,13 +885,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 3) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 3) * (float) Math.sin(object.getOrientation()), (radius / 3));
 
-                        Label flybyNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(flybyNameLabel);
-                        registerVolatileActor(flybyNameLabel);
 
-                        ProgressBar huggerHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(huggerHealthBar);
-                        registerVolatileActor(huggerHealthBar);
                         break;
                     case SHITTER:
 
@@ -938,29 +895,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label shitterNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(shitterNameLabel);
-                        registerVolatileActor(shitterNameLabel);
 
-                        ProgressBar shitterHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(shitterHealthBar);
-                        registerVolatileActor(shitterHealthBar);
-
-                        Label shitterPosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(shitterPosition);
-                        registerVolatileActor(shitterPosition);
-
-                        Label shitterOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(shitterOrientation);
-                        registerVolatileActor(shitterOrientation);
-
-                        Label shitterSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(shitterSpeed);
-                        registerVolatileActor(shitterSpeed);
-
-                        Label shitterDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(shitterDirection);
-                        registerVolatileActor(shitterDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -975,25 +910,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label pestNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(pestNameLabel);
-                        registerVolatileActor(pestNameLabel);
 
-                        ProgressBar pestHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(pestHealthBar);
-                        registerVolatileActor(pestHealthBar);
-
-                        Label pestOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(pestOrientation);
-                        registerVolatileActor(pestOrientation);
-
-                        Label pestSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(pestSpeed);
-                        registerVolatileActor(pestSpeed);
-
-                        Label pestDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(pestDirection);
-                        registerVolatileActor(pestDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1008,25 +925,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label blinkerNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(blinkerNameLabel);
-                        registerVolatileActor(blinkerNameLabel);
-
-                        ProgressBar blinkerHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(blinkerHealthBar);
-                        registerVolatileActor(blinkerHealthBar);
-
-                        Label blinkerOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(blinkerOrientation);
-                        registerVolatileActor(blinkerOrientation);
-
-                        Label blinkerSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(blinkerSpeed);
-                        registerVolatileActor(blinkerSpeed);
-
-                        Label blinkerDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(blinkerDirection);
-                        registerVolatileActor(blinkerDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1047,29 +945,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label motherNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(motherNameLabel);
-                        registerVolatileActor(motherNameLabel);
-
-                        ProgressBar motherHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(motherHealthBar);
-                        registerVolatileActor(motherHealthBar);
-
-                        Label motherPosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(motherPosition);
-                        registerVolatileActor(motherPosition);
-
-                        Label motherOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(motherOrientation);
-                        registerVolatileActor(motherOrientation);
-
-                        Label motherSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(motherSpeed);
-                        registerVolatileActor(motherSpeed);
-
-                        Label motherDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(motherDirection);
-                        registerVolatileActor(motherDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1086,25 +961,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label dodgerNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(dodgerNameLabel);
-                        registerVolatileActor(dodgerNameLabel);
-
-                        ProgressBar dodgerHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(dodgerHealthBar);
-                        registerVolatileActor(dodgerHealthBar);
-
-                        Label dodgerOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(dodgerOrientation);
-                        registerVolatileActor(dodgerOrientation);
-
-                        Label dodgerSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(dodgerSpeed);
-                        registerVolatileActor(dodgerSpeed);
-
-                        Label dodgerDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(dodgerDirection);
-                        registerVolatileActor(dodgerDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1121,13 +977,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label homerNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(homerNameLabel);
-                        registerVolatileActor(homerNameLabel);
-
-                        ProgressBar homerHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(homerHealthBar);
-                        registerVolatileActor(homerHealthBar);
 
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssHomer.png", object, batch, 0.3f);
@@ -1138,21 +987,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
 
-                        Label missilePosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(missilePosition);
-                        registerVolatileActor(missilePosition);
 
-                        Label missileOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(missileOrientation);
-                        registerVolatileActor(missileOrientation);
-
-                        Label missileSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(missileSpeed);
-                        registerVolatileActor(missileSpeed);
-
-                        Label missileDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(missileDirection);
-                        registerVolatileActor(missileDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1169,13 +1004,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
 
-                        Label mutatorNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(mutatorNameLabel);
-                        registerVolatileActor(mutatorNameLabel);
-
-                        ProgressBar mutatorHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(mutatorHealthBar);
-                        registerVolatileActor(mutatorHealthBar);
 
 
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssMutator.png", object, batch, 0.6f);
@@ -1201,25 +1029,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(object.getOrientation()), radius / 2);
 
-                        Label shottyNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(shottyNameLabel);
-                        registerVolatileActor(shottyNameLabel);
-
-                        ProgressBar shottyHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(shottyHealthBar);
-                        registerVolatileActor(shottyHealthBar);
-
-                        Label shottyOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(shottyOrientation);
-                        registerVolatileActor(shottyOrientation);
-
-                        Label shottySpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(shottySpeed);
-                        registerVolatileActor(shottySpeed);
-
-                        Label shottyDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(shottyDirection);
-                        registerVolatileActor(shottyDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1271,26 +1080,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                         break;
 
-                    case MINION:
-                        Boolean minionShooter = (Boolean) object.extraProperties().get("minionshooter");
-                        Boolean minionFighter = (Boolean) object.extraProperties().get("minionfighter");
-
-                        shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.SKY);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-                    /*
-                    else if (minionFighter) {
-                        objectSnapshot = object;
-                        shapeRenderer.setColor(Color.SKY);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-                    }
-                    */
-                        break;
                     case SHIELD:
                         String lightBlue = "8EE2EC";
                         shapeRenderer.setColor(Color.valueOf(lightBlue));
@@ -1300,26 +1089,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Color exhaustColor = chooseRandomColor(EXHAUST_COLORS);
                         shapeRenderer.setColor(exhaustColor);
                         shapeRenderer.circle(x, y, radius);
-
-                        Label aLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(aLabel);
-                        registerVolatileActor(aLabel);
-
-                        ProgressBar aHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(aHealthBar);
-                        registerVolatileActor(aHealthBar);
-
-                        Label aOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(aOrientation);
-                        registerVolatileActor(aOrientation);
-
-                        Label aSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(aSpeed);
-                        registerVolatileActor(aSpeed);
-
-                        Label aDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(aDirection);
-                        registerVolatileActor(aDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1354,29 +1123,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.rect(x, y, width, height);
 */
 
-                        Label testNameLabel = enemyHud.nameLabel(object);
-                        overlayStage.addActor(testNameLabel);
-                        registerVolatileActor(testNameLabel);
 
-                        ProgressBar testHealthBar = enemyHud.healthBar(object);
-                        overlayStage.addActor(testHealthBar);
-                        registerVolatileActor(testHealthBar);
-/*
-                        Label testPosition = enemyHud.positionLabel(object);
-                        overlayStage.addActor(testPosition);
-                        registerVolatileActor(testPosition);
-*/
-                        Label testOrientation = enemyHud.orientationLabel(object);
-                        overlayStage.addActor(testOrientation);
-                        registerVolatileActor(testOrientation);
-
-                        Label testSpeed = enemyHud.speedLabel(object);
-                        overlayStage.addActor(testSpeed);
-                        registerVolatileActor(testSpeed);
-
-                        Label testDirection = enemyHud.directionLabel(object);
-                        overlayStage.addActor(testDirection);
-                        registerVolatileActor(testDirection);
 
                         shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
                                 y + radius * (float) Math.sin(object.getOrientation()),
@@ -1401,28 +1148,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         shapeRenderer.end();
 
+        // Game Stage Border
+/*
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(EngineConstants.MIN_X, EngineConstants.MIN_Y, EngineConstants.ENGINE_WIDTH, EngineConstants.ENGINE_HEIGHT);
         shapeRenderer.end();
+*/
 
 
-        //Testing Ellipses
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-
-        for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
-            Float radius = (Float) object.extraProperties().get("radius");
-
-            switch (object.getType()) {
-                case SHIELD:
-                    String lightBlue = "8EE2EC";
-                    shapeRenderer.setColor(Color.valueOf(lightBlue));
-                    shapeRenderer.circle(object.getPosition().x, object.getPosition().y, radius * 2);
-
-                    break;
-            }
-        }
-        shapeRenderer.end();
     }
 
     private static final String yellowish = "EDE49E";

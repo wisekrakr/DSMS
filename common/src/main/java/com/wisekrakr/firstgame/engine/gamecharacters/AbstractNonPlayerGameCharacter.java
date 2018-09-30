@@ -15,6 +15,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
 
     interface BehavedObject {
         void behave(List<Behavior> behaviors);
+
     }
 
     protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius) {
@@ -58,6 +59,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
                     if (behaviors != null) {
                         for (Behavior n : behaviors) {
                             addedBehavior(subject, n);
+
                         }
                     }
                 }

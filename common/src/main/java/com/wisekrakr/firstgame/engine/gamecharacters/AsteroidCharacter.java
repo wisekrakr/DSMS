@@ -1,12 +1,14 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.RotatingBehavior;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
+import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
@@ -24,7 +26,7 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
     @Override
     public void start() {
         BehavedObject behavedObject = introduceBehavedObject(
-                "A",
+                "Asteroid",
                 initialPosition,
                 0,
                 initialSpeedMagnitude,
@@ -58,13 +60,31 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                     public void elapseTime(float clock, float delta) {
                         //getContext().updatePhysicalObject(physicalObject, null, null, null, Math.min(100f, 10 * clock), Math.min(clock, 1000f), null, null);
 
-                        //getContext().pushSubBehavior(new RotatingBehavior(physicalObject, GameHelper.generateRandomNumberBetween(5f, 25f)));
+                        List<NearPhysicalObject> nearbyPhysicalObjects = AsteroidCharacter.this.getContext().findNearbyPhysicalObjects(getContext().getSubject(), 300f);
+
+                        if (!nearbyPhysicalObjects.isEmpty()) {
+                            for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
+                                float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), nearPhysicalObject.getObject().getPosition());
+
+                                getContext().updatePhysicalObject(
+                                        null,
+                                        null,
+                                        -angle,
+                                        initialSpeedMagnitude,
+                                        -angle,
+                                        null,
+                                        null);
+                            }
+                        }
 
                         if (getContext().getSubject().getCollisionRadius() <= 0.5f) {
                             getContext().removePhysicalObject();
                         }
                     }
-                },
-                new RotatingBehavior(5f)));
+                }, new RotatingBehavior(GameHelper.generateRandomNumberBetween(5f, 20f))
+        ));
+
     }
+
+
 }

@@ -284,7 +284,7 @@ public class SpaceEngine {
         }
 
         //    D.  out of bounds
-
+/*
         for (PhysicalObjectRunner target : physicalObjects) {
 
             if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
@@ -292,6 +292,7 @@ public class SpaceEngine {
                 target.signalOutOfBounds();
             }
         }
+        */
     }
 
     public void elapseTime(float delta) {
@@ -352,9 +353,6 @@ public class SpaceEngine {
             }
 
 
-/**
- * In this section gameobjects(enemy weaponry ) are Enemy weapons that follow the player(homing weapons).
- */
 
 
 /**

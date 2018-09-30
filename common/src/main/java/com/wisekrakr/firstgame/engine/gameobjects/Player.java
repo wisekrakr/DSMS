@@ -14,19 +14,21 @@ import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import java.util.Random;
 
 public class Player extends AbstractGameCharacter {
+    private final double maxHealth;
     private String name;
     private PhysicalObject spaceship;
     private SpaceshipControlRequest lastControl;
 
-    private float health = 100;
+    private double health = 100;
     private float angle;
     private float lastDodge = -1000f;
-    private final float defaultSpeed = 60f;
-    private final float maxSpeed = 125f;
+    private final float defaultSpeed = 100f;
+    private final float maxSpeed = 175f;
 
 
     public Player(String name) {
         this.name = name;
+        maxHealth = health;
     }
 
     @Override
@@ -38,14 +40,14 @@ public class Player extends AbstractGameCharacter {
                 });
 
         getContext().updatePhysicalObjectExtra(spaceship, "radius", 10f);
-
         getContext().updatePhysicalObjectExtra(spaceship, "distanceTravelled", 10f);
         getContext().updatePhysicalObjectExtra(spaceship, "score", 10f);
         getContext().updatePhysicalObjectExtra(spaceship, "switchWeaponState", 10f);
         getContext().updatePhysicalObjectExtra(spaceship, "ammoCount", 10 );
-        getContext().updatePhysicalObjectExtra(spaceship, "health", 10d);
-        getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", 100d);
+        getContext().updatePhysicalObjectExtra(spaceship, "health", health);
+        getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", maxHealth);
         getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1d);
+
     }
 
     public void control(SpaceshipControlRequest request) {
@@ -85,13 +87,13 @@ public class Player extends AbstractGameCharacter {
 
         switch (lastControl.getThrottleState()) {
             case FORWARDS:
-                speedX = speedX + delta * defaultSpeed * (float) Math.cos(angle);
-                speedY = speedY + delta * defaultSpeed * (float) Math.sin(angle);
+                speedX = speedX + delta * defaultSpeed * (float) Math.cos(spaceship.getOrientation());
+                speedY = speedY + delta * defaultSpeed * (float) Math.sin(spaceship.getOrientation());
                 break;
 
             case REVERSE:
-                speedX = speedX - delta * defaultSpeed * (float) Math.cos(angle);
-                speedY = speedY - delta * defaultSpeed * (float) Math.sin(angle);
+                speedX = speedX - delta * defaultSpeed * (float) Math.cos(spaceship.getOrientation());
+                speedY = speedY - delta * defaultSpeed * (float) Math.sin(spaceship.getOrientation());
                 break;
 
             case FULL_STOP:
@@ -100,7 +102,7 @@ public class Player extends AbstractGameCharacter {
                 break;
         }
 
-        speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+        speed = (float) Math.min(Math.sqrt(speedX * speedX + speedY * speedY), defaultSpeed);
 
         if (speed > (defaultSpeed + (defaultSpeed / 2))) {
             speedX = speedX * (defaultSpeed + (defaultSpeed / 2)) / speed;
@@ -113,7 +115,7 @@ public class Player extends AbstractGameCharacter {
                 speedX = speedX + (float) Math.cos(spaceship.getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
                 speedY = speedY + (float) Math.sin(spaceship.getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
 
-                speed = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+                speed = (float) Math.min(Math.sqrt(speedX * speedX + speedY * speedY), maxSpeed);
                 if (speed > maxSpeed) {
                     speedX = speedX * maxSpeed / speed;
                     speedY = speedY * maxSpeed / speed;
@@ -155,6 +157,8 @@ public class Player extends AbstractGameCharacter {
                 (getContext().getSpaceEngine().getTime() - lastDodge > 10)?Visualizations.SPACESHIP:Visualizations.BOULDER,
                 null
                 );
+
+
 /*
         distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 

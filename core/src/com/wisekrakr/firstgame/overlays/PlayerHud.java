@@ -100,28 +100,34 @@ public class PlayerHud implements Disposable {
         return bar;
     }
 
+    public Label positionLabel(PhysicalObjectSnapshot objectSnapshot){
+
+        Label orientationLabel = new Label("position = " + objectSnapshot.getPosition(), new Label.LabelStyle(debugFont, Color.WHITE));
+        orientationLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 10);
+
+        return orientationLabel;
+    }
+
     public Label orientationLabel(PhysicalObjectSnapshot objectSnapshot){
 
-        Label orientationLabel = new Label("orientation = " + String.valueOf(objectSnapshot.getOrientation()), new Label.LabelStyle(debugFont, Color.WHITE));
-        orientationLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 10);
+        Label orientationLabel = new Label("orientation = " + objectSnapshot.getOrientation(), new Label.LabelStyle(debugFont, Color.WHITE));
+        orientationLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
 
         return orientationLabel;
     }
 
     public Label directionLabel(PhysicalObjectSnapshot  objectSnapshot){
 
-        Float direction = (Float) objectSnapshot.getExtra().get("direction");
-        Label directionLabel = new Label("direction = " + String.valueOf(direction), new Label.LabelStyle(debugFont, Color.WHITE));
-        directionLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 20);
+        Label directionLabel = new Label("direction = " + objectSnapshot.getSpeedDirection(), new Label.LabelStyle(debugFont, Color.WHITE));
+        directionLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 30);
 
         return directionLabel;
     }
 
     public Label speedLabel(PhysicalObjectSnapshot objectSnapshot){
 
-        Float speed = (Float) objectSnapshot.getExtra().get("speed");
-        Label speedLabel = new Label("speed = " + String.valueOf(speed), new Label.LabelStyle(debugFont, Color.WHITE));
-        speedLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 30);
+        Label speedLabel = new Label("speed = " + objectSnapshot.getSpeedMagnitude(), new Label.LabelStyle(debugFont, Color.WHITE));
+        speedLabel.setPosition(projection(objectSnapshot).x + 10, projection(objectSnapshot).y - 40);
 
         return speedLabel;
     }

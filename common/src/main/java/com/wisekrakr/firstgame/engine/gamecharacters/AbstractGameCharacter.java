@@ -1,5 +1,7 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+
 public class AbstractGameCharacter implements GameCharacter {
     private GameCharacterContext context;
 
