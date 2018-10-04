@@ -8,9 +8,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.XCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -146,25 +144,24 @@ public class ServerRunner {
         }));
  */
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             gameEngine.addGameCharacter(new XCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(15f, 25f),
                     GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(10f, 20f)));
+                    GameHelper.generateRandomNumberBetween(40f, 70f)));
         }
-
 
 
 /*
-        for (int j = 0; j < 2  ; j++){
-            gameEngine.addGameCharacter(new SnakeCharacter(GameHelper.randomPosition(),
+        for (int i = 0; i < 2; i++) {
+            gameEngine.addGameCharacter(new AggressiveChasingCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(15f, 25f),
                     GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(30f, 50f),
-                    8));
+                    GameHelper.generateRandomNumberBetween(40f, 70f),
+                    300f));
         }
 */
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 0; i++){
             gameEngine.addGameCharacter(new AsteroidCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(5f, 20f),
                     GameHelper.randomDirection(),

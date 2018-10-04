@@ -4,8 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
+import com.wisekrakr.firstgame.engine.gamecharacters.BulletCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.HomingMissileCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.AbstractPhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
@@ -24,6 +25,8 @@ public class Player extends AbstractGameCharacter {
     private float lastDodge = -1000f;
     private final float defaultSpeed = 100f;
     private final float maxSpeed = 175f;
+    private float shootTime;
+    private float adaptedAngle;
 
 
     public Player(String name) {
@@ -48,11 +51,13 @@ public class Player extends AbstractGameCharacter {
         getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", maxHealth);
         getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1d);
 
+
     }
 
     public void control(SpaceshipControlRequest request) {
         this.lastControl = request;
     }
+
 
 
     @Override
@@ -159,28 +164,64 @@ public class Player extends AbstractGameCharacter {
                 );
 
 
-/*
-        distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
+        //distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
-        switch (shootingState) {
+        float x = spaceship.getPosition().x;
+        float y = spaceship.getPosition().y;
+
+        float deltaX = ((float) Math.cos(spaceship.getOrientation()));
+        float deltaY = ((float) Math.sin(spaceship.getOrientation()));
+
+        switch (lastControl.getShootingState()) {
             case FIRING:
-                activateBullets(delta, toDelete, toAdd);
+
+                adaptedAngle = (float) Math.atan2(deltaY * 200 + speedY, deltaX * 200 + speedX);
+
+                shootTime += delta;
+
+                if (shootTime > 0.3f){
+                    getContext().addCharacter(new BulletCharacter(new Vector2(x + spaceship.getCollisionRadius() * deltaX,
+                            y + spaceship.getCollisionRadius() * deltaY),
+                            200f,
+                            adaptedAngle,
+                            3f,
+                            1,
+                            3f,
+                            Visualizations.LEFT_CANNON
+                    ));
+                    shootTime = 0f;
+                }
+
                 break;
             case MISSILE_FIRING:
 
-                activateMissiles(delta, toDelete, toAdd);
+                adaptedAngle = (float) Math.atan2(deltaY * 200 + speedY, deltaX * 200 + speedX);
+
+                shootTime += delta;
+
+                if (shootTime > 0.3f){
+                    getContext().addCharacter(new HomingMissileCharacter(new Vector2(x + spaceship.getCollisionRadius() * deltaX,
+                            y + spaceship.getCollisionRadius() * deltaY),
+                            200f,
+                            adaptedAngle,
+                            3f,
+                            1,
+                            3f,
+                            Visualizations.RIGHT_CANNON,
+                            getContext()
+                    ));
+                    shootTime = 0f;
+                }
+
+
                 break;
             case PLACE_MINE:
-                activateSpaceMines(delta, toDelete, toAdd);
                 break;
             case PACIFIST:
-                shotLeftOver = 0;
-                missileLeftOver = 0;
-                minesLeftOver = 0;
                 break;
         }
-
+/*
         if (mouseAiming != null) {
             shootTime -= delta * 0.5f;
 

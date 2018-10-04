@@ -10,10 +10,12 @@ import java.util.List;
 
 public class CruisingBehavior extends AbstractBehavior {
     private float changeDirectionInterval;
+    private float speedMagnitude;
     private Float lastDirectionChange;
 
-    public CruisingBehavior(float changeDirectionInterval) {
+    public CruisingBehavior(float changeDirectionInterval, float speedMagnitude) {
         this.changeDirectionInterval = changeDirectionInterval;
+        this.speedMagnitude = speedMagnitude;
     }
 
     @Override
@@ -23,16 +25,13 @@ public class CruisingBehavior extends AbstractBehavior {
             lastDirectionChange = clock;
         }
 
-        List<Float> speeds = Arrays.asList(GameHelper.generateRandomNumberBetween(30f, 35f), GameHelper.generateRandomNumberBetween(36f, 40f),
-                GameHelper.generateRandomNumberBetween(41f, 45f));
-
         if (clock - lastDirectionChange > changeDirectionInterval) {
 
             float randomDirection = GameHelper.randomDirection();
             getContext().updatePhysicalObject(
                     null, null,
                     randomDirection,
-                    speeds.get(GameHelper.randomGenerator.nextInt(speeds.size())),
+                    speedMagnitude,
                     randomDirection,
                     null, null);
             lastDirectionChange = clock;

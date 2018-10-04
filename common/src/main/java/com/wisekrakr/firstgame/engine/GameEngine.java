@@ -7,6 +7,8 @@ import com.wisekrakr.firstgame.engine.physicalobjects.*;
 import com.wisekrakr.firstgame.engine.scenarios.Scenario;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class GameEngine {
     private SpaceEngine space;
@@ -15,7 +17,7 @@ public class GameEngine {
 
     private List<Scenario> scenarios = new ArrayList<>();
 
-    private Map<GameCharacter, GameCharacterRunner> characters = new HashMap<>();
+    private Map<GameCharacter, GameCharacterRunner> characters = new ConcurrentHashMap<>();
 
     private Set<GameCharacter> deleted = new HashSet<>();
 
@@ -34,8 +36,13 @@ public class GameEngine {
         if (runner != null) {
             character.stop();
 
-            for (PhysicalObject object : runner.getPhysicalObjects()) {
-                space.removePhysicalObject(object);
+            Iterator<PhysicalObject>iterator = runner.physicalObjects.iterator();
+            while (iterator.hasNext()){
+                PhysicalObject p = iterator.next();
+                if (runner.physicalObjects.contains(p)){
+                    iterator.remove();
+                    space.removePhysicalObject(p);
+                }
             }
         }
     }
@@ -133,6 +140,11 @@ public class GameEngine {
             }
 
             @Override
+            public PhysicalObject getPhysicalObject() {
+                return runner.getPhysicalObjects().iterator().next();
+            }
+
+            @Override
             public List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float radius) {
                 return space.findNearbyPhysicalObjects(reference, radius);
 
@@ -148,6 +160,7 @@ public class GameEngine {
 
     public void elapseTime(float delta) {
         space.elapseTime(delta);
+
         for (GameCharacter c : characters.keySet()) {
             c.elapseTime(delta);
         }
@@ -156,7 +169,6 @@ public class GameEngine {
             removeGameCharacter(d);
         }
         deleted.clear();
-
 
         if (space.getTime() > previousUpdate + updateFrequency) {
             previousUpdate = space.getTime();

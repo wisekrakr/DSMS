@@ -2,12 +2,16 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
-import com.wisekrakr.firstgame.engine.physicalobjects.*;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.CruisingBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.MiscAttackBehaviors;
+import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-public class XCharacter extends AbstractNonPlayerGameCharacter {
+public class StandardAggressiveCharacter extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
@@ -15,7 +19,7 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
     private float lastShot;
     private Float fireRate = 1f;
 
-    public XCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude) {
+    public StandardAggressiveCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
@@ -25,7 +29,7 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
 
     @Override
     public void start() {
-        BehavedObject middle = introduceBehavedObject("Test Physical Object",
+        BehavedObject attackerA = introduceBehavedObject("Attacker A",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
@@ -33,10 +37,7 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
                 Visualizations.TEST,
                 initialRadius);
 
-
-
-
-        middle.behave(
+        attackerA.behave(
                 Arrays.asList(
                         new CruisingBehavior(5f, initialSpeedMagnitude),
                         new AbstractBehavior() {
@@ -54,7 +55,7 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
                                 float radiusOfAttack = 500f;
 
                                 List<NearPhysicalObject> nearbyPhysicalObjects =
-                                        XCharacter.this.getContext().findNearbyPhysicalObjects(XCharacter.this.getContext().getPhysicalObject(), radiusOfAttack);
+                                        StandardAggressiveCharacter.this.getContext().findNearbyPhysicalObjects(StandardAggressiveCharacter.this.getContext().getPhysicalObject(), radiusOfAttack);
 
                                 if (!nearbyPhysicalObjects.isEmpty()) {
                                     for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
@@ -63,12 +64,11 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
 
                                         if (!name.contains("weapon")) {
 
-                                            if (GameHelper.distanceBetweenPhysicals(XCharacter.this.getContext().getPhysicalObject(), nearPhysicalObject.getObject()) < radiusOfAttack / 2) {
-                                                MiscAttackBehaviors.chasingAndShooting(XCharacter.this.getContext(), nearPhysicalObject.getObject(), 1f, clock);
-
+                                            if (GameHelper.distanceBetweenPhysicals(StandardAggressiveCharacter.this.getContext().getPhysicalObject(), nearPhysicalObject.getObject()) < radiusOfAttack / 2) {
+                                                MiscAttackBehaviors.chasingAndShooting(StandardAggressiveCharacter.this.getContext(), nearPhysicalObject.getObject(), 1f, clock);
 
                                             } else {
-                                                MiscAttackBehaviors.chase(XCharacter.this.getContext(), nearPhysicalObject.getObject(), initialSpeedMagnitude + 30f);
+                                                MiscAttackBehaviors.chase(StandardAggressiveCharacter.this.getContext(), nearPhysicalObject.getObject(), initialSpeedMagnitude + 30f);
                                             }
                                         }
                                     }

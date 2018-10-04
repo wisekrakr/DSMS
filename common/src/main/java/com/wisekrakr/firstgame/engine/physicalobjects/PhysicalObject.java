@@ -16,5 +16,5 @@ public interface PhysicalObject {
 
     // TODO: for now this is our shape model. We will replace this later with something more complex, using the box2d engine
     float getCollisionRadius();
-    void signalOutOfBounds();
+
 }

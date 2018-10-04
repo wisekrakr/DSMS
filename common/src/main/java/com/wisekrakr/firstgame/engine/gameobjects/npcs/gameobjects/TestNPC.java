@@ -111,7 +111,7 @@ public class TestNPC extends NonPlayerCharacter {
                 }
             }
 
- //Cruising -> shooting in different ways
+ //Cruising -> chasingAndShooting in different ways
             if (!(getContext().existingSubBehavior() instanceof CruisingBehavior)) {
                 getContext().pushSubBehavior(new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 12f)));
 

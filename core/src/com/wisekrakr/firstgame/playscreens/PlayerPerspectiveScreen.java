@@ -673,7 +673,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 Number radiusRaw = ((Number) physicalObject.getExtra().get("radius"));
 
                 if (radiusRaw == null) {
-                    radiusRaw = 1f;
+                    radiusRaw = 2f;
                 }
 
                 float radius = radiusRaw.floatValue();
@@ -687,6 +687,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(physicalObject.getPosition().x + 4f * (float) Math.cos(physicalObject.getOrientation()),
                                 physicalObject.getPosition().y + 4f * (float) Math.sin(physicalObject.getOrientation()),
                                 (7f / 2f));
+                        break;
+                    case ENEMY:
+
+                        shapeRenderer.setColor(chooseRandomColor(SPACESHIP_COLORS));
+                        shapeRenderer.circle(physicalObject.getPosition().x, physicalObject.getPosition().y, radius); //5f is default radius
+                        shapeRenderer.setColor(chooseRandomColor(SPACESHIP_COLORS));
+                        shapeRenderer.circle(physicalObject.getPosition().x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
+                                physicalObject.getPosition().y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()),
+                                (radius / 2));
+
                         break;
                     case REAR_BOOSTER:
                         shapeRenderer.setColor(Color.WHITE);
@@ -738,6 +748,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         overlayStage.addActor(chaserDirection);
                         registerVolatileActor(chaserDirection);
 
+                        break;
+                    case LEFT_CANNON:
+                        shapeRenderer.setColor(Color.CYAN);
+                        shapeRenderer.circle(x, y, radius);
+                        break;
+                    case RIGHT_CANNON:
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.circle(x, y, radius);
                         break;
 
                     default:
@@ -932,8 +950,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                                 y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
                         break;
                     case LASER_BEAM:
-                        Color bulletColor = chooseRandomColor(BULLET_COLORS);
-                        shapeRenderer.setColor(bulletColor);
+
+                        shapeRenderer.setColor(Color.RED);
                         shapeRenderer.rectLine(x, y, x + 6.25f * (float) Math.cos(object.getOrientation()),
                                 y + 6.25f * (float) Math.sin(object.getOrientation()), 0.5f);
                         break;
@@ -1184,11 +1202,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             Color.SCARLET
     };
 
-    private static final Color[] BULLET_COLORS = {
+    private static final Color[] SPACESHIP_COLORS = {
             Color.BLUE,
             Color.RED,
             Color.YELLOW,
-            Color.GREEN
+            Color.GREEN,
+            Color.CORAL,
+            Color.CHARTREUSE,
+            Color.WHITE,
+            Color.CYAN,
+            Color.FOREST
     };
 
 

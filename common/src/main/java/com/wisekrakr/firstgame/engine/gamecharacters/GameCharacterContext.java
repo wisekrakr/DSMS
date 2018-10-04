@@ -25,5 +25,6 @@ public interface GameCharacterContext {
 
     void removeMyself();
 
+    PhysicalObject getPhysicalObject();
     List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float radius);
 }

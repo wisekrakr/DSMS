@@ -69,14 +69,6 @@ public class PhysicalObjectRunner implements PhysicalObject {
         return collisionRadius;
     }
 
-    /*
-    david was here
-     */
-    @Override
-    public void signalOutOfBounds() {
-        speedDirection = (float) (speedDirection + Math.PI);
-        orientation = speedDirection;
-    }
 
     public PhysicalObjectSnapshot snapshot() {
         return new PhysicalObjectSnapshot(
