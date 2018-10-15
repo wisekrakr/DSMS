@@ -8,6 +8,8 @@ import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -33,6 +35,7 @@ import com.wisekrakr.firstgame.quests.MissionText;
 import com.wisekrakr.firstgame.server.EngineConstants;
 
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -361,7 +364,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         //Mouse input
         inputManager.getTouchState(0);
 
-
         if (inputManager.isTouchPressed(0)) {
             System.out.println("PRESSED");
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
@@ -371,11 +373,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             float mouseY = inputManager.touchCoordY(0);
 
             this.mouseAiming = (float) Math.atan2(mouseY, mouseX) - MathUtils.PI / 2;
+
         }
 
         if (inputManager.isTouchDown(0)) {
             //System.out.println("DOWN");
-
         }
 
         if (inputManager.isTouchReleased(0)) {
@@ -678,6 +680,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                 float radius = radiusRaw.floatValue();
 
+
                 switch (physicalObject.getVisualization()) {
 
                     case SPACESHIP:
@@ -687,6 +690,29 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(physicalObject.getPosition().x + 4f * (float) Math.cos(physicalObject.getOrientation()),
                                 physicalObject.getPosition().y + 4f * (float) Math.sin(physicalObject.getOrientation()),
                                 (7f / 2f));
+
+                        if (throttle == Spaceship.ThrottleState.FORWARDS) {
+                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_fly.png", physicalObject, batch, null);
+                        } else if (powerState == Spaceship.SpecialPowerState.BOOSTING) {
+                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", physicalObject, batch, null);
+                        } else {
+                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", physicalObject, batch, null);
+                        }
+
+
+                        PhysicalObject targetObject = (PhysicalObject) physicalObject.getExtra().get("nearestObject");
+
+                        if (targetObject != null) {
+                            float angle = GameHelper.angleBetween(physicalObject.getPosition(), targetObject.getPosition());
+
+                            shapeRenderer.setColor(Color.GREEN);
+                            shapeRenderer.rectLine(x + radius * (float) Math.cos(physicalObject.getOrientation()),
+                                    y + radius * (float) Math.sin(physicalObject.getOrientation()),
+                                    x + (radius * 5) * (float) Math.cos(angle),
+                                    y + (radius * 5) * (float) Math.sin(angle), 5f);
+
+                        }
+
                         break;
                     case ENEMY:
 
@@ -731,7 +757,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
-
+/*
                         Label chaserPosition = enemyHud.positionLabel(physicalObject);
                         overlayStage.addActor(chaserPosition);
                         registerVolatileActor(chaserPosition);
@@ -747,7 +773,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         Label chaserDirection = enemyHud.directionLabel(physicalObject);
                         overlayStage.addActor(chaserDirection);
                         registerVolatileActor(chaserDirection);
-
+*/
                         break;
                     case LEFT_CANNON:
                         shapeRenderer.setColor(Color.CYAN);
@@ -796,17 +822,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                                 object.getPosition().y + 7f * (float) Math.sin(object.getOrientation()),
                                 object.getPosition().x + 20f * (float) Math.cos(object.getOrientation()),
                                 object.getPosition().y + 20f * (float) Math.sin(object.getOrientation()), 2f);
-
-                        if (throttle == Spaceship.ThrottleState.FORWARDS) {
-                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_fly.png", object, batch, null);
-                        } else if (powerState == Spaceship.SpecialPowerState.BOOSTING) {
-                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", object, batch, null);
-                        } else {
-                            SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", object, batch, null);
-                        }
-
-
-
 /*
                         if (introDialogOneTime) {
                             if (!(hit)) {
@@ -818,9 +833,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                                 dialogWindow.introDialog(object).hide();
                             }
                         }
-
-
-
 */
 
 

@@ -1,14 +1,17 @@
 package com.wisekrakr.firstgame.server;
 
+import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.XCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
+import com.wisekrakr.firstgame.engine.scenarios.DamselInDistress;
+import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -93,79 +96,64 @@ public class ServerRunner {
 
         //gameEngine.addScenario(new ProtectedConvoy(100, 500, 1, 4, 3));
 
-        //gameEngine.addScenario(new DamselInDistress(100, 300, 3));
+        //gameEngine.addScenario(new DamselInDistress(300, 100, 0));
 
-        //gameEngine.addScenario(new TravellerWithMission(300f, 2, 1));
-
-        //gameEngine.addScenario(new BossMommaFight(600f, 1, 3));
-
-        //gameEngine.addScenario(new SwarmScenario(200f, 350f, 5, 0));
-
-        //gameEngine.addScenario(new RetrieveThePackagesInTime(400f, 3, 40));
 
 
 
 /*
-        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
+        gameEngine.addScenario(new WildlifeManagement(0, 3, engine, new CharacterFactory() {
             @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new TestNPC(initialPosition, actionDistance);
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new StandardAggressiveCharacter(position,
+                        radius,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack,
+                        health);
+            }
+        }));
+*/
+        gameEngine.addScenario(new WildlifeManagement(3, 1, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new XCharacter(position,
+                        radius,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack,
+                        health);
             }
         }));
 
-
-        gameEngine.addScenario(new WildlifeManagement(3, 20, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new CrazilySpawningPassiveAggressiveNPC(initialPosition, actionDistance);
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
-                    @Override
-                    public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                        return new FollowingChasingNPC(initialPosition, actionDistance);
-                    }
-                }));
-
-        gameEngine.addScenario(new WildlifeManagement(2, 1, new GameObjectFactory() {
-                    @Override
-                    public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                        return new AsteroidWatchingMissileShootingNPC(initialPosition, actionDistance);
-                    }
-                }));
-
-
-        gameEngine.addScenario(new WildlifeManagement(5, 5, new GameObjectFactory() {
-            @Override
-            public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-                return new AsteroidNPC(initialPosition, GameHelper.generateRandomNumberBetween(3f, 20f));
-            }
-        }));
- */
-
-        for (int i = 0; i < 1; i++) {
+/*
+        for (int i = 0; i < 0; i++) {
             gameEngine.addGameCharacter(new XCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(15f, 25f),
                     GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(40f, 70f)));
+                    GameHelper.generateRandomNumberBetween(40f, 70f),
+                    GameHelper.generateRandomNumberBetween(200f, 500f),
+                    GameHelper.generateRandomNumberBetween(10f, 30f)));
         }
 
 
-/*
-        for (int i = 0; i < 2; i++) {
-            gameEngine.addGameCharacter(new AggressiveChasingCharacter(GameHelper.randomPosition(),
+
+        for (int i = 0; i < 0; i++) {
+            gameEngine.addGameCharacter(new StandardAggressiveCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(15f, 25f),
                     GameHelper.randomDirection(),
                     GameHelper.generateRandomNumberBetween(40f, 70f),
-                    300f));
+                    300f,
+                    GameHelper.generateRandomNumberBetween(20f, 40f)));
         }
 */
         for (int i = 0; i < 0; i++){
             gameEngine.addGameCharacter(new AsteroidCharacter(GameHelper.randomPosition(),
                     GameHelper.generateRandomNumberBetween(5f, 20f),
                     GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(5f, 60f)));
+                    GameHelper.generateRandomNumberBetween(5f, 60f),
+                    10f,
+                    10f));
 
         }
 

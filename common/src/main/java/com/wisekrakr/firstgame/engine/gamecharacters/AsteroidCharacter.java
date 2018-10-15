@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.RotatingBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
@@ -15,12 +16,16 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
+    private final float health;
+    private final float damage;
 
-    public AsteroidCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude) {
+    public AsteroidCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float health, float damage) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
+        this.health = health;
+        this.damage = damage;
     }
 
     @Override
@@ -31,6 +36,8 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                 0,
                 initialSpeedMagnitude,
                 initialDirection,
+                health,
+                damage,
                 Visualizations.BOULDER,
                 initialRadius);
 
@@ -39,9 +46,9 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                     @Override
                     public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
                         getContext().addCharacter(new ExplosionCharacter(object.getPosition(),
-                                object.getSpeedMagnitude(),
+                                object.getSpeedMagnitude() + GameHelper.generateRandomNumberBetween(5f, 15f),
                                 object.getSpeedDirection(),
-                                10,
+                                5,
                                 initialRadius,
                                 10f,
                                 Visualizations.BOULDER));
@@ -72,6 +79,8 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                                         -angle,
                                         initialSpeedMagnitude,
                                         -angle,
+                                        null,
+                                        null,
                                         null,
                                         null);
                             }

@@ -3,7 +3,9 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +37,15 @@ public class ExplosionCharacter extends AbstractGameCharacter {
         for (int i = 0; i < debrisParts; i++) {
             PhysicalObject bit = getContext().addPhysicalObject("debris",
                     position,
-                    GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(1f, 4f),
-                    GameHelper.randomDirection(),
+                    speedDirection,
+                    speedMagnitude,
+                    speedDirection,
+                    0,
+                    0,
                     visualizations,
                     bitSize,
-                    null);
+                    null
+            );
 
             getContext().updatePhysicalObjectExtra(bit, "radius", bitSize);
 
@@ -58,6 +63,7 @@ public class ExplosionCharacter extends AbstractGameCharacter {
 
             getContext().removeMyself();
         }
+
     }
 
 

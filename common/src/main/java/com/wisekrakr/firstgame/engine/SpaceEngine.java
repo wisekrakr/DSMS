@@ -27,9 +27,9 @@ public class SpaceEngine {
         this.height = height;
     }
 
-    public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
+    public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
         synchronized (monitor) {
-            PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, Collections.emptyMap(), collisionRadius, listener);
+            PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, Collections.emptyMap(), collisionRadius, listener);
 
             physicalObjects.add(result);
 
@@ -70,7 +70,7 @@ public class SpaceEngine {
         List<NearPhysicalObject> result = new ArrayList<>();
 
         for (PhysicalObjectRunner target : physicalObjects) {
-            if (target != reference) {
+            if (target != reference ) {
                 float distance = GameHelper.distanceBetweenPhysicals(reference, target);
                 if (distance < maxDistance) {
                     result.add(new NearPhysicalObject(target, distance));

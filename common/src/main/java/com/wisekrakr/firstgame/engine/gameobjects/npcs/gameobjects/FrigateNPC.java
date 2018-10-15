@@ -36,8 +36,8 @@ public class FrigateNPC extends NonPlayerCharacter {
     }
 
     public void looseCargo(){
-        desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
-                new PackageObject(initialPosition, this), 1f, null);
+        //desiredBehavior = new ShootingBehavior((initialPosition, initialDirection, actionDistance) ->
+           //     new PackageObject(initialPosition, this), 1f, null);
     }
 
     public void missionComplete() {

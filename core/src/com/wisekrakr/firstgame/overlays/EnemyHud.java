@@ -114,7 +114,7 @@ public class EnemyHud {
         return bar;
     }
 
-    public Label positionLabel(PhysicalObjectSnapshot  objectSnapshot){
+    public Label positionLabel(PhysicalObjectSnapshot objectSnapshot){
 
         Float x = objectSnapshot.getPosition().x;
         Float y = objectSnapshot.getPosition().y;

@@ -4,13 +4,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 public class SpriteHelper {
     private SpriteHelper() {
         // fake constructor to prevent instantiation
     }
 
-    public static void drawSpriteForGameObject(MyAssetManager myAssetManager, String spritePath, SpaceSnapshot.GameObjectSnapshot object, Batch targetBatch, Float scale) {
+    public static void drawSpriteForGameObject(MyAssetManager myAssetManager, String spritePath, PhysicalObjectSnapshot object, Batch targetBatch, Float scale) {
         Texture texture = myAssetManager.assetManager.get(spritePath);
         Sprite sprite = new Sprite(texture);
 

@@ -18,8 +18,8 @@ public interface GameCharacterContext {
 
     void addCharacter(GameCharacter newObject);
 
-    PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener alistener);
-    void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius);
+    PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener alistener);
+    void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualizationEngine, Float collisionRadius);
     void updatePhysicalObjectExtra(PhysicalObject target, String key, Object value);
     void removePhysicalObject(PhysicalObject object);
 

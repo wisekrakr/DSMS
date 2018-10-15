@@ -15,17 +15,21 @@ public class PhysicalObjectRunner implements PhysicalObject {
     private float speedMagnitude;
     private float speedDirection;
 
+    private float health;
+    private float damage;
     private Visualizations visualization;
     private Map<String, Object> extraProperties;
     private float collisionRadius;
     private PhysicalObjectListener listener;
 
-    public PhysicalObjectRunner(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, Map<String, Object> extraProperties, float collisionRadius, PhysicalObjectListener listener) {
+    public PhysicalObjectRunner(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualization, Map<String, Object> extraProperties, float collisionRadius, PhysicalObjectListener listener) {
         this.name = name;
         this.position = position;
         this.orientation = orientation;
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
+        this.health = health;
+        this.damage = damage;
         this.visualization = visualization;
         this.extraProperties = new HashMap<>(extraProperties);
         this.collisionRadius = collisionRadius;
@@ -67,6 +71,16 @@ public class PhysicalObjectRunner implements PhysicalObject {
     @Override
     public float getCollisionRadius() {
         return collisionRadius;
+    }
+
+    @Override
+    public float getDamage() {
+        return damage;
+    }
+
+    @Override
+    public float getHealth() {
+        return health;
     }
 
 

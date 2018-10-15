@@ -1,13 +1,15 @@
 package com.wisekrakr.firstgame.server;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.gamecharacters.AbstractNonPlayerGameCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.StandardAggressiveCharacter;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.PackageDeliveryMission;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.FollowingChasingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.TestNPC;
+import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 import com.wisekrakr.firstgame.engine.scenarios.GameObjectFactory;
 
 public class ScenarioHelper {
@@ -45,28 +47,21 @@ public class ScenarioHelper {
             };
 
 
-    public static final GameObjectFactory KILL_MISSION =
-            new GameObjectFactory() {
 
+    public static final CharacterFactory STANDARD_CHARACTER_FACTORY =
+            new CharacterFactory() {
                 @Override
-                public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-
-                    return new KillMission(initialPosition, "");
+                public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                    return new StandardAggressiveCharacter(position, radius, speedDirection, speedMagnitude, radiusOfAttack, health);
                 }
-
             };
 
-    public static final GameObjectFactory PACKAGE_MISSION =
-            new GameObjectFactory() {
-
+    public static final CharacterFactory ASTEROID_FACTORY =
+            new CharacterFactory() {
                 @Override
-                public GameObject create(Vector2 initialPosition, float initialDirection, float actionDistance) {
-
-                    return new PackageDeliveryMission(initialPosition, "");
+                public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                    return new AsteroidCharacter(position, radius, speedDirection, speedMagnitude, health, damage);
                 }
-
             };
-
-
 
 }

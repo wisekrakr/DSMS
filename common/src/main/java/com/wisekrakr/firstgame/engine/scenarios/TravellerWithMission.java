@@ -217,7 +217,7 @@ public class TravellerWithMission extends Scenario {
 
             float deltaX = (float) Math.cos(traveller.getOrientation());
             float deltaY = (float) Math.sin(traveller.getOrientation());
-
+/*
             packageObject = new PackageObject(new Vector2(x + traveller.getCollisionRadius() * deltaX,
                     y + traveller.getCollisionRadius() * deltaY), traveller);
             spaceEngine.addGameObject(packageObject, new SpaceEngine.GameObjectListener() {
@@ -253,6 +253,7 @@ public class TravellerWithMission extends Scenario {
                     System.out.println("Package receiver died");
                 }
             });
+  */
         }
     }
 
@@ -277,6 +278,7 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
+                /*
                 if (target instanceof PackageObject){
                     if (GameHelper.distanceBetween(packageReceiver, packageObject)< 80f){
                         packageObject.delivery(packageReceiver);
@@ -287,6 +289,7 @@ public class TravellerWithMission extends Scenario {
 
                     }
                 }
+                */
             }
         });
 

@@ -64,15 +64,15 @@ public class PlayerHud implements Disposable {
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    private Double health(PhysicalObjectSnapshot object){
-        return (Double) object.getExtra().get("health");
+    private Float health(PhysicalObjectSnapshot object){
+        return (Float) object.getExtra().get("health");
     }
 
-    private Double maxHealth(PhysicalObjectSnapshot object){
-        return (Double) object.getExtra().get("maxHealth");
+    private Float maxHealth(PhysicalObjectSnapshot object){
+        return (Float) object.getExtra().get("maxHealth");
     }
-    private Double healthPercentage(PhysicalObjectSnapshot object){
-        return (Double) object.getExtra().get("healthPercentage");
+    private Float healthPercentage(PhysicalObjectSnapshot object){
+        return (Float) object.getExtra().get("healthPercentage");
     }
 
     public Label nameLabel(PhysicalObjectSnapshot object){
@@ -92,10 +92,10 @@ public class PlayerHud implements Disposable {
         ProgressBar.ProgressBarStyle barStyle = new ProgressBar.ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), healthBarTexture);
         barStyle.knobBefore = barStyle.knob;
 
-        ProgressBar bar = new ProgressBar(healthPercentage(object).floatValue(), maxHealth(object).floatValue(), 20f, true, barStyle);
+        ProgressBar bar = new ProgressBar(healthPercentage(object), maxHealth(object), 20f, true, barStyle);
         bar.setSize(5 * 5, 5 * 5);
         bar.setPosition(Gdx.graphics.getWidth() - bar.getWidth()/2, Gdx.graphics.getHeight() - 25, Align.right);
-        bar.setValue(health(object).floatValue());
+        bar.setValue(health(object));
 
         return bar;
     }

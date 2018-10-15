@@ -1,0 +1,94 @@
+package com.wisekrakr.firstgame.engine.gamecharacters;
+
+import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
+
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DamselCharacter extends AbstractGameCharacter{
+
+    private Vector2 initialPosition;
+    private float initialRadius;
+    private float initialDirection;
+    private float initialSpeedMagnitude;
+    private float radiusOfAttack;
+    private float health;
+    private Behavior desiredBehavior;
+    private List<Behavior>behaviorList = new ArrayList<>();
+    private boolean clingingOn;
+
+    public DamselCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+        this.initialPosition = initialPosition;
+        this.initialRadius = initialRadius;
+        this.initialDirection = initialDirection;
+        this.initialSpeedMagnitude = initialSpeedMagnitude;
+        this.radiusOfAttack = radiusOfAttack;
+        this.health = health;
+    }
+
+    @Override
+    public void start() {
+
+        PhysicalObject damsel = getContext().addPhysicalObject("damsel",
+                initialPosition,
+                initialDirection,
+                initialSpeedMagnitude,
+                initialDirection,
+                health,
+                0,
+                Visualizations.TEST,
+                initialRadius,
+                null);
+
+        getContext().updatePhysicalObjectExtra(damsel,"radius", initialRadius);
+        getContext().updatePhysicalObjectExtra(damsel,"health", health);
+    }
+
+    @Override
+    public void elapseTime(float delta) {
+        if (health < 0){
+            DamselCharacter.this.getContext().removeMyself();
+        }
+        if (behaviorList != null) {
+            behaviorList.iterator().next();
+            System.out.println(behaviorList.iterator().next());
+        }
+
+    }
+
+    public void addToBehaviorList(Behavior behavior){
+        behaviorList.add(behavior);
+
+    }
+
+    public Behavior lookingForAHero() {
+        return new CruisingBehavior(5f, initialSpeedMagnitude);
+    }
+
+    public Behavior runFrom() {
+        return new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY, radiusOfAttack /2, initialSpeedMagnitude * 2, getContext());
+    }
+
+    public Behavior clingOn() {
+        return new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext() );
+    }
+
+    public void missionComplete() {
+
+    }
+
+    public GameCharacterContext damselContext(){
+        return getContext();
+    }
+
+    public boolean isClingingOn() {
+        return clingingOn;
+    }
+
+}

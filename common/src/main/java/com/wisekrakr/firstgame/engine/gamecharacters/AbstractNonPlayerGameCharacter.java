@@ -18,8 +18,8 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
 
     }
 
-    protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius) {
-        PhysicalObject subject = getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
+    protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius) {
+        PhysicalObject subject = getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
             @Override
             public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
                 List<Behavior> behaviors = behavedObjects.get(myself);
@@ -79,8 +79,8 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
             }
 
             @Override
-            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
-                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualizationEngine, Float collisionRadius) {
+                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, collisionRadius);
             }
 
             @Override
@@ -98,6 +98,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
             public PhysicalObject getSubject() {
                 return subject;
             }
+
         });
 
         b.start();
@@ -123,4 +124,5 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
 
         deleted.clear();
     }
+
 }

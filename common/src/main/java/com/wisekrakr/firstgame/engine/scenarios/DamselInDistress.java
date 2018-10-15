@@ -1,13 +1,22 @@
 package com.wisekrakr.firstgame.engine.scenarios;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
-import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+
+import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
+
+import com.wisekrakr.firstgame.engine.gamecharacters.DamselCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.PervertCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
+
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
+import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+
 
 import java.util.*;
 
@@ -21,13 +30,14 @@ public class DamselInDistress extends Scenario {
 
     private ScenarioState state = ScenarioState.INITIATION;
 
-    private Damsel damsel;
-    private Set<Pervert> perverts = new HashSet<>();
+    private DamselCharacter damsel;
+    private Set<PervertCharacter> perverts = new HashSet<>();
     private float runToDistance;
     private float escapeDistance;
     private final int maxPerverts;
     private Set<MissionEnding> missionEndings = new HashSet<>();
     private int numOfEndings = 0;
+
 
     public DamselInDistress(float runToDistance, float escapeDistance, int maxPerverts) {
         this.runToDistance = runToDistance;
@@ -37,91 +47,116 @@ public class DamselInDistress extends Scenario {
     }
 
     @Override
-    public void periodicUpdate(SpaceEngine spaceEngine) {
+    public void initialScenarioUpdate(GameEngine gameEngine) {
+        damsel = new DamselCharacter(GameHelper.randomPosition(),
+                20f,
+                GameHelper.randomDirection(),
+                GameHelper.generateRandomNumberBetween(10f, 30f),
+                400f,
+                100f);
+
+        damsel.addToBehaviorList(damsel.lookingForAHero());
+        gameEngine.addGameCharacter(damsel);
+        state = ScenarioState.INITIATION;
+    }
+
+    @Override
+    public void characterUpdate(GameEngine gameEngine) {
         switch (state) {
             case INITIATION:
-                initiate(spaceEngine);
+                initiate(gameEngine);
+                System.out.println("Initiation " + damsel.damselContext().getPhysicalObject().getPosition());
                 break;
             case PERVERTS:
-                updatePervertsAndDamsel(spaceEngine);
+                updatePervertsAndDamsel();
+                //System.out.println("Placing perverts " + perverts.size());
                 break;
             case ESCORT:
-                bringDamselToSafeLocation(spaceEngine);
+                bringDamselToSafeLocation(gameEngine);
+                System.out.println("Damsel found Hero " + damsel.isClingingOn());
                 break;
             default:
                 throw new IllegalStateException("Unknown: " + state);
         }
-
     }
 
-    private void initiate(SpaceEngine spaceEngine){
+    private void initiate(GameEngine gameEngine){
 
-        damsel = new Damsel( GameHelper.randomPosition());
-        spaceEngine.addGameObject(damsel, new SpaceEngine.GameObjectListener() {
-            @Override
-            public void added() {
-            }
+        if (perverts.size() < maxPerverts){
+            GameCharacter pervert = new PervertCharacter(GameHelper.randomPosition(),
+                    10f,
+                    GameHelper.randomDirection(),
+                    GameHelper.generateRandomNumberBetween(30f, 50f),
+                    200f,
+                    30f);
 
-            @Override
-            public void removed() {
-            }
-        });
-        damsel.lookingForAHero();
+            perverts.add((PervertCharacter) pervert);
+            gameEngine.addGameCharacter(pervert);
+        }
+
         state = ScenarioState.PERVERTS;
     }
 
 
+    private void updatePervertsAndDamsel(){
 
-    private void updatePervertsAndDamsel(SpaceEngine spaceEngine){
+        List<NearPhysicalObject> nearbyPhysicalObjects =
+                damsel.damselContext().findNearbyPhysicalObjects(damsel.damselContext().getPhysicalObject(), escapeDistance);
 
-        if (perverts.size() < maxPerverts){
-            Pervert pervert = new Pervert(GameHelper.randomPosition());
+        if (!nearbyPhysicalObjects.isEmpty()) {
+            for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
 
-            spaceEngine.addGameObject(pervert, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
-                    perverts.add(pervert);
+                PhysicalObject target = nearPhysicalObject.getObject();
+
+                float angle = GameHelper.angleBetween(damsel.damselContext().getPhysicalObject().getPosition(), target.getPosition());
+
+                String name = target.getName();
+
+                if (target.getClass().getClass() == Player.class.getClass()) {
+
+                    if (GameHelper.distanceBetweenPhysicals(damsel.damselContext().getPhysicalObject(), target) < runToDistance) {
+                        damsel.damselContext().updatePhysicalObject(damsel.damselContext().getPhysicalObject(),
+                                null,
+                                null,
+                                angle,
+                                null,
+                                angle,
+                                null,
+                                null,
+                                null,
+                                null);
+                        state = ScenarioState.ESCORT;
+                    }
+                }else if (target == perverts.iterator().next()){
+
+                    if (GameHelper.distanceBetweenPhysicals(damsel.damselContext().getPhysicalObject(), target) < escapeDistance) {
+                        damsel.addToBehaviorList(damsel.runFrom());
+                    }
                 }
-
-                @Override
-                public void removed() {
-                    perverts.remove(pervert);
-                }
-            });
-            pervert.lookingForADamsel();
+            }
         }
 
-        spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
-            @Override
-            public void doIt(GameObject target) {
-                for (Pervert pervert: perverts){
-                    if (target == damsel) {
-                        if (GameHelper.distanceBetween(pervert.getPosition(), target.getPosition()) < escapeDistance) {
-                            pervert.chaseAfter(target);
-                            if (!damsel.isClingingOn()) {
-                                damsel.runFrom(pervert);
-                            }
-                        }
-                        if (GameHelper.distanceBetween(pervert.getPosition(), target.getPosition()) < escapeDistance/3) {
-                            pervert.cirkelingDamsel(target);
-                        }
+        for (PervertCharacter pervert: perverts){
+            List<NearPhysicalObject> n =
+                    pervert.getPervertContext().findNearbyPhysicalObjects(pervert.getPervertContext().getPhysicalObject(), 200f);
+
+            if (!n.isEmpty()){
+                for (NearPhysicalObject nearPhysicalObject: n){
+
+                    PhysicalObject target = nearPhysicalObject.getObject();
+
+                    if (target == damsel){
+                        pervert.addToBehaviorList(pervert.chaseAfter());
+                    }else if (GameHelper.distanceBetweenPhysicals(pervert.getPervertContext().getPhysicalObject(), damsel.damselContext().getPhysicalObject())< 100f){
+                        pervert.addToBehaviorList(pervert.circlingDamsel());
                     }
                 }
-                /*
-                if (target instanceof Player){
-                    if (GameHelper.distanceBetween(damsel.getPosition(), target.getPosition()) < runToDistance) {
-                        damsel.clingOn(target);
-                        if (damsel.isClingingOn()) {
-                            state = ScenarioState.ESCORT;
-                        }
-                    }
-                }
-                */
             }
-        });
+        }
+
     }
 
-    private void bringDamselToSafeLocation(SpaceEngine spaceEngine){
+    private void bringDamselToSafeLocation(GameEngine gameEngine){
         if (numOfEndings == 0){
             numOfEndings++;
         }
@@ -129,54 +164,51 @@ public class DamselInDistress extends Scenario {
         if (missionEndings.size() < numOfEndings){
             System.out.println("Adding a mission end");
 
-            MissionEnding missionEnd = new MissionEnding(GameHelper.randomPosition());
+            MissionEnding missionEnd = new MissionEnding(GameHelper.randomPosition(), 50f);
 
-            spaceEngine.addGameObject(missionEnd, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
-                    missionEndings.add(missionEnd);
-                }
-
-                @Override
-                public void removed() {
-                    System.out.println("Mission end removed");
-                    damsel.missionComplete();
-                    numOfEndings--;
-                }
-            });
+            gameEngine.addGameCharacter(missionEnd);
+            missionEndings.add(missionEnd);
+            numOfEndings--;
         }
     }
 
+//TODO: add characters like this?
+    private class MissionEnding extends AbstractGameCharacter{
 
-    private class MissionEnding extends Mission{
+        private Vector2 initialPosition;
+        private float radius;
 
-        private MissionEnding(Vector2 initialPosition) {
-            super(GameObjectVisualizationType.MISSION_END, "End of Mission", initialPosition);
-            setCollisionRadius(40f);
+        public MissionEnding(Vector2 initialPosition, float radius) {
+            this.initialPosition = initialPosition;
+            this.radius = radius;
         }
 
         @Override
-        public Map<String, Object> getExtraSnapshotProperties() {
-            Map<String, Object> result = new HashMap<String, Object>();
-
-            result.put("radius", getCollisionRadius());
-
-            return result;
+        public void start() {
+            PhysicalObject missionEnd = getContext().addPhysicalObject("missionEnd",
+                    initialPosition,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    Visualizations.RIGHT_CANNON,
+                    radius,
+                    null);
+            getContext().updatePhysicalObjectExtra(missionEnd, "radius", radius);
         }
 
         @Override
-        public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-            System.out.println("Collide with " + subject);
-            if (subject == damsel){
-                System.out.println("  its the damsel");
-                toDelete.add(this);
-            }
-
-        }
-
-        @Override
-        public void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
+        public void elapseTime(float delta) {
+            new AbstractBehavior(){
+                @Override
+                public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
+                    if (damsel.damselContext().getPhysicalObject() == object){
+                        MissionEnding.this.getContext().removeMyself();
+                        damsel.missionComplete();
+                    }
+                }
+            };
         }
     }
 }

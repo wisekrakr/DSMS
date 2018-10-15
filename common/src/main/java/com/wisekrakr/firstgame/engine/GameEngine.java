@@ -29,6 +29,7 @@ public class GameEngine {
         scenarios.add(scenario);
 
         scenario.initialUpdate(space);
+        scenario.initialScenarioUpdate(this);
     }
 
     private void removeGameCharacter(GameCharacter character) {
@@ -72,6 +73,7 @@ public class GameEngine {
         GameCharacterRunner runner = new GameCharacterRunner(character);
 
         character.init(new GameCharacterContext() {
+
             @Override
             public SpaceEngine getSpaceEngine() {
                 return space;
@@ -83,8 +85,8 @@ public class GameEngine {
             }
 
             @Override
-            public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
-                PhysicalObject result = space.addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
+            public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
+                PhysicalObject result = space.addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
                     @Override
                     public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
                         if (listener != null) {
@@ -114,7 +116,7 @@ public class GameEngine {
             }
 
             @Override
-            public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
+            public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualizationEngine, Float collisionRadius) {
                 assureMine(target);
 
                 space.updatePhysicalObject(target, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
@@ -141,7 +143,15 @@ public class GameEngine {
 
             @Override
             public PhysicalObject getPhysicalObject() {
-                return runner.getPhysicalObjects().iterator().next();
+                PhysicalObject object = null;
+                Iterator<PhysicalObject>iterator = runner.physicalObjects.iterator();
+                while (iterator.hasNext()){
+                    PhysicalObject p = iterator.next();
+                    if (runner.physicalObjects.contains(p)){
+                        object = p;
+                    }
+                }
+                return object;
             }
 
             @Override
@@ -155,9 +165,10 @@ public class GameEngine {
         character.start();
     }
 
+    /*
     public void start() {
     }
-
+*/
     public void elapseTime(float delta) {
         space.elapseTime(delta);
 
@@ -180,6 +191,7 @@ public class GameEngine {
     private void periodicUpdate() {
         for (Scenario scenario : scenarios) {
             scenario.periodicUpdate(space);
+            scenario.characterUpdate(this);
         }
 
     }

@@ -1,6 +1,7 @@
-package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
+package com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 

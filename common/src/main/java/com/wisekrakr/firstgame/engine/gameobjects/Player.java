@@ -6,28 +6,25 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.BulletCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.HomingMissileCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.AbstractPhysicalObjectListener;
+import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
-import java.util.Random;
+import java.util.List;
 
 public class Player extends AbstractGameCharacter {
-    private final double maxHealth;
+    private final float maxHealth;
     private String name;
     private PhysicalObject spaceship;
     private SpaceshipControlRequest lastControl;
 
-    private double health = 100;
+    private float health = 100f;
     private float angle;
     private float lastDodge = -1000f;
-    private final float defaultSpeed = 100f;
-    private final float maxSpeed = 175f;
     private float shootTime;
     private float adaptedAngle;
-
+    private PhysicalObject nearestObject;
 
     public Player(String name) {
         this.name = name;
@@ -38,8 +35,16 @@ public class Player extends AbstractGameCharacter {
     public void start() {
         float startDirection = GameHelper.randomDirection();
 
-        spaceship = getContext().addPhysicalObject(name , GameHelper.randomPosition(), startDirection, 0, startDirection,
-                Visualizations.SPACESHIP, 10f, new AbstractPhysicalObjectListener() {
+        spaceship = getContext().addPhysicalObject(name ,
+                GameHelper.randomPosition(),
+                startDirection,
+                0,
+                startDirection,
+                health,
+                0,
+                Visualizations.SPACESHIP,
+                10f,
+                new AbstractPhysicalObjectListener() {
                 });
 
         getContext().updatePhysicalObjectExtra(spaceship, "radius", 10f);
@@ -49,16 +54,31 @@ public class Player extends AbstractGameCharacter {
         getContext().updatePhysicalObjectExtra(spaceship, "ammoCount", 10 );
         getContext().updatePhysicalObjectExtra(spaceship, "health", health);
         getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", maxHealth);
-        getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1d);
+        getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1f);
+        getContext().updatePhysicalObjectExtra(spaceship, "nearestObject", nearestObject);
 
 
+    }
+
+    private void findNearestObject() {
+
+        List<NearPhysicalObject> nearbyPhysicalObjects =
+                getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
+
+        if (!nearbyPhysicalObjects.isEmpty()) {
+            for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
+
+                String name = nearPhysicalObject.getObject().getName();
+                if (!name.contains("weapon") && !name.contains("debris")) {
+                    nearestObject = nearPhysicalObject.getObject();
+                }
+            }
+        }
     }
 
     public void control(SpaceshipControlRequest request) {
         this.lastControl = request;
     }
-
-
 
     @Override
     public void elapseTime(float delta) {
@@ -77,6 +97,9 @@ public class Player extends AbstractGameCharacter {
             return;
         }
 
+        findNearestObject();
+        //System.out.println(nearestObject.getName());
+
         float speed = spaceship.getSpeedMagnitude();
         float speedX = (float) Math.cos(spaceship.getSpeedDirection()) * speed;
         float speedY = (float) Math.sin(spaceship.getSpeedDirection()) * speed;
@@ -90,6 +113,7 @@ public class Player extends AbstractGameCharacter {
                 break;
         }
 
+        float defaultSpeed = 100f;
         switch (lastControl.getThrottleState()) {
             case FORWARDS:
                 speedX = speedX + delta * defaultSpeed * (float) Math.cos(spaceship.getOrientation());
@@ -117,6 +141,7 @@ public class Player extends AbstractGameCharacter {
 
         switch (lastControl.getSpecialPowerState()) {
             case BOOSTING:
+                float maxSpeed = 175f;
                 speedX = speedX + (float) Math.cos(spaceship.getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
                 speedY = speedY + (float) Math.sin(spaceship.getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
 
@@ -130,16 +155,16 @@ public class Player extends AbstractGameCharacter {
             case ULTRA_DODGE:
                 if (getContext().getSpaceEngine().getTime() - lastDodge > 10) {
                     lastDodge = getContext().getSpaceEngine().getTime();
-                    Random random = new Random();
-
 
                     getContext().updatePhysicalObject(
                             spaceship,
                             null,
                             new Vector2(
-                                    spaceship.getPosition().x + delta * speed * (spaceship.getOrientation() + random.nextFloat() * 200 - 100),
-                                    spaceship.getPosition().y + delta * speed * (spaceship.getOrientation() + random.nextFloat() * 200 - 100)
+                                    spaceship.getPosition().x + delta * speed * (spaceship.getOrientation() + GameHelper.randomGenerator.nextFloat() * 200 - 100),
+                                    spaceship.getPosition().y + delta * speed * (spaceship.getOrientation() + GameHelper.randomGenerator.nextFloat() * 200 - 100)
                             ),
+                            null,
+                            null,
                             null,
                             null,
                             null,
@@ -159,61 +184,25 @@ public class Player extends AbstractGameCharacter {
                 angle,
                 speed,
                 direction,
-                (getContext().getSpaceEngine().getTime() - lastDodge > 10)?Visualizations.SPACESHIP:Visualizations.BOULDER,
+                null,
+                null,
+                (getContext().getSpaceEngine().getTime() - lastDodge > 10) ? Visualizations.SPACESHIP : Visualizations.BOULDER,
                 null
-                );
-
+        );
 
 
         //distanceTravelled = distanceTravelled + Math.abs(delta * speed);
-
-        float x = spaceship.getPosition().x;
-        float y = spaceship.getPosition().y;
 
         float deltaX = ((float) Math.cos(spaceship.getOrientation()));
         float deltaY = ((float) Math.sin(spaceship.getOrientation()));
 
         switch (lastControl.getShootingState()) {
             case FIRING:
-
-                adaptedAngle = (float) Math.atan2(deltaY * 200 + speedY, deltaX * 200 + speedX);
-
-                shootTime += delta;
-
-                if (shootTime > 0.3f){
-                    getContext().addCharacter(new BulletCharacter(new Vector2(x + spaceship.getCollisionRadius() * deltaX,
-                            y + spaceship.getCollisionRadius() * deltaY),
-                            200f,
-                            adaptedAngle,
-                            3f,
-                            1,
-                            3f,
-                            Visualizations.LEFT_CANNON
-                    ));
-                    shootTime = 0f;
-                }
+                fireBullet(deltaX, speedX, deltaY, speedY, delta);
 
                 break;
             case MISSILE_FIRING:
-
-                adaptedAngle = (float) Math.atan2(deltaY * 200 + speedY, deltaX * 200 + speedX);
-
-                shootTime += delta;
-
-                if (shootTime > 0.3f){
-                    getContext().addCharacter(new HomingMissileCharacter(new Vector2(x + spaceship.getCollisionRadius() * deltaX,
-                            y + spaceship.getCollisionRadius() * deltaY),
-                            200f,
-                            adaptedAngle,
-                            3f,
-                            1,
-                            3f,
-                            Visualizations.RIGHT_CANNON,
-                            getContext()
-                    ));
-                    shootTime = 0f;
-                }
-
+                fireHomingMissile(deltaX, speedX, deltaY, speedY, delta);
 
                 break;
             case PLACE_MINE:
@@ -221,40 +210,62 @@ public class Player extends AbstractGameCharacter {
             case PACIFIST:
                 break;
         }
-/*
-        if (mouseAiming != null) {
-            shootTime -= delta * 0.5f;
 
-            float x = getPosition().x;
-            float y = getPosition().y;
-
-            float deltaX = ((float) Math.cos(getOrientation()));
-            float deltaY = ((float) Math.sin(getOrientation()));
-
-            adaptedAngle = (float) Math.atan2(deltaY * 200 + speedY, deltaX * 200 + speedX);
-
-            if (shootTime < 0) {
-                if (switchWeaponState == Spaceship.SwitchWeaponState.BULLETS) {
-                    BulletObject b = new BulletObject(
-                            new Vector2(x + getCollisionRadius() * deltaX,
-                                    y + getCollisionRadius() * deltaY), adaptedAngle + mouseAiming, this);
-
-                    toAdd.add(b);
-                    ammoCount--;
-                } else if (switchWeaponState == Spaceship.SwitchWeaponState.MISSILES) {
-                    MissileObject m = new MissileObject(
-                            new Vector2(x + getCollisionRadius(), y + getCollisionRadius()),
-                            adaptedAngle + mouseAiming, missileTarget, this);
-
-                    toAdd.add(m);
-                    missileAmmoCount--;
-                }
-                shootTime = 0.001f;
+        if (lastControl.getMouseAiming() != null){
+            adaptedAngle += lastControl.getMouseAiming();
+            if (lastControl.getSwitchWeaponState() == Spaceship.SwitchWeaponState.BULLETS){
+                fireBullet(deltaX, speedX, deltaY, speedY, delta);
+            }else if (lastControl.getSwitchWeaponState() == Spaceship.SwitchWeaponState.MISSILES){
+                fireHomingMissile(deltaX, speedX, deltaY, speedY, delta);
             }
-            mouseAiming = null;
         }
-        */
 
+    }
 
+    private void fireBullet(float deltaX, float speedX, float deltaY, float speedY, float delta){
+        adaptedAngle = (float) Math.atan2(deltaY * 200f + speedY, deltaX * 200f + speedX);
+
+        if (lastControl.getMouseAiming() != null){
+            adaptedAngle += lastControl.getMouseAiming();
+        }
+
+        shootTime += delta;
+
+        if (shootTime > 0.1f) {
+            getContext().addCharacter(new BulletCharacter(spaceship.getPosition(),
+                    200f,
+                    adaptedAngle,
+                    3f,
+                    3f,
+                    5f,
+                    Visualizations.LEFT_CANNON,
+                    getContext()
+            ));
+            shootTime = 0f;
+        }
+    }
+
+    private void fireHomingMissile(float deltaX, float speedX, float deltaY, float speedY, float delta){
+        adaptedAngle = (float) Math.atan2(deltaY * 120f + speedY, deltaX * 120f + speedX);
+
+        if (lastControl.getMouseAiming() != null){
+            adaptedAngle += lastControl.getMouseAiming();
+        }
+
+        shootTime += delta;
+
+        if (shootTime > 0.3f) {
+            getContext().addCharacter(new HomingMissileCharacter(spaceship.getPosition(),
+                    120f,
+                    adaptedAngle,
+                    3f,
+                    10f,
+                    3f,
+                    200f,
+                    Visualizations.RIGHT_CANNON,
+                    getContext()
+            ));
+            shootTime = 0f;
+        }
     }
 }

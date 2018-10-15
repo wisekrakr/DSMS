@@ -106,24 +106,11 @@ public class RetrieveThePackagesInTime extends Scenario {
             float x = shipWithLotsOfCrapOnIt.getPosition().x;
             float y = shipWithLotsOfCrapOnIt.getPosition().y;
 
-            PackageObject packageObject = new PackageObject(new Vector2(x + shipWithLotsOfCrapOnIt.getCollisionRadius(),
-                    y + shipWithLotsOfCrapOnIt.getCollisionRadius()), shipWithLotsOfCrapOnIt);
+           // PackageObject packageObject = new PackageObject(new Vector2(x + shipWithLotsOfCrapOnIt.getCollisionRadius(),
+           //         y + shipWithLotsOfCrapOnIt.getCollisionRadius()), shipWithLotsOfCrapOnIt);
 
-            spaceEngine.addGameObject(packageObject, new SpaceEngine.GameObjectListener() {
-                @Override
-                public void added() {
-                    packages.add(packageObject);
-                    System.out.println("Dropped load of: " + packages.size() + " package(s)");
-                }
 
-                @Override
-                public void removed() {
-                    packages.remove(packageObject);
-                    numOfPackages--;
-                    System.out.println("Package removed: " + packageObject.getName());
-                }
-            });
-            packageObject.sendOrder();
+            //packageObject.sendOrder();
             if (packages.size() == initialNumOfPackages) {
                 state = ScenarioState.START_TIMER;
             }
@@ -140,14 +127,14 @@ public class RetrieveThePackagesInTime extends Scenario {
                 spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
                     @Override
                     public void doIt(GameObject target) {
-                        if (GameHelper.distanceBetween(p, target) < 100) {
+                      //  if (GameHelper.distanceBetween(p, target) < 100) {
                             /*
                             if (target instanceof Player) {
                                 p.timedMissionInProgress(target);
                                 toBeRemovedPackages.add(p);
                             }
                             */
-                        }
+                       // }
                     }
                 });
             }
