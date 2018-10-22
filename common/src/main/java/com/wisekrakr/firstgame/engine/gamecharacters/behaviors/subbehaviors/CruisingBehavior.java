@@ -30,12 +30,15 @@ public class CruisingBehavior extends AbstractBehavior {
 
             float randomDirection = GameHelper.randomDirection();
             getContext().updatePhysicalObject(
-                    null, null,
+                    null,
+                    null,
                     randomDirection,
                     speedMagnitude,
                     randomDirection,
-                    null, null,
-                    null, null);
+                    null,
+                    null,
+                    null,
+                    null);
             lastDirectionChange = clock;
         }
     }

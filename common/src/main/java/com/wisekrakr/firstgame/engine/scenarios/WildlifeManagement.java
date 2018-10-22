@@ -35,11 +35,11 @@ public class WildlifeManagement extends Scenario {
             //TODO: temporary. character need to be set with a script maybe....to give certain character specific characteristics i.e. position and direction, health and damage etc..
 
             GameCharacter character = characterFactory.createCharacter(GameHelper.randomPosition(),
-                    GameHelper.generateRandomNumberBetween(30f, 70f),
+                    GameHelper.generateRandomNumberBetween(100f, 200f),
                     GameHelper.randomDirection(),
                     GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(10f, 40f),
-                    GameHelper.generateRandomNumberBetween(200f, 600f),
+                    GameHelper.generateRandomNumberBetween(20f, 50f),
+                    GameHelper.generateRandomNumberBetween(400f, 800f),
                     50f,
                     10f);
 

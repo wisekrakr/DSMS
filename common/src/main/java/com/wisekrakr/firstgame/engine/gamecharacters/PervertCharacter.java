@@ -31,7 +31,7 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
 
     @Override
     public void start() {
-        BehavedObject pervert = introduceBehavedObject("pervert",
+        BehavedObject pervert = introduceBehavedObject(PervertCharacter.class.getName(),
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
@@ -41,7 +41,7 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
                 Visualizations.COCKPIT,
                 initialRadius);
 
-        pervert.behave(Arrays.asList(lookingForADamsel(),chaseAfter(), circlingDamsel()));
+        //pervert.behave(Arrays.asList(lookingForADamsel(),chaseAfter(), circlingDamsel()));
     }
 
     private List<Behavior> scenarioBehaviorList() {
@@ -69,7 +69,7 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
             }
         };
     }
-
+/*
     public Behavior chaseAfter() {
         return desiredBehavior = new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext());
     }
@@ -77,7 +77,7 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
     public Behavior circlingDamsel(){
         return desiredBehavior = new FlightBehavior(FlightBehavior.FlightStyle.CIRCLING, radiusOfAttack/3, initialSpeedMagnitude, getContext());
     }
-
+*/
     public GameCharacterContext getPervertContext(){
         return getContext();
     }

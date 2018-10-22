@@ -14,16 +14,21 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.wisekrakr.firstgame.Box2dBodyCreator;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.SpriteHelper;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
@@ -32,10 +37,8 @@ import com.wisekrakr.firstgame.input.GamePadControls;
 import com.wisekrakr.firstgame.input.InputManager;
 import com.wisekrakr.firstgame.overlays.*;
 import com.wisekrakr.firstgame.quests.MissionText;
-import com.wisekrakr.firstgame.server.EngineConstants;
 
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -44,6 +47,9 @@ import java.util.Random;
  * Created by David on 11/23/2017.
  */
 public class PlayerPerspectiveScreen extends ScreenAdapter {
+
+    private Box2dBodyCreator box2dBodyCreator;
+    private List<Body>bodies = new ArrayList<Body>();
 
     private InputMultiplexer inputMultiplexer;
 
@@ -81,7 +87,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
     private Spaceship.SwitchWeaponState switchWeaponState;
 
     private PhysicalObjectSnapshot myself;
-    private SpaceSnapshot.GameObjectSnapshot mission;
     /**
      * Stage for labels etc overlayed on the perspective screen, but using a hud-like orientation
      */
@@ -110,6 +115,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         this.connector = connector;
         this.mySelf = mySelf;
         this.players = players;
+
 
         int i = 0;
         for (String name : players) {
@@ -172,7 +178,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         compass = new Compass();
 
-
+        box2dBodyCreator = new Box2dBodyCreator();
     }
 
 
@@ -236,20 +242,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     }
 
                     if (buttonCode == GamePadControls.BUTTON_START) {
-                        /*
-                        if (paused) {
-                            gameState = GameState.RESUME;
-                        } else {
-                            gameState = GameState.PAUSE;
-                        }*/
 
-                        System.out.println("Paused");
                     }
 
                     if (buttonCode == GamePadControls.BUTTON_BACK) {
-/*                        gameState = GameState.STOPPED;
-                        System.out.println("Resumed");
-                        */
+
                     }
 
                     return false;
@@ -342,7 +339,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
          */
 
         if (inputManager.isKeyDown(Input.Keys.SPACE)) {
-            camera.zoom = 1.8f;
+            camera.zoom = 0.6f;
             if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
@@ -351,7 +348,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
 
         } else {
-            camera.zoom = 0.6f;
+            camera.zoom = 2.5f;
         }
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
@@ -369,15 +366,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             System.out.println("Touch coordinates: " + inputManager.touchCoordX(0) + ", " + inputManager.touchCoordY(0));
             //System.out.println("Touch displacement" + inputManager.touchDisplacementX(0) + ", " + inputManager.touchDisplacementY(0));
             //System.out.println("Mouse aim: " + mouseAiming);
-            float mouseX = inputManager.touchCoordX(0);
-            float mouseY = inputManager.touchCoordY(0);
 
-            this.mouseAiming = (float) Math.atan2(mouseY, mouseX) - MathUtils.PI / 2;
 
         }
 
         if (inputManager.isTouchDown(0)) {
             //System.out.println("DOWN");
+            float mouseX = inputManager.touchCoordX(0);
+            float mouseY = inputManager.touchCoordY(0);
+
+            this.mouseAiming = (float) Math.atan2(mouseY, mouseX) - MathUtils.PI / 2;
         }
 
         if (inputManager.isTouchReleased(0)) {
@@ -675,7 +673,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 Number radiusRaw = ((Number) physicalObject.getExtra().get("radius"));
 
                 if (radiusRaw == null) {
-                    radiusRaw = 2f;
+                    radiusRaw = 3f;
                 }
 
                 float radius = radiusRaw.floatValue();
@@ -685,11 +683,15 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
                     case SPACESHIP:
                         shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(physicalObject.getPosition().x, physicalObject.getPosition().y, 7f); //5f is default radius
+                        shapeRenderer.circle(physicalObject.getPosition().x, physicalObject.getPosition().y, radius); //5f is default radius
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(physicalObject.getPosition().x + 4f * (float) Math.cos(physicalObject.getOrientation()),
                                 physicalObject.getPosition().y + 4f * (float) Math.sin(physicalObject.getOrientation()),
-                                (7f / 2f));
+                                (radius / 2f));
+
+
+                        Body shipBody = box2dBodyCreator.addDynamicBodyToPhysicalObject(physicalObject, 0.5f, 0.5f, 0.5f);
+                        bodies.add(shipBody);
 
                         if (throttle == Spaceship.ThrottleState.FORWARDS) {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_fly.png", physicalObject, batch, null);
@@ -697,20 +699,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship_boost.png", physicalObject, batch, null);
                         } else {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", physicalObject, batch, null);
-                        }
-
-
-                        PhysicalObject targetObject = (PhysicalObject) physicalObject.getExtra().get("nearestObject");
-
-                        if (targetObject != null) {
-                            float angle = GameHelper.angleBetween(physicalObject.getPosition(), targetObject.getPosition());
-
-                            shapeRenderer.setColor(Color.GREEN);
-                            shapeRenderer.rectLine(x + radius * (float) Math.cos(physicalObject.getOrientation()),
-                                    y + radius * (float) Math.sin(physicalObject.getOrientation()),
-                                    x + (radius * 5) * (float) Math.cos(angle),
-                                    y + (radius * 5) * (float) Math.sin(angle), 5f);
-
                         }
 
                         break;
@@ -737,6 +725,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.BLACK);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
+
                         break;
                     case BOULDER:
                         shapeRenderer.setColor(Color.BROWN);
@@ -745,6 +734,9 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
                         //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
+
+                        //Body assBody = box2dBodyCreator.addDynamicBodyToPhysicalObject(physicalObject, 0.5f, 0.5f, 0.5f);
+                        //bodies.add(assBody);
                         break;
                     case EXPLOSION:
                         Color debrisColor = chooseRandomColor(DEBRIS_COLORS);
@@ -757,6 +749,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
                                 y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
+
+
+                        //Body testBody = box2dBodyCreator.addDynamicBodyToPhysicalObject(physicalObject, 0.5f, 0.5f, 0.5f);
+                        //bodies.add(testBody);
+
 /*
                         Label chaserPosition = enemyHud.positionLabel(physicalObject);
                         overlayStage.addActor(chaserPosition);
@@ -778,10 +775,14 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                     case LEFT_CANNON:
                         shapeRenderer.setColor(Color.CYAN);
                         shapeRenderer.circle(x, y, radius);
+                        //Body bulletBody = box2dBodyCreator.addDynamicBodyToPhysicalObject(physicalObject, 0.5f, 0.5f, 0.5f);
+                        //bodies.add(bulletBody);
                         break;
                     case RIGHT_CANNON:
                         shapeRenderer.setColor(Color.RED);
                         shapeRenderer.circle(x, y, radius);
+                        //Body misBody = box2dBodyCreator.addDynamicBodyToPhysicalObject(physicalObject, 0.5f, 0.5f, 0.5f);
+                        //bodies.add(misBody);
                         break;
 
                     default:
@@ -789,388 +790,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }
             }
 
-
-            for (SpaceSnapshot.GameObjectSnapshot object : snapshot.getGameObjects()) {
-                Float radius = (Float) object.extraProperties().get("radius");
-                Boolean hit = (Boolean) object.extraProperties().get("hit");
-                Boolean pickedUp = (Boolean) object.extraProperties().get("pickedUp");
-
-                float x = object.getPosition().x;
-                float y = object.getPosition().y;
-
-            /*
-            Label swarmWarning = playerHud.swarmWarning();
-            overlayStage.addActor(swarmWarning);
-            registerVolatileActor(swarmWarning);
-*/
-
-                switch (object.getType()) {
-                    case POWERUP_GENERATOR:
-                        // TODO: remove the need for the power up generator
-
-                        break;
-
-                    case SPACESHIP:
-                        shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(object.getPosition().x, object.getPosition().y, 7f); //5f is default radius
-                        shapeRenderer.setColor(Color.BLUE);
-                        shapeRenderer.circle(object.getPosition().x + 4f * (float) Math.cos(object.getOrientation()),
-                                object.getPosition().y + 4f * (float) Math.sin(object.getOrientation()),
-                                (7f / 2f));
-                        shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.rectLine(object.getPosition().x + 7f * (float) Math.cos(object.getOrientation()),
-                                object.getPosition().y + 7f * (float) Math.sin(object.getOrientation()),
-                                object.getPosition().x + 20f * (float) Math.cos(object.getOrientation()),
-                                object.getPosition().y + 20f * (float) Math.sin(object.getOrientation()), 2f);
-/*
-                        if (introDialogOneTime) {
-                            if (!(hit)) {
-                                introDialogOneTime = true;
-                            } else {
-                                System.out.println("player hit");
-                                dialogWindow.introDialog(object);
-                                introDialogOneTime = false;
-                                dialogWindow.introDialog(object).hide();
-                            }
-                        }
-*/
-
-
-                        break;
-
-                    case SPACE_MINE:
-                        Color blinkingColor = chooseRandomColor(new Color[]{Color.RED, Color.WHITE, Color.WHITE, Color.RED});
-                        shapeRenderer.setColor(blinkingColor);
-                        shapeRenderer.circle(x, y, radius);
-
-
-                        break;
-                    case BULLET:
-
-                        shapeRenderer.setColor(Color.CYAN);
-                        shapeRenderer.circle(x, y, radius);
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        // SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/bullet_small.png", object, batch, null);
-
-
-                        break;
-                    case ASTEROID:
-
-                        shapeRenderer.setColor(Color.BROWN);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/asteroid_small.png", object, batch, null);
-
-                        break;
-                    case ROTUNDA:
-                        shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x, y, radius);
-                        break;
-                    case ENEMY_CHASER:
-
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.BLUE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssEls.png", object, batch, 0.1f); //this is so that every object gets its own sprite
-
-
-                        break;
-
-                    case EWM:
-
-                        shapeRenderer.setColor(Color.SKY);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        break;
-                    case FACE_HUGGER:
-
-                        shapeRenderer.setColor(Color.BLUE);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x + (radius / 3) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 3) * (float) Math.sin(object.getOrientation()), (radius / 3));
-
-
-                        break;
-                    case SHITTER:
-
-                        shapeRenderer.setColor(Color.LIGHT_GRAY);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.SLATE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        break;
-                    case PEST:
-
-                        shapeRenderer.setColor(Color.FIREBRICK);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        break;
-                    case BLINKER:
-
-                        shapeRenderer.setColor(Color.GOLDENROD);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        break;
-                    case LASER_BEAM:
-
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.rectLine(x, y, x + 6.25f * (float) Math.cos(object.getOrientation()),
-                                y + 6.25f * (float) Math.sin(object.getOrientation()), 0.5f);
-                        break;
-                    case MOTHERSHIP:
-
-                        shapeRenderer.setColor(Color.CYAN);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.ORANGE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/human_mothership.png", object, batch, 0.7f);
-
-                        break;
-                    case DODGER:
-
-                        shapeRenderer.setColor(Color.LIME);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.PINK);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssDodger.png", object, batch, 0.1f); //this is so that every object gets its own sprite
-
-                        break;
-                    case HOMER:
-
-                        shapeRenderer.setColor(Color.ORANGE);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.VIOLET);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssHomer.png", object, batch, 0.3f);
-
-                        break;
-                    case MISSILE:
-
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.circle(x, y, radius);
-
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/missile_default.png", object, batch, null);
-
-                        break;
-                    case MUTATOR:
-
-                        shapeRenderer.setColor(Color.FIREBRICK);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.ORANGE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-
-
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/ssMutator.png", object, batch, 0.6f);
-
-                        break;
-                    case SPORE:
-                        Color sporeColor = chooseRandomColor(SPORE_COLORS);
-                        shapeRenderer.setColor(sporeColor);
-                        //shapeRenderer.circle(x, y, radius);
-
-                        Float width = (Float) object.extraProperties().get("width");
-                        Float height = (Float) object.extraProperties().get("height");
-
-                        shapeRenderer.rectLine(x, y, (float) (x + height * Math.cos(object.getOrientation())),
-                                (float) (y + height * Math.sin(object.getOrientation())), width);
-
-                        break;
-                    case SHOTTY:
-
-                        shapeRenderer.setColor(Color.MAROON);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.TEAL);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), radius / 2);
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        break;
-                    case POWERUP_MISSILE:
-                        shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
-                        shapeRenderer.setColor(Color.GOLD);
-                        shapeRenderer.circle(x, y, radius / 2);
-                        break;
-                    case POWERUP_SHIELD:
-
-
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius / 2);
-
-
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_shield.png", object, batch, 2f);
-
-                        break;
-                    case POWERUP_MINION:
-                        shapeRenderer.setColor(Color.SKY);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
-                        shapeRenderer.setColor(Color.YELLOW);
-                        shapeRenderer.circle(x, y, radius / 2);
-                        break;
-                    case POWERUP_HEALTH:
-
-
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.circle(x, y, radius / 2 + radius / 2);
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.circle(x, y, radius / 2);
-
-
-                        //SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/powerup_health.png", object, batch, 2f);
-
-                        break;
-
-                    case SHIELD:
-                        String lightBlue = "8EE2EC";
-                        shapeRenderer.setColor(Color.valueOf(lightBlue));
-                        shapeRenderer.circle(x, y, radius);
-                        break;
-                    case EXHAUST:
-                        Color exhaustColor = chooseRandomColor(EXHAUST_COLORS);
-                        shapeRenderer.setColor(exhaustColor);
-                        shapeRenderer.circle(x, y, radius);
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-                        //particleEffectRenderer.exhaustEffect(object);
-
-                        break;
-                    case DEBRIS:
-                        Color debrisColor = chooseRandomColor(DEBRIS_COLORS);
-                        shapeRenderer.setColor(debrisColor);
-                        shapeRenderer.circle(x, y, radius);
-                        break;
-                    case TEST_QUEST:
-                        mission = object;
-                        shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.circle(x, y, radius);
-
-                        break;
-                    case TEST_NPC:
-
-                        shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.circle(x, y, radius);
-                        shapeRenderer.setColor(Color.BLUE);
-                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius / 2) * (float) Math.sin(object.getOrientation()), (radius / 2));
-
-/*
-                        float width = (Float) object.extraProperties().get("width");
-                        float height = (Float) object.extraProperties().get("height");
-                        shapeRenderer.setColor(Color.GREEN);
-                        shapeRenderer.rect(x, y, width, height);
-*/
-
-
-
-                        shapeRenderer.rectLine(x + radius * (float) Math.cos(object.getOrientation()),
-                                y + radius * (float) Math.sin(object.getOrientation()),
-                                x + (radius * 2) * (float) Math.cos(object.getOrientation()),
-                                y + (radius * 2) * (float) Math.sin(object.getOrientation()), 2f);
-
-                        //statsForObjects.setAllLabels(object);
-                        break;
-
-                    case MISSION_END:
-                        shapeRenderer.setColor(new Color(255f, 255f, 255f, 50f));
-                        shapeRenderer.circle(x, y, radius);
-                        break;
-                    default:
-                        System.out.println("Unknown game object type: " + object.getType());
-                }
-            }
         } finally {
 
             batch.end();
@@ -1188,6 +807,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     }
+
+
 
     private static final String yellowish = "EDE49E";
     private static final String reddish = "F88158";
@@ -1285,11 +906,16 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         updateOverlay();
         playerHud.update();
-        if (mission != null) {
-            missionText.showMission(mission, delta);
-        }
 
         compass.updateCompass(myself);
+
+        box2dBodyCreator.elapseTime(camera, delta);
+
+        for (Body body: bodies) {
+            while (body.getFixtureList().size > 0) {
+                body.destroyFixture(body.getFixtureList().first());
+            }
+        }
 
     }
 

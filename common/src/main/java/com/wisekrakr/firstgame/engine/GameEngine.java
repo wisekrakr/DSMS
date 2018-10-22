@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
@@ -8,7 +9,6 @@ import com.wisekrakr.firstgame.engine.scenarios.Scenario;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class GameEngine {
     private SpaceEngine space;
@@ -119,7 +119,7 @@ public class GameEngine {
             public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualizationEngine, Float collisionRadius) {
                 assureMine(target);
 
-                space.updatePhysicalObject(target, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+                space.updatePhysicalObject(target, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, health, damage);
             }
 
             @Override
@@ -158,6 +158,11 @@ public class GameEngine {
             public List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float radius) {
                 return space.findNearbyPhysicalObjects(reference, radius);
 
+            }
+
+            @Override
+            public Body addDynamicBody(float density, float friction, float restitution) {
+                return space.addDynamicBody(density, friction, restitution);
             }
         });
 

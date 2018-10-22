@@ -31,7 +31,7 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
     @Override
     public void start() {
         BehavedObject behavedObject = introduceBehavedObject(
-                "Asteroid",
+                AsteroidCharacter.class.getName(),
                 initialPosition,
                 0,
                 initialSpeedMagnitude,
@@ -46,8 +46,8 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                     @Override
                     public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
                         getContext().addCharacter(new ExplosionCharacter(object.getPosition(),
-                                object.getSpeedMagnitude() + GameHelper.generateRandomNumberBetween(5f, 15f),
-                                object.getSpeedDirection(),
+                                GameHelper.generateRandomNumberBetween(5f, initialSpeedMagnitude),
+                                GameHelper.randomDirection(),
                                 5,
                                 initialRadius,
                                 10f,
@@ -65,8 +65,8 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
 
                     @Override
                     public void elapseTime(float clock, float delta) {
-                        //getContext().updatePhysicalObject(physicalObject, null, null, null, Math.min(100f, 10 * clock), Math.min(clock, 1000f), null, null);
-
+                        //getContext().updatePhysicalObject(null, null, null, Math.min(100f, 10 * clock), Math.min(clock, 1000f), null, null, null, null);
+/*
                         List<NearPhysicalObject> nearbyPhysicalObjects = AsteroidCharacter.this.getContext().findNearbyPhysicalObjects(getContext().getSubject(), 300f);
 
                         if (!nearbyPhysicalObjects.isEmpty()) {
@@ -85,7 +85,7 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                                         null);
                             }
                         }
-
+*/
                         if (getContext().getSubject().getCollisionRadius() <= 0.5f) {
                             getContext().removePhysicalObject();
                         }

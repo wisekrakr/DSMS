@@ -11,6 +11,8 @@ import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Player extends AbstractGameCharacter {
@@ -55,12 +57,11 @@ public class Player extends AbstractGameCharacter {
         getContext().updatePhysicalObjectExtra(spaceship, "health", health);
         getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", maxHealth);
         getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1f);
-        getContext().updatePhysicalObjectExtra(spaceship, "nearestObject", nearestObject);
-
+        getContext().updatePhysicalObjectExtra(spaceship, "nearestObject", findNearestObject());
 
     }
 
-    private void findNearestObject() {
+    private PhysicalObject findNearestObject() {
 
         List<NearPhysicalObject> nearbyPhysicalObjects =
                 getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
@@ -74,6 +75,7 @@ public class Player extends AbstractGameCharacter {
                 }
             }
         }
+        return nearestObject;
     }
 
     public void control(SpaceshipControlRequest request) {
@@ -82,6 +84,7 @@ public class Player extends AbstractGameCharacter {
 
     @Override
     public void elapseTime(float delta) {
+
         if (spaceship == null) {
             return;
         }
@@ -113,7 +116,7 @@ public class Player extends AbstractGameCharacter {
                 break;
         }
 
-        float defaultSpeed = 100f;
+        float defaultSpeed = 150f;
         switch (lastControl.getThrottleState()) {
             case FORWARDS:
                 speedX = speedX + delta * defaultSpeed * (float) Math.cos(spaceship.getOrientation());
@@ -141,7 +144,7 @@ public class Player extends AbstractGameCharacter {
 
         switch (lastControl.getSpecialPowerState()) {
             case BOOSTING:
-                float maxSpeed = 175f;
+                float maxSpeed = 300f;
                 speedX = speedX + (float) Math.cos(spaceship.getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
                 speedY = speedY + (float) Math.sin(spaceship.getOrientation()) * Math.min(speed + (defaultSpeed + (defaultSpeed / 2)), maxSpeed);
 
@@ -233,7 +236,7 @@ public class Player extends AbstractGameCharacter {
 
         if (shootTime > 0.1f) {
             getContext().addCharacter(new BulletCharacter(spaceship.getPosition(),
-                    200f,
+                    (spaceship.getSpeedMagnitude() + 200f),
                     adaptedAngle,
                     3f,
                     3f,
@@ -256,16 +259,40 @@ public class Player extends AbstractGameCharacter {
 
         if (shootTime > 0.3f) {
             getContext().addCharacter(new HomingMissileCharacter(spaceship.getPosition(),
-                    120f,
+                    spaceship.getSpeedMagnitude() + 120f,
                     adaptedAngle,
                     3f,
                     10f,
                     3f,
                     200f,
                     Visualizations.RIGHT_CANNON,
-                    getContext()
+                    getContext(),
+                    targetList()
+
             ));
             shootTime = 0f;
         }
+    }
+
+    private List<String> targetList(){
+
+        List<NearPhysicalObject> nearbyPhysicalObjects =
+                getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
+
+        Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
+
+        List<String> targetList = new ArrayList<>();
+
+        if (targetList.isEmpty()){
+            NearPhysicalObject p;
+            while (iterator.hasNext()) {
+                p = iterator.next();
+                if (nearbyPhysicalObjects.contains(p) && !p.getObject().getName().contains("weapon") && !p.getObject().getName().contains("debris")) {
+                    targetList.add(p.getObject().getName());
+                }
+            }
+        }
+
+        return targetList;
     }
 }

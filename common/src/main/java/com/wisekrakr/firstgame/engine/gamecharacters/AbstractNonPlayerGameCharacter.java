@@ -1,6 +1,10 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.BehaviorContext;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
@@ -16,6 +20,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
     interface BehavedObject {
         void behave(List<Behavior> behaviors);
 
+        PhysicalObject getObject();
     }
 
     protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius) {
@@ -64,6 +69,15 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
                     }
                 }
             }
+
+            @Override
+            public PhysicalObject getObject() {
+                PhysicalObject object = null;
+                if (behavedObjects.containsKey(subject)) {
+                    object = subject;
+                }
+                return object;
+            }
         };
     }
 
@@ -104,6 +118,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
         b.start();
     }
 
+
     @Override
     public final void elapseTime(float delta) {
         for (Map.Entry<PhysicalObject, List<Behavior>> entry : behavedObjects.entrySet()) {
@@ -123,6 +138,8 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
         }
 
         deleted.clear();
+
+
     }
 
 }

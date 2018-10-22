@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.server;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
@@ -9,6 +10,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 import com.wisekrakr.firstgame.engine.scenarios.DamselInDistress;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
@@ -99,22 +101,33 @@ public class ServerRunner {
         //gameEngine.addScenario(new DamselInDistress(300, 100, 0));
 
 
-
-
 /*
-        gameEngine.addScenario(new WildlifeManagement(0, 3, engine, new CharacterFactory() {
+
+        gameEngine.addScenario(new WildlifeManagement(2, 2, engine, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new StandardAggressiveCharacter(position,
+                return new NPCMissileShooter(position,
+                        radius,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack);
+            }
+        }));
+
+        gameEngine.addScenario(new WildlifeManagement(3, 1, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new NPCNewbieCharacter(position,
                         radius,
                         speedDirection,
                         speedMagnitude,
                         radiusOfAttack,
-                        health);
+                        health
+                );
             }
         }));
-*/
-        gameEngine.addScenario(new WildlifeManagement(3, 1, engine, new CharacterFactory() {
+ */
+        gameEngine.addScenario(new WildlifeManagement(0, 1, engine, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new XCharacter(position,
@@ -122,40 +135,37 @@ public class ServerRunner {
                         speedDirection,
                         speedMagnitude,
                         radiusOfAttack,
-                        health);
+                        health
+                );
             }
         }));
 
-/*
-        for (int i = 0; i < 0; i++) {
-            gameEngine.addGameCharacter(new XCharacter(GameHelper.randomPosition(),
-                    GameHelper.generateRandomNumberBetween(15f, 25f),
-                    GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(40f, 70f),
-                    GameHelper.generateRandomNumberBetween(200f, 500f),
-                    GameHelper.generateRandomNumberBetween(10f, 30f)));
-        }
+        gameEngine.addScenario(new WildlifeManagement(2, 1, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new NPCMinionSpawner(position,
+                        radius,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack,
+                        health
+                );
+            }
+        }));
 
 
 
-        for (int i = 0; i < 0; i++) {
-            gameEngine.addGameCharacter(new StandardAggressiveCharacter(GameHelper.randomPosition(),
-                    GameHelper.generateRandomNumberBetween(15f, 25f),
-                    GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(40f, 70f),
-                    300f,
-                    GameHelper.generateRandomNumberBetween(20f, 40f)));
-        }
-*/
-        for (int i = 0; i < 0; i++){
-            gameEngine.addGameCharacter(new AsteroidCharacter(GameHelper.randomPosition(),
-                    GameHelper.generateRandomNumberBetween(5f, 20f),
-                    GameHelper.randomDirection(),
-                    GameHelper.generateRandomNumberBetween(5f, 60f),
-                    10f,
-                    10f));
-
-        }
+        gameEngine.addScenario(new WildlifeManagement(5, 2, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new AsteroidCharacter(position,
+                        radius,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack,
+                        health);
+            }
+        }));
 
         timeThread.start();
 
@@ -217,7 +227,7 @@ public class ServerRunner {
                             }
                         }
                     } catch (Exception e) {
-                        System.out.println("Connection to " + clientSocket + " broken: " + e.getMessage());
+                        System.out.println("(Read thread in SpaceEngine) Connection to " + clientSocket + " broken: " + e.getMessage());
                     }
 
                     try {
@@ -242,7 +252,7 @@ public class ServerRunner {
                             Thread.sleep(10L);
                         }
                     } catch (Exception e) {
-                        System.out.println("Connection to " + clientSocket + " broken: " + e.getMessage());
+                        System.out.println("(Write thread in SpaceEngine) Connection to " + clientSocket + " broken: " + e.getMessage());
                     }
 
                     try {

@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.SpaceGameContainer;
-import com.wisekrakr.firstgame.VideoPlayer;
 import com.wisekrakr.firstgame.client.ClientConnector;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.playscreens.PlayerPerspectiveScreen;
@@ -31,7 +30,6 @@ public class StartScreen extends ScreenAdapter {
     private BitmapFont font;
     private PlayerPerspectiveScreen playScreen;
 
-    private VideoPlayer videoPlayer;
     private ShapeRenderer shapeRenderer;
     private Texture texture;
     private MyAssetManager myAssetManager;

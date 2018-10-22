@@ -1,17 +1,22 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
 
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class DamselCharacter extends AbstractGameCharacter{
+public class DamselCharacter extends FriendlyCharacter{
 
     private Vector2 initialPosition;
     private float initialRadius;
@@ -35,7 +40,7 @@ public class DamselCharacter extends AbstractGameCharacter{
     @Override
     public void start() {
 
-        PhysicalObject damsel = getContext().addPhysicalObject("damsel",
+        BehavedObject damsel = introduceBehavedObject(DamselCharacter.class.getName(),
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
@@ -43,42 +48,64 @@ public class DamselCharacter extends AbstractGameCharacter{
                 health,
                 0,
                 Visualizations.TEST,
-                initialRadius,
-                null);
+                initialRadius
+                );
 
-        getContext().updatePhysicalObjectExtra(damsel,"radius", initialRadius);
-        getContext().updatePhysicalObjectExtra(damsel,"health", health);
+        damsel.behave(
+                Arrays.asList(
+                        new AbstractBehavior(){
+                            @Override
+                            public void start() {
+                                getContext().updatePhysicalObjectExtra("radius", initialRadius);
+                                getContext().updatePhysicalObjectExtra("health", health);
+                            }
+
+                            @Override
+                            public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
+                                if (!object.getName().contains("debris")) {
+                                    getContext().updatePhysicalObject(null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            health -= object.getDamage(),
+                                            null,
+                                            null,
+                                            null
+                                    );
+                                }
+                            }
+
+                            @Override
+                            public void elapseTime(float clock, float delta) {
+                                if (health <= 0){
+                                    DamselCharacter.this.getContext().removeMyself();
+                                    getContext().removePhysicalObject();
+                                }
+                            }
+                        },
+                        new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext(), targetList())
+
+
+
+                ));
     }
 
-    @Override
-    public void elapseTime(float delta) {
-        if (health < 0){
-            DamselCharacter.this.getContext().removeMyself();
-        }
-        if (behaviorList != null) {
-            behaviorList.iterator().next();
-            System.out.println(behaviorList.iterator().next());
-        }
 
-    }
-
-    public void addToBehaviorList(Behavior behavior){
-        behaviorList.add(behavior);
-
-    }
 
     public Behavior lookingForAHero() {
         return new CruisingBehavior(5f, initialSpeedMagnitude);
     }
-
+/*
     public Behavior runFrom() {
         return new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY, radiusOfAttack /2, initialSpeedMagnitude * 2, getContext());
     }
 
     public Behavior clingOn() {
-        return new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext() );
+        return new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext());
     }
-
+*/
     public void missionComplete() {
 
     }

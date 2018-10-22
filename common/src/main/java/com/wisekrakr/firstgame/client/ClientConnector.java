@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.client;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 
@@ -105,7 +106,6 @@ public class ClientConnector {
     public void setPaused(boolean paused) {
         queue.add(new PauseUnPauseRequest(paused));
     }
-
 
     public SpaceSnapshot getLatestSnapshot() {
         return latestSnapshot;

@@ -55,7 +55,7 @@ public class DamselInDistress extends Scenario {
                 400f,
                 100f);
 
-        damsel.addToBehaviorList(damsel.lookingForAHero());
+
         gameEngine.addGameCharacter(damsel);
         state = ScenarioState.INITIATION;
     }
@@ -73,7 +73,7 @@ public class DamselInDistress extends Scenario {
                 break;
             case ESCORT:
                 bringDamselToSafeLocation(gameEngine);
-                System.out.println("Damsel found Hero " + damsel.isClingingOn());
+                System.out.println("Damsel found Hero " );
                 break;
             default:
                 throw new IllegalStateException("Unknown: " + state);
@@ -115,25 +115,18 @@ public class DamselInDistress extends Scenario {
                 if (target.getClass().getClass() == Player.class.getClass()) {
 
                     if (GameHelper.distanceBetweenPhysicals(damsel.damselContext().getPhysicalObject(), target) < runToDistance) {
-                        damsel.damselContext().updatePhysicalObject(damsel.damselContext().getPhysicalObject(),
-                                null,
-                                null,
-                                angle,
-                                null,
-                                angle,
-                                null,
-                                null,
-                                null,
-                                null);
+                        //damsel.clingOn();
                         state = ScenarioState.ESCORT;
                     }
                 }else if (target == perverts.iterator().next()){
 
                     if (GameHelper.distanceBetweenPhysicals(damsel.damselContext().getPhysicalObject(), target) < escapeDistance) {
-                        damsel.addToBehaviorList(damsel.runFrom());
+
                     }
                 }
             }
+        }else {
+            damsel.lookingForAHero();
         }
 
         for (PervertCharacter pervert: perverts){
@@ -146,9 +139,9 @@ public class DamselInDistress extends Scenario {
                     PhysicalObject target = nearPhysicalObject.getObject();
 
                     if (target == damsel){
-                        pervert.addToBehaviorList(pervert.chaseAfter());
+                        //pervert.addToBehaviorList(pervert.chaseAfter());
                     }else if (GameHelper.distanceBetweenPhysicals(pervert.getPervertContext().getPhysicalObject(), damsel.damselContext().getPhysicalObject())< 100f){
-                        pervert.addToBehaviorList(pervert.circlingDamsel());
+                        //pervert.addToBehaviorList(pervert.circlingDamsel());
                     }
                 }
             }

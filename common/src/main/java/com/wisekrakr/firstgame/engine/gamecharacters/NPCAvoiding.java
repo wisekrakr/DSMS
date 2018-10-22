@@ -1,53 +1,49 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.client.PlayerCreationRequest;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.Arrays;
 
-public class StandardMinionCharacter extends AbstractNonPlayerGameCharacter {
+public class NPCAvoiding extends FriendlyCharacter {
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
     private float radiusOfAttack;
     private float health;
-    private float damage;
-    private Visualizations visualizations;
-    private AttackBehavior.AttackStyle attackStyle;
-    private GameCharacterContext master;
 
-    public StandardMinionCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health, float damage, Visualizations visualizations, AttackBehavior.AttackStyle attackStyle, GameCharacterContext master) {
+    public NPCAvoiding(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
         this.health = health;
-        this.damage = damage;
-        this.visualizations = visualizations;
-        this.attackStyle = attackStyle;
-        this.master = master;
     }
-
 
     @Override
     public void start() {
-        BehavedObject attackerA = introduceBehavedObject("minion",
+        BehavedObject npcNewbie = introduceBehavedObject(NPCAvoiding.class.getName(),
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
                 health,
-                damage,
-                visualizations,
+                0,
+                Visualizations.COCKPIT,
                 initialRadius);
 
-        attackerA.behave(
+        addTargetName(AttackingCharacter.class.getName());
+        addTargetName(PlayerCreationRequest.playerName());
+
+        npcNewbie.behave(
                 Arrays.asList(
                         new AbstractBehavior(){
                             @Override
@@ -75,13 +71,14 @@ public class StandardMinionCharacter extends AbstractNonPlayerGameCharacter {
                             @Override
                             public void elapseTime(float clock, float delta) {
                                 if (health <= 0){
-                                    StandardMinionCharacter.this.getContext().removeMyself();
+                                    NPCAvoiding.this.getContext().removeMyself();
                                     getContext().removePhysicalObject();
                                 }
                             }
                         },
-                        new CruisingBehavior(3f, initialSpeedMagnitude)
-                        //new AttackBehavior(attackStyle, radiusOfAttack, 1f, damage, master, )
+                        new CruisingBehavior(5f, initialSpeedMagnitude),
+                        new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY, radiusOfAttack, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), targetList())
+
                 ));
     }
 

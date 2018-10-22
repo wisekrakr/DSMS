@@ -2,12 +2,11 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
-import com.wisekrakr.firstgame.engine.gamecharacters.StandardMinionCharacter;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.ArrayList;
@@ -19,16 +18,20 @@ public class DuplicationBehavior extends AbstractBehavior {
     private Integer number;
     private Float spawnInterval;
     private GameCharacterContext master;
+    private final List<String> targetList;
     private DuplicationStyle duplicationStyle;
     private Float lastShot;
     private ArrayList<GameCharacter>characters = new ArrayList<>();
+    private CharacterFactory factory;
 
-    public DuplicationBehavior(DuplicationStyle duplicationStyle, float radiusOfAttack, Integer number, Float spawnInterval, GameCharacterContext master) {
+    public DuplicationBehavior(DuplicationStyle duplicationStyle, float radiusOfAttack, Integer number, Float spawnInterval, GameCharacterContext master, List<String> targetList, CharacterFactory factory) {
         this.duplicationStyle = duplicationStyle;
         this.radiusOfAttack = radiusOfAttack;
         this.number = number;
         this.spawnInterval = spawnInterval;
         this.master = master;
+        this.targetList = targetList;
+        this.factory = factory;
     }
 
     public enum DuplicationStyle {
@@ -53,65 +56,55 @@ public class DuplicationBehavior extends AbstractBehavior {
                 float x = getContext().getSubject().getPosition().x;
                 float y = getContext().getSubject().getPosition().y;
 
+                if (!name.contains("weapon") && !name.contains("debris") && target != getContext().getSubject()) {
 
-                if (!name.contains("weapon") && !name.contains("debris") && target != getContext().getSubject() &&
-                        !name.contains(getContext().getSubject().getName()) && target != master.getPhysicalObject()) {
+                    for (String string: targetList){
+                        if (name.contains(string)) {
 
-                    if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
+                            if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
-                        switch (duplicationStyle){
-                            case DEPLOY_MINIONS:
-                                //angle towards target and create new bullet character
+                                switch (duplicationStyle) {
+                                    case DEPLOY_MINIONS:
+                                        //deploy character of your choosing as a minion
 
-                                getContext().updatePhysicalObject(
-                                        null,
-                                        null,
-                                        angle,
-                                        null,
-                                        angle,
-                                        null,
-                                        null,
-                                        null,
-                                        null
-                                );
-
-                                if (lastShot == null) {
-                                    lastShot = clock;
-                                }
-
-                                if (spawnInterval != null) {
-                                    if (clock - lastShot > spawnInterval) {
-                                        if (characters.size() < number){
-                                            GameCharacter newObject = new StandardMinionCharacter(new Vector2(x + getContext().getSubject().getCollisionRadius(),
-                                                            y + getContext().getSubject().getCollisionRadius()),
-                                                    GameHelper.generateRandomNumberBetween(20f, 60f),
-                                                    angle,
-                                                    GameHelper.generateRandomNumberBetween(10f, 20f),
-                                                    radiusOfAttack,
-                                                    GameHelper.generateRandomNumberBetween(20f, 60f),
-                                                    GameHelper.generateRandomNumberBetween(5f, 10f),
-                                                    Visualizations.COCKPIT,
-                                                    AttackBehavior.AttackStyle.SHOOT,
-                                                    master);
-
-                                            getContext().addCharacter(newObject);
-                                            characters.add(newObject);
-
-                                            System.out.println(getContext().getSubject().getName() + " = deploying minions at target: " + target.getName());
+                                        if (lastShot == null) {
+                                            lastShot = clock;
                                         }
-                                        lastShot = clock;
-                                    }
+
+                                        if (spawnInterval != null) {
+                                            if (clock - lastShot > spawnInterval) {
+                                                if (characters.size() < number) {
+                                                    GameCharacter newObject = factory.createCharacter(new Vector2(x + getContext().getSubject().getCollisionRadius()*2,
+                                                                    y + getContext().getSubject().getCollisionRadius()*2),
+                                                            GameHelper.generateRandomNumberBetween(100, 150f),
+                                                            angle,
+                                                            angle,
+                                                            GameHelper.generateRandomNumberBetween(getContext().getSubject().getCollisionRadius() / 4, getContext().getSubject().getCollisionRadius() / 2),
+                                                            radiusOfAttack,
+                                                            GameHelper.generateRandomNumberBetween(20f, 60f),
+                                                            GameHelper.generateRandomNumberBetween(5f, 10f)
+                                                    );
+
+                                                    getContext().addCharacter(newObject);
+                                                    characters.add(newObject);
+
+                                                    System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_PURPLE_BACKGROUND + StringHelper.ANSI_WHITE + " deploying minions at: " + StringHelper.ANSI_RESET + target.getName());
+                                                }
+                                                lastShot = clock;
+                                            }
+                                        }
+
+                                        break;
+
+                                    case MULTIPLY:
+
+                                        break;
+
+                                    default:
+                                        System.out.println("No Attacking Behavior chosen for : " + getContext().getSubject().getName());
+
                                 }
-
-                                break;
-
-                            case MULTIPLY:
-                                //angle towards target and when colliding, impact with significance
-                                break;
-
-                            default:
-                                System.out.println("No Attacking Behavior chosen for : " + getContext().getSubject().getName());
-
+                            }
                         }
                     }
                 }

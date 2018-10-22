@@ -3,7 +3,6 @@ package com.wisekrakr.firstgame.engine.physicalobjects;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PhysicalObjectRunner implements PhysicalObject {
@@ -88,6 +87,8 @@ public class PhysicalObjectRunner implements PhysicalObject {
         return new PhysicalObjectSnapshot(
                 name,
                 visualization,
+                health,
+                damage,
                 speedDirection,
                 getSpeedMagnitude(),
                 orientation,
@@ -95,7 +96,7 @@ public class PhysicalObjectRunner implements PhysicalObject {
                 extraProperties);
     }
 
-    public void update(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius) {
+    public void update(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius, Float health, Float damage) {
         if (name != null) {
             this.name = name;
         }
@@ -122,6 +123,12 @@ public class PhysicalObjectRunner implements PhysicalObject {
 
         if (collisionRadius != null) {
             this.collisionRadius = collisionRadius;
+        }
+        if (health != null) {
+            this.health = health;
+        }
+        if (damage != null) {
+            this.damage = damage;
         }
     }
 

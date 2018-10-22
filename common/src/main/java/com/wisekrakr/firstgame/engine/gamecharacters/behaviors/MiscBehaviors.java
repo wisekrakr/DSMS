@@ -2,10 +2,10 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gamecharacters.BulletCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.ExplosionCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
+import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
@@ -18,9 +18,8 @@ public class MiscBehaviors extends AbstractBehavior {
     private static Float lastShot;
     private static Float lastCreation;
 
-    public static void normalize(GameCharacterContext context, Vector2 initialPosition, Float initialRadius, Float initialDirection, Float initialSpeedMagnitude, Float health, Float damage){
+    public static void normalize(BehaviorContext context, Vector2 initialPosition, Float initialRadius, Float initialDirection, Float initialSpeedMagnitude, Float health, Float damage){
         context.updatePhysicalObject(
-                context.getPhysicalObject(),
                 null,
                 initialPosition,
                 initialDirection,
@@ -29,10 +28,24 @@ public class MiscBehaviors extends AbstractBehavior {
                 health,
                 damage,
                 null,
-                initialRadius);
+                initialRadius
+        );
     }
 
-    public static void deployMinions(GameCharacterContext context, PhysicalObject target, int numberOfMinions, CharacterFactory factory, float spawnInterval, float radiusOfAttack, float clock){
+    public static PhysicalObject getTarget(GameCharacterContext context, float radiusOfAttack){
+        List<NearPhysicalObject> nearbyPhysicalObjects =
+                context.findNearbyPhysicalObjects(context.getPhysicalObject(), radiusOfAttack);
+        PhysicalObject target = null;
+
+        if (!nearbyPhysicalObjects.isEmpty()) {
+            for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
+                target = nearPhysicalObject.getObject();
+            }
+        }
+        return target;
+    }
+
+    public static void deployMinions(BehaviorContext context, PhysicalObject target, int numberOfMinions, CharacterFactory factory, float spawnInterval, float radiusOfAttack, float clock){
 
         if (lastCreation == null) {
             lastCreation = clock;
@@ -44,8 +57,8 @@ public class MiscBehaviors extends AbstractBehavior {
             if (list.size() < numberOfMinions ) {
                 if ((clock - lastCreation) > spawnInterval) {
 
-                    GameCharacter newObject = factory.createCharacter(new Vector2(context.getPhysicalObject().getPosition().x + context.getPhysicalObject().getCollisionRadius(),
-                                    context.getPhysicalObject().getPosition().y + context.getPhysicalObject().getCollisionRadius()),
+                    GameCharacter newObject = factory.createCharacter(new Vector2(context.getSubject().getPosition().x + context.getSubject().getCollisionRadius(),
+                                    context.getSubject().getPosition().y + context.getSubject().getCollisionRadius()),
                             GameHelper.generateRandomNumberBetween(20f, 60f),
                             GameHelper.randomDirection(),
                             GameHelper.randomDirection(),
@@ -64,10 +77,10 @@ public class MiscBehaviors extends AbstractBehavior {
         }
     }
 
-    public static void rotating(GameCharacterContext context, float rotateSpeed, float delta){
-        float rotatingAngle = context.getPhysicalObject().getOrientation();
+    public static void rotating(BehaviorContext context, float rotateSpeed, float delta){
+        float rotatingAngle = context.getSubject().getOrientation();
         rotatingAngle += rotateSpeed * delta;
-        context.updatePhysicalObject(context.getPhysicalObject(),
+        context.updatePhysicalObject(null,
                 null,
                 null,
                 rotatingAngle,
@@ -75,13 +88,13 @@ public class MiscBehaviors extends AbstractBehavior {
                 null,
                 null,
                 null,
-                null,
-                null);
-        System.out.println(context.getPhysicalObject().getName() + " = rotating");
+                null
+                );
+        System.out.println(context.getSubject().getName() + " = rotating");
     }
 
-    public static void exploding(GameCharacterContext context, int debrisParts, float debrisMass, float debrisAge){
-        context.addCharacter(new ExplosionCharacter(context.getPhysicalObject().getPosition(),
+    public static void exploding(BehaviorContext context, int debrisParts, float debrisMass, float debrisAge){
+        context.addCharacter(new ExplosionCharacter(context.getSubject().getPosition(),
                 GameHelper.generateRandomNumberBetween(5f, 20f),
                 GameHelper.randomDirection(),
                 debrisParts,
@@ -90,4 +103,17 @@ public class MiscBehaviors extends AbstractBehavior {
                 Visualizations.EXPLOSION));
     }
 
+    public static void follow(BehaviorContext context, float angle, float speedIncrease){
+        context.updatePhysicalObject(
+                null,
+                null,
+                angle,
+                speedIncrease,
+                angle,
+                null,
+                null,
+                null,
+                null
+        );
+    }
 }

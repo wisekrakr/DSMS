@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
@@ -18,6 +19,10 @@ public class SpaceEngine {
     private float clock = 0f;
     private boolean paused = false;
 
+    //TODO: get rid
+    private World world = new World(new Vector2(0,0), true);
+    private Set<Body>bodies = new HashSet<>();
+
     private Set<PhysicalObjectRunner> physicalObjects = new HashSet<>();
 
     public SpaceEngine(float minX, float minY, float width, float height) {
@@ -25,6 +30,7 @@ public class SpaceEngine {
         this.minY = minY;
         this.width = width;
         this.height = height;
+
     }
 
     public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
@@ -37,11 +43,11 @@ public class SpaceEngine {
         }
     }
 
-    public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
+    public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius, Float health, Float damage) {
         synchronized (monitor) {
             PhysicalObjectRunner runner = getPhysicalObject(target);
 
-            runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+            runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, health, damage);
         }
 
     }
@@ -81,6 +87,38 @@ public class SpaceEngine {
         Collections.sort(result, (o1, o2) -> Float.compare(o1.getDistance(), o2.getDistance()));
 
         return result;
+    }
+
+    public Body addDynamicBody(float density, float friction, float restitution){
+
+        Body shipBody = null;
+        for (PhysicalObjectRunner target : physicalObjects) {
+            Number radiusRaw = (Number) target.getExtraProperties().get("radius");
+            if (radiusRaw == null) {
+                radiusRaw = 5f;
+            }
+            float radius = radiusRaw.floatValue();
+
+            BodyDef shipBodyDef = new BodyDef();
+            shipBodyDef.type = BodyDef.BodyType.DynamicBody;
+            shipBodyDef.position.set(target.getPosition().x, target.getPosition().y);
+            shipBodyDef.angle = target.getOrientation();
+
+            shipBody = getWorld().createBody(shipBodyDef);
+            bodies.add(shipBody);
+
+            CircleShape shipCircleShape = new CircleShape();
+            shipCircleShape.setRadius(radius);
+
+            FixtureDef shipFixtureDef = new FixtureDef();
+            shipFixtureDef.shape = shipCircleShape;
+            shipFixtureDef.density = density;
+            shipFixtureDef.friction = friction;
+            shipFixtureDef.restitution = restitution;
+
+            shipBody.createFixture(shipFixtureDef);
+        }
+        return shipBody;
     }
 
     public interface GameObjectListener {
@@ -220,6 +258,7 @@ public class SpaceEngine {
         synchronized (monitor) {
             List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<>();
 
+
             for (GameObject object : gameObjects) {
                 gameObjectSnapshots.add(object.snapshot());
             }
@@ -238,6 +277,11 @@ public class SpaceEngine {
         return clock;
     }
 
+    public World getWorld() {
+
+        return null; //world
+    }
+
     private void physicalElapseTime(float delta) {
         // apply physics:
         //    A. apply movement
@@ -253,7 +297,10 @@ public class SpaceEngine {
                     null,
                     null,
                     null,
-                    null);
+                    null,
+                    null,
+                    null
+            );
 
             // TODO: distanceTravelled = distanceTravelled + Math.abs(target.getSpeedMagnitude() * delta);    ?
         }
@@ -283,16 +330,13 @@ public class SpaceEngine {
             getPhysicalObject(collision.getTwo()).getListener().collision(collision.getTwo(), collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
         }
 
-        //    D.  out of bounds
-/*
-        for (PhysicalObjectRunner target : physicalObjects) {
+        //    D.  Dynamic Box2d bodies
 
-            if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
-                    target.getPosition().y < minY || target.getPosition().y - minY > height) {
-                target.signalOutOfBounds();
+        for (Body body: bodies) {
+            while (body.getFixtureList().size > 0) {
+                body.destroyFixture(body.getFixtureList().first());
             }
         }
-        */
     }
 
     public void elapseTime(float delta) {

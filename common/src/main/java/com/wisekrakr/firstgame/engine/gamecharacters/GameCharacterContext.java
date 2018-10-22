@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
@@ -27,4 +28,6 @@ public interface GameCharacterContext {
 
     PhysicalObject getPhysicalObject();
     List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float radius);
+
+    Body addDynamicBody(float density, float friction, float restitution);
 }

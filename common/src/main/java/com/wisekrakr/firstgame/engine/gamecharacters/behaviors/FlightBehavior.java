@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
@@ -14,17 +15,20 @@ public class FlightBehavior extends AbstractBehavior {
     private float radiusOfAttack;
     private Float speedIncrease;
     private GameCharacterContext master;
+    private List<String> targetList;
     private FlightStyle flightStyle;
+    private Float lastDirectionChange;
 
-    public FlightBehavior(FlightStyle flightStyle, float radiusOfAttack, Float speedIncrease, GameCharacterContext master) {
+    public FlightBehavior(FlightStyle flightStyle, float radiusOfAttack, Float speedIncrease, GameCharacterContext master, List<String> targetList) {
         this.flightStyle = flightStyle;
         this.radiusOfAttack = radiusOfAttack;
         this.speedIncrease = speedIncrease;
         this.master = master;
+        this.targetList = targetList;
     }
 
     public enum FlightStyle {
-        FOLLOW, FACEHUG, CIRCLING, FLY_AWAY
+        FOLLOW, ZIGZAG, CIRCLING, FLY_AWAY
     }
 
     @Override
@@ -42,92 +46,102 @@ public class FlightBehavior extends AbstractBehavior {
 
                 String name = target.getName();
 
-                if (!name.contains("weapon") && !name.contains("debris") && target != getContext().getSubject() &&
-                        !name.contains(getContext().getSubject().getName()) && target != master.getPhysicalObject()) {
+                if (!name.contains("weapon") && !name.contains("debris") && target != getContext().getSubject()) {
 
-                    if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
+                    for (String string: targetList){
+                        if (name.contains(string)){
 
-                        switch (flightStyle){
-                            case FOLLOW:
-                                //angle towards target and start following
+                            if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
-                                getContext().updatePhysicalObject(
-                                        null,
-                                        null,
-                                        angle,
-                                        speedIncrease,
-                                        angle,
-                                        null,
-                                        null,
-                                        null,
-                                        null
-                                );
-                                System.out.println(getContext().getSubject().getName() + " chasing target: " + target.getName());
-                                break;
-                            case FACEHUG:
-                                //angle towards target and when close enough cling to target from short distance
+                                switch (flightStyle) {
+                                    case FOLLOW:
+                                        //angle towards target and start following
 
-                                float rotationAngle = 3f * delta * MathUtils.PI;
-
-                                getContext().updatePhysicalObject(
-                                        null,
-                                        new Vector2(getContext().getSubject().getPosition().x + target.getCollisionRadius() + getContext().getSubject().getCollisionRadius() + MathUtils.cos(rotationAngle),
-                                                getContext().getSubject().getPosition().y + target.getCollisionRadius() + getContext().getSubject().getCollisionRadius() * MathUtils.sin(rotationAngle)),
-                                        angle,
-                                        null,
-                                        angle + rotationAngle,
-                                        null,
-                                        null,
-                                        null,
-                                        null
-                                );
-                                System.out.println(getContext().getSubject().getName() + " = facehugging target: " + target.getName());
-
-                                break;
-                            case CIRCLING:
-                                //angle towards target and when close start circling around the target (then shoot or protect or nothing)
-
-                                float updatedAngle = (float) (45f * Math.PI * delta);
-
-                                getContext().updatePhysicalObject(
-                                        null,
-                                        null,
-                                        angle,
-                                        null,
-                                        angle + updatedAngle,
-                                        null,
-                                        null,
-                                        null,
-                                        null
-                                );
-
-                                System.out.println(getContext().getSubject().getName() + " = circling target: " + target.getName());
-
-                                break;
-                            case FLY_AWAY:
-
-                                getContext().updatePhysicalObject(
-                                        null,
-                                        null,
-                                        -angle,
-                                        speedIncrease,
-                                        -angle,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        getContext().updatePhysicalObject(
+                                                null,
+                                                null,
+                                                angle,
+                                                speedIncrease,
+                                                angle,
+                                                null,
+                                                null,
+                                                null,
+                                                null
                                         );
-                                System.out.println(getContext().getSubject().getName() + " = running from: " + target.getName());
+                                        System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_YELLOW_BACKGROUND + " chasing target: " + StringHelper.ANSI_RESET + target.getName());
+                                        break;
+                                    case ZIGZAG:
+                                        //angle towards target and when close enough cling to target from short distance
 
-                                break;
-                            default:
-                                System.out.println("No Flight Behavior chosen for : " + getContext().getSubject().getName());
+                                        float rotationAngle = (float) (GameHelper.generateRandomNumberBetween(25f, 90f) * Math.PI * delta);
 
+                                        if (lastDirectionChange == null) {
+                                            lastDirectionChange = clock;
+                                        }
+
+                                        if (clock - lastDirectionChange > 3f) {
+
+                                            getContext().updatePhysicalObject(
+                                                    null,
+                                                    null,
+                                                    angle,
+                                                    null,
+                                                    angle + rotationAngle,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null
+                                            );
+                                            lastDirectionChange = null;
+                                        }
+                                        System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_CYAN_BACKGROUND + " zig- or zagging target: " + StringHelper.ANSI_RESET + target.getName());
+
+                                        break;
+                                    case CIRCLING:
+                                        //angle towards target and when close start circling around the target (then shoot or protect or nothing)
+
+                                        float updatedAngle = (float) (45f * Math.PI * delta);
+
+                                        getContext().updatePhysicalObject(
+                                                null,
+                                                null,
+                                                angle,
+                                                null,
+                                                angle + updatedAngle,
+                                                null,
+                                                null,
+                                                null,
+                                                null
+                                        );
+
+                                        System.out.println(getContext().getSubject().getName() + " = circling target: " + target.getName());
+
+                                        break;
+                                    case FLY_AWAY:
+
+                                        getContext().updatePhysicalObject(
+                                                null,
+                                                null,
+                                                -angle,
+                                                speedIncrease,
+                                                -angle,
+                                                null,
+                                                null,
+                                                null,
+                                                null
+                                        );
+                                        System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_BLUE_BACKGROUND + StringHelper.ANSI_WHITE + " running from: " + StringHelper.ANSI_RESET + target.getName());
+
+                                        break;
+                                    default:
+                                        System.out.println("No Flight Behavior chosen for : " + getContext().getSubject().getName());
+
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     }
-
 }

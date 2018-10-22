@@ -37,9 +37,9 @@ public class ExplosionCharacter extends AbstractGameCharacter {
         for (int i = 0; i < debrisParts; i++) {
             PhysicalObject bit = getContext().addPhysicalObject("debris",
                     position,
-                    speedDirection,
+                    GameHelper.randomDirection(),
                     speedMagnitude,
-                    speedDirection,
+                    GameHelper.randomDirection(),
                     0,
                     0,
                     visualizations,

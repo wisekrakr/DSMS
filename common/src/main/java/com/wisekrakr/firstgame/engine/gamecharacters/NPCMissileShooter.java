@@ -2,53 +2,59 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.PlayerCreationRequest;
-import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
-import com.wisekrakr.firstgame.engine.physicalobjects.*;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
-import java.util.*;
+import java.util.Arrays;
 
-public class XCharacter extends AttackingCharacter {
+public class NPCMissileShooter extends AttackingCharacter  {
+
     private Vector2 initialPosition;
     private float initialRadius;
-    private final float initialDirection;
-    private final float initialSpeedMagnitude;
+    private float initialDirection;
+    private float initialSpeedMagnitude;
     private float radiusOfAttack;
     private float health;
+    private float damage;
+    private Visualizations visualizations;
 
-    public XCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+    public NPCMissileShooter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack) {
+
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-        this.health = health;
+        this.health = 100;
+        this.damage = 10;
+        this.visualizations = Visualizations.ENEMY;
     }
 
     @Override
     public void start() {
-        BehavedObject middle = introduceBehavedObject(AttackingCharacter.class.getName(),
+        BehavedObject npcMissileMain = introduceBehavedObject(AttackingCharacter.class.getName(),
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
                 health,
-                0,
-                Visualizations.TEST,
+                damage,
+                visualizations,
                 initialRadius);
 
         addTargetName(PlayerCreationRequest.playerName());
 
-        middle.behave(
+        npcMissileMain.behave(
                 Arrays.asList(
                         new AbstractBehavior(){
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
                                 getContext().updatePhysicalObjectExtra("health", health);
-
                             }
 
                             @Override
@@ -65,20 +71,18 @@ public class XCharacter extends AttackingCharacter {
                                             null
                                     );
                                 }
-
                             }
 
                             @Override
                             public void elapseTime(float clock, float delta) {
                                 if (health <= 0){
-                                    XCharacter.this.getContext().removeMyself();
+                                    NPCMissileShooter.this.getContext().removeMyself();
                                     getContext().removePhysicalObject();
                                 }
                             }
                         },
-                        new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack /2, 1, XCharacter.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new CruisingBehavior(5f, initialSpeedMagnitude),
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack, 1f, getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new HomingMissileCharacter(position,
@@ -93,11 +97,8 @@ public class XCharacter extends AttackingCharacter {
                                         targetList());
                             }
                         })
-
-                ));
+        ));
     }
-
-
 }
 
 

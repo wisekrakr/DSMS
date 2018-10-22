@@ -3,7 +3,7 @@ package com.wisekrakr.firstgame.server;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractNonPlayerGameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.AsteroidCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.StandardAggressiveCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.NPCMissileShooter;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidWatchingMissileShootingNPC;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.CrazilySpawningPassiveAggressiveNPC;
@@ -48,13 +48,7 @@ public class ScenarioHelper {
 
 
 
-    public static final CharacterFactory STANDARD_CHARACTER_FACTORY =
-            new CharacterFactory() {
-                @Override
-                public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                    return new StandardAggressiveCharacter(position, radius, speedDirection, speedMagnitude, radiusOfAttack, health);
-                }
-            };
+
 
     public static final CharacterFactory ASTEROID_FACTORY =
             new CharacterFactory() {

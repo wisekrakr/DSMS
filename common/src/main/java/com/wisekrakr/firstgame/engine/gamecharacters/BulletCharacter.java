@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.MiscBehaviors;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
@@ -57,7 +58,13 @@ public class BulletCharacter extends AbstractNonPlayerGameCharacter {
                         String name = object.getName();
 
                         if (!name.contains("debris") && object != master.getPhysicalObject()) {
-                            MiscBehaviors.exploding(BulletCharacter.this.getContext(), 3, getContext().getSubject().getCollisionRadius() * 2, 3f);
+                            getContext().addCharacter(new ExplosionCharacter(getContext().getSubject().getPosition(),
+                                    GameHelper.generateRandomNumberBetween(5f, 20f),
+                                    GameHelper.randomDirection(),
+                                    5,
+                                    getContext().getSubject().getCollisionRadius()*2,
+                                    2f,
+                                    Visualizations.EXPLOSION));
 
                             BulletCharacter.this.getContext().removeMyself();
                             getContext().removePhysicalObject();
