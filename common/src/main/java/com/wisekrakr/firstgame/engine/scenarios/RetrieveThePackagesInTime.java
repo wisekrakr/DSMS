@@ -3,15 +3,12 @@ package com.wisekrakr.firstgame.engine.scenarios;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.FrigateNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PackageObject;
+
 
 import java.util.*;
 
 public class RetrieveThePackagesInTime extends Scenario {
-
+/*
     private int packagesGot;
 
     enum ScenarioState {
@@ -87,7 +84,7 @@ public class RetrieveThePackagesInTime extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                /*
+
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(target.getPosition(), shipWithLotsOfCrapOnIt.getPosition()) < escapeDistance) {
                         shipWithLotsOfCrapOnIt.escaping(target);
@@ -95,7 +92,7 @@ public class RetrieveThePackagesInTime extends Scenario {
                         System.out.println("Frigate is running from: " + target);
                     }
                 }
-                */
+
             }
         });
     }
@@ -128,12 +125,12 @@ public class RetrieveThePackagesInTime extends Scenario {
                     @Override
                     public void doIt(GameObject target) {
                       //  if (GameHelper.distanceBetween(p, target) < 100) {
-                            /*
+
                             if (target instanceof Player) {
                                 p.timedMissionInProgress(target);
                                 toBeRemovedPackages.add(p);
                             }
-                            */
+
                        // }
                     }
                 });
@@ -162,5 +159,5 @@ public class RetrieveThePackagesInTime extends Scenario {
         numOfPackages = initialNumOfPackages;
         shipWithLotsOfCrapOnIt.missionComplete();
     }
-
+*/
 }

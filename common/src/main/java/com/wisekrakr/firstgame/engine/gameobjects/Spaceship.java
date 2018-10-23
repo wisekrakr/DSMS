@@ -4,9 +4,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.BulletObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.MissileObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
+
 
 import java.util.*;
 
@@ -309,18 +307,10 @@ public class Spaceship extends GameObject {
 
             if (shootTime < 0) {
                 if (switchWeaponState == SwitchWeaponState.BULLETS){
-                    BulletObject b = new BulletObject(
-                            new Vector2(x + getCollisionRadius() * deltaX,
-                                    y + getCollisionRadius() * deltaY), adaptedAngle + mouseAiming, this);
 
-                    toAdd.add(b);
                     ammoCount--;
                 }else if (switchWeaponState == SwitchWeaponState.MISSILES){
-                    MissileObject m = new MissileObject(
-                            new Vector2(x + getCollisionRadius(),y + getCollisionRadius()),
-                            adaptedAngle + mouseAiming, missileTarget, this);
 
-                    toAdd.add(m);
                     missileAmmoCount--;
                 }
                 shootTime = 0.001f;
@@ -353,11 +343,7 @@ public class Spaceship extends GameObject {
 
         for (int i = 0; i < exactShotCount; i++) {
 
-            BulletObject b = new BulletObject(
-                    new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
-                            y + ((i * 5) + getCollisionRadius()) * deltaY), adaptedAngle, this);
 
-            toAdd.add(b);
         }
 
     }
@@ -383,11 +369,7 @@ public class Spaceship extends GameObject {
 
 
         for (int i = 0; i < exactMissileCount; i++) {
-            MissileObject m = new MissileObject(
-                    new Vector2(x + ((i * 5) + getCollisionRadius()) * deltaX,
-                            y + ((i * 5) + getCollisionRadius()) * deltaY), getOrientation(), missileTarget, this);
 
-            toAdd.add(m);
         }
 
     }
@@ -406,7 +388,7 @@ public class Spaceship extends GameObject {
         }
 
         for (int i = 0; i < exactMineCount; i++) {
-            toAdd.add(new SpaceMineObject(getPosition(), 8f, this));
+
         }
     }
 

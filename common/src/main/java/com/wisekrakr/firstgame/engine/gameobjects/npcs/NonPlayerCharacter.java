@@ -4,10 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.AsteroidNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
+
 
 
 import java.util.*;
@@ -205,7 +202,7 @@ public class NonPlayerCharacter extends GameObject {
         setDirection(this.getDirection() + (float) Math.PI);
         setOrientation(this.getDirection());
     }
-
+/*
     private void keepObjectsFromOverlapping(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject || subject instanceof Mission || subject instanceof AsteroidNPC)) {
             float angle = GameHelper.angleBetween(this, subject);
@@ -223,7 +220,7 @@ public class NonPlayerCharacter extends GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         keepObjectsFromOverlapping(subject, toDelete, toAdd);
     }
-
+*/
     @Override
     public final void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         int index = 0;

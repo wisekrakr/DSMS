@@ -3,8 +3,7 @@ package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors.weaponbehavior
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.SpaceMineObject;
+
 
 public class TickTickBoomBehavior extends AbstractBehavior {
     private float initialDirection;
@@ -27,10 +26,9 @@ public class TickTickBoomBehavior extends AbstractBehavior {
         if (stopTime >= destructInterval){
             int fragments = GameHelper.randomGenerator.nextInt(10)+1;
             for(int i = 0; i < fragments; i++) {
-                GameObject o = new SpaceMineObject(getContext().getPosition(),
-                        2f,getContext().thisObject());
 
-                getContext().addGameObject(o);
+
+
             }
             getContext().removeGameObject(getContext().thisObject());
             stopTime = 0f;

@@ -39,7 +39,7 @@ public class XCharacter extends AttackingCharacter {
                 Visualizations.TEST,
                 initialRadius);
 
-        addTargetName(PlayerCreationRequest.playerName());
+        addTargetName(AsteroidCharacter.class.getName());
 
         middle.behave(
                 Arrays.asList(
@@ -48,7 +48,6 @@ public class XCharacter extends AttackingCharacter {
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
                                 getContext().updatePhysicalObjectExtra("health", health);
-
                             }
 
                             @Override
@@ -65,11 +64,11 @@ public class XCharacter extends AttackingCharacter {
                                             null
                                     );
                                 }
-
                             }
 
                             @Override
                             public void elapseTime(float clock, float delta) {
+
                                 if (health <= 0){
                                     XCharacter.this.getContext().removeMyself();
                                     getContext().removePhysicalObject();
@@ -77,20 +76,19 @@ public class XCharacter extends AttackingCharacter {
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack /2, 1, XCharacter.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), targetList()),
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.8f, XCharacter.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                                return new HomingMissileCharacter(position,
+                                return new SplashBulletCharacter(position,
                                         speedMagnitude,
                                         orientation,
                                         5f,
-                                        getContext().getPhysicalObject().getCollisionRadius() * 2,
                                         3f,
-                                        radiusOfAttack,
-                                        Visualizations.RIGHT_CANNON,
-                                        getContext(),
-                                        targetList());
+                                        3f,
+                                        Visualizations.BOULDER,
+                                        getContext()
+                                );
                             }
                         })
 

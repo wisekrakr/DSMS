@@ -42,6 +42,7 @@ public class NPCAvoiding extends FriendlyCharacter {
 
         addTargetName(AttackingCharacter.class.getName());
         addTargetName(PlayerCreationRequest.playerName());
+        addTargetName("weapon");
 
         npcNewbie.behave(
                 Arrays.asList(

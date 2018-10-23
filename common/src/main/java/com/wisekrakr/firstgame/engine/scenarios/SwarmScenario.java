@@ -3,14 +3,13 @@ package com.wisekrakr.firstgame.engine.scenarios;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.*;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
+
 
 import java.util.*;
 
 public class SwarmScenario extends Scenario {
+
+    /*
     enum ScenarioState {
         INITIATION,
         LEADER,
@@ -109,11 +108,11 @@ public class SwarmScenario extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                /*
+
                 if (target instanceof Player) {
                     enemies.add(target);
                 }
-                */
+
             }
         });
 
@@ -201,5 +200,5 @@ public class SwarmScenario extends Scenario {
 
     }
 
-
+*/
 }

@@ -116,7 +116,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
         this.mySelf = mySelf;
         this.players = players;
 
-
         int i = 0;
         for (String name : players) {
             if (first == null) {
@@ -339,7 +338,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
          */
 
         if (inputManager.isKeyDown(Input.Keys.SPACE)) {
-            camera.zoom = 0.6f;
+            camera.zoom = 5.6f;
             if (enemyHud.enableEnemyHud()) {
                 enemyHud.disableEnemyHud();
             }
@@ -348,7 +347,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
 
         } else {
-            camera.zoom = 2.5f;
+            camera.zoom = 2.0f;
         }
         if (inputManager.isKeyReleased(Input.Keys.SPACE)) {
             enemyHud.enableEnemyHud();
@@ -609,7 +608,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
-
         foundMySelf = false;
         for (PhysicalObjectSnapshot object : snapshot.getPhysicalObjects()) {
             if (mySelf.equals(object.getName())) {
@@ -677,7 +675,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 }
 
                 float radius = radiusRaw.floatValue();
-
 
                 switch (physicalObject.getVisualization()) {
 
@@ -783,6 +780,25 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         shapeRenderer.circle(x, y, radius);
                         //Body misBody = box2dBodyCreator.addDynamicBodyToPhysicalObject(physicalObject, 0.5f, 0.5f, 0.5f);
                         //bodies.add(misBody);
+                        break;
+                    case A:
+
+                        shapeRenderer.setColor(Color.BLUE);
+                        shapeRenderer.circle(x, y, radius);
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.circle(x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),
+                                y + (radius / 2) * (float) Math.sin(physicalObject.getOrientation()), (radius / 2));
+
+                        break;
+                    case B:
+                        shapeRenderer.setColor(Color.GREEN);
+                        shapeRenderer.circle(x, y, radius);
+
+                        break;
+                    case SHIELD:
+                        shapeRenderer.setColor(30.3f, 150.3f, 80.3f, 0.8f);
+                        shapeRenderer.circle(x, y, radius);
+
                         break;
 
                     default:
@@ -916,6 +932,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 body.destroyFixture(body.getFixtureList().first());
             }
         }
+
 
     }
 

@@ -279,7 +279,7 @@ public class SpaceEngine {
 
     public World getWorld() {
 
-        return null; //world
+        return world;
     }
 
     private void physicalElapseTime(float delta) {

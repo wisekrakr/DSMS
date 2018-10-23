@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.GameObjectVisualizationType;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
 
 import java.util.*;
 
@@ -93,14 +92,7 @@ public abstract class GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
-    public void initDebris(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-        Random random = new Random();
-        int debrisParts = random.nextInt(10) + 1;
-        for (int i = 0; i < debrisParts; i++) {
-            toAdd.add(new DebrisObject(getPosition(), GameHelper.randomDirection()));
 
-        }
-    }
 
     public GameObject thisGameObject() {
         return this;

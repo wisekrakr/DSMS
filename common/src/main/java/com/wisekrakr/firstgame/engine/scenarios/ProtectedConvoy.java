@@ -2,15 +2,12 @@ package com.wisekrakr.firstgame.engine.scenarios;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.DebrisObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.Protector;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.WeaponObjectClass;
-import com.wisekrakr.firstgame.engine.gameobjects.spaceobjects.Treasure;
+
 
 import java.util.*;
 
 public class ProtectedConvoy extends Scenario {
+ /*
     private GameObject booty;
     private Set<GameObject> enemies = new HashSet<>();
     private float aggressionDistance;
@@ -18,11 +15,11 @@ public class ProtectedConvoy extends Scenario {
     private final int minMinions;
     private final int maxMinions;
     private final int targetedEnemies;
-    private Set<Protector> minions = new HashSet<>();
+    //private Set<Protector> minions = new HashSet<>();
     private Map<GameObject, GameObject> minionTargets = new HashMap<>();
 
     private Set<GameObject> targeted = new HashSet<>();
-    private Iterator<Protector> iterator;
+    //private Iterator<Protector> iterator;
 
     public ProtectedConvoy(float aggressionDistance, float escapeDistance, int minMinions, int maxMinions, int targetedEnemies) {
         this.aggressionDistance = aggressionDistance;
@@ -130,4 +127,5 @@ public class ProtectedConvoy extends Scenario {
             }
         }
     }
+    */
 }

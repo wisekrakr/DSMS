@@ -3,18 +3,13 @@ package com.wisekrakr.firstgame.engine.scenarios;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.sidemissions.KillMission;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.gameobjects.MultifacetedNPC;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PackageObject;
+
 import com.wisekrakr.firstgame.server.ScenarioHelper;
 
 import java.util.*;
 
 public class TravellerWithMission extends Scenario {
-
+/*
     private static GameObjectFactory<?>[] POSSIBLE_ENEMIES = {
             ScenarioHelper.CRAZY_SPAWNER_FACTORY,
             ScenarioHelper.CHASING_SHOOTING_FACTORY,
@@ -130,7 +125,7 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                /*
+
                 if (target instanceof Player) {
                     if (GameHelper.distanceBetween(traveller, target) < chaseDistance) {
                         traveller.chasing(target);
@@ -141,7 +136,7 @@ public class TravellerWithMission extends Scenario {
                         }
                     }
                 }
-                */
+
             }
         });
     }
@@ -253,7 +248,7 @@ public class TravellerWithMission extends Scenario {
                     System.out.println("Package receiver died");
                 }
             });
-  */
+
         }
     }
 
@@ -261,7 +256,7 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                /*
+
                 if (target instanceof Player){
                     if (GameHelper.distanceBetween(packageObject, target) < 80f){
                         packageObject.inPostmanCare(target);
@@ -269,7 +264,7 @@ public class TravellerWithMission extends Scenario {
                         System.out.println("Package with player, send to: " + packageReceiver.getName());
                     }
                 }
-                */
+
             }
         });
     }
@@ -278,7 +273,7 @@ public class TravellerWithMission extends Scenario {
         spaceEngine.forAllObjects(new SpaceEngine.GameObjectHandler() {
             @Override
             public void doIt(GameObject target) {
-                /*
+
                 if (target instanceof PackageObject){
                     if (GameHelper.distanceBetween(packageReceiver, packageObject)< 80f){
                         packageObject.delivery(packageReceiver);
@@ -289,7 +284,7 @@ public class TravellerWithMission extends Scenario {
 
                     }
                 }
-                */
+
             }
         });
 
@@ -319,4 +314,5 @@ public class TravellerWithMission extends Scenario {
 
         state = ScenarioState.INITIATION;
     }
+    */
 }

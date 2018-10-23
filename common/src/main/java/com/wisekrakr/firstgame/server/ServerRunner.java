@@ -101,9 +101,9 @@ public class ServerRunner {
         //gameEngine.addScenario(new DamselInDistress(300, 100, 0));
 
 
-/*
 
-        gameEngine.addScenario(new WildlifeManagement(2, 2, engine, new CharacterFactory() {
+
+        gameEngine.addScenario(new WildlifeManagement(3, 2, engine, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new NPCMissileShooter(position,
@@ -114,10 +114,10 @@ public class ServerRunner {
             }
         }));
 
-        gameEngine.addScenario(new WildlifeManagement(3, 1, engine, new CharacterFactory() {
+        gameEngine.addScenario(new WildlifeManagement(5, 1, engine, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new NPCNewbieCharacter(position,
+                return new NPCAvoiding(position,
                         radius,
                         speedDirection,
                         speedMagnitude,
@@ -126,8 +126,47 @@ public class ServerRunner {
                 );
             }
         }));
- */
-        gameEngine.addScenario(new WildlifeManagement(0, 1, engine, new CharacterFactory() {
+
+        gameEngine.addScenario(new WildlifeManagement(1, 1, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new NPCMinionSpawner(position,
+                        100f,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack,
+                        health
+                );
+            }
+        }));
+
+        gameEngine.addScenario(new WildlifeManagement(7, 5, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new AsteroidCharacter(position,
+                        radius,
+                        speedDirection,
+                        speedMagnitude,
+                        radiusOfAttack,
+                        health);
+            }
+        }));
+
+        gameEngine.addScenario(new WildlifeManagement(10, 10, engine, new CharacterFactory() {
+            @Override
+            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                return new NPCSpeedyDodger(position,
+                        20f,
+                        speedDirection,
+                        GameHelper.generateRandomNumberBetween(150f, 200f),
+                        radiusOfAttack,
+                        health
+                );
+            }
+        }));
+
+
+        gameEngine.addScenario(new WildlifeManagement(3, 1, engine, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new XCharacter(position,
@@ -137,33 +176,6 @@ public class ServerRunner {
                         radiusOfAttack,
                         health
                 );
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(2, 1, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new NPCMinionSpawner(position,
-                        radius,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack,
-                        health
-                );
-            }
-        }));
-
-
-
-        gameEngine.addScenario(new WildlifeManagement(5, 2, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new AsteroidCharacter(position,
-                        radius,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack,
-                        health);
             }
         }));
 

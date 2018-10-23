@@ -22,6 +22,7 @@ public interface BehaviorContext {
 
     PhysicalObject getSubject();
 
+
 /*
 
     List<GameObject> nearby();

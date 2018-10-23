@@ -9,5 +9,11 @@ public enum Visualizations {
     REAR_BOOSTER,
     LEFT_CANNON,
     RIGHT_CANNON,
+    A,
+    B,
+    C,
+    D,
+    SHIELD,
+
     TEST
 }

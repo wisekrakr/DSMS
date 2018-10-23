@@ -72,7 +72,7 @@ public class AttackBehavior extends AbstractBehavior {
                                                 null,
                                                 angle,
                                                 null,
-                                                angle,
+                                                angle + getContext().getSubject().getCollisionRadius() * 2,
                                                 null,
                                                 null,
                                                 null,
