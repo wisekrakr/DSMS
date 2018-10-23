@@ -44,7 +44,7 @@ public class NPCMinionSpawner extends AttackingCharacter {
                 Visualizations.TEST,
                 initialRadius);
 
-        addTargetName(PlayerCreationRequest.playerName());
+        tools().addTargetName(PlayerCreationRequest.playerName());
 
         duplicationStation.behave(
                 Arrays.asList(
@@ -81,7 +81,7 @@ public class NPCMinionSpawner extends AttackingCharacter {
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new DuplicationBehavior(DuplicationBehavior.DuplicationStyle.DEPLOY_MINIONS, radiusOfAttack, 30, 0.5f, NPCMinionSpawner.this.getContext(), targetList(), new CharacterFactory() {
+                        new DuplicationBehavior(DuplicationBehavior.DuplicationStyle.DEPLOY_MINIONS, radiusOfAttack, 30, 0.5f, NPCMinionSpawner.this.getContext(), tools().targetList(), new CharacterFactory() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new NPCMinion(position,
@@ -91,11 +91,11 @@ public class NPCMinionSpawner extends AttackingCharacter {
                                         radiusOfAttack,
                                         health,
                                         Visualizations.ENEMY,
-                                        targetList(),
+                                        tools().targetList(),
                                         NPCMinionSpawner.this.getContext());
                             }
                         }),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack / 2, 1, NPCMinionSpawner.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack / 2, 1, NPCMinionSpawner.this.getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new HomingMissileCharacter(position,
@@ -107,7 +107,7 @@ public class NPCMinionSpawner extends AttackingCharacter {
                                         radiusOfAttack,
                                         Visualizations.RIGHT_CANNON,
                                         getContext(),
-                                        targetList());
+                                        tools().targetList());
                             }
                         })
 

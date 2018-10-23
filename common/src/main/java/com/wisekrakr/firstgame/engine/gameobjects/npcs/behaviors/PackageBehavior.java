@@ -1,10 +1,7 @@
 package com.wisekrakr.firstgame.engine.gameobjects.npcs.behaviors;
 
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 import com.wisekrakr.firstgame.engine.gameobjects.npcs.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.BehaviorContext;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.weaponobjects.PackageObject;
 
 public class PackageBehavior extends AbstractBehavior {
 

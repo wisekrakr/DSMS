@@ -17,9 +17,10 @@ public class GameHelper {
         return randomGenerator.nextFloat() * (max - min) + min;
     }
 
+    @Deprecated // TODO: move to the space engine
     public static Vector2 randomPosition() {
-        return new Vector2(randomGenerator.nextFloat() * EngineConstants.ENGINE_WIDTH - EngineConstants.PLUS_XY,
-                randomGenerator.nextFloat() * EngineConstants.ENGINE_HEIGHT - EngineConstants.PLUS_XY);
+        return new Vector2(randomGenerator.nextFloat() * 10000 - 5000,
+                randomGenerator.nextFloat() * 10000 - 5000);
     }
 
     public static float randomDirection(){

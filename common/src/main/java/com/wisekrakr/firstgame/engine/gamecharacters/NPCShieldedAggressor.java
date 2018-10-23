@@ -43,7 +43,7 @@ public class NPCShieldedAggressor extends AttackingCharacter {
                 Visualizations.TEST,
                 initialRadius);
 
-        addTargetName(AttackingCharacter.class.getName());
+        tools().addTargetName(AttackingCharacter.class.getName());
 
         shieldedAggressor.behave(
                 Arrays.asList(
@@ -80,8 +80,8 @@ public class NPCShieldedAggressor extends AttackingCharacter {
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), targetList()),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.5f, NPCShieldedAggressor.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), tools().targetList()),
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.5f, NPCShieldedAggressor.this.getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new BulletCharacter(position,

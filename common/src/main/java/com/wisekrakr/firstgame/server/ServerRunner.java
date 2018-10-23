@@ -1,18 +1,15 @@
 package com.wisekrakr.firstgame.server;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
-import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.client.PauseUnPauseRequest;
+import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.*;
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
-import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
-import com.wisekrakr.firstgame.engine.scenarios.DamselInDistress;
 import com.wisekrakr.firstgame.engine.scenarios.WildlifeManagement;
 
 import java.io.IOException;
@@ -23,8 +20,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.badlogic.gdx.math.MathUtils.random;
 
 public class ServerRunner {
     private int port;
@@ -57,14 +52,16 @@ public class ServerRunner {
         listenThread.interrupt();
     }
 
-    private SpaceEngine initializeEngine() {
-        float minX = EngineConstants.MIN_X;
+    private void initializeEngine() {
+
+
+/*        float minX = EngineConstants.MIN_X;
         float minY = EngineConstants.MIN_Y;
         float width = EngineConstants.ENGINE_WIDTH;
         float height = EngineConstants.ENGINE_HEIGHT;
         float plusOfXY = EngineConstants.PLUS_XY;
-
-        engine = new SpaceEngine(minX, minY, width, height);
+*/
+        engine = new SpaceEngine();
 
         gameEngine = new GameEngine(engine);
 
@@ -94,100 +91,15 @@ public class ServerRunner {
             }
         });
 
+        gameEngine.addScenario(new MyFirstSpaceGame());
+
         timeThread.setDaemon(true);
-
-        //gameEngine.addScenario(new ProtectedConvoy(100, 500, 1, 4, 3));
-
-        //gameEngine.addScenario(new DamselInDistress(300, 100, 0));
-
-
-
-
-        gameEngine.addScenario(new WildlifeManagement(3, 2, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new NPCMissileShooter(position,
-                        radius,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack);
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(5, 1, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new NPCAvoiding(position,
-                        radius,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack,
-                        health
-                );
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(1, 1, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new NPCMinionSpawner(position,
-                        100f,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack,
-                        health
-                );
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(7, 5, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new AsteroidCharacter(position,
-                        radius,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack,
-                        health);
-            }
-        }));
-
-        gameEngine.addScenario(new WildlifeManagement(10, 10, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new NPCSpeedyDodger(position,
-                        20f,
-                        speedDirection,
-                        GameHelper.generateRandomNumberBetween(150f, 200f),
-                        radiusOfAttack,
-                        health
-                );
-            }
-        }));
-
-
-        gameEngine.addScenario(new WildlifeManagement(3, 1, engine, new CharacterFactory() {
-            @Override
-            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                return new XCharacter(position,
-                        radius,
-                        speedDirection,
-                        speedMagnitude,
-                        radiusOfAttack,
-                        health
-                );
-            }
-        }));
-
         timeThread.start();
-
-
-        return engine;
     }
 
 
     private void listen() throws Exception {
-        SpaceEngine engine = initializeEngine();
+        initializeEngine();
 
         System.out.println("Listing on " + port);
 

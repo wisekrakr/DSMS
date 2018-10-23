@@ -42,7 +42,7 @@ public class NPCPlayerHunter extends AttackingCharacter {
                 Visualizations.TEST,
                 initialRadius);
 
-        addTargetName(PlayerCreationRequest.playerName());
+        tools().addTargetName(PlayerCreationRequest.playerName());
 
         playerHunter.behave(
                 Arrays.asList(
@@ -79,8 +79,8 @@ public class NPCPlayerHunter extends AttackingCharacter {
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), targetList()),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack/2, 0.6f, getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), tools().targetList()),
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack/2, 0.6f, getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
 
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {

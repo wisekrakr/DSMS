@@ -12,26 +12,19 @@ import java.util.List;
 public class WildlifeManagement extends Scenario {
     private float minCreationInterval;
     private CharacterFactory characterFactory;
-    private SpaceEngine spaceEngine;
     private float lastCreation = 0f;
     private int targetCount;
     private List<GameCharacter> gameCharacters = new ArrayList<>();
 
-    public WildlifeManagement(int targetCount, float minCreationInterval, SpaceEngine spaceEngine, CharacterFactory characterFactory) {
+    public WildlifeManagement(int targetCount, float minCreationInterval, CharacterFactory characterFactory) {
         this.targetCount = targetCount;
         this.minCreationInterval = minCreationInterval;
         this.characterFactory = characterFactory;
-        this.spaceEngine = spaceEngine;
     }
 
-    public void periodicUpdate(SpaceEngine spaceEngine) {
-
-    }
-
-    @Override
-    public void characterUpdate(GameEngine gameEngine) {
-        if (targetCount > gameCharacters.size() && lastCreation + minCreationInterval <= spaceEngine.getTime()) {
-            lastCreation = spaceEngine.getTime();
+    public void periodicUpdate() {
+        if (targetCount > gameCharacters.size() && lastCreation + minCreationInterval <= getContext().space().getTime()) {
+            lastCreation = getContext().space().getTime();
             //TODO: temporary. character need to be set with a script maybe....to give certain character specific characteristics i.e. position and direction, health and damage etc..
 
             GameCharacter character = characterFactory.createCharacter(GameHelper.randomPosition(),
@@ -43,7 +36,7 @@ public class WildlifeManagement extends Scenario {
                     50f,
                     10f);
 
-            gameEngine.addGameCharacter(character);
+            getContext().engine().addGameCharacter(character);
             gameCharacters.add(character);
 
 

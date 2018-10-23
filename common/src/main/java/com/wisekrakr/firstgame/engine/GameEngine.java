@@ -26,10 +26,22 @@ public class GameEngine {
     }
 
     public void addScenario(Scenario scenario) {
+        // TODO: scenarios are never removed
         scenarios.add(scenario);
 
-        scenario.initialUpdate(space);
-        scenario.initialScenarioUpdate(this);
+        scenario.init(new Scenario.ScenarioContext() {
+            @Override
+            public SpaceEngine space() {
+                return space;
+            }
+
+            @Override
+            public GameEngine engine() {
+                return GameEngine.this;
+            }
+        });
+
+        scenario.start();
     }
 
     private void removeGameCharacter(GameCharacter character) {
@@ -195,8 +207,7 @@ public class GameEngine {
 
     private void periodicUpdate() {
         for (Scenario scenario : scenarios) {
-            scenario.periodicUpdate(space);
-            scenario.characterUpdate(this);
+            scenario.periodicUpdate();
         }
 
     }

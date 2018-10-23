@@ -77,9 +77,9 @@ public class NPCSpeedyDodger extends AttackingCharacter {
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 50f, getContext(), targetList()),
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 50f, getContext(), tools().targetList()),
                         new DefenseBehavior(DefenseBehavior.DefenseStyle.DODGE, radiusOfAttack +30f, initialSpeedMagnitude + 80f, null, getContext()),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.5f, NPCSpeedyDodger.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.5f, NPCSpeedyDodger.this.getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new BulletCharacter(position,

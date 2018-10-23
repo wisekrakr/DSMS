@@ -10,28 +10,18 @@ import java.util.*;
 
 public class SpaceEngine {
     private final Object monitor = new Object();
-    private final float minX;
-    private final float minY;
-    private final float width;
-    private final float height;
+
     private Set<GameObject> gameObjects = new HashSet<GameObject>();
     private Map<GameObject, GameObjectListener> listeners = new HashMap<>();
     private float clock = 0f;
     private boolean paused = false;
 
     //TODO: get rid
-    private World world = new World(new Vector2(0,0), true);
-    private Set<Body>bodies = new HashSet<>();
+    private World world = new World(new Vector2(0, 0), true);
+    private Set<Body> bodies = new HashSet<>();
 
     private Set<PhysicalObjectRunner> physicalObjects = new HashSet<>();
 
-    public SpaceEngine(float minX, float minY, float width, float height) {
-        this.minX = minX;
-        this.minY = minY;
-        this.width = width;
-        this.height = height;
-
-    }
 
     public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
         synchronized (monitor) {
@@ -76,7 +66,7 @@ public class SpaceEngine {
         List<NearPhysicalObject> result = new ArrayList<>();
 
         for (PhysicalObjectRunner target : physicalObjects) {
-            if (target != reference ) {
+            if (target != reference) {
                 float distance = GameHelper.distanceBetweenPhysicals(reference, target);
                 if (distance < maxDistance) {
                     result.add(new NearPhysicalObject(target, distance));
@@ -89,7 +79,7 @@ public class SpaceEngine {
         return result;
     }
 
-    public Body addDynamicBody(float density, float friction, float restitution){
+    public Body addDynamicBody(float density, float friction, float restitution) {
 
         Body shipBody = null;
         for (PhysicalObjectRunner target : physicalObjects) {
@@ -332,7 +322,7 @@ public class SpaceEngine {
 
         //    D.  Dynamic Box2d bodies
 
-        for (Body body: bodies) {
+        for (Body body : bodies) {
             while (body.getFixtureList().size > 0) {
                 body.destroyFixture(body.getFixtureList().first());
             }
@@ -356,6 +346,7 @@ public class SpaceEngine {
                 target.elapseTime(clock, delta, toDelete, toAdd);
             }
 
+            /*
             for (GameObject target : gameObjects) {
                 if (!toDelete.contains(target)) {
                     if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
@@ -364,6 +355,7 @@ public class SpaceEngine {
                     }
                 }
             }
+            */
 /**
  * See if any gameobjects collide with each other, than proceed with the collide method of GameObject extended classes
  */
@@ -395,8 +387,6 @@ public class SpaceEngine {
                     subject.nearby(nearby);
                 }
             }
-
-
 
 
 /**

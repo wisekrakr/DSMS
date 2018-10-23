@@ -81,7 +81,7 @@ public class NPCMissileShooter extends AttackingCharacter  {
                             }
                         },
                         new CruisingBehavior(5f, initialSpeedMagnitude),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack, 1f, getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack, 1f, getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new HomingMissileCharacter(position,
@@ -93,7 +93,7 @@ public class NPCMissileShooter extends AttackingCharacter  {
                                         radiusOfAttack,
                                         Visualizations.RIGHT_CANNON,
                                         getContext(),
-                                        targetList());
+                                        tools().targetList());
                             }
                         })
         ));

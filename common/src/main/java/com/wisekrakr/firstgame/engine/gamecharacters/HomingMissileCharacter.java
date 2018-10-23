@@ -10,7 +10,7 @@ import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomingMissileCharacter extends AttackingCharacter implements CharacterTools {
+public class HomingMissileCharacter extends AttackingCharacter {
 
     private final Vector2 position;
     private final float speedMagnitude;

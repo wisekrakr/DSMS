@@ -8,20 +8,32 @@ import com.wisekrakr.firstgame.server.EngineConstants;
 import java.util.Random;
 
 public class Scenario {
-    public void finalUpdate(SpaceEngine spaceEngine) {
+    private ScenarioContext context;
+
+    protected final ScenarioContext getContext() {
+        return context;
     }
 
-    public void initialUpdate(SpaceEngine spaceEngine) {
+    public final void init(ScenarioContext context) {
+        this.context = context;
     }
 
-    public void periodicUpdate(SpaceEngine spaceEngine) {
+    public void stop() {
     }
 
-    public void initialScenarioUpdate(GameEngine gameEngine){
-
+    public void destroy() {
     }
 
-    public void characterUpdate(GameEngine gameEngine){}
+    public void start(){
+    }
 
+    public void periodicUpdate() {
+    }
+
+
+    public interface ScenarioContext {
+        SpaceEngine space();
+        GameEngine engine();
+    }
 
 }

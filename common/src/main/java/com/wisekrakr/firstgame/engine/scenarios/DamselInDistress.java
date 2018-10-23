@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 
+import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
 
 import com.wisekrakr.firstgame.engine.gamecharacters.DamselCharacter;
@@ -47,7 +48,7 @@ public class DamselInDistress extends Scenario {
     }
 
     @Override
-    public void initialScenarioUpdate(GameEngine gameEngine) {
+    public void start() {
         damsel = new DamselCharacter(GameHelper.randomPosition(),
                 20f,
                 GameHelper.randomDirection(),
@@ -56,15 +57,15 @@ public class DamselInDistress extends Scenario {
                 100f);
 
 
-        gameEngine.addGameCharacter(damsel);
+        getContext().engine().addGameCharacter(damsel);
         state = ScenarioState.INITIATION;
     }
 
     @Override
-    public void characterUpdate(GameEngine gameEngine) {
+    public void periodicUpdate() {
         switch (state) {
             case INITIATION:
-                initiate(gameEngine);
+                initiate(getContext().engine());
                 System.out.println("Initiation " + damsel.damselContext().getPhysicalObject().getPosition());
                 break;
             case PERVERTS:
@@ -72,7 +73,7 @@ public class DamselInDistress extends Scenario {
                 //System.out.println("Placing perverts " + perverts.size());
                 break;
             case ESCORT:
-                bringDamselToSafeLocation(gameEngine);
+                bringDamselToSafeLocation(getContext().engine());
                 System.out.println("Damsel found Hero " );
                 break;
             default:

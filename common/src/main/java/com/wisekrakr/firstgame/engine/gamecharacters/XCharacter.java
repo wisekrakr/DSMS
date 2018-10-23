@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
@@ -10,7 +9,8 @@ import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.*;
 
-public class XCharacter extends AttackingCharacter {
+public class XCharacter extends AbstractNonPlayerGameCharacter {
+    private List<String> targets;
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
@@ -18,7 +18,8 @@ public class XCharacter extends AttackingCharacter {
     private float radiusOfAttack;
     private float health;
 
-    public XCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+    public XCharacter(List<String> targets, Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+        this.targets = targets;
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
@@ -29,7 +30,8 @@ public class XCharacter extends AttackingCharacter {
 
     @Override
     public void start() {
-        BehavedObject middle = introduceBehavedObject(AttackingCharacter.class.getName(),
+        BehavedObject middle = introduceBehavedObject(
+                AttackingCharacter.class.getName(),
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
@@ -38,8 +40,6 @@ public class XCharacter extends AttackingCharacter {
                 0,
                 Visualizations.TEST,
                 initialRadius);
-
-        addTargetName(AsteroidCharacter.class.getName());
 
         middle.behave(
                 Arrays.asList(
@@ -76,8 +76,8 @@ public class XCharacter extends AttackingCharacter {
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), targetList()),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.8f, XCharacter.this.getContext(), targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), targets),
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.8f, XCharacter.this.getContext(), targets, new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
                             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                                 return new SplashBulletCharacter(position,

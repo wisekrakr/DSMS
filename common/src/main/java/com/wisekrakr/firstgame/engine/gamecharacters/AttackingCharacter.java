@@ -16,45 +16,52 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class AttackingCharacter extends AbstractNonPlayerGameCharacter implements CharacterTools {
+public class AttackingCharacter extends AbstractNonPlayerGameCharacter {
 
     private List<String> targetList = new ArrayList<>();
 
     public AttackingCharacter() {
     }
 
-    @Override
-    public AbstractBehavior addAnotherBehavior(AbstractBehavior behavior) {
-        return behavior;
+    public CharacterTools tools() {
+        return tools;
     }
 
-    @Override
-    public void addTargetName(String name){
-        if (name != null) {
-            targetList.add(name);
+    private CharacterTools tools = new CharacterTools() {
+
+        @Override
+        public AbstractBehavior addAnotherBehavior(AbstractBehavior behavior) {
+            return behavior;
         }
-    }
 
-    @Override
-    public List<String> targetList(){
-
-        List<NearPhysicalObject> nearbyPhysicalObjects =
-                getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
-
-        Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
-
-        if (targetList.isEmpty()){
-            NearPhysicalObject p;
-            while (iterator.hasNext()) {
-                p = iterator.next();
-                if (nearbyPhysicalObjects.contains(p) && !p.getObject().getName().contains("weapon") && !p.getObject().getName().contains("debris")) {
-                    targetList.add(p.getObject().getName());
-                }
+        @Override
+        public void addTargetName(String name) {
+            if (name != null) {
+                targetList.add(name);
             }
         }
 
-        return targetList;
-    }
+        @Override
+        public List<String> targetList() {
+
+            List<NearPhysicalObject> nearbyPhysicalObjects =
+                    getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
+
+            Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
+
+            if (targetList.isEmpty()) {
+                NearPhysicalObject p;
+                while (iterator.hasNext()) {
+                    p = iterator.next();
+                    if (nearbyPhysicalObjects.contains(p) && !p.getObject().getName().contains("weapon") && !p.getObject().getName().contains("debris")) {
+                        targetList.add(p.getObject().getName());
+                    }
+                }
+            }
+
+            return targetList;
+        }
+    };
 
 }
 
