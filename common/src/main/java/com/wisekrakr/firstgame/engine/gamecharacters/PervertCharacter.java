@@ -2,11 +2,9 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PervertCharacter extends AbstractNonPlayerGameCharacter {
@@ -36,10 +34,8 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                0,
                 Visualizations.COCKPIT,
-                initialRadius);
+                initialRadius, null);
 
         //pervert.behave(Arrays.asList(lookingForADamsel(),chaseAfter(), circlingDamsel()));
     }

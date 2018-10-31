@@ -4,18 +4,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameEngine;
 import com.wisekrakr.firstgame.engine.GameHelper;
 
-import com.wisekrakr.firstgame.engine.SpaceEngine;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
 
 import com.wisekrakr.firstgame.engine.gamecharacters.DamselCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.PervertCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
 
 import com.wisekrakr.firstgame.engine.gameobjects.Player;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectEvictionPolicy;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 
@@ -57,7 +56,7 @@ public class DamselInDistress extends Scenario {
                 100f);
 
 
-        getContext().engine().addGameCharacter(damsel);
+        getContext().engine().addGameCharacter(damsel, null);  // TODO: implement a listener
         state = ScenarioState.INITIATION;
     }
 
@@ -92,7 +91,7 @@ public class DamselInDistress extends Scenario {
                     30f);
 
             perverts.add((PervertCharacter) pervert);
-            gameEngine.addGameCharacter(pervert);
+            gameEngine.addGameCharacter(pervert, null); // TODO: implement listener
         }
 
         state = ScenarioState.PERVERTS;
@@ -160,7 +159,7 @@ public class DamselInDistress extends Scenario {
 
             MissionEnding missionEnd = new MissionEnding(GameHelper.randomPosition(), 50f);
 
-            gameEngine.addGameCharacter(missionEnd);
+            gameEngine.addGameCharacter(missionEnd, null);
             missionEndings.add(missionEnd);
             numOfEndings--;
         }
@@ -184,11 +183,9 @@ public class DamselInDistress extends Scenario {
                     0,
                     0,
                     0,
-                    0,
-                    0,
                     Visualizations.RIGHT_CANNON,
                     radius,
-                    null);
+                    null, PhysicalObjectEvictionPolicy.DISCARD);
             getContext().updatePhysicalObjectExtra(missionEnd, "radius", radius);
         }
 

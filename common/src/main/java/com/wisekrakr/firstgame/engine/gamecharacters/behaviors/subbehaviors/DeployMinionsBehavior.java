@@ -41,7 +41,7 @@ public class DeployMinionsBehavior extends AbstractBehavior {
                     GameHelper.generateRandomNumberBetween(10f, 20f),
                     radiusOfAttack,
                     GameHelper.generateRandomNumberBetween(20f, 60f),
-                    GameHelper.generateRandomNumberBetween(5f, 10f)));
+                    GameHelper.generateRandomNumberBetween(5f, 10f)), null); // TODO: implement listener
             lastCreation = clock;
         }
 

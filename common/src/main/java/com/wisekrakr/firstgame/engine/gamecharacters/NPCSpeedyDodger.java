@@ -37,10 +37,8 @@ public class NPCSpeedyDodger extends AttackingCharacter {
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                0,
                 Visualizations.TEST,
-                initialRadius);
+                initialRadius, null);
 
         speedy.behave(
                 Arrays.asList(
@@ -54,13 +52,11 @@ public class NPCSpeedyDodger extends AttackingCharacter {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (!object.getName().contains("debris")) {
+                                if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
                                             null,
                                             null,
                                             null,
-                                            null,
-                                            health -= object.getDamage(),
                                             null,
                                             null,
                                             null

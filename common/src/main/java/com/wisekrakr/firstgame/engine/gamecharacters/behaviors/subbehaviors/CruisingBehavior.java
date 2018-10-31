@@ -36,8 +36,6 @@ public class CruisingBehavior extends AbstractBehavior {
                     speedMagnitude,
                     randomDirection,
                     null,
-                    null,
-                    null,
                     null);
             lastDirectionChange = clock;
         }

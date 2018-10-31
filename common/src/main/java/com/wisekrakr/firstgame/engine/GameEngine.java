@@ -1,9 +1,9 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
+import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 import com.wisekrakr.firstgame.engine.scenarios.Scenario;
 
@@ -20,13 +20,13 @@ public class GameEngine {
     private Map<GameCharacter, GameCharacterRunner> characters = new ConcurrentHashMap<>();
 
     private Set<GameCharacter> deleted = new HashSet<>();
+    private Set<Scenario> deletedScenarios = new HashSet<>();
 
     public GameEngine(SpaceEngine space) {
         this.space = space;
     }
 
     public void addScenario(Scenario scenario) {
-        // TODO: scenarios are never removed
         scenarios.add(scenario);
 
         scenario.init(new Scenario.ScenarioContext() {
@@ -39,9 +39,20 @@ public class GameEngine {
             public GameEngine engine() {
                 return GameEngine.this;
             }
+
+            @Override
+            public void removeMyself() {
+                // TODO: scenarios are never removed
+            }
         });
 
         scenario.start();
+    }
+
+    private void removeScenario(Scenario scenario) {
+        if (scenarios.remove(scenario)) {
+            scenario.stop();
+        }
     }
 
     private void removeGameCharacter(GameCharacter character) {
@@ -49,23 +60,29 @@ public class GameEngine {
         if (runner != null) {
             character.stop();
 
-            Iterator<PhysicalObject>iterator = runner.physicalObjects.iterator();
-            while (iterator.hasNext()){
+            Iterator<PhysicalObject> iterator = runner.physicalObjects.iterator();
+            while (iterator.hasNext()) {
                 PhysicalObject p = iterator.next();
-                if (runner.physicalObjects.contains(p)){
+                if (runner.physicalObjects.contains(p)) {
                     iterator.remove();
                     space.removePhysicalObject(p);
                 }
+            }
+
+            if (runner.listener != null) {
+                runner.listener.removed(character);
             }
         }
     }
 
     private class GameCharacterRunner {
         private GameCharacter character;
+        private GameCharacterListener listener;
         private Set<PhysicalObject> physicalObjects = new HashSet<>();
 
-        public GameCharacterRunner(GameCharacter character) {
+        public GameCharacterRunner(GameCharacter character, GameCharacterListener listener) {
             this.character = character;
+            this.listener = listener;
         }
 
         public GameCharacter getCharacter() {
@@ -77,28 +94,27 @@ public class GameEngine {
         }
     }
 
-    public void addGameCharacter(GameCharacter character) {
+    public void addGameCharacter(GameCharacter character, GameCharacterListener listener) {
         if (characters.containsKey(character)) {
             throw new IllegalArgumentException("Already have character " + character);
         }
 
-        GameCharacterRunner runner = new GameCharacterRunner(character);
+        GameCharacterRunner runner = new GameCharacterRunner(character, listener);
 
         character.init(new GameCharacterContext() {
-
             @Override
             public SpaceEngine getSpaceEngine() {
                 return space;
             }
 
             @Override
-            public void addCharacter(GameCharacter newObject) {
-                GameEngine.this.addGameCharacter(newObject);
+            public void addCharacter(GameCharacter newObject, GameCharacterListener listener) {
+                GameEngine.this.addGameCharacter(newObject, listener);
             }
 
             @Override
-            public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
-                PhysicalObject result = space.addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
+            public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener, PhysicalObjectEvictionPolicy evictionPolicy) {
+                PhysicalObject result = space.addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection,visualizationEngine, collisionRadius, evictionPolicy, new PhysicalObjectListener() {
                     @Override
                     public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
                         if (listener != null) {
@@ -128,10 +144,10 @@ public class GameEngine {
             }
 
             @Override
-            public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualizationEngine, Float collisionRadius) {
+            public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
                 assureMine(target);
 
-                space.updatePhysicalObject(target, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, health, damage);
+                space.updatePhysicalObject(target, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
             }
 
             @Override
@@ -139,6 +155,21 @@ public class GameEngine {
                 assureMine(target);
 
                 space.updatePhysicalObjectExtra(target, key, value);
+            }
+
+            @Override
+            public void tagPhysicalObject(PhysicalObject target, String tag) {
+                assureMine(target);
+
+                space.tagPhysicalObject(target, tag);
+            }
+
+            @Override
+            public void untagPhysicalObject(PhysicalObject target, String tag) {
+                assureMine(target);
+
+                space.untagPhysicalObject(target, tag);
+
             }
 
             @Override
@@ -156,10 +187,10 @@ public class GameEngine {
             @Override
             public PhysicalObject getPhysicalObject() {
                 PhysicalObject object = null;
-                Iterator<PhysicalObject>iterator = runner.physicalObjects.iterator();
-                while (iterator.hasNext()){
+                Iterator<PhysicalObject> iterator = runner.physicalObjects.iterator();
+                while (iterator.hasNext()) {
                     PhysicalObject p = iterator.next();
-                    if (runner.physicalObjects.contains(p)){
+                    if (runner.physicalObjects.contains(p)) {
                         object = p;
                     }
                 }
@@ -172,10 +203,6 @@ public class GameEngine {
 
             }
 
-            @Override
-            public Body addDynamicBody(float density, float friction, float restitution) {
-                return space.addDynamicBody(density, friction, restitution);
-            }
         });
 
         characters.put(character, runner);
@@ -190,25 +217,35 @@ public class GameEngine {
         space.elapseTime(delta);
 
         for (GameCharacter c : characters.keySet()) {
-            c.elapseTime(delta);
+            try {
+                c.elapseTime(delta);
+            }
+            catch (Exception e) {
+                System.out.println("Misbehaving game character " + c + ": " + e.getMessage());
+                e.printStackTrace(System.out);
+            }
         }
 
         for (GameCharacter d : deleted) {
             removeGameCharacter(d);
         }
-        deleted.clear();
 
         if (space.getTime() > previousUpdate + updateFrequency) {
             previousUpdate = space.getTime();
 
             periodicUpdate();
         }
+
+        deleted.clear();
+        for (Scenario d : deletedScenarios) {
+            removeScenario(d);
+        }
+        deletedScenarios.clear();
     }
 
     private void periodicUpdate() {
         for (Scenario scenario : scenarios) {
             scenario.periodicUpdate();
         }
-
     }
 }

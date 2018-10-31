@@ -126,7 +126,7 @@ public class ServerRunner {
                                 PlayerCreationRequest request = (PlayerCreationRequest) incoming;
 
                                 Player result = new Player(request.getName());
-                                gameEngine.addGameCharacter(result);
+                                gameEngine.addGameCharacter(result, null); // TODO: what to put in the listener? "You're dead!" ?
                                 myFleet.put(request.getName(), result);
 
                             } else if (incoming instanceof SpaceshipControlRequest) {

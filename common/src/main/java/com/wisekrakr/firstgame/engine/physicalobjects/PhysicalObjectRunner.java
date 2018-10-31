@@ -3,7 +3,9 @@ package com.wisekrakr.firstgame.engine.physicalobjects;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class PhysicalObjectRunner implements PhysicalObject {
     private String name;
@@ -14,24 +16,23 @@ public class PhysicalObjectRunner implements PhysicalObject {
     private float speedMagnitude;
     private float speedDirection;
 
-    private float health;
-    private float damage;
     private Visualizations visualization;
     private Map<String, Object> extraProperties;
     private float collisionRadius;
+    private PhysicalObjectEvictionPolicy policy;
     private PhysicalObjectListener listener;
+    private Set<String> tags = new HashSet<>();
 
-    public PhysicalObjectRunner(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualization, Map<String, Object> extraProperties, float collisionRadius, PhysicalObjectListener listener) {
+    public PhysicalObjectRunner(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, Map<String, Object> extraProperties, float collisionRadius, PhysicalObjectEvictionPolicy policy, PhysicalObjectListener listener) {
         this.name = name;
         this.position = position;
         this.orientation = orientation;
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
-        this.health = health;
-        this.damage = damage;
         this.visualization = visualization;
         this.extraProperties = new HashMap<>(extraProperties);
         this.collisionRadius = collisionRadius;
+        this.policy = policy;
         this.listener = listener;
         if (listener == null) {
             this.listener = new AbstractPhysicalObjectListener() {
@@ -67,28 +68,23 @@ public class PhysicalObjectRunner implements PhysicalObject {
         return extraProperties;
     }
 
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public PhysicalObjectEvictionPolicy getPolicy() {
+        return policy;
+    }
+
     @Override
     public float getCollisionRadius() {
         return collisionRadius;
     }
 
-    @Override
-    public float getDamage() {
-        return damage;
-    }
-
-    @Override
-    public float getHealth() {
-        return health;
-    }
-
-
     public PhysicalObjectSnapshot snapshot() {
         return new PhysicalObjectSnapshot(
                 name,
                 visualization,
-                health,
-                damage,
                 speedDirection,
                 getSpeedMagnitude(),
                 orientation,
@@ -96,7 +92,7 @@ public class PhysicalObjectRunner implements PhysicalObject {
                 extraProperties);
     }
 
-    public void update(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius, Float health, Float damage) {
+    public void update(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius) {
         if (name != null) {
             this.name = name;
         }
@@ -124,12 +120,14 @@ public class PhysicalObjectRunner implements PhysicalObject {
         if (collisionRadius != null) {
             this.collisionRadius = collisionRadius;
         }
-        if (health != null) {
-            this.health = health;
-        }
-        if (damage != null) {
-            this.damage = damage;
-        }
+    }
+
+    public void tag(String tag) {
+        tags.add(tag);
+    }
+
+    public void untag(String tag) {
+        tags.remove(tag);
     }
 
     public void updateExtra(String key, Object value) {

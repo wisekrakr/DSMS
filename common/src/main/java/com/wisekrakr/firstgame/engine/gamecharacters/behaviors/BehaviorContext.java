@@ -3,6 +3,7 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
+import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
@@ -12,11 +13,11 @@ public interface BehaviorContext {
 
 //    Behavior existingSubBehavior();
 
-    void addCharacter(GameCharacter newObject);
+    void addCharacter(GameCharacter newObject, GameCharacterListener listener);
 
 //    PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, float collisionRadius, PhysicalObjectListener alistener);
 
-    void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualization, Float collisionRadius);
+    void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualization, Float collisionRadius);
     void updatePhysicalObjectExtra(String key, Object value);
     void removePhysicalObject();
 

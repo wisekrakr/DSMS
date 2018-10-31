@@ -14,7 +14,7 @@ public class RotatingBehavior extends AbstractBehavior {
 
     @Override
     public void start() {
-        getContext().updatePhysicalObject(null, null, null, GameHelper.generateRandomNumberBetween(1f, 25f), GameHelper.randomDirection(), null, null,null, null);
+        getContext().updatePhysicalObject(null, null, null, GameHelper.generateRandomNumberBetween(1f, 25f), GameHelper.randomDirection(), null, null);
 
         rotatingAngle = getContext().getSubject().getOrientation();
     }
@@ -22,6 +22,6 @@ public class RotatingBehavior extends AbstractBehavior {
     @Override
     public void elapseTime(float clock, float delta) {
         rotatingAngle += rotatingSpeed * delta;
-        getContext().updatePhysicalObject(null, null, rotatingAngle, null, null, null, null, null, null);
+        getContext().updatePhysicalObject(null, null, rotatingAngle, null, null, null, null);
     }
 }

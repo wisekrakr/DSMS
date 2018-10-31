@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
+import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 
@@ -44,12 +45,10 @@ public class FlightBehavior extends AbstractBehavior {
 
                 float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), target.getPosition());
 
-                String name = target.getName();
-
-                if (!name.contains("weapon") && !name.contains("debris") && target != getContext().getSubject()) {
+                if (!target.getTags().contains(Tags.PROJECTILE) && !target.getTags().contains(Tags.DEBRIS) && target != getContext().getSubject()) {
 
                     for (String string: targetList){
-                        if (name.contains(string)){
+                        if (target.getName().contains(string)){
 
                             if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
@@ -63,8 +62,6 @@ public class FlightBehavior extends AbstractBehavior {
                                                 angle,
                                                 speedIncrease,
                                                 angle,
-                                                null,
-                                                null,
                                                 null,
                                                 null
                                         );
@@ -88,8 +85,6 @@ public class FlightBehavior extends AbstractBehavior {
                                                     null,
                                                     angle + rotationAngle,
                                                     null,
-                                                    null,
-                                                    null,
                                                     null
                                             );
                                             lastDirectionChange = null;
@@ -109,8 +104,6 @@ public class FlightBehavior extends AbstractBehavior {
                                                 null,
                                                 angle + updatedAngle,
                                                 null,
-                                                null,
-                                                null,
                                                 null
                                         );
 
@@ -125,8 +118,6 @@ public class FlightBehavior extends AbstractBehavior {
                                                 -angle,
                                                 speedIncrease,
                                                 -angle,
-                                                null,
-                                                null,
                                                 null,
                                                 null
                                         );

@@ -30,10 +30,11 @@ public class Scenario {
     public void periodicUpdate() {
     }
 
-
     public interface ScenarioContext {
         SpaceEngine space();
         GameEngine engine();
+
+        void removeMyself();
     }
 
 }

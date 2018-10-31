@@ -1,8 +1,8 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectEvictionPolicy;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 public class ShieldCharacter extends AbstractGameCharacter {
@@ -31,18 +31,17 @@ public class ShieldCharacter extends AbstractGameCharacter {
     @Override
     public void start() {
 
-        shield = getContext().addPhysicalObject("debris",
+        shield = getContext().addPhysicalObject("shield",
                 position,
                 speedDirection,
                 speedMagnitude,
                 speedDirection,
-                health,
-                0,
                 visualizations,
                 radius,
-                null
-        );
+                null,
+                PhysicalObjectEvictionPolicy.DISCARD);
         getContext().updatePhysicalObjectExtra(shield, "radius", radius);
+        getContext().tagPhysicalObject(shield, Tags.DEBRIS);
     }
 
     @Override
@@ -63,8 +62,6 @@ public class ShieldCharacter extends AbstractGameCharacter {
                         master.getPhysicalObject().getOrientation(),
                         master.getPhysicalObject().getSpeedMagnitude(),
                         master.getPhysicalObject().getSpeedDirection(),
-                        health,
-                        null,
                         null,
                         null
                 );

@@ -4,6 +4,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.ShieldCharacter;
+import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
@@ -40,14 +41,11 @@ public class DefenseBehavior extends AbstractBehavior {
 
         if (!nearbyPhysicalObjects.isEmpty()) {
             for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
-
                 PhysicalObject target = nearPhysicalObject.getObject();
 
                 float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), target.getPosition());
 
-                String name = target.getName();
-
-                if (!name.contains("debris") && target != getContext().getSubject()) {
+                if (!target.getTags().contains(Tags.DEBRIS) && target != getContext().getSubject()) {
 
                     if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
@@ -61,8 +59,6 @@ public class DefenseBehavior extends AbstractBehavior {
                                         angle,
                                         dodgeSpeed,
                                         -angle,
-                                        null,
-                                        null,
                                         null,
                                         null
                                 );
@@ -86,7 +82,7 @@ public class DefenseBehavior extends AbstractBehavior {
                                             Visualizations.SHIELD,
                                             characterContext);
 
-                                    characterContext.addCharacter(shield);
+                                    characterContext.addCharacter(shield, null);  // TODO: implement listener
                                     shields.add(shield);
                                 }else {
                                     shields.clear();

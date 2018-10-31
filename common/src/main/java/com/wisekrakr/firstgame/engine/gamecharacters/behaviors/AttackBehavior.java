@@ -6,6 +6,7 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
+import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
@@ -48,7 +49,6 @@ public class AttackBehavior extends AbstractBehavior {
 
                 float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), target.getPosition());
 
-                String name = target.getName();
 
                 float x = getContext().getSubject().getPosition().x;
                 float y = getContext().getSubject().getPosition().y;
@@ -56,10 +56,10 @@ public class AttackBehavior extends AbstractBehavior {
                 float deltaX = ((float) Math.cos(getContext().getSubject().getOrientation()));
                 float deltaY = ((float) Math.sin(getContext().getSubject().getOrientation()));
 
-                if (!name.contains("weapon") && !name.contains("debris") && target != getContext().getSubject()) {
+                if (!target.getTags().contains(Tags.PROJECTILE) && !target.getTags().contains(Tags.DEBRIS) && target != getContext().getSubject()) {
 
                     for (String string: targetList){
-                        if (name.contains(string)) {
+                        if (target.getName().contains(string)) {
 
                             if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
@@ -73,8 +73,6 @@ public class AttackBehavior extends AbstractBehavior {
                                                 angle,
                                                 null,
                                                 angle + getContext().getSubject().getCollisionRadius() * 2,
-                                                null,
-                                                null,
                                                 null,
                                                 null
                                         );
@@ -98,7 +96,7 @@ public class AttackBehavior extends AbstractBehavior {
                                                         0,
                                                         getContext().getSubject().getCollisionRadius());
 
-                                                getContext().addCharacter(newObject);
+                                                getContext().addCharacter(newObject, null);
                                                 System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_RED_BACKGROUND + " shooting target: " + StringHelper.ANSI_RESET + target.getName());
                                                 lastShot = clock;
                                             }

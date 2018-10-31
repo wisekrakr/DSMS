@@ -37,10 +37,8 @@ public class NPCPlayerHunter extends AttackingCharacter {
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                0,
                 Visualizations.TEST,
-                initialRadius);
+                initialRadius, null);
 
         tools().addTargetName(PlayerCreationRequest.playerName());
 
@@ -56,13 +54,11 @@ public class NPCPlayerHunter extends AttackingCharacter {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (!object.getName().contains("debris")) {
+                                if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
                                             null,
                                             null,
                                             null,
-                                            null,
-                                            health -= object.getDamage(),
                                             null,
                                             null,
                                             null

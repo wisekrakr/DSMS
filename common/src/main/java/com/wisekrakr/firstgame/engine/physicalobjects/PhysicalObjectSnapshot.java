@@ -9,19 +9,15 @@ public class PhysicalObjectSnapshot implements Serializable {
     private String name;
     private Visualizations visualization;
 
-    private float health;
-    private float damage;
     private float speedDirection;
     private float speedMagnitude;
     private float orientation;
     private Vector2 position;
     private Map<String, Object> extra;
 
-    public PhysicalObjectSnapshot(String name, Visualizations visualization, float health, float damage, float speedDirection, float speedMagnitude, float orientation, Vector2 position, Map<String, Object> extra) {
+    public PhysicalObjectSnapshot(String name, Visualizations visualization, float speedDirection, float speedMagnitude, float orientation, Vector2 position, Map<String, Object> extra) {
         this.name = name;
         this.visualization = visualization;
-        this.health = health;
-        this.damage = damage;
         this.speedDirection = speedDirection;
         this.speedMagnitude = speedMagnitude;
         this.orientation = orientation;
@@ -58,13 +54,5 @@ public class PhysicalObjectSnapshot implements Serializable {
 
     public Map<String, Object> getExtra() {
         return extra;
-    }
-
-    public float getHealth() {
-        return health;
-    }
-
-    public float getDamage() {
-        return damage;
     }
 }

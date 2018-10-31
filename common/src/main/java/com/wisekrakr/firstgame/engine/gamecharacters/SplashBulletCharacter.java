@@ -9,7 +9,6 @@ import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import java.util.Arrays;
 
 public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
-
     private final Vector2 position;
     private final float speedMagnitude;
     private final float speedDirection;
@@ -32,17 +31,16 @@ public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
 
     @Override
     public void start() {
-
-        BehavedObject bullet = introduceBehavedObject("weapon",
+        BehavedObject bullet = introduceBehavedObject("splash bullet",
                 position,
                 speedDirection,
                 speedMagnitude,
                 speedDirection,
-                0,
-                damage,
                 visualizations,
-                radius
-        );
+                radius,
+                null);
+
+        getContext().tagPhysicalObject(bullet.getObject(), Tags.PROJECTILE);
 
         bullet.behave(Arrays.asList(
                 new AbstractBehavior(){
@@ -53,17 +51,14 @@ public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
 
                     @Override
                     public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-
-                        String name = object.getName();
-
-                        if (!name.contains("debris") && object != master.getPhysicalObject()) {
+                        if (!object.getTags().contains(Tags.DEBRIS) && object != master.getPhysicalObject()) {
                             getContext().addCharacter(new ExplosionCharacter(getContext().getSubject().getPosition(),
                                     GameHelper.generateRandomNumberBetween(5f, 20f),
                                     GameHelper.randomDirection(),
                                     5,
                                     getContext().getSubject().getCollisionRadius()*2,
                                     2f,
-                                    Visualizations.EXPLOSION));
+                                    Visualizations.EXPLOSION), null);
 
                             SplashBulletCharacter.this.getContext().removeMyself();
                             getContext().removePhysicalObject();
@@ -87,14 +82,11 @@ public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
                                         3f,
                                         Visualizations.B,
                                         SplashBulletCharacter.this.getContext()
-                                ));
-
+                                ), null);
                             }
                         }
                     }
                 }, new AbstractBehavior()
         ));
-
     }
-
 }

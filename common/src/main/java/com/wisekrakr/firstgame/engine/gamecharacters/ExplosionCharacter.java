@@ -3,12 +3,14 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectEvictionPolicy;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExplosionCharacter extends AbstractGameCharacter {
 
@@ -19,7 +21,7 @@ public class ExplosionCharacter extends AbstractGameCharacter {
     private float debrisMass;
     private float debrisAge;
     private Visualizations visualizations;
-    private List<PhysicalObject> bits = new ArrayList<>();
+    private Set<PhysicalObject> bits = new HashSet<>();
 
     public ExplosionCharacter(Vector2 position, float speedMagnitude, float speedDirection, int debrisParts, float debrisMass, float debrisAge, Visualizations visualizations) {
         this.position = position;
@@ -35,18 +37,27 @@ public class ExplosionCharacter extends AbstractGameCharacter {
     public void start() {
         float bitSize = (float) Math.sqrt((debrisMass * debrisMass) / debrisParts);
         for (int i = 0; i < debrisParts; i++) {
-            PhysicalObject bit = getContext().addPhysicalObject("debris",
+            PhysicalObject bit = getContext().addPhysicalObject("explosion",
                     position,
                     GameHelper.randomDirection(),
                     speedMagnitude,
                     GameHelper.randomDirection(),
-                    0,
-                    0,
                     visualizations,
                     bitSize,
-                    null
-            );
+                    new PhysicalObjectListener() {
+                        @Override
+                        public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
 
+                        }
+
+                        @Override
+                        public void removed(PhysicalObject target) {
+                            bits.remove(target);
+                        }
+                    },
+                    PhysicalObjectEvictionPolicy.DISCARD);
+
+            getContext().tagPhysicalObject(bit, Tags.DEBRIS);
             getContext().updatePhysicalObjectExtra(bit, "radius", bitSize);
 
             bits.add(bit);
@@ -57,7 +68,7 @@ public class ExplosionCharacter extends AbstractGameCharacter {
     public void elapseTime(float delta) {
         debrisAge = debrisAge - delta;
         if (debrisAge < 0) {
-            for (PhysicalObject object: bits) {
+            for (PhysicalObject object: new ArrayList<>(bits)) {
                 getContext().removePhysicalObject(object);
             }
 

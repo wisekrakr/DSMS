@@ -39,19 +39,19 @@ public class HomingMissileCharacter extends AttackingCharacter {
 
     @Override
     public void start() {
-        BehavedObject missile = introduceBehavedObject("weapon",
+        BehavedObject missile = introduceBehavedObject("homing missile",
                 position,
                 speedDirection,
                 speedMagnitude,
                 speedDirection,
-                0,
-                damage,
                 visualizations,
-                radius);
+                radius, null);
+
+        getContext().tagPhysicalObject(missile.getObject(), Tags.PROJECTILE);
 
         missile.behave(
                 Arrays.asList(
-                        new AbstractBehavior(){
+                        new AbstractBehavior() {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", radius);
@@ -59,27 +59,30 @@ public class HomingMissileCharacter extends AttackingCharacter {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
+                                if (master.getPhysicalObject() != object) {
+                                    float damage = CollisionModel.calculateDamage(missile.getObject(), object, impact);
 
-                                if (!object.getName().contains("debris") && object != master.getPhysicalObject()) {
-                                    getContext().updatePhysicalObject(null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            object.getHealth() - getContext().getSubject().getDamage(),
-                                            null,
-                                            null,
-                                            null
-                                    );
-                                    getContext().addCharacter(new ExplosionCharacter(getContext().getSubject().getPosition(),
-                                            GameHelper.generateRandomNumberBetween(5f, 20f),
-                                            GameHelper.randomDirection(),
-                                            10,
-                                            radius * 3,
-                                            5f,
-                                            Visualizations.EXPLOSION));
-                                    getContext().removePhysicalObject();
-                                    HomingMissileCharacter.this.getContext().removeMyself();
+                                    if (damage != 0f) {
+                                        getContext().updatePhysicalObject(null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null
+                                        );
+
+                                        getContext().addCharacter(new ExplosionCharacter(getContext().getSubject().getPosition(),
+                                                GameHelper.generateRandomNumberBetween(5f, 20f),
+                                                GameHelper.randomDirection(),
+                                                10,
+                                                radius * 3,
+                                                5f,
+                                                Visualizations.EXPLOSION), null);
+                                        getContext().removePhysicalObject();
+                                        HomingMissileCharacter.this.getContext().removeMyself();
+
+                                    }
                                 }
                             }
 
@@ -94,7 +97,7 @@ public class HomingMissileCharacter extends AttackingCharacter {
                                             10,
                                             radius,
                                             5f,
-                                            Visualizations.EXPLOSION));
+                                            Visualizations.EXPLOSION), null);
 
                                     getContext().removePhysicalObject();
                                     HomingMissileCharacter.this.getContext().removeMyself();
@@ -105,7 +108,7 @@ public class HomingMissileCharacter extends AttackingCharacter {
                         },
                         new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, speedMagnitude + 20f, master, mastersTargetList)
 
-        ));
+                ));
     }
 
 }

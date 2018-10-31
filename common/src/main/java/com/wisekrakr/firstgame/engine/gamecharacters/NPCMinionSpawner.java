@@ -3,7 +3,6 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.DuplicationBehavior;
@@ -39,10 +38,8 @@ public class NPCMinionSpawner extends AttackingCharacter {
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                0,
                 Visualizations.TEST,
-                initialRadius);
+                initialRadius, null);
 
         tools().addTargetName(PlayerCreationRequest.playerName());
 
@@ -58,13 +55,11 @@ public class NPCMinionSpawner extends AttackingCharacter {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (!object.getName().contains("debris") && !object.getName().contains(NPCMinion.class.getName())) {
+                                if (!object.getTags().contains(Tags.DEBRIS) && !object.getTags().contains(NPCMinion.class.getName())) {
                                     getContext().updatePhysicalObject(null,
                                             null,
                                             null,
                                             null,
-                                            null,
-                                            health -= object.getDamage(),
                                             null,
                                             null,
                                             null

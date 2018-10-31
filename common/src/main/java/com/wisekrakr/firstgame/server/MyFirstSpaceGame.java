@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class MyFirstSpaceGame extends Scenario {
     @Override
     public void start() {
-        getContext().engine().addScenario(new WildlifeManagement(3, 2, new CharacterFactory() {
+        getContext().engine().addScenario(new WildlifeManagement(0.3f, 2, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new NPCMissileShooter(position,
@@ -23,7 +23,7 @@ public class MyFirstSpaceGame extends Scenario {
             }
         }));
 
-        getContext().engine().addScenario(new WildlifeManagement(5, 1, new CharacterFactory() {
+        getContext().engine().addScenario(new WildlifeManagement(0.5f, 1, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new NPCAvoiding(position,
@@ -36,7 +36,7 @@ public class MyFirstSpaceGame extends Scenario {
             }
         }));
 
-        getContext().engine().addScenario(new WildlifeManagement(1, 1, new CharacterFactory() {
+        getContext().engine().addScenario(new WildlifeManagement(0.1f, 1, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new NPCMinionSpawner(position,
@@ -49,7 +49,7 @@ public class MyFirstSpaceGame extends Scenario {
             }
         }));
 
-        getContext().engine().addScenario(new WildlifeManagement(7, 5, new CharacterFactory() {
+        getContext().engine().addScenario(new WildlifeManagement(0.7f, 5, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new AsteroidCharacter(position,
@@ -61,7 +61,7 @@ public class MyFirstSpaceGame extends Scenario {
             }
         }));
 
-        getContext().engine().addScenario(new WildlifeManagement(10, 10, new CharacterFactory() {
+        getContext().engine().addScenario(new WildlifeManagement(1f, 10, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new NPCSpeedyDodger(position,
@@ -75,7 +75,7 @@ public class MyFirstSpaceGame extends Scenario {
         }));
 
 
-        getContext().engine().addScenario(new WildlifeManagement(3, 1, new CharacterFactory() {
+        getContext().engine().addScenario(new WildlifeManagement(0.3f, 1, new CharacterFactory() {
             @Override
             public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
                 return new XCharacter(

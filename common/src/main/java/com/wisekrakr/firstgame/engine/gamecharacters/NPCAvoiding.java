@@ -35,14 +35,13 @@ public class NPCAvoiding extends FriendlyCharacter {
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                0,
                 Visualizations.COCKPIT,
-                initialRadius);
+                initialRadius, null);
 
+        // TODO: WRONG!
         addTargetName(AttackingCharacter.class.getName());
         addTargetName(PlayerCreationRequest.playerName());
-        addTargetName("weapon");
+        addTargetName(Tags.PROJECTILE);
 
         npcNewbie.behave(
                 Arrays.asList(
@@ -55,13 +54,11 @@ public class NPCAvoiding extends FriendlyCharacter {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (!object.getName().contains("debris")) {
+                                if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
                                             null,
                                             null,
                                             null,
-                                            null,
-                                            health -= object.getDamage(),
                                             null,
                                             null,
                                             null
@@ -82,8 +79,6 @@ public class NPCAvoiding extends FriendlyCharacter {
 
                 ));
     }
-
-
 }
 
 

@@ -3,17 +3,21 @@ package com.wisekrakr.firstgame.engine;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
-import com.wisekrakr.firstgame.engine.gameobjects.npcs.NonPlayerCharacter;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.*;
 
 public class SpaceEngine {
-    private final Object monitor = new Object();
+    private float visibleRadius = 3000f;
+    private float creationRadius = 4000f;
+    private float vitalizationRadius = 5000f;
+    private float slowUpdateInterval = 10;
 
+    private final Object monitor = new Object();
     private Set<GameObject> gameObjects = new HashSet<GameObject>();
     private Map<GameObject, GameObjectListener> listeners = new HashMap<>();
     private float clock = 0f;
+    private float lastSlowUpdate = 0f;
     private boolean paused = false;
 
     //TODO: get rid
@@ -22,10 +26,17 @@ public class SpaceEngine {
 
     private Set<PhysicalObjectRunner> physicalObjects = new HashSet<>();
 
+    private List<PhysicalObjectRunner> vitalizingObjects = new ArrayList<>();
 
-    public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener listener) {
+    public void markVitalizer(PhysicalObject physicalObject) {
         synchronized (monitor) {
-            PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, Collections.emptyMap(), collisionRadius, listener);
+            vitalizingObjects.add(getPhysicalObject(physicalObject));
+        }
+    }
+
+    public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectEvictionPolicy evictionPolicy, PhysicalObjectListener listener) {
+        synchronized (monitor) {
+            PhysicalObjectRunner result = new PhysicalObjectRunner(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, Collections.emptyMap(), collisionRadius, evictionPolicy, listener);
 
             physicalObjects.add(result);
 
@@ -33,11 +44,11 @@ public class SpaceEngine {
         }
     }
 
-    public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius, Float health, Float damage) {
+    public void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
         synchronized (monitor) {
             PhysicalObjectRunner runner = getPhysicalObject(target);
 
-            runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, health, damage);
+            runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
         }
 
     }
@@ -79,36 +90,50 @@ public class SpaceEngine {
         return result;
     }
 
-    public Body addDynamicBody(float density, float friction, float restitution) {
+    public void tagPhysicalObject(PhysicalObject target, String tag) {
+        getPhysicalObject(target).tag(tag);
 
-        Body shipBody = null;
-        for (PhysicalObjectRunner target : physicalObjects) {
-            Number radiusRaw = (Number) target.getExtraProperties().get("radius");
-            if (radiusRaw == null) {
-                radiusRaw = 5f;
-            }
-            float radius = radiusRaw.floatValue();
+    }
 
-            BodyDef shipBodyDef = new BodyDef();
-            shipBodyDef.type = BodyDef.BodyType.DynamicBody;
-            shipBodyDef.position.set(target.getPosition().x, target.getPosition().y);
-            shipBodyDef.angle = target.getOrientation();
+    public void untagPhysicalObject(PhysicalObject target, String tag) {
+        getPhysicalObject(target).untag(tag);
+    }
 
-            shipBody = getWorld().createBody(shipBodyDef);
-            bodies.add(shipBody);
-
-            CircleShape shipCircleShape = new CircleShape();
-            shipCircleShape.setRadius(radius);
-
-            FixtureDef shipFixtureDef = new FixtureDef();
-            shipFixtureDef.shape = shipCircleShape;
-            shipFixtureDef.density = density;
-            shipFixtureDef.friction = friction;
-            shipFixtureDef.restitution = restitution;
-
-            shipBody.createFixture(shipFixtureDef);
+    public float getCreationAreaSize() {
+        synchronized (monitor) {
+            // TODO: ignores overlap
+            return vitalizingObjects.size() * ((float) Math.PI * ((creationRadius * creationRadius) - (visibleRadius * visibleRadius)));
         }
-        return shipBody;
+    }
+
+    public float getVitalAreaSize() {
+        synchronized (monitor) {
+            // TODO: ignores overlap
+            return vitalizingObjects.size() * ((float) Math.PI * ((vitalizationRadius * vitalizationRadius)));
+        }
+    }
+
+    public Vector2 chooseCreationPoint() {
+        synchronized (monitor) {
+            if (vitalizingObjects.size() > 0) {
+                Vector2 candidate;
+
+                int maxTries = 10;
+                do {
+                    PhysicalObjectRunner centerObject = vitalizingObjects.get(GameHelper.randomGenerator.nextInt(vitalizingObjects.size()));
+
+                    float angle = GameHelper.randomDirection();
+                    float magnitude = GameHelper.generateRandomNumberBetween(visibleRadius, creationRadius);
+
+                    candidate = GameHelper.applyMovement(centerObject.getPosition(), angle, magnitude);
+                } while (isVisible(candidate) && maxTries-- > 0);
+
+                // TODO: ignores overlap
+                return candidate;
+            }
+
+            return null;
+        }
     }
 
     public interface GameObjectListener {
@@ -267,68 +292,6 @@ public class SpaceEngine {
         return clock;
     }
 
-    public World getWorld() {
-
-        return world;
-    }
-
-    private void physicalElapseTime(float delta) {
-        // apply physics:
-        //    A. apply movement
-        for (PhysicalObjectRunner target : physicalObjects) {
-
-            float speedX = (float) Math.cos(target.getSpeedDirection()) * target.getSpeedMagnitude() * delta;
-            float speedY = (float) Math.sin(target.getSpeedDirection()) * target.getSpeedMagnitude() * delta;
-
-            target.update(
-                    null,
-                    new Vector2(target.getPosition().x + speedX, target.getPosition().y + speedY),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            );
-
-            // TODO: distanceTravelled = distanceTravelled + Math.abs(target.getSpeedMagnitude() * delta);    ?
-        }
-
-        //    B. detect collisions
-
-        List<Collision> collisions = new ArrayList<>();
-        Set<PhysicalObjectRunner> processed = new HashSet<>();
-
-        for (PhysicalObjectRunner target : physicalObjects) {
-            processed.add(target);
-            for (PhysicalObjectRunner subject : physicalObjects) {
-                if (!processed.contains(subject)) {
-                    Collision collision = collisionDetection(target, subject);
-
-                    if (collision != null) {
-                        collisions.add(collision);
-                    }
-                }
-            }
-        }
-
-        //    C. report to the owners
-
-        for (Collision collision : collisions) {
-            getPhysicalObject(collision.getOne()).getListener().collision(collision.getOne(), collision.getTwo(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
-            getPhysicalObject(collision.getTwo()).getListener().collision(collision.getTwo(), collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
-        }
-
-        //    D.  Dynamic Box2d bodies
-
-        for (Body body : bodies) {
-            while (body.getFixtureList().size > 0) {
-                body.destroyFixture(body.getFixtureList().first());
-            }
-        }
-    }
-
     public void elapseTime(float delta) {
         synchronized (monitor) {
             if (paused) {
@@ -337,90 +300,88 @@ public class SpaceEngine {
 
             clock = clock + delta;
 
-            physicalElapseTime(delta);
+            boolean updateSlow = (clock - lastSlowUpdate) > slowUpdateInterval;
 
-            Set<GameObject> toDelete = new HashSet<GameObject>();
-            Set<GameObject> toAdd = new HashSet<GameObject>();
+            List<PhysicalObjectRunner> discarded = new ArrayList<>();
 
-            for (GameObject target : gameObjects) {
-                target.elapseTime(clock, delta, toDelete, toAdd);
-            }
 
-            /*
-            for (GameObject target : gameObjects) {
-                if (!toDelete.contains(target)) {
-                    if (target.getPosition().x < minX || target.getPosition().x - minX > width ||
-                            target.getPosition().y < minY || target.getPosition().y - minY > height) {
-                        target.signalOutOfBounds(toDelete, toAdd);
-                    }
+            // apply physics:
+            //    A. apply movement
+            for (PhysicalObjectRunner target : physicalObjects) {
+                boolean vital = isVital(target.getPosition());
+
+                if (vital || (target.getPolicy() == PhysicalObjectEvictionPolicy.SLOW && updateSlow)) {
+                    float actualDelta = vital ? delta : (clock - lastSlowUpdate);
+
+
+                    target.update(
+                            null,
+                            GameHelper.applyMovement(target.getPosition(), target.getSpeedDirection(), target.getSpeedMagnitude() * actualDelta),
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    );
                 }
+
+                if (!vital && target.getPolicy() == PhysicalObjectEvictionPolicy.DISCARD) {
+                    discarded.add(target);
+                }
+
+                // TODO: distanceTravelled = distanceTravelled + Math.abs(target.getSpeedMagnitude() * delta);    ?
             }
-            */
-/**
- * See if any gameobjects collide with each other, than proceed with the collide method of GameObject extended classes
- */
-            for (GameObject target : gameObjects) {
-                if (!toDelete.contains(target)) {
-                    for (GameObject subject : gameObjects) {
-                        if (!toDelete.contains(subject)) {
-                            if (target != subject) {
-                                if (collision(target, subject)) {
-                                    target.collide(subject, toDelete, toAdd);
-                                }
-                            }
+
+            for (PhysicalObjectRunner runner : discarded) {
+                removePhysicalObject(runner);
+            }
+
+            if (updateSlow) {
+                lastSlowUpdate = clock;
+            }
+
+            //    B. detect collisions
+            List<Collision> collisions = new ArrayList<>();
+            Set<PhysicalObjectRunner> processed = new HashSet<>();
+
+            for (PhysicalObjectRunner target : physicalObjects) {
+                processed.add(target);
+                for (PhysicalObjectRunner subject : physicalObjects) {
+                    if (!processed.contains(subject)) {
+                        Collision collision = collisionDetection(target, subject);
+
+                        if (collision != null) {
+                            collisions.add(collision);
                         }
                     }
                 }
             }
 
-
-            for (GameObject subject : gameObjects) {
-                // TODO: change into universal behavior
-                if (subject instanceof NonPlayerCharacter) {
-                    List<GameObject> nearby = new ArrayList<>();
-
-                    for (GameObject target : gameObjects) {
-                        if (target != subject && GameHelper.distanceBetween(target, subject) < subject.getActionDistance()) {
-                            nearby.add(target);
-                        }
-                    }
-                    subject.nearby(nearby);
-                }
-            }
-
-
-/**
- * Scoring system
- */
-/*
-            for (GameObject player : gameObjects) {
-                if (player instanceof Player) {
-                    for (GameObject enemy : gameObjects) {
-                        if (enemy instanceof NonPlayerCharacter) {
-                            for (GameObject subject : gameObjects) {
-                                if (subject instanceof BulletObject) {
-                                    ((Player) player).scoringSystem(enemy, subject);
-                                }
-                                if (subject instanceof MissileObject) {
-                                    ((Player) player).scoringSystem(enemy, subject);
-                                }
-                                if (subject instanceof SpaceMine) {
-                                    ((Player) player).scoringSystem(enemy, subject);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-*/
-            for (GameObject gameObject : toDelete) {
-                removeGameObject(gameObject);
-            }
-
-            for (GameObject gameObject : toAdd) {
-                addGameObject(gameObject);
+            //    C. report to the owners
+            for (Collision collision : collisions) {
+                getPhysicalObject(collision.getOne()).getListener().collision(collision.getOne(), collision.getTwo(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
+                getPhysicalObject(collision.getTwo()).getListener().collision(collision.getTwo(), collision.getOne(), collision.getTime(), collision.getEpicentre(), collision.getImpact());
             }
         }
+    }
+
+    private boolean isVital(Vector2 position) {
+        for (PhysicalObject vital : vitalizingObjects) {
+            if (GameHelper.distanceBetween(position, vital.getPosition()) < vitalizationRadius) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isVisible(Vector2 position) {
+        for (PhysicalObject vital : vitalizingObjects) {
+            if (GameHelper.distanceBetween(position, vital.getPosition()) < visibleRadius) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

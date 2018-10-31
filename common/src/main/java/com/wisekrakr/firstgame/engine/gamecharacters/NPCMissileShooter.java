@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
@@ -41,10 +40,8 @@ public class NPCMissileShooter extends AttackingCharacter  {
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                damage,
                 visualizations,
-                initialRadius);
+                initialRadius, null);
 
 
         npcMissileMain.behave(
@@ -58,13 +55,11 @@ public class NPCMissileShooter extends AttackingCharacter  {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (!object.getName().contains("debris")) {
+                                if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
                                             null,
                                             null,
                                             null,
-                                            null,
-                                            health -= object.getDamage(),
                                             null,
                                             null,
                                             null

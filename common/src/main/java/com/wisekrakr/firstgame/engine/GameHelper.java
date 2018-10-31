@@ -53,8 +53,11 @@ public class GameHelper {
         return (float) Math.atan2(attackDistanceY, attackDistanceX);
     }
 
-    public static float healthBetween75And125(){
-        return randomGenerator.nextInt(125) + 75;
+    public static Vector2 applyMovement(Vector2 origin, float angle, float magnitude) {
+        float speedX = (float) Math.cos(angle) * magnitude;
+        float speedY = (float) Math.sin(angle) * magnitude;
+
+        return new Vector2(origin.x + speedX, origin.y + speedY);
     }
 
 }

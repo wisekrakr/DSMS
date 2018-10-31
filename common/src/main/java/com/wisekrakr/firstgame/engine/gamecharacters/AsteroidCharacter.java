@@ -2,14 +2,12 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
+import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.RotatingBehavior;
-import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
@@ -36,10 +34,15 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                 0,
                 initialSpeedMagnitude,
                 initialDirection,
-                health,
-                damage,
                 Visualizations.BOULDER,
-                initialRadius);
+                initialRadius,
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        System.out.println("Asteroid character is a goner");
+                        AsteroidCharacter.this.getContext().removeMyself();
+                    }
+                });
 
         behavedObject.behave(Arrays.asList(
                 new AbstractBehavior() {
@@ -51,7 +54,7 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                                 5,
                                 initialRadius,
                                 10f,
-                                Visualizations.BOULDER));
+                                Visualizations.BOULDER), null);
 
                         // TODO: should happen automatically
                         getContext().removePhysicalObject();

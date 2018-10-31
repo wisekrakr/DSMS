@@ -6,10 +6,8 @@ import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.BulletCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.HomingMissileCharacter;
-import com.wisekrakr.firstgame.engine.physicalobjects.AbstractPhysicalObjectListener;
-import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
+import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
+import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,12 +40,13 @@ public class Player extends AbstractGameCharacter {
                 startDirection,
                 0,
                 startDirection,
-                health,
-                0,
                 Visualizations.SPACESHIP,
                 10f,
                 new AbstractPhysicalObjectListener() {
-                });
+                },
+                PhysicalObjectEvictionPolicy.DISCARD);
+
+        getContext().getSpaceEngine().markVitalizer(spaceship);
 
         getContext().updatePhysicalObjectExtra(spaceship, "radius", 10f);
         getContext().updatePhysicalObjectExtra(spaceship, "distanceTravelled", 10f);
@@ -70,7 +69,7 @@ public class Player extends AbstractGameCharacter {
             for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
 
                 String name = nearPhysicalObject.getObject().getName();
-                if (!name.contains("weapon") && !name.contains("debris")) {
+                if (!nearPhysicalObject.getObject().getTags().contains(Tags.PROJECTILE) && !nearPhysicalObject.getObject().getTags().contains(Tags.DEBRIS)) {
                     nearestObject = nearPhysicalObject.getObject();
                 }
             }
@@ -170,8 +169,6 @@ public class Player extends AbstractGameCharacter {
                             null,
                             null,
                             null,
-                            null,
-                            null,
                             null);
                 }
 
@@ -187,8 +184,6 @@ public class Player extends AbstractGameCharacter {
                 angle,
                 speed,
                 direction,
-                null,
-                null,
                 (getContext().getSpaceEngine().getTime() - lastDodge > 10) ? Visualizations.SPACESHIP : Visualizations.BOULDER,
                 null
         );
@@ -243,7 +238,7 @@ public class Player extends AbstractGameCharacter {
                     5f,
                     Visualizations.LEFT_CANNON,
                     getContext()
-            ));
+            ), null);
             shootTime = 0f;
         }
     }
@@ -268,8 +263,7 @@ public class Player extends AbstractGameCharacter {
                     Visualizations.RIGHT_CANNON,
                     getContext(),
                     targetList()
-
-            ));
+            ), null);
             shootTime = 0f;
         }
     }
@@ -287,7 +281,7 @@ public class Player extends AbstractGameCharacter {
             NearPhysicalObject p;
             while (iterator.hasNext()) {
                 p = iterator.next();
-                if (nearbyPhysicalObjects.contains(p) && !p.getObject().getName().contains("weapon") && !p.getObject().getName().contains("debris")) {
+                if (nearbyPhysicalObjects.contains(p) && !p.getObject().getTags().contains(Tags.PROJECTILE) && !p.getObject().getTags().contains(Tags.DEBRIS)) {
                     targetList.add(p.getObject().getName());
                 }
             }

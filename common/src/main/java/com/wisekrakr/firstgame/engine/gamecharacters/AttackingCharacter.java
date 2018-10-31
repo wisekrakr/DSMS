@@ -53,7 +53,9 @@ public class AttackingCharacter extends AbstractNonPlayerGameCharacter {
                 NearPhysicalObject p;
                 while (iterator.hasNext()) {
                     p = iterator.next();
-                    if (nearbyPhysicalObjects.contains(p) && !p.getObject().getName().contains("weapon") && !p.getObject().getName().contains("debris")) {
+
+                    // TODO: use tags
+                    if (nearbyPhysicalObjects.contains(p) && !p.getObject().getTags().contains(Tags.PROJECTILE) && !p.getObject().getTags().contains(Tags.DEBRIS)) {
                         targetList.add(p.getObject().getName());
                     }
                 }

@@ -1,13 +1,10 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.BehaviorContext;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectEvictionPolicy;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectListener;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
@@ -23,8 +20,12 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
         PhysicalObject getObject();
     }
 
-    protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, float health, float damage, Visualizations visualizationEngine, float collisionRadius) {
-        PhysicalObject subject = getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
+    interface BehavedObjectListener {
+        void removed();
+    }
+
+    protected final BehavedObject introduceBehavedObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, BehavedObjectListener listener) {
+        PhysicalObject subject = getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, new PhysicalObjectListener() {
             @Override
             public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
                 List<Behavior> behaviors = behavedObjects.get(myself);
@@ -41,12 +42,16 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
                 List<Behavior> behaviors = behavedObjects.remove(target);
 
                 if (behaviors != null) {
-                    for (Behavior behavior: behaviors) {
+                    for (Behavior behavior : behaviors) {
                         removedBehavior(behavior);
                     }
                 }
+
+                if (listener != null) {
+                    listener.removed();
+                }
             }
-        });
+        }, PhysicalObjectEvictionPolicy.DISCARD);
 
         behavedObjects.put(subject, null);
 
@@ -88,13 +93,13 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
     private void addedBehavior(PhysicalObject subject, Behavior b) {
         b.init(new BehaviorContext() {
             @Override
-            public void addCharacter(GameCharacter newObject) {
-                getContext().addCharacter(newObject);
+            public void addCharacter(GameCharacter newObject, GameCharacterListener listener) {
+                getContext().addCharacter(newObject, listener);
             }
 
             @Override
-            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Float health, Float damage, Visualizations visualizationEngine, Float collisionRadius) {
-                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, health, damage, visualizationEngine, collisionRadius);
+            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
+                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
             }
 
             @Override
