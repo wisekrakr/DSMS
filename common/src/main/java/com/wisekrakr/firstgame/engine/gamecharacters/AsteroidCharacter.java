@@ -14,16 +14,13 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
-    private final float health;
-    private final float damage;
 
-    public AsteroidCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float health, float damage) {
+    public AsteroidCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
-        this.health = health;
-        this.damage = damage;
+
     }
 
     @Override
@@ -39,7 +36,6 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
                 new BehavedObjectListener() {
                     @Override
                     public void removed() {
-                        System.out.println("Asteroid character is a goner");
                         AsteroidCharacter.this.getContext().removeMyself();
                     }
                 });
@@ -68,27 +64,7 @@ public class AsteroidCharacter extends AbstractNonPlayerGameCharacter {
 
                     @Override
                     public void elapseTime(float clock, float delta) {
-                        //getContext().updatePhysicalObject(null, null, null, Math.min(100f, 10 * clock), Math.min(clock, 1000f), null, null, null, null);
-/*
-                        List<NearPhysicalObject> nearbyPhysicalObjects = AsteroidCharacter.this.getContext().findNearbyPhysicalObjects(getContext().getSubject(), 300f);
 
-                        if (!nearbyPhysicalObjects.isEmpty()) {
-                            for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
-                                float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), nearPhysicalObject.getObject().getPosition());
-
-                                getContext().updatePhysicalObject(
-                                        null,
-                                        null,
-                                        -angle,
-                                        initialSpeedMagnitude,
-                                        -angle,
-                                        null,
-                                        null,
-                                        null,
-                                        null);
-                            }
-                        }
-*/
                         if (getContext().getSubject().getCollisionRadius() <= 0.5f) {
                             getContext().removePhysicalObject();
                         }

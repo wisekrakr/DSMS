@@ -10,16 +10,15 @@ import java.util.Map;
 public class SpaceSnapshot implements Serializable {
     private String name;
     private float time;
-    private List<GameObjectSnapshot> gameObjects;
     private List<PhysicalObjectSnapshot> physicalObjects;
 
     public SpaceSnapshot() {
     }
 
-    public SpaceSnapshot(String name, float time, List<GameObjectSnapshot> gameObjects, List<PhysicalObjectSnapshot> physicalObjects) {
+    public SpaceSnapshot(String name, float time, List<PhysicalObjectSnapshot> physicalObjects) {
         this.name = name;
         this.time = time;
-        this.gameObjects = gameObjects;
+
         this.physicalObjects = physicalObjects;
     }
 
@@ -31,14 +30,12 @@ public class SpaceSnapshot implements Serializable {
         return time;
     }
 
-    public List<GameObjectSnapshot> getGameObjects() {
-        return gameObjects;
-    }
 
     public List<PhysicalObjectSnapshot> getPhysicalObjects() {
         return physicalObjects;
     }
 
+    @Deprecated
     public static class GameObjectSnapshot implements Serializable {
         private String name;
         private GameObjectVisualizationType type;

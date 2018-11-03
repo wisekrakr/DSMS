@@ -30,7 +30,7 @@ public class TickTickBoomBehavior extends AbstractBehavior {
 
 
             }
-            getContext().removeGameObject(getContext().thisObject());
+
             stopTime = 0f;
 
         }

@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.firstgame.engine.gamecharacters.AbstractNPCTools;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterListener;
@@ -177,6 +178,13 @@ public class GameEngine {
                 assureMine(object);
 
                 space.removePhysicalObject(object);
+            }
+
+            @Override
+            public AbstractNPCTools npcTools(PhysicalObject object) {
+                assureMine(object);
+
+                return space.getNPCTools();
             }
 
             @Override

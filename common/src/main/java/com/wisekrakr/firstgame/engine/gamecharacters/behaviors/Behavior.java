@@ -15,4 +15,5 @@ public interface Behavior {
 
     void collide(PhysicalObject object, Vector2 epicentre, float impact);
 
+
 }

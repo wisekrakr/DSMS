@@ -1,28 +1,23 @@
 package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
+import com.wisekrakr.firstgame.engine.gamecharacters.AbstractNPCTools;
+import com.wisekrakr.firstgame.engine.gamecharacters.CollisionModel;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.*;
 
 public class SpaceEngine {
-    private float visibleRadius = 3000f;
-    private float creationRadius = 4000f;
-    private float vitalizationRadius = 5000f;
+    private float visibleRadius = 1000f;
+    private float creationRadius = 2000f;
+    private float vitalizationRadius = 3000f;
     private float slowUpdateInterval = 10;
+    private float stasisPeriod = 0f;
 
     private final Object monitor = new Object();
-    private Set<GameObject> gameObjects = new HashSet<GameObject>();
-    private Map<GameObject, GameObjectListener> listeners = new HashMap<>();
     private float clock = 0f;
     private float lastSlowUpdate = 0f;
     private boolean paused = false;
-
-    //TODO: get rid
-    private World world = new World(new Vector2(0, 0), true);
-    private Set<Body> bodies = new HashSet<>();
 
     private Set<PhysicalObjectRunner> physicalObjects = new HashSet<>();
 
@@ -33,6 +28,7 @@ public class SpaceEngine {
             vitalizingObjects.add(getPhysicalObject(physicalObject));
         }
     }
+
 
     public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectEvictionPolicy evictionPolicy, PhysicalObjectListener listener) {
         synchronized (monitor) {
@@ -51,6 +47,13 @@ public class SpaceEngine {
             runner.update(name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
         }
 
+    }
+
+    public AbstractNPCTools getNPCTools(){
+        synchronized (monitor){
+
+            return new AbstractNPCTools();
+        }
     }
 
     private PhysicalObjectRunner getPhysicalObject(PhysicalObject target) {
@@ -136,69 +139,6 @@ public class SpaceEngine {
         }
     }
 
-    public interface GameObjectListener {
-        void added();
-
-        void removed();
-    }
-
-    @Deprecated
-    public GameObject addGameObject(GameObject object) {
-        return addGameObject(object, null);
-    }
-
-    @Deprecated
-    public GameObject addGameObject(GameObject object, GameObjectListener listener) {
-        synchronized (monitor) {
-            if (!gameObjects.add(object)) {
-                throw new IllegalArgumentException("Game object already present: " + object);
-            }
-
-            if (listener != null) {
-                listeners.put(object, listener);
-                listener.added();
-            }
-
-            List<GameObject> toAdd = new ArrayList<>();
-            List<GameObject> toRemove = new ArrayList<>();
-            object.afterAdd(toAdd, toRemove);
-
-            for (GameObject o : toAdd) {
-                addGameObject(o);
-            }
-            for (GameObject o : toRemove) {
-                removeGameObject(o);
-            }
-        }
-
-        return object;
-    }
-
-    @Deprecated
-    public void removeGameObject(GameObject object) {
-        synchronized (monitor) {
-            if (!gameObjects.remove(object)) {
-                throw new IllegalArgumentException("Game object not present");
-            }
-
-            GameObjectListener listener = listeners.remove(object);
-            if (listener != null) {
-                listeners.put(object, listener);
-                listener.removed();
-            }
-
-            List<GameObject> toAdd = new ArrayList<>();
-            List<GameObject> toRemove = new ArrayList<>();
-            object.afterRemove(toAdd, toRemove);
-
-            for (GameObject o : toAdd) {
-                addGameObject(o);
-            }
-            for (GameObject o : toRemove) {
-                removeGameObject(o);
-            }
-        }
-    }
 
     public void pause() {
         synchronized (monitor) {
@@ -218,24 +158,6 @@ public class SpaceEngine {
         }
     }
 
-    public void forObject(GameObject object, GameObjectHandler action) {
-        synchronized (monitor) {
-            action.doIt(object);
-        }
-    }
-
-    public void forAllObjects(GameObjectHandler action) {
-        synchronized (monitor) {
-            for (GameObject object : gameObjects) {
-                action.doIt(object);
-            }
-        }
-    }
-
-    public interface GameObjectHandler {
-        void doIt(GameObject target);
-    }
-
     private Collision collisionDetection(PhysicalObject object1, PhysicalObject object2) {
         if (Math.sqrt(
                 (((object1.getPosition().x) - (object2.getPosition().x)))
@@ -252,31 +174,24 @@ public class SpaceEngine {
                     object1.getCollisionRadius() + object2.getCollisionRadius()
             );
 
+            float impact = CollisionModel.calculateDamage(object1, object2);
+
+
+
             // TODO: implement impact
-            return new Collision(object1, object2, new Vector2(epicenterX, epicenterY), clock, 1);
+            return new Collision(object1, object2, new Vector2(epicenterX, epicenterY), clock, impact);
         } else {
             return null;
         }
     }
 
-    private boolean collision(GameObject object1, GameObject object2) {
-        return
-                Math.sqrt(
-                        (((object1.getPosition().x) - (object2.getPosition().x)))
-                                * ((object1.getPosition().x) - (object2.getPosition().x))
-                                + ((object1.getPosition().y) - (object2.getPosition().y))
-                                * ((object1.getPosition().y) - (object2.getPosition().y)))
-                        < (object1.getCollisionRadius() + object2.getCollisionRadius());
-    }
+
+
+    //TODO: create an reaction class like Collision above and getTools to find out who to attack
+
 
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
-            List<SpaceSnapshot.GameObjectSnapshot> gameObjectSnapshots = new ArrayList<>();
-
-
-            for (GameObject object : gameObjects) {
-                gameObjectSnapshots.add(object.snapshot());
-            }
 
             List<PhysicalObjectSnapshot> physicalObjectSnapshots = new ArrayList<>();
 
@@ -284,7 +199,7 @@ public class SpaceEngine {
                 physicalObjectSnapshots.add(object.snapshot());
             }
 
-            return new SpaceSnapshot("Bla", clock, gameObjectSnapshots, physicalObjectSnapshots);
+            return new SpaceSnapshot("Bla", clock, physicalObjectSnapshots);
         }
     }
 
@@ -304,7 +219,6 @@ public class SpaceEngine {
 
             List<PhysicalObjectRunner> discarded = new ArrayList<>();
 
-
             // apply physics:
             //    A. apply movement
             for (PhysicalObjectRunner target : physicalObjects) {
@@ -312,7 +226,6 @@ public class SpaceEngine {
 
                 if (vital || (target.getPolicy() == PhysicalObjectEvictionPolicy.SLOW && updateSlow)) {
                     float actualDelta = vital ? delta : (clock - lastSlowUpdate);
-
 
                     target.update(
                             null,
@@ -327,6 +240,23 @@ public class SpaceEngine {
 
                 if (!vital && target.getPolicy() == PhysicalObjectEvictionPolicy.DISCARD) {
                     discarded.add(target);
+                }
+
+                if (!vital && target.getPolicy() == PhysicalObjectEvictionPolicy.STASIS) {
+                    stasisPeriod += delta;
+                    if (!(stasisPeriod > 30f)) {
+                        target.update(null,
+                                null,
+                                null,
+                                0f,
+                                null,
+                                null,
+                                null
+                        );
+                    }else {
+                        discarded.add(target);
+                        stasisPeriod = 0f;
+                    }
                 }
 
                 // TODO: distanceTravelled = distanceTravelled + Math.abs(target.getSpeedMagnitude() * delta);    ?

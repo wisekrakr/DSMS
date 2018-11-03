@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
@@ -11,37 +10,47 @@ import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.Arrays;
 
-public class NPCAvoiding extends FriendlyCharacter {
+public class NPCAvoiding extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
     private float radiusOfAttack;
-    private float health;
 
-    public NPCAvoiding(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+    public NPCAvoiding(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-        this.health = health;
     }
 
     @Override
     public void start() {
-        BehavedObject npcNewbie = introduceBehavedObject(NPCAvoiding.class.getName(),
+
+        BehavedObject npcNewbie = introduceBehavedObject(
+                "little bitch",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
                 Visualizations.COCKPIT,
-                initialRadius, null);
+                initialRadius,
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        NPCAvoiding.this.getContext().removeMyself();
+                    }
+                });
 
-        // TODO: WRONG!
-        addTargetName(AttackingCharacter.class.getName());
-        addTargetName(PlayerCreationRequest.playerName());
-        addTargetName(Tags.PROJECTILE);
+        getContext().tagPhysicalObject(npcNewbie.getObject(), Tags.DODGER);
+        getContext().tagPhysicalObject(npcNewbie.getObject(), Tags.FRIENDLY);
+
+        AbstractNPCTools tools = new AbstractNPCTools();
+
+        tools.tools().addAvoidName(Tags.ATTACKER);
+        tools.tools().addAvoidName(Tags.PROJECTILE);
+        tools.tools().addTargetName(Tags.PLAYER);
 
         npcNewbie.behave(
                 Arrays.asList(
@@ -49,11 +58,11 @@ public class NPCAvoiding extends FriendlyCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
-                                getContext().updatePhysicalObjectExtra("health", health);
                             }
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
+
                                 if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
                                             null,
@@ -65,17 +74,10 @@ public class NPCAvoiding extends FriendlyCharacter {
                                     );
                                 }
                             }
-
-                            @Override
-                            public void elapseTime(float clock, float delta) {
-                                if (health <= 0){
-                                    NPCAvoiding.this.getContext().removeMyself();
-                                    getContext().removePhysicalObject();
-                                }
-                            }
                         },
                         new CruisingBehavior(5f, initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY, radiusOfAttack, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), targetList())
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), tools.tools().targetList(NPCAvoiding.this.getContext())),
+                        new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY, radiusOfAttack/2, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), tools.tools().avoidList(NPCAvoiding.this.getContext()))
 
                 ));
     }

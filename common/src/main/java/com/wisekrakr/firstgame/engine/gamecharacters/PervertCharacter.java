@@ -29,13 +29,17 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
 
     @Override
     public void start() {
-        BehavedObject pervert = introduceBehavedObject(PervertCharacter.class.getName(),
+        BehavedObject pervert = introduceBehavedObject(
+                "dirty rotten pervert",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
                 Visualizations.COCKPIT,
                 initialRadius, null);
+
+        getContext().tagPhysicalObject(pervert.getObject(), Tags.FOLLOWER);
+        getContext().tagPhysicalObject(pervert.getObject(), Tags.ATTACKER);
 
         //pervert.behave(Arrays.asList(lookingForADamsel(),chaseAfter(), circlingDamsel()));
     }

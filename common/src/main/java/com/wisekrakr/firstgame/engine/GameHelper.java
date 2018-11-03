@@ -31,9 +31,7 @@ public class GameHelper {
         return distanceBetween(subject.getPosition(), target.getPosition());
     }
 
-    public static float distanceBetween(GameObject subject, GameObject target) {
-        return distanceBetween(subject.getPosition(), target.getPosition());
-    }
+
 
     public static float distanceBetween(Vector2 subject, Vector2 target) {
         float attackDistanceX = target.x - subject.x;
@@ -42,9 +40,6 @@ public class GameHelper {
         return (float) Math.hypot(attackDistanceX, attackDistanceY);
     }
 
-    public static float angleBetween(GameObject subject, GameObject target) {
-        return angleBetween(subject.getPosition(), target.getPosition());
-    }
 
     public static float angleBetween(Vector2 subject, Vector2 target) {
         float attackDistanceX = target.x - subject.x;

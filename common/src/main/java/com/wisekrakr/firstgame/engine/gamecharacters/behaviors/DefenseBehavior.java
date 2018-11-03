@@ -63,7 +63,7 @@ public class DefenseBehavior extends AbstractBehavior {
                                         null
                                 );
 
-                                System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_BLACK_BACKGROUND + StringHelper.ANSI_WHITE + " dodging target: " + StringHelper.ANSI_RESET + target.getName());
+                                //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_BLACK_BACKGROUND + StringHelper.ANSI_WHITE + " dodging target: " + StringHelper.ANSI_RESET + target.getName());
 
                                 break;
 
@@ -90,7 +90,7 @@ public class DefenseBehavior extends AbstractBehavior {
 
                                 break;
                             default:
-                                System.out.println("No Attacking Behavior chosen for : " + getContext().getSubject().getName());
+                                System.out.println("No Defense Behavior chosen for : " + getContext().getSubject().getName());
 
                         }
 

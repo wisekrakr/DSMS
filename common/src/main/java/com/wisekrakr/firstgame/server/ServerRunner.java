@@ -54,13 +54,6 @@ public class ServerRunner {
 
     private void initializeEngine() {
 
-
-/*        float minX = EngineConstants.MIN_X;
-        float minY = EngineConstants.MIN_Y;
-        float width = EngineConstants.ENGINE_WIDTH;
-        float height = EngineConstants.ENGINE_HEIGHT;
-        float plusOfXY = EngineConstants.PLUS_XY;
-*/
         engine = new SpaceEngine();
 
         gameEngine = new GameEngine(engine);

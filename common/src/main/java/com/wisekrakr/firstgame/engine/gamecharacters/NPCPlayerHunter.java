@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
@@ -13,34 +12,46 @@ import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.Arrays;
 
-public class NPCPlayerHunter extends AttackingCharacter {
+public class NPCPlayerHunter extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
     private float radiusOfAttack;
-    private float health;
 
-    public NPCPlayerHunter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+
+    public NPCPlayerHunter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-        this.health = health;
+
     }
 
     @Override
     public void start() {
-        BehavedObject playerHunter = introduceBehavedObject(NPCPlayerHunter.class.getName(),
+        BehavedObject playerHunter = introduceBehavedObject(
+                "player hunter",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                Visualizations.TEST,
-                initialRadius, null);
+                Visualizations.A,
+                initialRadius,
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        NPCPlayerHunter.this.getContext().removeMyself();
+                    }
+                });
 
-        tools().addTargetName(PlayerCreationRequest.playerName());
+        getContext().tagPhysicalObject(playerHunter.getObject(), Tags.ATTACKER);
+        getContext().tagPhysicalObject(playerHunter.getObject(), Tags.BULLET_ATTACKER);
+
+        AbstractNPCTools tools = getContext().npcTools(playerHunter.getObject());
+
+        tools.tools().addTargetName(Tags.PLAYER);
 
         playerHunter.behave(
                 Arrays.asList(
@@ -48,7 +59,6 @@ public class NPCPlayerHunter extends AttackingCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
-                                getContext().updatePhysicalObjectExtra("health", health);
 
                             }
 
@@ -68,28 +78,19 @@ public class NPCPlayerHunter extends AttackingCharacter {
 
                             @Override
                             public void elapseTime(float clock, float delta) {
-                                if (health <= 0){
-                                    NPCPlayerHunter.this.getContext().removeMyself();
-                                    getContext().removePhysicalObject();
-                                }
+                                tools.tools().weaponry(NPCPlayerHunter.this.getContext(), CharacterTools.Weaponry.SPLASH_BULLETS, 1f, radiusOfAttack);
+                                tools.tools().weaponry(NPCPlayerHunter.this.getContext(), CharacterTools.Weaponry.HOMING_MISSILES, 0.7f, radiusOfAttack-200f);
+                                tools.tools().weaponry(NPCPlayerHunter.this.getContext(), CharacterTools.Weaponry.BULLETS, 0.4f, radiusOfAttack-400f);
+
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f), getContext(), tools().targetList()),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack/2, 0.6f, getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW,
+                                radiusOfAttack,
+                                initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 60f),
+                                getContext(),
+                                tools.tools().targetList(NPCPlayerHunter.this.getContext()))
 
-                            @Override
-                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                                return new BulletCharacter(position,
-                                        speedMagnitude,
-                                        orientation,
-                                        5f,
-                                        radius,
-                                        getContext().getPhysicalObject().getCollisionRadius(),
-                                        Visualizations.LEFT_CANNON,
-                                        getContext());
-                            }
-                        })
                 ));
     }
 

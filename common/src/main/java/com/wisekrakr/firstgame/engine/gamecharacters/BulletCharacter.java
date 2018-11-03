@@ -15,17 +15,15 @@ public class BulletCharacter extends AbstractNonPlayerGameCharacter {
     private final float speedDirection;
     private float bulletAge;
     private float radius;
-    private float damage;
     private Visualizations visualizations;
     private GameCharacterContext master;
 
-    public BulletCharacter(Vector2 position, float speedMagnitude, float speedDirection, float bulletAge, float radius, float damage, Visualizations visualizations, GameCharacterContext master) {
+    public BulletCharacter(Vector2 position, float speedMagnitude, float speedDirection, float bulletAge, float radius, Visualizations visualizations, GameCharacterContext master) {
         this.position = position;
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
         this.bulletAge = bulletAge;
         this.radius = radius;
-        this.damage = damage;
         this.visualizations = visualizations;
         this.master = master;
     }
@@ -39,7 +37,12 @@ public class BulletCharacter extends AbstractNonPlayerGameCharacter {
                 speedDirection,
                 visualizations,
                 radius,
-                null);
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        BulletCharacter.this.getContext().removeMyself();
+                    }
+                });
 
         getContext().tagPhysicalObject(bullet.getObject(), Tags.PROJECTILE);
 
@@ -53,8 +56,7 @@ public class BulletCharacter extends AbstractNonPlayerGameCharacter {
                     @Override
                     public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
 
-
-                        if (!object.getTags().contains(Tags.DEBRIS) && object != master.getPhysicalObject() && !object.getTags().contains(Tags.PROJECTILE)) {
+                        if (!object.getTags().contains(Tags.DEBRIS) && object != master.getPhysicalObject()) {
                             getContext().addCharacter(new ExplosionCharacter(getContext().getSubject().getPosition(),
                                     GameHelper.generateRandomNumberBetween(5f, 20f),
                                     GameHelper.randomDirection(),

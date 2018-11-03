@@ -13,7 +13,7 @@ import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.Arrays;
 
-public class NPCShieldedAggressor extends AttackingCharacter {
+public class NPCShieldedAggressor extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
@@ -32,7 +32,8 @@ public class NPCShieldedAggressor extends AttackingCharacter {
 
     @Override
     public void start() {
-        BehavedObject shieldedAggressor = introduceBehavedObject(AttackingCharacter.class.getName(),
+        BehavedObject shieldedAggressor = introduceBehavedObject(
+                "shielded bastard",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
@@ -40,7 +41,7 @@ public class NPCShieldedAggressor extends AttackingCharacter {
                 Visualizations.TEST,
                 initialRadius, null);
 
-        tools().addTargetName(AttackingCharacter.class.getName());
+        getContext().tagPhysicalObject(shieldedAggressor.getObject(), Tags.ATTACKER);
 
         shieldedAggressor.behave(
                 Arrays.asList(
@@ -48,7 +49,7 @@ public class NPCShieldedAggressor extends AttackingCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
-                                getContext().updatePhysicalObjectExtra("health", health);
+
                             }
 
                             @Override
@@ -68,22 +69,18 @@ public class NPCShieldedAggressor extends AttackingCharacter {
                             @Override
                             public void elapseTime(float clock, float delta) {
 
-                                if (health <= 0){
-                                    NPCShieldedAggressor.this.getContext().removeMyself();
-                                    getContext().removePhysicalObject();
-                                }
+
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), tools().targetList()),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.5f, NPCShieldedAggressor.this.getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack +100f, initialSpeedMagnitude + 30f, getContext(), null),
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack , 0.5f, NPCShieldedAggressor.this.getContext(), null, new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
-                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack) {
                                 return new BulletCharacter(position,
                                         speedMagnitude,
                                         orientation,
                                         5f,
-                                        3f,
                                         3f,
                                         Visualizations.BOULDER,
                                         getContext()

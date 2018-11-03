@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
@@ -12,6 +11,7 @@ import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DuplicationBehavior extends AbstractBehavior {
 
@@ -19,13 +19,13 @@ public class DuplicationBehavior extends AbstractBehavior {
     private Integer number;
     private Float spawnInterval;
     private GameCharacterContext master;
-    private final List<String> targetList;
+    private Set<String> targetList;
     private DuplicationStyle duplicationStyle;
     private Float lastShot;
     private ArrayList<GameCharacter>characters = new ArrayList<>();
     private CharacterFactory factory;
 
-    public DuplicationBehavior(DuplicationStyle duplicationStyle, float radiusOfAttack, Integer number, Float spawnInterval, GameCharacterContext master, List<String> targetList, CharacterFactory factory) {
+    public DuplicationBehavior(DuplicationStyle duplicationStyle, float radiusOfAttack, Integer number, Float spawnInterval, GameCharacterContext master, Set<String> targetList, CharacterFactory factory) {
         this.duplicationStyle = duplicationStyle;
         this.radiusOfAttack = radiusOfAttack;
         this.number = number;
@@ -59,7 +59,7 @@ public class DuplicationBehavior extends AbstractBehavior {
                 if (!target.getTags().contains(Tags.PROJECTILE) && !target.getTags().contains(Tags.DEBRIS) && target != getContext().getSubject()) {
 
                     for (String string: targetList){
-                        if (target.getName().contains(string)) {
+                        if (target.getTags().contains(string)) {
 
                             if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
@@ -80,15 +80,13 @@ public class DuplicationBehavior extends AbstractBehavior {
                                                             angle,
                                                             angle,
                                                             GameHelper.generateRandomNumberBetween(getContext().getSubject().getCollisionRadius() / 4, getContext().getSubject().getCollisionRadius() / 2),
-                                                            radiusOfAttack,
-                                                            GameHelper.generateRandomNumberBetween(20f, 60f),
-                                                            GameHelper.generateRandomNumberBetween(5f, 10f)
+                                                            radiusOfAttack
                                                     );
 
                                                     getContext().addCharacter(newObject, null); // TODO: implement listener
                                                     characters.add(newObject);
 
-                                                    System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_PURPLE_BACKGROUND + StringHelper.ANSI_WHITE + " deploying minions at: " + StringHelper.ANSI_RESET + target.getName());
+                                                    //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_PURPLE_BACKGROUND + StringHelper.ANSI_WHITE + " deploying minions at: " + StringHelper.ANSI_RESET + target.getName());
                                                 }
                                                 lastShot = clock;
                                             }
@@ -101,7 +99,7 @@ public class DuplicationBehavior extends AbstractBehavior {
                                         break;
 
                                     default:
-                                        System.out.println("No Attacking Behavior chosen for : " + getContext().getSubject().getName());
+                                        System.out.println("No Duplication Behavior chosen for : " + getContext().getSubject().getName());
 
                                 }
                             }

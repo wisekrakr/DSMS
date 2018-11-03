@@ -701,7 +701,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                         break;
                     case ENEMY:
 
-                        shapeRenderer.setColor(chooseRandomColor(SPACESHIP_COLORS));
+                        shapeRenderer.setColor(Color.PINK);
                         shapeRenderer.circle(physicalObject.getPosition().x, physicalObject.getPosition().y, radius); //5f is default radius
                         shapeRenderer.setColor(chooseRandomColor(SPACESHIP_COLORS));
                         shapeRenderer.circle(physicalObject.getPosition().x + (radius / 2) * (float) Math.cos(physicalObject.getOrientation()),

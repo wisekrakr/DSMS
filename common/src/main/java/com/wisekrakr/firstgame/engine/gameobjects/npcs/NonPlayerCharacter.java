@@ -9,7 +9,8 @@ import com.wisekrakr.firstgame.engine.gameobjects.GameObject;
 
 import java.util.*;
 
-public class NonPlayerCharacter extends GameObject {
+public class NonPlayerCharacter  {
+    /*
     private List<Behavior> activeBehaviors = new ArrayList<>();
     private float speed = 0f;
     private List<GameObject> nearby;
@@ -202,7 +203,7 @@ public class NonPlayerCharacter extends GameObject {
         setDirection(this.getDirection() + (float) Math.PI);
         setOrientation(this.getDirection());
     }
-/*
+
     private void keepObjectsFromOverlapping(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         if (!(subject instanceof WeaponObjectClass || subject instanceof DebrisObject || subject instanceof Mission || subject instanceof AsteroidNPC)) {
             float angle = GameHelper.angleBetween(this, subject);
@@ -220,7 +221,7 @@ public class NonPlayerCharacter extends GameObject {
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         keepObjectsFromOverlapping(subject, toDelete, toAdd);
     }
-*/
+
     @Override
     public final void elapseTime(float clock, float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
         int index = 0;
@@ -265,5 +266,5 @@ public class NonPlayerCharacter extends GameObject {
         }
         return cachedNearest;
     }
-
+*/
 }

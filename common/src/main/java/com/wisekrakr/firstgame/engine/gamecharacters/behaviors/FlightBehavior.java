@@ -1,26 +1,24 @@
 package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 
 import java.util.List;
+import java.util.Set;
 
 public class FlightBehavior extends AbstractBehavior {
 
     private float radiusOfAttack;
     private Float speedIncrease;
     private GameCharacterContext master;
-    private List<String> targetList;
+    private Set<String> targetList;
     private FlightStyle flightStyle;
     private Float lastDirectionChange;
 
-    public FlightBehavior(FlightStyle flightStyle, float radiusOfAttack, Float speedIncrease, GameCharacterContext master, List<String> targetList) {
+    public FlightBehavior(FlightStyle flightStyle, float radiusOfAttack, Float speedIncrease, GameCharacterContext master, Set<String> targetList) {
         this.flightStyle = flightStyle;
         this.radiusOfAttack = radiusOfAttack;
         this.speedIncrease = speedIncrease;
@@ -48,7 +46,7 @@ public class FlightBehavior extends AbstractBehavior {
                 if (!target.getTags().contains(Tags.PROJECTILE) && !target.getTags().contains(Tags.DEBRIS) && target != getContext().getSubject()) {
 
                     for (String string: targetList){
-                        if (target.getName().contains(string)){
+                        if (target.getTags().contains(string)){
 
                             if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
@@ -65,7 +63,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                 null,
                                                 null
                                         );
-                                        System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_YELLOW_BACKGROUND + " chasing target: " + StringHelper.ANSI_RESET + target.getName());
+                                        //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_YELLOW_BACKGROUND + " chasing target: " + StringHelper.ANSI_RESET + target.getName());
                                         break;
                                     case ZIGZAG:
                                         //angle towards target and when close enough cling to target from short distance
@@ -89,7 +87,7 @@ public class FlightBehavior extends AbstractBehavior {
                                             );
                                             lastDirectionChange = null;
                                         }
-                                        System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_CYAN_BACKGROUND + " zig- or zagging target: " + StringHelper.ANSI_RESET + target.getName());
+                                        //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_CYAN_BACKGROUND + " zig- or zagging target: " + StringHelper.ANSI_RESET + target.getName());
 
                                         break;
                                     case CIRCLING:
@@ -107,7 +105,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                 null
                                         );
 
-                                        System.out.println(getContext().getSubject().getName() + " = circling target: " + target.getName());
+                                        //System.out.println(getContext().getSubject().getName() + " = circling target: " + target.getName());
 
                                         break;
                                     case FLY_AWAY:
@@ -121,7 +119,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                 null,
                                                 null
                                         );
-                                        System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_BLUE_BACKGROUND + StringHelper.ANSI_WHITE + " running from: " + StringHelper.ANSI_RESET + target.getName());
+                                        //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_BLUE_BACKGROUND + StringHelper.ANSI_WHITE + " running from: " + StringHelper.ANSI_RESET + target.getName());
 
                                         break;
                                     default:

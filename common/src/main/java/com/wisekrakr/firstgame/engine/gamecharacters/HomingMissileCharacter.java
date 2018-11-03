@@ -8,9 +8,11 @@ import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-public class HomingMissileCharacter extends AttackingCharacter {
+public class HomingMissileCharacter extends AbstractNonPlayerGameCharacter{
 
     private final Vector2 position;
     private final float speedMagnitude;
@@ -21,10 +23,9 @@ public class HomingMissileCharacter extends AttackingCharacter {
     private float radiusOfAttack;
     private final Visualizations visualizations;
     private GameCharacterContext master;
-    private List<String> mastersTargetList;
+    private Set<String> mastersTargetList;
 
-
-    public HomingMissileCharacter(Vector2 position, float speedMagnitude, float speedDirection, float missileAge, float damage, float radius, float radiusOfAttack, Visualizations visualizations, GameCharacterContext master, List<String> mastersTargetList) {
+    public HomingMissileCharacter(Vector2 position, float speedMagnitude, float speedDirection, float missileAge, float radius, float radiusOfAttack, Visualizations visualizations, GameCharacterContext master, Set<String> mastersTargetList) {
         this.position = position;
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
@@ -45,9 +46,17 @@ public class HomingMissileCharacter extends AttackingCharacter {
                 speedMagnitude,
                 speedDirection,
                 visualizations,
-                radius, null);
+                radius,
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        HomingMissileCharacter.this.getContext().removeMyself();
+                    }
+                });
 
         getContext().tagPhysicalObject(missile.getObject(), Tags.PROJECTILE);
+
+        AbstractNPCTools tools = getContext().npcTools(missile.getObject());
 
         missile.behave(
                 Arrays.asList(
@@ -59,8 +68,8 @@ public class HomingMissileCharacter extends AttackingCharacter {
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (master.getPhysicalObject() != object) {
-                                    float damage = CollisionModel.calculateDamage(missile.getObject(), object, impact);
+                                if (master.getPhysicalObject() != object && !object.getTags().contains(Tags.DEBRIS)) {
+                                    float damage = CollisionModel.calculateDamage(missile.getObject(), object);
 
                                     if (damage != 0f) {
                                         getContext().updatePhysicalObject(null,
@@ -102,11 +111,23 @@ public class HomingMissileCharacter extends AttackingCharacter {
                                     getContext().removePhysicalObject();
                                     HomingMissileCharacter.this.getContext().removeMyself();
                                 }
-                                System.out.println(mastersTargetList.get(0));
+
+                                Iterator<String>iterator = mastersTargetList.iterator();
+                                while (iterator.hasNext()){
+                                    String n = iterator.next();
+                                    if (mastersTargetList.contains(n)){
+                                        tools.tools().addTargetName(n);
+                                    }
+                                }
+
                             }
 
                         },
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, speedMagnitude + 20f, master, mastersTargetList)
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW,
+                                radiusOfAttack,
+                                speedMagnitude + 20f,
+                                master,
+                                tools.tools().targetList(HomingMissileCharacter.this.getContext()))
 
                 ));
     }

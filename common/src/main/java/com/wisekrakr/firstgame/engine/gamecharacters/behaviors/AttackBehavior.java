@@ -1,6 +1,5 @@
 package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.StringHelper;
@@ -12,18 +11,21 @@ import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.List;
+import java.util.Set;
 
 public class AttackBehavior extends AbstractBehavior {
 
     private float radiusOfAttack;
     private float fireRate;
-    private List<String> targetList;
+    private Set<String> targetList;
     private AttackStyle attackStyle;
     private GameCharacterContext master;
     private Float lastShot;
     private CharacterFactory<?>factory;
 
-    public AttackBehavior(AttackStyle attackStyle, float radiusOfAttack, float fireRate, GameCharacterContext master, List<String> targetList, CharacterFactory<?> factory) {
+    //TODO: delete all this bullllshjiiit
+
+    public AttackBehavior(AttackStyle attackStyle, float radiusOfAttack, float fireRate, GameCharacterContext master, Set<String> targetList, CharacterFactory<?> factory) {
         this.radiusOfAttack = radiusOfAttack;
         this.fireRate = fireRate;
         this.targetList = targetList;
@@ -41,14 +43,12 @@ public class AttackBehavior extends AbstractBehavior {
 
         List<NearPhysicalObject> nearbyPhysicalObjects =
                 master.findNearbyPhysicalObjects(getContext().getSubject(), radiusOfAttack);
-
         if (!nearbyPhysicalObjects.isEmpty()) {
             for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
 
                 PhysicalObject target = nearPhysicalObject.getObject();
 
                 float angle = GameHelper.angleBetween(getContext().getSubject().getPosition(), target.getPosition());
-
 
                 float x = getContext().getSubject().getPosition().x;
                 float y = getContext().getSubject().getPosition().y;
@@ -59,7 +59,7 @@ public class AttackBehavior extends AbstractBehavior {
                 if (!target.getTags().contains(Tags.PROJECTILE) && !target.getTags().contains(Tags.DEBRIS) && target != getContext().getSubject()) {
 
                     for (String string: targetList){
-                        if (target.getName().contains(string)) {
+                        if (target.getTags().contains(string)) {
 
                             if (GameHelper.distanceBetweenPhysicals(getContext().getSubject(), target) < radiusOfAttack) {
 
@@ -92,16 +92,14 @@ public class AttackBehavior extends AbstractBehavior {
                                                         getContext().getSubject().getOrientation(),
                                                         getContext().getSubject().getSpeedDirection(),
                                                         master.getPhysicalObject().getCollisionRadius() / 5,
-                                                        radiusOfAttack,
-                                                        0,
-                                                        getContext().getSubject().getCollisionRadius());
+                                                        radiusOfAttack
+                                                );
 
                                                 getContext().addCharacter(newObject, null);
-                                                System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_RED_BACKGROUND + " shooting target: " + StringHelper.ANSI_RESET + target.getName());
+                                                //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_RED_BACKGROUND + " shooting target: " + StringHelper.ANSI_RESET + target.getName());
                                                 lastShot = clock;
                                             }
                                         }
-
                                         break;
 
                                     case BUMP:

@@ -9,7 +9,6 @@ public class Collision {
     private float time;
     private float impact;
 
-    //TODO: Two,  maybe needs to be a list of PhysicalObjects ===> more objects can hit another object at the same time?
     public Collision(PhysicalObject one, PhysicalObject two, Vector2 epicentre, float time, float impact) {
         this.one = one;
         this.two = two;

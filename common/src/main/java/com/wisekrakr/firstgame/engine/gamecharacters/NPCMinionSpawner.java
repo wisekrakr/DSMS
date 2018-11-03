@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.firstgame.client.PlayerCreationRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
@@ -13,27 +12,27 @@ import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.Arrays;
 
-public class NPCMinionSpawner extends AttackingCharacter {
+public class NPCMinionSpawner extends AbstractNonPlayerGameCharacter {
     private Vector2 initialPosition;
     private float initialRadius;
     private final float initialDirection;
     private final float initialSpeedMagnitude;
     private float radiusOfAttack;
-    private float health;
 
-    public NPCMinionSpawner(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+    public NPCMinionSpawner(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-        this.health = health;
+
     }
 
 
     @Override
     public void start() {
-        BehavedObject duplicationStation = introduceBehavedObject(NPCMinionSpawner.class.getName(),
+        BehavedObject duplicationStation = introduceBehavedObject(
+                "mother ship",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
@@ -41,7 +40,10 @@ public class NPCMinionSpawner extends AttackingCharacter {
                 Visualizations.TEST,
                 initialRadius, null);
 
-        tools().addTargetName(PlayerCreationRequest.playerName());
+        getContext().tagPhysicalObject(duplicationStation.getObject(), Tags.MOTHER_SHIP);
+        getContext().tagPhysicalObject(duplicationStation.getObject(), Tags.ATTACKER);
+        getContext().tagPhysicalObject(duplicationStation.getObject(), Tags.SPAWNING_ATTACKER);
+
 
         duplicationStation.behave(
                 Arrays.asList(
@@ -49,13 +51,12 @@ public class NPCMinionSpawner extends AttackingCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
-                                getContext().updatePhysicalObjectExtra("health", health);
 
                             }
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                if (!object.getTags().contains(Tags.DEBRIS) && !object.getTags().contains(NPCMinion.class.getName())) {
+                                if (!object.getTags().contains(Tags.DEBRIS) && !object.getTags().contains(Tags.MINION)) {
                                     getContext().updatePhysicalObject(null,
                                             null,
                                             null,
@@ -67,42 +68,34 @@ public class NPCMinionSpawner extends AttackingCharacter {
                                 }
                             }
 
-                            @Override
-                            public void elapseTime(float clock, float delta) {
-                                if (health <= 0) {
-                                    NPCMinionSpawner.this.getContext().removeMyself();
-                                    getContext().removePhysicalObject();
-                                }
-                            }
+
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new DuplicationBehavior(DuplicationBehavior.DuplicationStyle.DEPLOY_MINIONS, radiusOfAttack, 30, 0.5f, NPCMinionSpawner.this.getContext(), tools().targetList(), new CharacterFactory() {
+                        new DuplicationBehavior(DuplicationBehavior.DuplicationStyle.DEPLOY_MINIONS, radiusOfAttack, 30, 0.5f, NPCMinionSpawner.this.getContext(), null, new CharacterFactory() {
                             @Override
-                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack) {
                                 return new NPCMinion(position,
                                         radius,
                                         speedDirection,
                                         speedMagnitude,
                                         radiusOfAttack,
-                                        health,
                                         Visualizations.ENEMY,
-                                        tools().targetList(),
+                                        null,
                                         NPCMinionSpawner.this.getContext());
                             }
                         }),
-                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack / 2, 1, NPCMinionSpawner.this.getContext(), tools().targetList(), new CharacterFactory<AbstractNonPlayerGameCharacter>() {
+                        new AttackBehavior(AttackBehavior.AttackStyle.SHOOT, radiusOfAttack / 2, 1, NPCMinionSpawner.this.getContext(), null, new CharacterFactory<AbstractNonPlayerGameCharacter>() {
                             @Override
-                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
+                            public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack) {
                                 return new HomingMissileCharacter(position,
                                         speedMagnitude,
                                         orientation,
                                         5f,
-                                        getContext().getPhysicalObject().getCollisionRadius() * 2,
                                         3f,
                                         radiusOfAttack,
                                         Visualizations.RIGHT_CANNON,
                                         getContext(),
-                                        tools().targetList());
+                                        null);
                             }
                         })
 

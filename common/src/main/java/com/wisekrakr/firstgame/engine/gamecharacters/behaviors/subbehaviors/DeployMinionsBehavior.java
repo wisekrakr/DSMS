@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 
@@ -39,9 +38,8 @@ public class DeployMinionsBehavior extends AbstractBehavior {
                     GameHelper.randomDirection(),
                     GameHelper.randomDirection(),
                     GameHelper.generateRandomNumberBetween(10f, 20f),
-                    radiusOfAttack,
-                    GameHelper.generateRandomNumberBetween(20f, 60f),
-                    GameHelper.generateRandomNumberBetween(5f, 10f)), null); // TODO: implement listener
+                    radiusOfAttack
+            ), null); // TODO: implement listener
             lastCreation = clock;
         }
 

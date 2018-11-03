@@ -117,12 +117,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
             public PhysicalObject getSubject() {
                 return subject;
             }
-/*
-            @Override
-            public PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualization, float collisionRadius, PhysicalObjectListener alistener) {
-                return getContext().addPhysicalObject(name, position, orientation, speedMagnitude, speedDirection, 0,0, visualization, collisionRadius, alistener);
-            }
-            */
+
         });
 
         b.start();

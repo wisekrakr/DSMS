@@ -9,9 +9,7 @@ import com.wisekrakr.firstgame.engine.gamecharacters.HomingMissileCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Player extends AbstractGameCharacter {
     private final float maxHealth;
@@ -47,6 +45,7 @@ public class Player extends AbstractGameCharacter {
                 PhysicalObjectEvictionPolicy.DISCARD);
 
         getContext().getSpaceEngine().markVitalizer(spaceship);
+        getContext().tagPhysicalObject(spaceship, Tags.PLAYER);
 
         getContext().updatePhysicalObjectExtra(spaceship, "radius", 10f);
         getContext().updatePhysicalObjectExtra(spaceship, "distanceTravelled", 10f);
@@ -235,7 +234,6 @@ public class Player extends AbstractGameCharacter {
                     adaptedAngle,
                     3f,
                     3f,
-                    5f,
                     Visualizations.LEFT_CANNON,
                     getContext()
             ), null);
@@ -257,7 +255,6 @@ public class Player extends AbstractGameCharacter {
                     spaceship.getSpeedMagnitude() + 120f,
                     adaptedAngle,
                     3f,
-                    10f,
                     3f,
                     200f,
                     Visualizations.RIGHT_CANNON,
@@ -268,14 +265,14 @@ public class Player extends AbstractGameCharacter {
         }
     }
 
-    private List<String> targetList(){
+    private Set<String> targetList(){
 
         List<NearPhysicalObject> nearbyPhysicalObjects =
                 getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
 
         Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
 
-        List<String> targetList = new ArrayList<>();
+        Set<String> targetList = new HashSet<>();
 
         if (targetList.isEmpty()){
             NearPhysicalObject p;

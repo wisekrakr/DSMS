@@ -18,7 +18,7 @@ public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
     private Visualizations visualizations;
     private GameCharacterContext master;
 
-    public SplashBulletCharacter(Vector2 position, float speedMagnitude, float speedDirection, float bulletAge, float radius, float damage, Visualizations visualizations, GameCharacterContext master) {
+    public SplashBulletCharacter(Vector2 position, float speedMagnitude, float speedDirection, float bulletAge, float radius, Visualizations visualizations, GameCharacterContext master) {
         this.position = position;
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
@@ -38,7 +38,12 @@ public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
                 speedDirection,
                 visualizations,
                 radius,
-                null);
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        SplashBulletCharacter.this.getContext().removeMyself();
+                    }
+                });
 
         getContext().tagPhysicalObject(bullet.getObject(), Tags.PROJECTILE);
 
@@ -78,7 +83,6 @@ public class SplashBulletCharacter extends AbstractNonPlayerGameCharacter {
                                         getContext().getSubject().getSpeedMagnitude(),
                                         GameHelper.randomDirection(),
                                         5f,
-                                        3f,
                                         3f,
                                         Visualizations.B,
                                         SplashBulletCharacter.this.getContext()

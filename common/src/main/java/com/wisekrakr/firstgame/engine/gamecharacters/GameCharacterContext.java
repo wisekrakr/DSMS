@@ -23,6 +23,8 @@ public interface GameCharacterContext {
 
     void removeMyself();
 
+    AbstractNPCTools npcTools(PhysicalObject object);
+
     PhysicalObject getPhysicalObject();
     List<NearPhysicalObject> findNearbyPhysicalObjects(PhysicalObject reference, float radius);
 }

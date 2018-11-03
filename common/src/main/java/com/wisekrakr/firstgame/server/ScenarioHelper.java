@@ -12,8 +12,8 @@ public class ScenarioHelper {
     public static final CharacterFactory ASTEROID_FACTORY =
             new CharacterFactory() {
                 @Override
-                public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack, float health, float damage) {
-                    return new AsteroidCharacter(position, radius, speedDirection, speedMagnitude, health, damage);
+                public AbstractNonPlayerGameCharacter createCharacter(Vector2 position, float speedMagnitude, float orientation, float speedDirection, float radius, float radiusOfAttack) {
+                    return new AsteroidCharacter(position, radius, speedDirection, speedMagnitude);
                 }
             };
 

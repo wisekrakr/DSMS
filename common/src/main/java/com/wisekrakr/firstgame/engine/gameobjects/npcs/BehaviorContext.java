@@ -10,19 +10,6 @@ public interface BehaviorContext {
     void pushSubBehavior(Behavior b);
     Behavior existingSubBehavior();
 
-    void addGameObject(GameObject newObject);
-    void removeGameObject(GameObject object);
-
-    List<GameObject> nearby();
-
-    GameObject nearest();
-
-    float nearestInFloats();
-
-    GameObject thisObject();
-
-    boolean collisionDetection(GameObject object);
-
     Vector2 getPosition();
 
     float getSpeed();

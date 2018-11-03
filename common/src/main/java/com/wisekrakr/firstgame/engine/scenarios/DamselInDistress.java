@@ -52,8 +52,8 @@ public class DamselInDistress extends Scenario {
                 20f,
                 GameHelper.randomDirection(),
                 GameHelper.generateRandomNumberBetween(10f, 30f),
-                400f,
-                100f);
+                400f
+        );
 
 
         getContext().engine().addGameCharacter(damsel, null);  // TODO: implement a listener

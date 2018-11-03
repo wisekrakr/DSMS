@@ -14,30 +14,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DamselCharacter extends FriendlyCharacter {
+public class DamselCharacter extends AbstractNonPlayerGameCharacter {
 
     private Vector2 initialPosition;
     private float initialRadius;
     private float initialDirection;
     private float initialSpeedMagnitude;
     private float radiusOfAttack;
-    private float health;
+
     private Behavior desiredBehavior;
     private List<Behavior> behaviorList = new ArrayList<>();
     private boolean clingingOn;
 
-    public DamselCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float health) {
+    public DamselCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-        this.health = health;
+
     }
 
     @Override
     public void start() {
-
         BehavedObject damsel = introduceBehavedObject(DamselCharacter.class.getName(),
                 initialPosition,
                 initialDirection,
@@ -53,12 +52,12 @@ public class DamselCharacter extends FriendlyCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
-                                getContext().updatePhysicalObjectExtra("health", health);
+
                             }
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                float damage = CollisionModel.calculateDamage(damsel.getObject(), object, impact);
+                                float damage = CollisionModel.calculateDamage(damsel.getObject(), object);
 
                                 if (damage != 0f) {
                                     getContext().updatePhysicalObject(null,
@@ -74,14 +73,11 @@ public class DamselCharacter extends FriendlyCharacter {
 
                             @Override
                             public void elapseTime(float clock, float delta) {
-                                if (health <= 0) {
-                                    DamselCharacter.this.getContext().removeMyself();
-                                    getContext().removePhysicalObject();
-                                }
+
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext(), targetList())
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext(), null)
 
 
                 ));
