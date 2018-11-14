@@ -41,7 +41,7 @@ public class ShieldCharacter extends AbstractGameCharacter {
                 null,
                 PhysicalObjectEvictionPolicy.DISCARD);
         getContext().updatePhysicalObjectExtra(shield, "radius", radius);
-        getContext().tagPhysicalObject(shield, Tags.DEBRIS);
+        getContext().tagPhysicalObject(shield, Tags.DEFENSE_MATERIAL);
     }
 
     @Override
@@ -62,6 +62,7 @@ public class ShieldCharacter extends AbstractGameCharacter {
                         master.getPhysicalObject().getOrientation(),
                         master.getPhysicalObject().getSpeedMagnitude(),
                         master.getPhysicalObject().getSpeedDirection(),
+                        null,
                         null,
                         null
                 );

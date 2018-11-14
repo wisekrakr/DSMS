@@ -70,6 +70,7 @@ public class NPCAvoiding extends AbstractNonPlayerGameCharacter {
                                             null,
                                             null,
                                             null,
+                                            null,
                                             null
                                     );
                                 }

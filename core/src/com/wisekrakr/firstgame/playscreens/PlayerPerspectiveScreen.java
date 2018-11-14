@@ -101,15 +101,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
     // this list of actors will be removed before the next render cycle
     private List<Actor> volatileActors = new ArrayList<Actor>();
-
-    private Random random = GameHelper.randomGenerator;
     private Float hardSteering;
-
-    private boolean foundMySelf;
-
-    private MissionText missionText;
-
     private Compass compass;
+    private InGameMenu inGameMenu;
+
+    private boolean foundMyself;
 
     public PlayerPerspectiveScreen(ClientConnector connector, List<String> players, String mySelf) {
         this.connector = connector;
@@ -173,11 +169,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         pauseScreenAdapter = new PauseScreenAdapter(inputMultiplexer);
 
-        missionText = new MissionText(myAssetManager);
-
         compass = new Compass();
 
         box2dBodyCreator = new Box2dBodyCreator();
+
+
     }
 
 
@@ -608,7 +604,8 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
         SpaceSnapshot snapshot = connector.latestSnapshot();
 
-        foundMySelf = false;
+        foundMyself = false;
+
         for (PhysicalObjectSnapshot object : snapshot.getPhysicalObjects()) {
             if (mySelf.equals(object.getName())) {
                 myself = object;
@@ -622,8 +619,6 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 camera.up.set(1, 0, 0);
                 camera.rotate(object.getOrientation() * 180 / (float) Math.PI, 0, 0, 1);
                 camera.update();
-
-                foundMySelf = true;
 
                 Label playerLabel = playerHud.nameLabel(object);
                 ProgressBar bar = playerHud.healthBar(object);
@@ -648,7 +643,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 overlayStage.addActor(playerDirection);
                 registerVolatileActor(playerDirection);
 
-
+                foundMyself = true;
                 break;
             }
         }
@@ -698,6 +693,12 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                             SpriteHelper.drawSpriteForGameObject(myAssetManager, "sprites/spaceship.png", physicalObject, batch, null);
                         }
 
+                        break;
+
+                    case TREASURE:
+                        Color treasureColor = chooseRandomColor(SPORE_COLORS);
+                        shapeRenderer.setColor(treasureColor);
+                        shapeRenderer.circle(x, y, radius);
                         break;
                     case ENEMY:
 
@@ -865,7 +866,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     private Color chooseRandomColor(Color[] randomColors) {
-        return randomColors[random.nextInt(randomColors.length)];
+        return randomColors[GameHelper.randomGenerator.nextInt(randomColors.length)];
     }
 
 
@@ -933,6 +934,10 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
             }
         }
 
+//        if (foundMyself) {
+//            inGameMenu = new InGameMenu(batch, myAssetManager, inputMultiplexer, myself);
+//            inGameMenu.createAndShowGUI();
+//        }
 
     }
 

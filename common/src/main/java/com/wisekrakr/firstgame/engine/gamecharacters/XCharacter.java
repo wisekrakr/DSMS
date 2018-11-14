@@ -6,7 +6,7 @@ import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.*;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class XCharacter extends AbstractNonPlayerGameCharacter {
 
@@ -23,11 +23,11 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-
     }
 
     @Override
     public void start() {
+
         BehavedObject middle = introduceBehavedObject(
                 "Test boi",
                 initialPosition,
@@ -61,20 +61,13 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
+
                             }
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
                                 if (!object.getTags().contains(Tags.DEBRIS)) {
-                                    getContext().updatePhysicalObject(null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            null
-                                    );
-                                    tools.tools().healthDamage(XCharacter.this.getContext(), object, impact);
+                                    tools.tools().damageIndicator(impact);
                                 }
                             }
 
@@ -108,8 +101,7 @@ public class XCharacter extends AbstractNonPlayerGameCharacter {
                                 tools.tools().targetList(getContext())
                         )
                 ));
-    }
-
+   }
 
 }
 

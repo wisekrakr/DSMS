@@ -29,6 +29,7 @@ public class TestBehavior extends AbstractBehavior {
                 null,
                 angle + updatedAngle,
                 null,
+                null,
                 null
         );
 

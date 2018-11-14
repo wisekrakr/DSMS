@@ -17,6 +17,8 @@ public interface PhysicalObject {
     Visualizations getVisualization();
     Map<String, Object> getExtraProperties();
 
+    PhysicalObjectEvictionPolicy getPolicy();
+
     // TODO: for now this is our shape model. We will replace this later with something more complex
     float getCollisionRadius();
 }

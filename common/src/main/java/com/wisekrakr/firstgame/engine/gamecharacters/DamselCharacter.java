@@ -3,48 +3,61 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.Behavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
 
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class DamselCharacter extends AbstractNonPlayerGameCharacter {
+
 
     private Vector2 initialPosition;
     private float initialRadius;
     private float initialDirection;
     private float initialSpeedMagnitude;
     private float radiusOfAttack;
+    private float radiusOfEscape;
 
-    private Behavior desiredBehavior;
-    private List<Behavior> behaviorList = new ArrayList<>();
-    private boolean clingingOn;
-
-    public DamselCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack) {
+    public DamselCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float radiusOfEscape) {
         this.initialPosition = initialPosition;
         this.initialRadius = initialRadius;
         this.initialDirection = initialDirection;
         this.initialSpeedMagnitude = initialSpeedMagnitude;
         this.radiusOfAttack = radiusOfAttack;
-
+        this.radiusOfEscape = radiusOfEscape;
     }
 
     @Override
     public void start() {
-        BehavedObject damsel = introduceBehavedObject(DamselCharacter.class.getName(),
+        BehavedObject damsel = introduceBehavedObject(
+                "little helpless spaceship",
                 initialPosition,
                 initialDirection,
                 initialSpeedMagnitude,
                 initialDirection,
-                Visualizations.TEST,
+                Visualizations.LEFT_CANNON,
                 initialRadius,
-                null);
+                new BehavedObjectListener() {
+                    @Override
+                    public void removed() {
+                        getContext().removeMyself();
+                    }
+                }
+        );
+
+        getContext().tagPhysicalObject(damsel.getObject(), Tags.DAMSEL);
+        getContext().tagPhysicalObject(damsel.getObject(), Tags.FRIENDLY);
+
+        AbstractNPCTools tools = getContext().npcTools(damsel.getObject());
+
+        tools.tools().addAvoidName(Tags.PERVERT);
+        tools.tools().addAvoidName(Tags.ATTACKER);
+        tools.tools().addTargetName(Tags.PLAYER);
+
+        tools.tools().healthIndicator(300f);
 
         damsel.behave(
                 Arrays.asList(
@@ -52,15 +65,14 @@ public class DamselCharacter extends AbstractNonPlayerGameCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
-
                             }
 
                             @Override
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
-                                float damage = CollisionModel.calculateDamage(damsel.getObject(), object);
 
-                                if (damage != 0f) {
+                                if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
+                                            null,
                                             null,
                                             null,
                                             null,
@@ -68,45 +80,50 @@ public class DamselCharacter extends AbstractNonPlayerGameCharacter {
                                             null,
                                             null
                                     );
+                                    tools.tools().damageIndicator(impact);
                                 }
                             }
 
                             @Override
                             public void elapseTime(float clock, float delta) {
 
+                                if (tools.tools().getHealth() <= 0){
+                                    DamselCharacter.this.getContext().removeMyself();
+
+                                    getContext().addCharacter(new ExplosionCharacter(
+                                                    getContext().getSubject().getPosition(),
+                                                    GameHelper.generateRandomNumberBetween(5f, 20f),
+                                                    GameHelper.randomDirection(),
+                                                    5,
+                                                    getContext().getSubject().getCollisionRadius() * 2,
+                                                    2f,
+                                                    Visualizations.EXPLOSION),
+                                                    new GameCharacterListener() {
+                                                        @Override
+                                                        public void removed(GameCharacter target) {
+                                                            target.stop();
+                                                        }
+                                                    });
+                                }
                             }
                         },
-                        new CruisingBehavior(GameHelper.generateRandomNumberBetween(5f, 10f), initialSpeedMagnitude),
-                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext(), null)
-
+                        new CruisingBehavior(GameHelper.generateRandomNumberBetween(60f, 180f),
+                                initialSpeedMagnitude
+                        ),
+                        new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW,
+                                radiusOfAttack,
+                                initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(20f, 40f),
+                                getContext(),
+                                tools.tools().targetList(getContext())
+                        ),
+                        new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY,
+                                radiusOfEscape,
+                                initialSpeedMagnitude + GameHelper.generateRandomNumberBetween(30f, 50f),
+                                getContext(),
+                                tools.tools().avoidList(getContext()))
 
                 ));
     }
 
-
-    public Behavior lookingForAHero() {
-        return new CruisingBehavior(5f, initialSpeedMagnitude);
-    }
-
-    /*
-        public Behavior runFrom() {
-            return new FlightBehavior(FlightBehavior.FlightStyle.FLY_AWAY, radiusOfAttack /2, initialSpeedMagnitude * 2, getContext());
-        }
-
-        public Behavior clingOn() {
-            return new FlightBehavior(FlightBehavior.FlightStyle.FOLLOW, radiusOfAttack, initialSpeedMagnitude, getContext());
-        }
-    */
-    public void missionComplete() {
-
-    }
-
-    public GameCharacterContext damselContext() {
-        return getContext();
-    }
-
-    public boolean isClingingOn() {
-        return clingingOn;
-    }
 
 }

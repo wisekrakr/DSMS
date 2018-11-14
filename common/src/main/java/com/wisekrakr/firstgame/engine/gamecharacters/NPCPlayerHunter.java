@@ -3,12 +3,10 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AttackBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.FlightBehavior;
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors.CruisingBehavior;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
-import com.wisekrakr.firstgame.engine.scenarios.CharacterFactory;
 
 import java.util.Arrays;
 
@@ -66,6 +64,7 @@ public class NPCPlayerHunter extends AbstractNonPlayerGameCharacter {
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
                                 if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
+                                            null,
                                             null,
                                             null,
                                             null,

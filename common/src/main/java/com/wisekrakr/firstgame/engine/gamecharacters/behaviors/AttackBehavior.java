@@ -2,7 +2,6 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
@@ -73,6 +72,7 @@ public class AttackBehavior extends AbstractBehavior {
                                                 angle,
                                                 null,
                                                 angle + getContext().getSubject().getCollisionRadius() * 2,
+                                                null,
                                                 null,
                                                 null
                                         );

@@ -3,10 +3,7 @@ package com.wisekrakr.firstgame.engine.gameobjects;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.client.SpaceshipControlRequest;
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.gamecharacters.AbstractGameCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.BulletCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.HomingMissileCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
+import com.wisekrakr.firstgame.engine.gamecharacters.*;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.*;
@@ -22,7 +19,9 @@ public class Player extends AbstractGameCharacter {
     private float lastDodge = -1000f;
     private float shootTime;
     private float adaptedAngle;
-    private PhysicalObject nearestObject;
+    private AbstractNPCTools tools;
+
+    private AbstractPhysicalObjectListener listener;
 
     public Player(String name) {
         this.name = name;
@@ -34,18 +33,22 @@ public class Player extends AbstractGameCharacter {
         float startDirection = GameHelper.randomDirection();
 
         spaceship = getContext().addPhysicalObject(name ,
-                GameHelper.randomPosition(),
+                new Vector2(),
                 startDirection,
                 0,
                 startDirection,
                 Visualizations.SPACESHIP,
                 10f,
-                new AbstractPhysicalObjectListener() {
-                },
-                PhysicalObjectEvictionPolicy.DISCARD);
+                new AbstractPhysicalObjectListener(),
+                null);
 
         getContext().getSpaceEngine().markVitalizer(spaceship);
         getContext().tagPhysicalObject(spaceship, Tags.PLAYER);
+
+        tools = getContext().npcTools(spaceship);
+        tools.tools().healthIndicator(health);
+
+        tools.tools().addTargetName(Tags.ATTACKER);
 
         getContext().updatePhysicalObjectExtra(spaceship, "radius", 10f);
         getContext().updatePhysicalObjectExtra(spaceship, "distanceTravelled", 10f);
@@ -55,26 +58,9 @@ public class Player extends AbstractGameCharacter {
         getContext().updatePhysicalObjectExtra(spaceship, "health", health);
         getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", maxHealth);
         getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1f);
-        getContext().updatePhysicalObjectExtra(spaceship, "nearestObject", findNearestObject());
-
+        getContext().updatePhysicalObjectExtra(spaceship, "tag", getContext().getPhysicalObject().getTags().toString());
     }
 
-    private PhysicalObject findNearestObject() {
-
-        List<NearPhysicalObject> nearbyPhysicalObjects =
-                getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
-
-        if (!nearbyPhysicalObjects.isEmpty()) {
-            for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
-
-                String name = nearPhysicalObject.getObject().getName();
-                if (!nearPhysicalObject.getObject().getTags().contains(Tags.PROJECTILE) && !nearPhysicalObject.getObject().getTags().contains(Tags.DEBRIS)) {
-                    nearestObject = nearPhysicalObject.getObject();
-                }
-            }
-        }
-        return nearestObject;
-    }
 
     public void control(SpaceshipControlRequest request) {
         this.lastControl = request;
@@ -97,9 +83,6 @@ public class Player extends AbstractGameCharacter {
         if (lastControl == null) {
             return;
         }
-
-        findNearestObject();
-        //System.out.println(nearestObject.getName());
 
         float speed = spaceship.getSpeedMagnitude();
         float speedX = (float) Math.cos(spaceship.getSpeedDirection()) * speed;
@@ -168,6 +151,7 @@ public class Player extends AbstractGameCharacter {
                             null,
                             null,
                             null,
+                            null,
                             null);
                 }
 
@@ -184,6 +168,7 @@ public class Player extends AbstractGameCharacter {
                 speed,
                 direction,
                 (getContext().getSpaceEngine().getTime() - lastDodge > 10) ? Visualizations.SPACESHIP : Visualizations.BOULDER,
+                null,
                 null
         );
 
@@ -259,31 +244,9 @@ public class Player extends AbstractGameCharacter {
                     200f,
                     Visualizations.RIGHT_CANNON,
                     getContext(),
-                    targetList()
+                    tools.tools().targetList(getContext())
             ), null);
             shootTime = 0f;
         }
-    }
-
-    private Set<String> targetList(){
-
-        List<NearPhysicalObject> nearbyPhysicalObjects =
-                getContext().findNearbyPhysicalObjects(getContext().getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
-
-        Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
-
-        Set<String> targetList = new HashSet<>();
-
-        if (targetList.isEmpty()){
-            NearPhysicalObject p;
-            while (iterator.hasNext()) {
-                p = iterator.next();
-                if (nearbyPhysicalObjects.contains(p) && !p.getObject().getTags().contains(Tags.PROJECTILE) && !p.getObject().getTags().contains(Tags.DEBRIS)) {
-                    targetList.add(p.getObject().getName());
-                }
-            }
-        }
-
-        return targetList;
     }
 }

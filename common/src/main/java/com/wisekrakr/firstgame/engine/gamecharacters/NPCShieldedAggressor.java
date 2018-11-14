@@ -39,7 +39,8 @@ public class NPCShieldedAggressor extends AbstractNonPlayerGameCharacter {
                 initialSpeedMagnitude,
                 initialDirection,
                 Visualizations.TEST,
-                initialRadius, null);
+                initialRadius, null
+        );
 
         getContext().tagPhysicalObject(shieldedAggressor.getObject(), Tags.ATTACKER);
 
@@ -56,6 +57,7 @@ public class NPCShieldedAggressor extends AbstractNonPlayerGameCharacter {
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
                                 if (!object.getTags().contains(Tags.DEBRIS)) {
                                     getContext().updatePhysicalObject(null,
+                                            null,
                                             null,
                                             null,
                                             null,

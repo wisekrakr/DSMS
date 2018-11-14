@@ -47,9 +47,7 @@ public class ExplosionCharacter extends AbstractGameCharacter {
                     new PhysicalObjectListener() {
                         @Override
                         public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
-
                         }
-
                         @Override
                         public void removed(PhysicalObject target) {
                             bits.remove(target);

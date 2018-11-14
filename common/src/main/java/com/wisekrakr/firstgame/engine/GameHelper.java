@@ -34,6 +34,7 @@ public class GameHelper {
 
 
     public static float distanceBetween(Vector2 subject, Vector2 target) {
+
         float attackDistanceX = target.x - subject.x;
         float attackDistanceY = target.y - subject.y;
 

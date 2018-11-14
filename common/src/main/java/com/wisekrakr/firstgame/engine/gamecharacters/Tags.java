@@ -6,6 +6,8 @@ public class Tags {
     public static String TEST_CHARACTER = "Test Character";
     public static String PLAYER = "PLAYER ONE";
 
+    public static String DEFENSE_MATERIAL = "This will protect me!?";
+
     public static String PROJECTILE = "weapon";
     public static String DEBRIS = "debris";
     public static String ATTACKER = "attacker";
@@ -29,4 +31,13 @@ public class Tags {
 
 
     public static String THE_LOST_ONE = "?????";
+
+
+
+    /*
+    The following are special Quest Character Tags
+     */
+    public static String DAMSEL = " damsel in distress ";
+    public static String PLAYER_DAMSEL = " damsel following player ";
+    public static String PERVERT = "pervert";
 }

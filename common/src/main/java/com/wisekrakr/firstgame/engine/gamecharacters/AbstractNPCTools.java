@@ -2,6 +2,7 @@ package com.wisekrakr.firstgame.engine.gamecharacters;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
@@ -22,6 +23,7 @@ public class AbstractNPCTools  {
     }
 
     private CharacterTools tools = new CharacterTools() {
+
         private float health;
         private Float lastShot;
 
@@ -34,6 +36,13 @@ public class AbstractNPCTools  {
         public void addTargetName(String tag) {
             if (tag != null) {
                 targetList.add(tag);
+            }
+        }
+
+        @Override
+        public void removeTargetName(String tag) {
+            if (tag != null){
+                targetList.remove(tag);
             }
         }
 
@@ -91,7 +100,7 @@ public class AbstractNPCTools  {
         }
 
         @Override
-        public void healthDamage(GameCharacterContext context, PhysicalObject object, float damage) {
+        public void damageIndicator(float damage) {
             health -= damage;
         }
 
@@ -105,8 +114,6 @@ public class AbstractNPCTools  {
                 for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
 
                     PhysicalObject target = nearPhysicalObject.getObject();
-
-                    float angle = GameHelper.angleBetween(context.getPhysicalObject().getPosition(), target.getPosition());
 
                     float x = context.getPhysicalObject().getPosition().x;
                     float y = context.getPhysicalObject().getPosition().y;

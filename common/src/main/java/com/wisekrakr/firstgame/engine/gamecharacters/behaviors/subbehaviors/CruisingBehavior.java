@@ -4,10 +4,6 @@ package com.wisekrakr.firstgame.engine.gamecharacters.behaviors.subbehaviors;
 import com.wisekrakr.firstgame.engine.GameHelper;
 
 import com.wisekrakr.firstgame.engine.gamecharacters.behaviors.AbstractBehavior;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class CruisingBehavior extends AbstractBehavior {
     private float changeDirectionInterval;
@@ -35,6 +31,7 @@ public class CruisingBehavior extends AbstractBehavior {
                     randomDirection,
                     speedMagnitude,
                     randomDirection,
+                    null,
                     null,
                     null);
             lastDirectionChange = clock;

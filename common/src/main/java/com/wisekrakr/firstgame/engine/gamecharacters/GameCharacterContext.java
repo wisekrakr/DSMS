@@ -15,7 +15,7 @@ public interface GameCharacterContext {
     void addCharacter(GameCharacter newObject, GameCharacterListener listener);
 
     PhysicalObject addPhysicalObject(String name, Vector2 position, float orientation, float speedMagnitude, float speedDirection, Visualizations visualizationEngine, float collisionRadius, PhysicalObjectListener alistener, PhysicalObjectEvictionPolicy evictionPolicy);
-    void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection,Visualizations visualizationEngine, Float collisionRadius);
+    void updatePhysicalObject(PhysicalObject target, String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius, PhysicalObjectEvictionPolicy policy);
     void updatePhysicalObjectExtra(PhysicalObject target, String key, Object value);
     void tagPhysicalObject(PhysicalObject target, String tag);
     void untagPhysicalObject(PhysicalObject target, String tag);

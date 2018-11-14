@@ -2,14 +2,9 @@ package com.wisekrakr.firstgame.engine.scenarios;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacter;
-import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterListener;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectRunner;
-import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,6 +29,7 @@ public class WildlifeManagement extends Scenario {
         this.minCreationInterval = minCreationInterval;
         this.characterFactory = characterFactory;
     }
+
 
     public void periodicUpdate() {
         float area = getContext().space().getVitalAreaSize();
@@ -62,6 +58,7 @@ public class WildlifeManagement extends Scenario {
             gameCharacters.add(character);
 
         }
+
     }
 
 

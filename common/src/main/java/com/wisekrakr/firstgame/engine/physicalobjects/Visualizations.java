@@ -11,7 +11,7 @@ public enum Visualizations {
     RIGHT_CANNON,
     A,
     B,
-    C,
+    TREASURE,
     D,
     SHIELD,
 

@@ -1,7 +1,6 @@
 package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
-import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.ShieldCharacter;
 import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
@@ -59,6 +58,7 @@ public class DefenseBehavior extends AbstractBehavior {
                                         angle,
                                         dodgeSpeed,
                                         -angle,
+                                        null,
                                         null,
                                         null
                                 );

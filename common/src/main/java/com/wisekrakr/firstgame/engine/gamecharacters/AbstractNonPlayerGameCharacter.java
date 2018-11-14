@@ -51,7 +51,7 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
                     listener.removed();
                 }
             }
-        }, PhysicalObjectEvictionPolicy.DISCARD);
+        }, PhysicalObjectEvictionPolicy.SLOW);
 
         behavedObjects.put(subject, null);
 
@@ -98,8 +98,8 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
             }
 
             @Override
-            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius) {
-                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius);
+            public void updatePhysicalObject(String name, Vector2 position, Float orientation, Float speedMagnitude, Float speedDirection, Visualizations visualizationEngine, Float collisionRadius, PhysicalObjectEvictionPolicy policy) {
+                AbstractNonPlayerGameCharacter.this.getContext().updatePhysicalObject(subject, name, position, orientation, speedMagnitude, speedDirection, visualizationEngine, collisionRadius, policy);
             }
 
             @Override
@@ -143,8 +143,5 @@ public class AbstractNonPlayerGameCharacter extends AbstractGameCharacter {
         }
 
         deleted.clear();
-
-
     }
-
 }

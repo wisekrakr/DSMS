@@ -1,6 +1,7 @@
 package com.wisekrakr.firstgame.engine.gamecharacters.behaviors;
 
 import com.wisekrakr.firstgame.engine.GameHelper;
+import com.wisekrakr.firstgame.engine.StringHelper;
 import com.wisekrakr.firstgame.engine.gamecharacters.GameCharacterContext;
 import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.NearPhysicalObject;
@@ -13,16 +14,16 @@ public class FlightBehavior extends AbstractBehavior {
 
     private float radiusOfAttack;
     private Float speedIncrease;
-    private GameCharacterContext master;
+    private GameCharacterContext context;
     private Set<String> targetList;
     private FlightStyle flightStyle;
     private Float lastDirectionChange;
 
-    public FlightBehavior(FlightStyle flightStyle, float radiusOfAttack, Float speedIncrease, GameCharacterContext master, Set<String> targetList) {
+    public FlightBehavior(FlightStyle flightStyle, float radiusOfAttack, Float speedIncrease, GameCharacterContext context, Set<String> targetList) {
         this.flightStyle = flightStyle;
         this.radiusOfAttack = radiusOfAttack;
         this.speedIncrease = speedIncrease;
-        this.master = master;
+        this.context = context;
         this.targetList = targetList;
     }
 
@@ -34,7 +35,7 @@ public class FlightBehavior extends AbstractBehavior {
     public void elapseTime(float clock, float delta) {
 
         List<NearPhysicalObject> nearbyPhysicalObjects =
-                master.findNearbyPhysicalObjects(getContext().getSubject(), radiusOfAttack);
+                context.findNearbyPhysicalObjects(getContext().getSubject(), radiusOfAttack);
 
         if (!nearbyPhysicalObjects.isEmpty()) {
             for (NearPhysicalObject nearPhysicalObject : nearbyPhysicalObjects) {
@@ -61,6 +62,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                 speedIncrease,
                                                 angle,
                                                 null,
+                                                null,
                                                 null
                                         );
                                         //System.out.println(getContext().getSubject().getName() + StringHelper.ANSI_YELLOW_BACKGROUND + " chasing target: " + StringHelper.ANSI_RESET + target.getName());
@@ -83,6 +85,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                     null,
                                                     angle + rotationAngle,
                                                     null,
+                                                    null,
                                                     null
                                             );
                                             lastDirectionChange = null;
@@ -102,6 +105,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                 null,
                                                 angle + updatedAngle,
                                                 null,
+                                                null,
                                                 null
                                         );
 
@@ -116,6 +120,7 @@ public class FlightBehavior extends AbstractBehavior {
                                                 -angle,
                                                 speedIncrease,
                                                 -angle,
+                                                null,
                                                 null,
                                                 null
                                         );

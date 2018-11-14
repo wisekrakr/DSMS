@@ -38,7 +38,8 @@ public class NPCMinionSpawner extends AbstractNonPlayerGameCharacter {
                 initialSpeedMagnitude,
                 initialDirection,
                 Visualizations.TEST,
-                initialRadius, null);
+                initialRadius, null
+        );
 
         getContext().tagPhysicalObject(duplicationStation.getObject(), Tags.MOTHER_SHIP);
         getContext().tagPhysicalObject(duplicationStation.getObject(), Tags.ATTACKER);
@@ -58,6 +59,7 @@ public class NPCMinionSpawner extends AbstractNonPlayerGameCharacter {
                             public void collide(PhysicalObject object, Vector2 epicentre, float impact) {
                                 if (!object.getTags().contains(Tags.DEBRIS) && !object.getTags().contains(Tags.MINION)) {
                                     getContext().updatePhysicalObject(null,
+                                            null,
                                             null,
                                             null,
                                             null,

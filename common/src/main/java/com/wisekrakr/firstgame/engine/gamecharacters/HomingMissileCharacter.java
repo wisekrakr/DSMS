@@ -8,7 +8,6 @@ import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObject;
 import com.wisekrakr.firstgame.engine.physicalobjects.Visualizations;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -73,6 +72,7 @@ public class HomingMissileCharacter extends AbstractNonPlayerGameCharacter{
 
                                     if (damage != 0f) {
                                         getContext().updatePhysicalObject(null,
+                                                null,
                                                 null,
                                                 null,
                                                 null,

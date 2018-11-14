@@ -2,15 +2,17 @@ package com.wisekrakr.firstgame.engine;
 
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.firstgame.engine.gamecharacters.AbstractNPCTools;
+import com.wisekrakr.firstgame.engine.gamecharacters.CharacterTools;
 import com.wisekrakr.firstgame.engine.gamecharacters.CollisionModel;
+import com.wisekrakr.firstgame.engine.gamecharacters.Tags;
 import com.wisekrakr.firstgame.engine.physicalobjects.*;
 
 import java.util.*;
 
 public class SpaceEngine {
     private float visibleRadius = 1000f;
-    private float creationRadius = 2000f;
-    private float vitalizationRadius = 3000f;
+    private float creationRadius = 1300f;
+    private float vitalizationRadius = 1750f;
     private float slowUpdateInterval = 10;
     private float stasisPeriod = 0f;
 
@@ -176,7 +178,8 @@ public class SpaceEngine {
 
             float impact = CollisionModel.calculateDamage(object1, object2);
 
-
+            CharacterTools tools = getNPCTools().tools();
+            tools.damageIndicator(impact);
 
             // TODO: implement impact
             return new Collision(object1, object2, new Vector2(epicenterX, epicenterY), clock, impact);
@@ -184,11 +187,6 @@ public class SpaceEngine {
             return null;
         }
     }
-
-
-
-    //TODO: create an reaction class like Collision above and getTools to find out who to attack
-
 
     public SpaceSnapshot makeSnapshot() {
         synchronized (monitor) {
@@ -223,6 +221,7 @@ public class SpaceEngine {
             //    A. apply movement
             for (PhysicalObjectRunner target : physicalObjects) {
                 boolean vital = isVital(target.getPosition());
+                boolean visible = isVisible(target.getPosition());
 
                 if (vital || (target.getPolicy() == PhysicalObjectEvictionPolicy.SLOW && updateSlow)) {
                     float actualDelta = vital ? delta : (clock - lastSlowUpdate);
@@ -238,7 +237,7 @@ public class SpaceEngine {
                     );
                 }
 
-                if (!vital && target.getPolicy() == PhysicalObjectEvictionPolicy.DISCARD) {
+                if (!vital && !visible && target.getPolicy() == PhysicalObjectEvictionPolicy.DISCARD) {
                     discarded.add(target);
                 }
 
@@ -297,8 +296,10 @@ public class SpaceEngine {
 
     private boolean isVital(Vector2 position) {
         for (PhysicalObject vital : vitalizingObjects) {
-            if (GameHelper.distanceBetween(position, vital.getPosition()) < vitalizationRadius) {
-                return true;
+            if (vital != null) {
+                if (GameHelper.distanceBetween(position, vital.getPosition()) < vitalizationRadius) {
+                    return true;
+                }
             }
         }
 

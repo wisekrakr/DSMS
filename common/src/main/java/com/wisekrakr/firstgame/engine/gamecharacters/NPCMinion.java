@@ -72,6 +72,7 @@ public class NPCMinion extends AbstractNonPlayerGameCharacter {
                                             null,
                                             null,
                                             null,
+                                            null,
                                             null
                                     );
                                 }
