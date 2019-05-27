@@ -20,6 +20,7 @@ public class DamselCharacter extends AbstractNonPlayerGameCharacter {
     private float initialSpeedMagnitude;
     private float radiusOfAttack;
     private float radiusOfEscape;
+    private boolean isFollowing = false;
 
     public DamselCharacter(Vector2 initialPosition, float initialRadius, float initialDirection, float initialSpeedMagnitude, float radiusOfAttack, float radiusOfEscape) {
         this.initialPosition = initialPosition;
@@ -65,6 +66,7 @@ public class DamselCharacter extends AbstractNonPlayerGameCharacter {
                             @Override
                             public void start() {
                                 getContext().updatePhysicalObjectExtra("radius", initialRadius);
+                                getContext().updatePhysicalObjectExtra("isFollowing", isFollowing);
                             }
 
                             @Override
@@ -81,6 +83,9 @@ public class DamselCharacter extends AbstractNonPlayerGameCharacter {
                                             null
                                     );
                                     tools.tools().damageIndicator(impact);
+                                }else if (object.getTags().contains(Tags.MISSION_END)){
+                                    //ending mission action
+                                    DamselCharacter.this.getContext().removeMyself();
                                 }
                             }
 
@@ -105,6 +110,19 @@ public class DamselCharacter extends AbstractNonPlayerGameCharacter {
                                                         }
                                                     });
                                 }
+
+                                if (isFollowing){
+                                    getContext().addCharacter(new MissionEnding(
+                                            DamselCharacter.this.getContext().getSpaceEngine().chooseCreationPoint(),
+                                            50f
+                                    ), new GameCharacterListener() {
+                                        @Override
+                                        public void removed(GameCharacter target) {
+                                            target.stop();
+                                        }
+                                    });
+                                }
+
                             }
                         },
                         new CruisingBehavior(GameHelper.generateRandomNumberBetween(60f, 180f),

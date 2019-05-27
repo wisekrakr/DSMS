@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 
 public class DialogWindow implements Disposable{
@@ -49,12 +50,12 @@ public class DialogWindow implements Disposable{
 
     }
 
-    private Vector3 projection(SpaceSnapshot.GameObjectSnapshot object){
+    private Vector3 projection(PhysicalObjectSnapshot object){
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
 
-    public Dialog introDialog(SpaceSnapshot.GameObjectSnapshot object){
+    public Dialog introDialog(PhysicalObjectSnapshot object){
 
 
         introDialog = new Dialog("Dont get this spaceship shot!", skin);

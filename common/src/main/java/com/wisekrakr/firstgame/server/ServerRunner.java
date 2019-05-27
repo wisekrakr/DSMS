@@ -87,8 +87,7 @@ public class ServerRunner {
         });
 
         gameEngine.addScenario(new MyFirstSpaceGame());
-        //gameEngine.addScenario(new DamselInDistress(300f, 200f, 1));
-        //gameEngine.addScenario(new ProtectedConvoy(500f, 300f, 3, 10, 3));
+
 
         timeThread.setDaemon(true);
         timeThread.start();

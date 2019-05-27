@@ -178,6 +178,7 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
 
 
     private void controllerInput() {
+
         Controllers.addListener(new ControllerAdapter() {
             @Override
             public void connected(Controller controller) {

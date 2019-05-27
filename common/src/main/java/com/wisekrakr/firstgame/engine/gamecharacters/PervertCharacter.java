@@ -44,7 +44,6 @@ public class PervertCharacter extends AbstractNonPlayerGameCharacter {
                 });
 
 
-
         getContext().tagPhysicalObject(pervert.getObject(), Tags.PERVERT);
 
         AbstractNPCTools tools = getContext().npcTools(pervert.getObject());

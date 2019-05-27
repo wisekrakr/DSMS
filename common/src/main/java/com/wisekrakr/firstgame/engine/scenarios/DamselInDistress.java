@@ -58,12 +58,13 @@ public class DamselInDistress extends Scenario {
             default:
                 throw new IllegalStateException("Unknown: " + state);
         }
-    }
 
+    }
+//todo: set fixed position in the universe....when player is close...damsel and perverts get vitalized
     private void initiate(){
         if (damselCharacters.isEmpty()) {
             damsel = new DamselCharacter(
-                    getContext().space().chooseCreationPoint(),
+                    new Vector2(400,400),
                     50f,
                     GameHelper.randomDirection(),
                     GameHelper.generateRandomNumberBetween(100f, 150f),
@@ -79,15 +80,16 @@ public class DamselInDistress extends Scenario {
                         }
                     });
             System.out.println("Damsel added"); //todo remove
-        }else {
-            state = ScenarioState.PERVERTS;
         }
+        state = ScenarioState.PERVERTS;
+
     }
 
     private void pervertUpdate(){
 
         if (perverts.size() < maxPerverts){
-            GameCharacter pervert = new PervertCharacter(getContext().space().chooseCreationPoint(),
+            GameCharacter pervert = new PervertCharacter(
+                    new Vector2(-300,-300),
                     10f,
                     GameHelper.randomDirection(),
                     GameHelper.generateRandomNumberBetween(100f, 130f),
@@ -108,10 +110,8 @@ public class DamselInDistress extends Scenario {
             state = ScenarioState.INITIATION;
         }
 
-//        if (DamselCharacter.DamselHelper.checkDamsel()) {
-//            state = ScenarioState.ESCORT;
-//            System.out.println("damsel is following player");
-//        }
+
+
     }
 
     private void missionEnding(){
@@ -122,18 +122,18 @@ public class DamselInDistress extends Scenario {
 
                 MissionEnding missionEnd = new MissionEnding(getContext().space().chooseCreationPoint(), 100f);
 
-//                getContext().engine().addGameCharacter(missionEnd,
-//                        new GameCharacterListener() {
-//                            @Override
-//                            public void removed(GameCharacter target) {
+                getContext().engine().addGameCharacter(missionEnd,
+                        new GameCharacterListener() {
+                            @Override
+                            public void removed(GameCharacter target) {
 //                                if (!(DamselCharacter.DamselHelper.checkDamsel()) && missionEndings.size() > 1) {
 //                                    missionEnd.getMissionEndContext().removeMyself();
 //                                    state = ScenarioState.PERVERTS;
 //                                }else if (DamselCharacter.DamselHelper.checkDamsel() && missionEndings.size() > 1){
 //                                    missionEndings.remove(missionEnd);
 //                                }
-//                            }
-//                        });
+                            }
+                        });
                 missionEndings.add(missionEnd);
             }
     }

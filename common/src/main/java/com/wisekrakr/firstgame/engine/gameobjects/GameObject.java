@@ -86,35 +86,17 @@ public abstract class GameObject {
         return name;
     }
 
-    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-    }
+
 
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
     }
 
 
 
-    public GameObject thisGameObject() {
-        return this;
-    }
-
-    public void getClosestTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-    }
-
-    public void targetSpotted(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-    }
-
-    public void attackTarget(GameObject target, Set<GameObject> toDelete, Set<GameObject> toAdd) {
-    }
-
     public float getCollisionRadius() {
         return collisionRadius;
     }
 
-    public SpaceSnapshot.GameObjectSnapshot snapshot() {
-        return new SpaceSnapshot.GameObjectSnapshot(name, type, 0, orientation, position,
-                getExtraSnapshotProperties());
-    }
 
     public Map<String, Object> getExtraSnapshotProperties() {
         return Collections.emptyMap();
@@ -128,32 +110,15 @@ public abstract class GameObject {
         this.health = health;
     }
 
-    public double getDamage() {
-        return damage;
-    }
 
-    public void setDamage(double damage) {
-        this.damage = damage;
-    }
-
-    public void setDimensions(float width, float height) {
-        this.width = width;
-        this.height = height;
-    }
 
     public float getWidth() {
         return width;
     }
-
     public float getHeight() {
         return height;
     }
 
-    public void afterAdd(List<GameObject> toAdd, List<GameObject> toRemove) {
-    }
-
-    public void afterRemove(List<GameObject> toAdd, List<GameObject> toRemove) {
-    }
 
     @Override
     public String toString() {

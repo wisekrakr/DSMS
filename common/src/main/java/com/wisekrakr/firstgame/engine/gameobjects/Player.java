@@ -21,7 +21,7 @@ public class Player extends AbstractGameCharacter {
     private float adaptedAngle;
     private AbstractNPCTools tools;
 
-    private AbstractPhysicalObjectListener listener;
+    private float distanceTravelled;
 
     public Player(String name) {
         this.name = name;
@@ -32,14 +32,26 @@ public class Player extends AbstractGameCharacter {
     public void start() {
         float startDirection = GameHelper.randomDirection();
 
-        spaceship = getContext().addPhysicalObject(name ,
+        spaceship = getContext().addPhysicalObject(name,
                 new Vector2(),
                 startDirection,
                 0,
                 startDirection,
                 Visualizations.SPACESHIP,
                 10f,
-                new AbstractPhysicalObjectListener(),
+                new PhysicalObjectListener() {
+                    @Override
+                    public void collision(PhysicalObject myself, PhysicalObject two, float time, Vector2 epicentre, float impact) {
+                        if (!two.getTags().contains(Tags.DEBRIS)) {
+                            tools.tools().damageIndicator(impact);
+                        }
+                    }
+
+                    @Override
+                    public void removed(PhysicalObject target) {
+
+                    }
+                },
                 null);
 
         getContext().getSpaceEngine().markVitalizer(spaceship);
@@ -51,12 +63,12 @@ public class Player extends AbstractGameCharacter {
         tools.tools().addTargetName(Tags.ATTACKER);
 
         getContext().updatePhysicalObjectExtra(spaceship, "radius", 10f);
-        getContext().updatePhysicalObjectExtra(spaceship, "distanceTravelled", 10f);
+        getContext().updatePhysicalObjectExtra(spaceship, "distanceTravelled", 0f);
         getContext().updatePhysicalObjectExtra(spaceship, "score", 10f);
-        getContext().updatePhysicalObjectExtra(spaceship, "switchWeaponState", 10f);
+        getContext().updatePhysicalObjectExtra(spaceship, "switchWeaponState", "bang");
         getContext().updatePhysicalObjectExtra(spaceship, "ammoCount", 10 );
-        getContext().updatePhysicalObjectExtra(spaceship, "health", health);
-        getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", maxHealth);
+        getContext().updatePhysicalObjectExtra(spaceship, "health", tools.tools().getHealth());
+        getContext().updatePhysicalObjectExtra(spaceship, "maxHealth", 100f);
         getContext().updatePhysicalObjectExtra(spaceship, "healthPercentage", 1f);
         getContext().updatePhysicalObjectExtra(spaceship, "tag", getContext().getPhysicalObject().getTags().toString());
     }
@@ -65,6 +77,8 @@ public class Player extends AbstractGameCharacter {
     public void control(SpaceshipControlRequest request) {
         this.lastControl = request;
     }
+
+
 
     @Override
     public void elapseTime(float delta) {
@@ -173,7 +187,8 @@ public class Player extends AbstractGameCharacter {
         );
 
 
-        //distanceTravelled = distanceTravelled + Math.abs(delta * speed);
+
+        distanceTravelled = distanceTravelled + Math.abs(delta * speed);
 
         float deltaX = ((float) Math.cos(spaceship.getOrientation()));
         float deltaY = ((float) Math.sin(spaceship.getOrientation()));
@@ -181,11 +196,9 @@ public class Player extends AbstractGameCharacter {
         switch (lastControl.getShootingState()) {
             case FIRING:
                 fireBullet(deltaX, speedX, deltaY, speedY, delta);
-
                 break;
             case MISSILE_FIRING:
                 fireHomingMissile(deltaX, speedX, deltaY, speedY, delta);
-
                 break;
             case PLACE_MINE:
                 break;

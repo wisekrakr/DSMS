@@ -57,16 +57,6 @@ public class Spaceship extends GameObject {
     public Spaceship(String name, Vector2 position) {
         super(GameObjectVisualizationType.SPACESHIP, name, position);
 
-        ammoCount = 10000;
-        missileAmmoCount = 20;
-        mineAmmoCount = 20;
-        health = 750;
-        score = 0;
-        maxHealth = health;
-
-        setCollisionRadius(5f);
-        setActionDistance(400f);
-
     }
 
 
@@ -91,12 +81,6 @@ public class Spaceship extends GameObject {
         PACIFIST, FIRING, MISSILE_FIRING, PLACE_MINE
     }
 
-    public enum AimingState {
-        ON, NONE
-    }
-
-
-
     public enum SwitchWeaponState {
         NONE("Peace 4 All, man"), BULLETS("Bullitos"), MISSILES("Homers"), SPACE_MINES("Blinky Boom");
 
@@ -112,12 +96,6 @@ public class Spaceship extends GameObject {
     }
 
 
-    @Override
-    public void signalOutOfBounds(Set<GameObject> toDelete, Set<GameObject> toAdd) {
-
-        // angle = angle + (float) Math.PI;
-    }
-
     private double healthInPercentages() {
         if (isHit()) {
             double z = (getHealth() - getDamageTaken());
@@ -131,16 +109,16 @@ public class Spaceship extends GameObject {
         return rateOfFire;
     }
 
-    public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
-                        Float aimingState, SwitchWeaponState switchWeaponState, Float hardSteering) {
-        this.throttle = throttle;
-        this.steering = steering;
-        this.powerState = powerState;
-        this.shootingState = shootingState;
-        this.mouseAiming = aimingState;
-        this.switchWeaponState = switchWeaponState;
-        this.hardSteering = hardSteering;
-    }
+//    public void control(ThrottleState throttle, SteeringState steering, SpecialPowerState powerState, ShootingState shootingState,
+//                        Float aimingState, SwitchWeaponState switchWeaponState, Float hardSteering) {
+//        this.throttle = throttle;
+//        this.steering = steering;
+//        this.powerState = powerState;
+//        this.shootingState = shootingState;
+//        this.mouseAiming = aimingState;
+//        this.switchWeaponState = switchWeaponState;
+//        this.hardSteering = hardSteering;
+//    }
 
     @Override
     public void collide(GameObject subject, Set<GameObject> toDelete, Set<GameObject> toAdd) {
@@ -278,11 +256,10 @@ public class Spaceship extends GameObject {
 
         switch (shootingState) {
             case FIRING:
-                activateBullets(delta, toDelete, toAdd);
+                activateBullets(delta);
                 break;
             case MISSILE_FIRING:
-
-                activateMissiles(delta, toDelete, toAdd);
+                activateMissiles(delta);
                 break;
             case PLACE_MINE:
                 activateSpaceMines(delta, toDelete, toAdd);
@@ -296,9 +273,6 @@ public class Spaceship extends GameObject {
 
         if (mouseAiming != null){
             shootTime -= delta * 0.5f;
-
-            float x = getPosition().x;
-            float y = getPosition().y;
 
             float deltaX = ((float) Math.cos(getOrientation()));
             float deltaY = ((float) Math.sin(getOrientation()));
@@ -319,7 +293,7 @@ public class Spaceship extends GameObject {
         }
     }
 
-    private void activateBullets(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    private void activateBullets(float delta) {
         float shotCount = delta / fireRate(0.2f) + shotLeftOver;
 
         int exactShotCount = Math.min(Math.round(shotCount), ammoCount);
@@ -348,7 +322,7 @@ public class Spaceship extends GameObject {
 
     }
 
-    private void activateMissiles(float delta, Set<GameObject> toDelete, Set<GameObject> toAdd) {
+    private void activateMissiles(float delta) {
 
         float missileCount = delta / fireRate(0.5f) + missileLeftOver;
 

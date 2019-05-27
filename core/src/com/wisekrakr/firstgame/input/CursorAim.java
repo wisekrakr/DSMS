@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
-public class CursorAim implements com.badlogic.gdx.graphics.Cursor, Graphics {
+public abstract class CursorAim implements com.badlogic.gdx.graphics.Cursor, Graphics {
 
     private Cursor cursor;
 

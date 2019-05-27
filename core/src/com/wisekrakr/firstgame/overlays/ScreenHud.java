@@ -1,32 +1,21 @@
 package com.wisekrakr.firstgame.overlays;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
-import com.wisekrakr.firstgame.engine.SpaceSnapshot;
 import com.wisekrakr.firstgame.engine.gameobjects.Spaceship;
 import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
-import javafx.scene.control.Menu;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabBuilder;
-import javafx.scene.control.TabPane;
-import javafx.scene.shape.Rectangle;
+
 
 /**
  * Created by David on 12/1/2018.
@@ -44,7 +33,6 @@ public class ScreenHud implements Disposable {
     private Integer distanceCounter;
     private Integer score;
     private Integer ammoCounter;
-    private Integer missileCounter;
     private String name;
     private Integer healthCounter;
     private ProgressBar progressBar;
@@ -59,8 +47,6 @@ public class ScreenHud implements Disposable {
     private Label scoreLabel;
     private Label ammoLabel;
     private Label ammoCountLabel;
-    private Label missileLabel;
-    private Label missileCountLabel;
     private Label healthLabel;
     private Label healthCountLabel;
     private String weaponName;
@@ -71,14 +57,12 @@ public class ScreenHud implements Disposable {
         timeCounter = 0;
         distanceCounter = 1;
         ammoCounter = 0;
-        missileCounter = 0;
         score = 0;
         healthCounter = 1000;
 
         viewport = new ScalingViewport(Scaling.stretch, Constants.HUD_WIDTH, Constants.HUD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport);
 
-        myAssetManager = new MyAssetManager();
         myAssetManager.loadFonts();
         myAssetManager.loadTextures();
         myAssetManager.loadSkins();

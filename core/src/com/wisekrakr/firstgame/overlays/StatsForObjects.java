@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,23 +59,23 @@ public class StatsForObjects {
         skin.add("white", new Texture(pixmap));
     }
 
-    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("radius");
+    private Float radius(PhysicalObjectSnapshot object){
+        return (Float) object.getExtra().get("radius");
     }
 
-    private Number health(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("health");
+    private Number health(PhysicalObjectSnapshot object){
+        return (Double) object.getExtra().get("health");
     }
 
-    private Number healthPercentage(SpaceSnapshot.GameObjectSnapshot object){
-        return (Double) object.extraProperties().get("healthPercentage");
+    private Number healthPercentage(PhysicalObjectSnapshot object){
+        return (Double) object.getExtra().get("healthPercentage");
     }
 
-    private Vector3 projection(SpaceSnapshot.GameObjectSnapshot object){
+    private Vector3 projection(PhysicalObjectSnapshot object){
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }
 
-    public void setAllLabels(SpaceSnapshot.GameObjectSnapshot object){
+    public void setAllLabels(PhysicalObjectSnapshot object){
         if (!(activated)) {
             nameLabel.setVisible(false);
             nameLabel.clear();

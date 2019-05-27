@@ -56,10 +56,6 @@ public class PlayerHud implements Disposable {
 
     }
 
-    private Vector3 projection(SpaceSnapshot.GameObjectSnapshot object){
-        return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
-    }
-
     private Vector3 projection(PhysicalObjectSnapshot object){
         return camera.project(new Vector3(object.getPosition().x, object.getPosition().y, 100));
     }

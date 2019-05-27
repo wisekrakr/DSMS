@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 public class AchievementTexts implements Disposable {
 
@@ -50,14 +51,14 @@ public class AchievementTexts implements Disposable {
         stage.addActor(table);
     }
 
-    public void update(SpaceSnapshot.GameObjectSnapshot myself, float delta){
+    public void update(PhysicalObjectSnapshot myself, float delta){
 
         timeCounter += delta;
         if(timeCounter != 0) {
             if (myself != null) {
-                Float distance = (Float) myself.extraProperties().get("distanceTravelled");
-                String killerName = (String) myself.extraProperties().get("killedBy");
-                Double health = (Double) myself.extraProperties().get("health");
+                Float distance = (Float) myself.getExtra().get("distanceTravelled");
+                String killerName = (String) myself.getExtra().get("killedBy");
+                Double health = (Double) myself.getExtra().get("health");
                 if (distance >= 2222) {
                     timeNow += delta;
                     if (timeNow <= 10) {

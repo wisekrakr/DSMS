@@ -25,14 +25,20 @@ public class Tags {
     public static String SPECIAL_ATTACKER = " shoots with all kinds of dangerous stuff";
     public static String SPAWNING_ATTACKER = " spawns space ships to attack";
 
-    public static String QUEST_FRIENDLY = " gives quest";
+
     public static String POWER_UP_FRIENDLY = " gives power up";
     public static String HELPLESS_FRIENDLY = " gives help";
 
 
     public static String THE_LOST_ONE = "?????";
 
-
+    /**
+     * Special tags for missions
+     */
+    public static String MISSION_END = " mission ending ";
+    public static String MISSION_START = " mission starting ";
+    public static String QUEST = " quest picked up ";
+    public static String NPC_QUEST = " gives quest";
 
     /*
     The following are special Quest Character Tags

@@ -57,7 +57,7 @@ public class AbstractNPCTools  {
         public Set<String> targetList(GameCharacterContext context) {
 
             List<NearPhysicalObject> nearbyPhysicalObjects =
-                    context.findNearbyPhysicalObjects(context.getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
+                    context.findNearbyPhysicalObjects(context.getPhysicalObject(), context.getSpaceEngine().getVitalAreaSize());
 
             Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
 
@@ -77,7 +77,7 @@ public class AbstractNPCTools  {
         @Override
         public Set<String> avoidList(GameCharacterContext context) {
             List<NearPhysicalObject> nearbyPhysicalObjects =
-                    context.findNearbyPhysicalObjects(context.getPhysicalObject(), (float) Double.POSITIVE_INFINITY);
+                    context.findNearbyPhysicalObjects(context.getPhysicalObject(), context.getSpaceEngine().getVitalAreaSize());
 
             Iterator<NearPhysicalObject> iterator = nearbyPhysicalObjects.iterator();
 

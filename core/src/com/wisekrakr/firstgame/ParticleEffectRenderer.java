@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
 
 public class ParticleEffectRenderer {
 
@@ -19,11 +20,11 @@ public class ParticleEffectRenderer {
         particleEffect = new ParticleEffect();
     }
 
-    private Float radius(SpaceSnapshot.GameObjectSnapshot object){
-        return (Float) object.extraProperties().get("radius");
+    private Float radius(PhysicalObjectSnapshot object){
+        return (Float) object.getExtra().get("radius");
     }
 
-    public ParticleEffect exhaustEffect(SpaceSnapshot.GameObjectSnapshot object){
+    public ParticleEffect exhaustEffect(PhysicalObjectSnapshot object){
 
         particleEffect.load(Gdx.files.internal("particles/exhaust.party"), Gdx.files.internal("particles"));
         particleEffect.getEmitters().first().setPosition(object.getPosition().x, object.getPosition().y);

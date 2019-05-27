@@ -29,7 +29,6 @@ public class HomingMissileCharacter extends AbstractNonPlayerGameCharacter{
         this.speedMagnitude = speedMagnitude;
         this.speedDirection = speedDirection;
         this.missileAge = missileAge;
-        this.damage = damage;
         this.radius = radius;
         this.radiusOfAttack = radiusOfAttack;
         this.visualizations = visualizations;
