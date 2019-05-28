@@ -88,7 +88,6 @@ public class ServerRunner {
 
         gameEngine.addScenario(new MyFirstSpaceGame());
 
-
         timeThread.setDaemon(true);
         timeThread.start();
     }

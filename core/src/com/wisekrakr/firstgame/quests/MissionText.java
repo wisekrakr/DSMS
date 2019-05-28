@@ -1,15 +1,13 @@
 package com.wisekrakr.firstgame.quests;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
+
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -17,7 +15,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.firstgame.Constants;
 import com.wisekrakr.firstgame.MyAssetManager;
 import com.wisekrakr.firstgame.engine.SpaceSnapshot;
-import com.wisekrakr.firstgame.engine.gameobjects.missions.Mission;
+import com.wisekrakr.firstgame.engine.physicalobjects.PhysicalObjectSnapshot;
+
 
 public class MissionText implements Disposable{
 
@@ -53,19 +52,17 @@ public class MissionText implements Disposable{
         table.add(missionSortLabel).width(100).pad(5);
 
         stage.addActor(table);
-
     }
 
-    private String name(SpaceSnapshot.GameObjectSnapshot object){
+    private String name(PhysicalObjectSnapshot object){
         return object.getName();
     }
 
-
-    public void showMission(SpaceSnapshot.GameObjectSnapshot object, float delta){
+    public void showMission(PhysicalObjectSnapshot object, float delta){
         stage.act();
         stage.draw();
 
-        Boolean pickedUpMission = (Boolean) object.extraProperties().get("pickedUp");
+        Boolean pickedUpMission = (Boolean) object.getExtra().get("pickedUp");
 
         if (!(pickedUpMission)){
             missionLabel.setVisible(false);

@@ -42,13 +42,7 @@ public class MyAssetManager implements Disposable {
         assetManager.load("font/gamerFont.fnt", BitmapFont.class);
         assetManager.finishLoading();
     }
-    /*
-     * All the Videos loaded in the the AssetManager
-     */
-    public void loadVideos() {
-        assetManager.load("video/test.avi", VideoTrack.class);
-        assetManager.finishLoading();
-    }
+
     /*
      * All the Skins loaded in the the AssetManager
      */

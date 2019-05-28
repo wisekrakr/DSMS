@@ -622,11 +622,11 @@ public class PlayerPerspectiveScreen extends ScreenAdapter {
                 camera.update();
 
                 Label playerLabel = playerHud.nameLabel(object);
-                ProgressBar bar = playerHud.healthBar(object);
+                //ProgressBar bar = playerHud.healthBar(object);
                 overlayStage.addActor(playerLabel);
-                overlayStage.addActor(bar);
+                //overlayStage.addActor(bar);
                 registerVolatileActor(playerLabel);
-                registerVolatileActor(bar);
+                //registerVolatileActor(bar);
 
                 Label playerPosition = playerHud.positionLabel(object);
                 overlayStage.addActor(playerPosition);
